@@ -1,6 +1,6 @@
 {
   "name": "@unional/jest-presets",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Jest Presets",
   "scripts": {
     "depcheck": "depcheck"
