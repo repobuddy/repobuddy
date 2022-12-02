@@ -5,7 +5,7 @@
     "cs": "changeset",
     "depcheck": "turbo run depcheck",
     "presets": "pnpm --filter @unional/jest-presets",
-    "release": "changeset publish",
+    "release": "pnpm build && changeset publish",
     "simple": "pnpm --filter simple-repo",
     "test": "turbo run test",
     "verify": "turbo run test depcheck",
