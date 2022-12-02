@@ -1,0 +1,15 @@
+{
+  "private": true,
+  "scripts": {
+    "cs": "changeset",
+    "depcheck": "turbo run depcheck",
+    "presets": "pnpm --filter @unional/jest-presets",
+    "simple": "pnpm --filter simple-repo",
+    "test": "turbo run test",
+    "verify": "turbo run test depcheck"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.25.2",
+    "turbo": "^1.6.3"
+  }
+}

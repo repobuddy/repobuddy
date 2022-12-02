@@ -1,0 +1,46 @@
+{
+  "name": "@unional/jest-presets",
+  "version": "0.0.0",
+  "description": "Jest Presets",
+  "scripts": {
+    "depcheck": "depcheck"
+  },
+  "keywords": [
+    "jest",
+    "presets",
+    "config"
+  ],
+  "author": {
+    "name": "Homa Wong (unional)",
+    "email": "homawong@gmail.com"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "depcheck": "^1.4.3"
+  },
+  "peerDependencies": {
+    "@kayahr/jest-electron-runner": "^29",
+    "jest": "^29",
+    "jest-watch-suspend": "^1",
+    "jest-watch-toggle-config": "^2",
+    "jest-watch-typeahead": "^2",
+    "ts-jest": "^29"
+  },
+  "peerDependenciesMeta": {
+    "@kayahr/jest-electron-runner": {
+      "optional": true
+    },
+    "jest-watch-suspend": {
+      "optional": true
+    },
+    "jest-watch-toggle-config": {
+      "optional": true
+    },
+    "jest-watch-typeahead": {
+      "optional": true
+    },
+    "ts-jest": {
+      "optional": true
+    }
+  }
+}

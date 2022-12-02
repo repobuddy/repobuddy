@@ -1,0 +1,15 @@
+name: release
+on:
+  push:
+    branches: [main]
+
+jobs:
+  code:
+    uses: unional/.github/.github/workflows/pnpm-verify.yml@main
+    with:
+      os: '["ubuntu-latest"]'
+
+  release:
+    uses: unional/.github/.github/workflows/pnpm-release-changeset.yml@main
+    needs: code
+    secrets: inherit
