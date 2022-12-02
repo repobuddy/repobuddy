@@ -1,9 +1,11 @@
 {
   "private": true,
   "scripts": {
+    "build": "turbo run build",
     "cs": "changeset",
     "depcheck": "turbo run depcheck",
     "presets": "pnpm --filter @unional/jest-presets",
+    "release": "pnpm cs publish",
     "simple": "pnpm --filter simple-repo",
     "test": "turbo run test",
     "verify": "turbo run test depcheck"
