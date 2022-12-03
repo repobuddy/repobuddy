@@ -16,7 +16,8 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "depcheck": "^1.4.3"
+    "depcheck": "^1.4.3",
+    "jest": "^29.2.1"
   },
   "peerDependencies": {
     "@kayahr/jest-electron-runner": "^29",

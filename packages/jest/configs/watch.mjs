@@ -1,3 +1,4 @@
+/** @type {import('jest').Config} */
 export default {
   watchPlugins: [
     'jest-watch-suspend',

@@ -1,3 +1,4 @@
+/** @type {import('jest').Config} */
 export default {
   runner: '@kayahr/jest-electron-runner',
   testEnvironment: '@kayahr/jest-electron-runner/environment',

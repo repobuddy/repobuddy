@@ -6,7 +6,7 @@
     "depcheck": "turbo run depcheck",
     "nuke": "pnpm --no-bail --filter=* nuke && pnpm --no-bail nuke:local",
     "nuke:local": "rimraf node_modules",
-    "presets": "pnpm --filter @unional/jest-presets",
+    "jest": "pnpm --filter @repobuddy/jest",
     "release": "pnpm build && changeset publish",
     "simple": "pnpm --filter simple-repo",
     "test": "turbo run test",

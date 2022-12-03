@@ -15,8 +15,10 @@ importers:
   packages/jest:
     specifiers:
       depcheck: ^1.4.3
+      jest: ^29.2.1
     devDependencies:
       depcheck: 1.4.3
+      jest: 29.3.1
 
   scenarios/simple-repo:
     specifiers:
