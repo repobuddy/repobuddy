@@ -6,7 +6,11 @@ export default {
   transform: {
     '^.+\\.m?[t]sx?$': ['ts-jest', {
       isolatedModules: true,
-      useESM: true
+      useESM: true,
+      diagnostics: {
+        // https://github.com/kulshekhar/ts-jest/issues/3820
+        ignoreCodes: [151001]
+      }
     }],
   },
 }

@@ -4,6 +4,8 @@
     "build": "turbo run build",
     "cs": "changeset",
     "depcheck": "turbo run depcheck",
+    "nuke": "pnpm --no-bail --filter=* nuke && pnpm --no-bail nuke:local",
+    "nuke:local": "rimraf node_modules",
     "presets": "pnpm --filter @unional/jest-presets",
     "release": "pnpm build && changeset publish",
     "simple": "pnpm --filter simple-repo",
@@ -13,6 +15,8 @@
   },
   "devDependencies": {
     "@changesets/cli": "^2.25.2",
+    "rimraf": "^3.0.2",
     "turbo": "^1.6.3"
-  }
+  },
+  "packageManager": "pnpm@7.17.1"
 }

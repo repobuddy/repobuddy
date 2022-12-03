@@ -6,7 +6,7 @@
   },
   "devDependencies": {
     "@types/jest": "^29.2.3",
-    "@unional/jest-presets": "workspace:^",
+    "@repobuddy/jest": "workspace:^",
     "jest": "^29.2.1",
     "jest-watch-suspend": "^1.1.2",
     "jest-watch-toggle-config": "^2.0.1",

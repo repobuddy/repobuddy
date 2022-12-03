@@ -1,7 +1,7 @@
 {
-  "name": "@unional/jest-presets",
+  "name": "@repobuddy/jest",
   "version": "1.0.0",
-  "description": "Jest Presets",
+  "description": "Your jest buddy",
   "scripts": {
     "depcheck": "depcheck"
   },

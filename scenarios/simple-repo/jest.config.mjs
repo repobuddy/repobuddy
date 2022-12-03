@@ -1,6 +1,6 @@
 /** @type {import('jest').Config} */
 export default {
-  preset: '@unional/jest-presets/presets/ts-esm',
+  preset: '@repobuddy/jest/presets/ts-esm',
   roots: [
     '<rootDir>/ts'
   ]
