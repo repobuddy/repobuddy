@@ -4,9 +4,9 @@
   "scripts": {
     "build": "tsc --noEmit",
     "clean": "rimraf cjs esm tslib *.tsbuildinfo",
-    "xtest": " jest",
-    "xtest:list": "jest --list-tests",
-    "xtest:watch": "jest --watch"
+    "test": " jest",
+    "test:list": "jest --list-tests",
+    "test:watch": "jest --watch"
   },
   "devDependencies": {
     "@jest/globals": "^29.3.1",
