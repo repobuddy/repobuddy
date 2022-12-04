@@ -1,11 +1,12 @@
 import { Config } from 'jest'
-import { tsEsm, nodejs, watch } from '../../config.js'
+import { nodejs, tsEsm, watch } from '../../config.js'
 
-const presets: Config = {
+const presets = {
   ...tsEsm,
   ...nodejs,
   ...watch
-}
+} satisfies Config
+
 export default presets
 
 export { nodejs, tsEsm, watch }

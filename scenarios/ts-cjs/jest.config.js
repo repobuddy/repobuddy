@@ -1,5 +1,7 @@
+const presets = require('@repobuddy/jest/presets/ts-cjs').default
+
 /** @type {import('jest').Config} */
 module.exports = {
-  preset: '@repobuddy/jest/presets/ts-cjs',
+  ...presets,
   roots: ['<rootDir>/ts']
 }

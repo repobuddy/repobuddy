@@ -2,15 +2,14 @@
   "compilerOptions": {
     "composite": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "Node16",
+    "moduleResolution": "NodeNext",
     "newLine": "LF",
     "rootDir": "ts",
     "strict": true,
-    "stripInternal": true,
-    "target": "ES2019"
+    "target": "ES2020"
   },
   "include": [
     "ts",
-    "typings"
+    "types"
   ]
 }

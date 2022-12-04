@@ -1,4 +1,3 @@
-import { describe, expect, it } from '@jest/globals'
 import { nodejs, tsCjs, watch } from '@repobuddy/jest'
 import * as tsCjsPresets from '@repobuddy/jest/presets/ts-cjs'
 

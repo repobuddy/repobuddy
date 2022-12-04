@@ -4,3 +4,9 @@ ignores:
   - jest
   - jest-*
   - tslib
+  # `expect` augmentation
+  - '@jest/expect'
+  # testing augmentation (skipped right now)
+  - strip-ansi
+  # `withChalk` test (skipped right now)
+  - chalk
