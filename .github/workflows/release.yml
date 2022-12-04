@@ -6,8 +6,6 @@ on:
 jobs:
   code:
     uses: repobuddy/.github/.github/workflows/pnpm-verify.yml@main
-    with:
-      os: '["ubuntu-latest"]'
 
   release:
     uses: repobuddy/.github/.github/workflows/pnpm-release-changeset.yml@main
