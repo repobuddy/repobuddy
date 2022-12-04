@@ -77,7 +77,7 @@
   "files": [
     "cjs",
     "esm",
-    "mstchers",
+    "matchers",
     "presets",
     "config.mjs",
     "!**/*.test.*",
