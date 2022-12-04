@@ -20,14 +20,11 @@ rush add -p @repobuddy/jest --dev
 
 ## Presets
 
-[@repobuddy/jest] comes with preset:
+[@repobuddy/jest] comes with a few presets:
 
-```js
-export default {
-  preset: '@repobuddy/jest/presets/ts-esm',
-  preset: '@repobuddy/jest/presets/js-esm'
-}
-```
+- `@repobuddy/jest/presets/ts-cjs`
+- `@repobuddy/jest/presets/ts-esm`
+- `@repobuddy/jest/presets/js-esm`
 
 Each preset also exposes the config they use, so you can override part of the config as needed:
 

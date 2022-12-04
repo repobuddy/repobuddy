@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "rootDir": "ts",
+    "target": "ES2020"
+  },
+  "include": [
+    "ts"
+  ],
+  "references": [
+    {
+      "path": "../../packages/jest"
+    }
+  ]
+}

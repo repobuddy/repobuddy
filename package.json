@@ -9,13 +9,13 @@
     "nuke": "pnpm --no-bail --filter=* nuke && pnpm --no-bail nuke:local",
     "nuke:local": "rimraf node_modules",
     "jest": "pnpm --filter @repobuddy/jest",
+    "ts-cjs": "pnpm --filter ts-cjs",
     "ts-esm": "pnpm --filter ts-esm",
     "release": "pnpm build && changeset publish",
-    "simple": "pnpm --filter simple-repo",
     "size": "turbo run size",
     "test": "turbo run test",
     "test:list": "turbo run test:list",
-    "verify": "turbo run build && turbo run test depcheck size",
+    "verify": "turbo run test depcheck size",
     "version": "changeset version"
   },
   "devDependencies": {

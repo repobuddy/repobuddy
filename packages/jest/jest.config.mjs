@@ -1,5 +1,5 @@
 /** @type {import('jest').Config} */
 export default {
-  preset: './presets/ts-esm/jest-preset.mjs',
+  preset: './esm/presets/ts-esm/jest-preset.js',
   roots: ['<rootDir>/ts']
 }
