@@ -39,17 +39,12 @@
     },
     "test": {
       "dependsOn": [
-        "^build"
+        "build"
       ]
     },
     "test:list": {
       "dependsOn": [
-        "^build"
-      ]
-    },
-    "test:watch": {
-      "dependsOn": [
-        "^build"
+        "build"
       ]
     }
   }
