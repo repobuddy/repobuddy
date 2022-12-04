@@ -7,5 +7,7 @@
       "path": "../.github"
     }
   ],
-  "settings": {}
+  "settings": {
+    "typescript.tsdk": "jest/node_modules/typescript/lib"
+  }
 }

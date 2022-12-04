@@ -1,23 +1,23 @@
 import type { Config } from 'jest'
 
-export const electron: Config = {
+export const electron = {
   runner: '@kayahr/jest-electron-runner/main',
   testEnvironment: 'node',
   testMatch: ['**/?*.(spec|test|unit|accept|integrate|system)?(.electron).(js|jsx|cjs|mjs|ts|tsx|cts|mts)'],
-}
+} satisfies Config
 
-export const electronRenderer: Config = {
+export const electronRenderer = {
   runner: '@kayahr/jest-electron-runner',
   testEnvironment: '@kayahr/jest-electron-runner/environment',
   testMatch: ['**/?*.(spec|test|unit|accept|integrate|system).(js|jsx|cjs|mjs|ts|tsx|cts|mts)'],
-}
+} satisfies Config
 
-export const jsdom: Config = {
+export const jsdom = {
   testEnvironment: 'jsdom',
   testMatch: ['**/?*.(spec|test|unit|accept|integrate|system)?(.jsdom).(js|jsx|cjs|mjs|ts|tsx|cts|mts)'],
-}
+} satisfies Config
 
-export const nodejs: Config = createNodejsConfig()
+export const nodejs = createNodejsConfig()
 
 export function createNodejsConfig(
   identifiers = ['spec', 'test', 'unit', 'accept', 'integrate', 'system'],
@@ -34,8 +34,12 @@ export function createNodejsConfig(
   } satisfies Config
 }
 
-export const tsEsm: Config = {
-  extensionsToTreatAsEsm: ['.ts', '.tsx'],
+export const jsEsm = {
+  extensionsToTreatAsEsm: ['.jsx'],
+} satisfies Config
+
+export const tsEsm = {
+  extensionsToTreatAsEsm: ['.ts', '.tsx', '.mts'],
   moduleNameMapper: {
     '^(\\.{1,2}/.*)\\.js$': '$1',
   },
@@ -49,20 +53,17 @@ export const tsEsm: Config = {
       }
     }],
   },
-}
+} satisfies Config
 
-export const tsCjs: Config = {
+export const tsCjs = {
   transform: {
     '^.+\\.(ts|tsx|cts|mts)$': ['ts-jest', {
-      isolatedModules: true,
-      diagnostics: {
-        // https://github.com/kulshekhar/ts-jest/issues/3820
-        ignoreCodes: [151001]
-      }
+      isolatedModules: true
     }],
   },
-}
-export const watch: Config = {
+} satisfies Config
+
+export const watch = {
   watchPlugins: [
     'jest-watch-suspend',
     'jest-watch-typeahead/filename',
@@ -74,4 +75,4 @@ export const watch: Config = {
       'jest-watch-toggle-config', { 'setting': 'collectCoverage' }
     ]
   ]
-}
+} satisfies Config

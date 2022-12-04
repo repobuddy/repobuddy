@@ -9,6 +9,8 @@
     "nuke": "pnpm --no-bail --filter=* nuke && pnpm --no-bail nuke:local",
     "nuke:local": "rimraf node_modules",
     "jest": "pnpm --filter @repobuddy/jest",
+    "js-cjs": "pnpm --filter js-cjs",
+    "js-esm": "pnpm --filter js-esm",
     "ts-cjs": "pnpm --filter ts-cjs",
     "ts-esm": "pnpm --filter ts-esm",
     "release": "pnpm build && changeset publish",

@@ -1,4 +1,4 @@
-# TypeScript with ESM
+# TypeScript with CJS
 
 ## TO DO
 

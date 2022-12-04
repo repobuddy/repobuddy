@@ -1,13 +1,13 @@
 import { describe, expect, it } from '@jest/globals'
-import { nodejs, tsEsm, watch } from '@repobuddy/jest'
-import * as tsEsmPresets from '@repobuddy/jest/presets/ts-esm'
+import { nodejs, tsCjs, watch } from '@repobuddy/jest'
+import * as tsCjsPresets from '@repobuddy/jest/presets/ts-cjs'
 
 it(`${__filename} executed`, () => { })
 
-describe(`ts-esm preset`, () => {
-  it('exports nodejs, tsEsm, and watch config', () => {
-    expect(tsEsmPresets.nodejs).toEqual(nodejs)
-    expect(tsEsmPresets.watch).toEqual(watch)
-    expect(tsEsmPresets.tsEsm).toEqual(tsEsm)
+describe(`ts-cjs preset`, () => {
+  it('exports nodejs, tsCjs, and watch config', () => {
+    expect(tsCjsPresets.nodejs).toEqual(nodejs)
+    expect(tsCjsPresets.watch).toEqual(watch)
+    expect(tsCjsPresets.tsCjs).toEqual(tsCjs)
   })
 })
