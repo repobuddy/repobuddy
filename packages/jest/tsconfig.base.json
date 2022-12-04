@@ -4,6 +4,7 @@
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "Node16",
     "newLine": "LF",
+    "rootDir": "ts",
     "strict": true,
     "stripInternal": true,
     "target": "ES2019"
