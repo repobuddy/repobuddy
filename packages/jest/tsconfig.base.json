@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "composite": true,
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "Node16",
     "newLine": "LF",
