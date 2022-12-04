@@ -2,6 +2,7 @@
   "private": true,
   "scripts": {
     "build": "turbo run build",
+    "coverage": "turbo run coverage",
     "cs": "changeset",
     "depcheck": "turbo run depcheck",
     "nuke": "pnpm --no-bail --filter=* nuke && pnpm --no-bail nuke:local",
