@@ -15,7 +15,7 @@
     "size": "turbo run size",
     "test": "turbo run test",
     "test:list": "turbo run test:list",
-    "verify": "turbo run test depcheck size",
+    "verify": "turbo run build && turbo run test depcheck size",
     "version": "changeset version"
   },
   "devDependencies": {
