@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "composite": true,
     "module": "Node16",
     "moduleResolution": "Node16",
     "rootDir": "ts",
@@ -7,5 +8,10 @@
   },
   "include": [
     "ts"
+  ],
+  "references": [
+    {
+      "path": "../../packages/jest"
+    }
   ]
 }
