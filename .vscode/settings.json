@@ -1,0 +1,13 @@
+{
+  "material-icon-theme.files.associations": {
+    "*.spec.electron.ts": "test-ts",
+    "*.spec.jsdom.ts": "test-ts",
+    "*.spec.node.ts": "test-ts",
+    "*.spec.node14.ts": "test-ts",
+    "*.spec.node16.ts": "test-ts",
+    "*.spec.node18.ts": "test-ts",
+  },
+  "javascript.format.semicolons": "remove",
+  "typescript.format.semicolons": "remove",
+  "typescript.tsdk": "node_modules\\typescript\\lib"
+}
