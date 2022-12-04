@@ -51,6 +51,17 @@ export const tsEsm: Config = {
   },
 }
 
+export const tsCjs: Config = {
+  transform: {
+    '^.+\\.(ts|tsx|cts|mts)$': ['ts-jest', {
+      isolatedModules: true,
+      diagnostics: {
+        // https://github.com/kulshekhar/ts-jest/issues/3820
+        ignoreCodes: [151001]
+      }
+    }],
+  },
+}
 export const watch: Config = {
   watchPlugins: [
     'jest-watch-suspend',
