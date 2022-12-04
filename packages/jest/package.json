@@ -2,8 +2,43 @@
   "name": "@repobuddy/jest",
   "version": "1.0.0",
   "description": "Your jest buddy",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./esm/index.d.ts",
+      "import": "./esm/index.js",
+      "default": "./cjs/index.js"
+    },
+    "./presets/*": {
+      "types": "./esm/presets/*/jest-preset.d.ts",
+      "import": "./esm/presets/*/jest-preset.js",
+      "default": "./cjs/presets/*/jest-preset.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "cjs",
+    "esm",
+    "presets",
+    "config.mjs",
+    "!**/*.test.*",
+    "!**/*.spec.*",
+    "!**/*.unit.*",
+    "!**/*.integrate.*",
+    "!**/*.system.*",
+    "!**/*.accept.*"
+  ],
   "scripts": {
-    "depcheck": "depcheck"
+    "build": "run-p build:cjs build:esm build:tslib",
+    "build:esm": "tsc --project tsconfig.esm.json",
+    "build:cjs": "tsc --project tsconfig.cjs.json && ncp package.cjs.json cjs/package.json",
+    "build:tslib": "tsc --project tsconfig.tslib.json && ncp package.cjs.json tslib/package.json",
+    "clean": "rimraf cjs esm tslib",
+    "depcheck": "depcheck",
+    "size": "size-limit",
+    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_NO_WARNINGS=1 jest",
+    "test:list": "jest --list-tests",
+    "test:watch": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_NO_WARNINGS=1 jest --watch"
   },
   "keywords": [
     "jest",
@@ -16,8 +51,16 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@jest/globals": "^29.3.1",
+    "@types/node": "^14",
+    "cross-env": "^7.0.3",
     "depcheck": "^1.4.3",
-    "jest": "^29.2.1"
+    "jest": "^29.2.1",
+    "ncp": "^2.0.0",
+    "npm-run-all": "^4.1.5",
+    "rimraf": "^3.0.2",
+    "tslib": "^2.4.1",
+    "typescript": "^4.9.3"
   },
   "peerDependencies": {
     "@kayahr/jest-electron-runner": "^29",
@@ -43,5 +86,11 @@
     "ts-jest": {
       "optional": true
     }
+  },
+  "dependencies": {
+    "@size-limit/preset-small-lib": "^8.1.0",
+    "assertron": "^11.0.1",
+    "satisfier": "^5.4.2",
+    "size-limit": "^8.1.0"
   }
 }

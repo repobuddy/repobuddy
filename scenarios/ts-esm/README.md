@@ -1,4 +1,4 @@
-# simple-repo
+# TypeScript with ESM
 
 ## TO DO
 

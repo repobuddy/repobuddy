@@ -7,16 +7,23 @@
     "nuke": "pnpm --no-bail --filter=* nuke && pnpm --no-bail nuke:local",
     "nuke:local": "rimraf node_modules",
     "jest": "pnpm --filter @repobuddy/jest",
+    "ts-esm": "pnpm --filter ts-esm",
     "release": "pnpm build && changeset publish",
     "simple": "pnpm --filter simple-repo",
+    "size": "turbo run size",
     "test": "turbo run test",
-    "verify": "turbo run test depcheck",
+    "test:list": "turbo run test:list",
+    "test:watch": "turbo run test:watch",
+    "verify": "turbo run build test depcheck size",
     "version": "changeset version"
   },
   "devDependencies": {
     "@changesets/cli": "^2.25.2",
+    "eslint": "^8.29.0",
+    "eslint-plugin-harmony": "^7.1.1",
     "rimraf": "^3.0.2",
-    "turbo": "^1.6.3"
+    "turbo": "^1.6.3",
+    "typescript": "^4.9.3"
   },
   "packageManager": "pnpm@7.17.1"
 }

@@ -1,3 +1,6 @@
 ignores:
+  - '@size-limit/*'
+  - '@types/node'
   - jest
   - jest-*
+  - tslib

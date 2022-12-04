@@ -42,7 +42,12 @@
         "^build"
       ]
     },
-    "watch": {
+    "test:list": {
+      "dependsOn": [
+        "^build"
+      ]
+    },
+    "test:watch": {
       "dependsOn": [
         "^build"
       ]
