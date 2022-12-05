@@ -11,7 +11,6 @@ describe(`${withChalk.name}()`, () => {
 
     expect(preset.moduleNameMapper).toEqual({
       foo: 'bar',
-      chalk: expect.stringMatching(/chalk/),
       '#ansi-styles': expect.stringMatching(/ansi-styles/),
       '#supports-color': expect.stringMatching(/supports-color/)
     })

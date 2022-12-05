@@ -1,7 +1,13 @@
-const presets = require('@repobuddy/jest/presets/ts-cjs').default
+const { withChalk } = require('@repobuddy/jest')
+const preset = require('@repobuddy/jest/presets/ts-cjs').default
+const chalkedPreset = withChalk(preset, 'cjs')
+
+// console.log(withChalk)
+// console.log(preset)
+// console.log(chalked)
 
 /** @type {import('jest').Config} */
 module.exports = {
-  ...presets,
-  roots: ['<rootDir>/ts']
+  ...chalkedPreset,
+  roots: ['<rootDir>/ts'],
 }

@@ -1,5 +1,14 @@
+import { withChalk } from '@repobuddy/jest'
+import preset from '@repobuddy/jest/presets/ts-esm'
+
+const chalkedPreset = withChalk(preset, 'cjs')
+
+// console.log(withChalk)
+// console.log(preset)
+// console.log(chalkedPreset)
+
 /** @type {import('jest').Config} */
 export default {
-  preset: './esm/presets/ts-esm/jest-preset.js',
-  roots: ['<rootDir>/ts'],
+  ...chalkedPreset,
+  roots: ['<rootDir>/ts']
 }
