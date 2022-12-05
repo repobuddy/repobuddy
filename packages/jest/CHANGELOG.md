@@ -1,5 +1,11 @@
 # @unional/jest-presets
 
+## 1.2.0
+
+### Minor Changes
+
+- 52b3a0b: add `withTransformEsmPackages()`.
+
 ## 1.1.0
 
 ### Minor Changes
