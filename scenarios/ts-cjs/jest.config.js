@@ -1,6 +1,6 @@
-const { withChalk } = require('@repobuddy/jest')
+const { withChalk, withTransformEsmPackages } = require('@repobuddy/jest')
 const preset = require('@repobuddy/jest/presets/ts-cjs').default
-const chalkedPreset = withChalk(preset, 'cjs')
+const chalkedPreset = withTransformEsmPackages(withChalk(preset, 'cjs'))
 
 // console.log(withChalk)
 // console.log(preset)

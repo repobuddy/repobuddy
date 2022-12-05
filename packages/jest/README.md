@@ -29,12 +29,26 @@ rush add -p @repobuddy/jest --dev
 Each preset also exposes the config they use, so you can override part of the config as needed:
 
 ```js
-import { tsEsm } from '@repobuddy/jest/presets/ts-esm'
+// jest.config.mjs
+import preset from '@repobuddy/jest/presets/ts-esm'
 
 export default {
   preset: '@repobuddy/jest/presets/ts-esm',
   moduleNameMapper: {
-    ...tsEsm.moduleNameMapper,
+    ...preset.moduleNameMapper,
+    // your additional config
+  }
+}
+```
+
+```js
+// jest.config.cjs
+const preset = require('@repobuddy/jest/presets/ts-esm').default
+
+module.exports = {
+  ...preset,
+  moduleNameMapper: {
+    ...preset.moduleNameMapper,
     // your additional config
   }
 }

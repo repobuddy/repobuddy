@@ -10,8 +10,6 @@ export function withChalk<P extends Partial<Config>>(preset: P, mode: 'cjs' | 'e
       ...preset,
       moduleNameMapper: {
         ...preset.moduleNameMapper,
-        // * test in `ts-esm` shows this is not needed.
-        // chalk,
         '#ansi-styles': join(
           chalkRootDir,
           'chalk/source/vendor/ansi-styles/index.js',
@@ -35,10 +33,6 @@ export function withChalk<P extends Partial<Config>>(preset: P, mode: 'cjs' | 'e
         chalkRootDir,
         'chalk/source/vendor/supports-color/index.js',
       )
-    },
-    transform: {
-      ...preset.transform,
-      "\\.m?jsx?$": "jest-esm-transformer-2"
     },
     transformIgnorePatterns: [
       ...preset.transformIgnorePatterns ?? [],

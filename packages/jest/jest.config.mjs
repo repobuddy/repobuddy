@@ -1,7 +1,7 @@
-import { withChalk } from '@repobuddy/jest'
+import { withChalk, withTransformEsmPackages } from '@repobuddy/jest'
 import preset from '@repobuddy/jest/presets/ts-esm'
 
-const chalkedPreset = withChalk(preset, 'cjs')
+const chalkedPreset = withTransformEsmPackages(withChalk(preset, 'cjs'))
 
 // console.log(withChalk)
 // console.log(preset)
