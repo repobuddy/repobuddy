@@ -1,4 +1,4 @@
-import { Config } from 'jest'
+import type { Config } from 'jest'
 import { join } from 'node:path'
 import uniRequire from 'uni-require'
 

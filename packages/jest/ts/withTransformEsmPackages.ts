@@ -1,4 +1,4 @@
-import { Config } from 'jest'
+import type { Config } from 'jest'
 
 export function withTransformEsmPackages<P extends Partial<Config>>(preset: P) {
   return {
