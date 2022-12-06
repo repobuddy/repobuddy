@@ -1,5 +1,13 @@
 # @unional/jest-presets
 
+## 1.3.1
+
+### Patch Changes
+
+- 106cdb3: fix ts-cjs syntax to CJS
+- 3c0f19b: Exports presets directly in `@repobuddy/jest`.
+  This make it easier to customize the behavior.
+
 ## 1.3.0
 
 ### Minor Changes
