@@ -1,5 +1,18 @@
 # @unional/jest-presets
 
+## 1.3.0
+
+### Minor Changes
+
+- e290da4: `configSourceDir()` will auto detect source folder,
+  using `src > source > ts > js` and default to `src` if not found.
+- eeb99b7: add `configSourceDir()`.
+  add `configNodejs()` as alias of `createNodejsConfig()`.
+
+### Patch Changes
+
+- 71b8e4a: use `import type`
+
 ## 1.2.0
 
 ### Minor Changes
