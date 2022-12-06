@@ -4,12 +4,12 @@
     "esModuleInterop": true,
     "module": "CommonJS",
     "moduleResolution": "Node",
-    "rootDir": "ts",
+    "rootDir": "src",
     "jsx": "preserve",
     "target": "ES2020"
   },
   "include": [
-    "ts",
+    "src",
     "types"
   ],
   "references": [

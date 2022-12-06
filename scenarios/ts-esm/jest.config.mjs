@@ -9,6 +9,5 @@ const chalkedPreset = withChalk(preset)
 
 /** @type {import('jest').Config} */
 export default {
-  ...chalkedPreset,
-  roots: ['<rootDir>/ts']
+  ...chalkedPreset
 }

@@ -1,4 +1,6 @@
 import type { Config } from 'jest'
+import { existsSync } from 'node:fs'
+import { resolve } from 'node:path'
 
 export const electron = {
   runner: '@kayahr/jest-electron-runner/main',
@@ -81,7 +83,8 @@ export const watch = {
 /**
  * Configure the source directory of the project
  */
-export function configSourceDir(dir = 'src') {
+export function configSourceDir(dir?: string) {
+  dir = ['src', 'source', 'ts', 'js'].find(dir => existsSync(resolve(dir))) ?? 'src'
   return {
     collectCoverageFrom: [
       `<rootDir>/${dir}/**/*.{js,jsx,cjs,mjs,ts,tsx,cts,mts}`,
