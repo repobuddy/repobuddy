@@ -1,7 +1,8 @@
 # Your jest buddy
 
-## Contribution
+This repository contains packages that help you to manage [jest].
 
-This repository dogfoods itself.
-So when you first step your environment,
-please run `pnpm build` first.
+- [@repobuddy/jest]: Contains various presets and config to customize [jest].
+
+[@repobuddy/jest]: ./packages/jest/README.md
+[jest]: https://jestjs.io/
