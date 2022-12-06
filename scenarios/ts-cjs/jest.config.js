@@ -8,6 +8,5 @@ const chalkedPreset = withTransformEsmPackages(withChalk(preset, 'cjs'))
 
 /** @type {import('jest').Config} */
 module.exports = {
-  ...chalkedPreset,
-  roots: ['<rootDir>/ts'],
+  ...chalkedPreset
 }
