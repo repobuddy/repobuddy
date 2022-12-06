@@ -1,5 +1,4 @@
 import type { Config } from 'jest'
-import { satisfies } from 'satisfier'
 
 export const electron = {
   runner: '@kayahr/jest-electron-runner/main',

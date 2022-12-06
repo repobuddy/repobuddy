@@ -1,4 +1,4 @@
-import { Config } from 'jest'
+import type { Config } from 'jest'
 import { jsEsm, nodejs, watch } from '../../config.js'
 
 const presets: Config = {
