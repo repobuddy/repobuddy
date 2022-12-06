@@ -1,13 +1,14 @@
-import { Config } from 'jest'
+import type { Config } from 'jest'
 import { configSourceDir, nodejs, tsCjs, watch } from '../../config.js'
 
-const presets: Config = {
+const tsCjsPreset = {
   ...tsCjs,
   ...configSourceDir(),
   ...nodejs,
   ...watch
-}
-export default presets
+} satisfies Config
+
+export default tsCjsPreset
 
 export { configSourceDir, nodejs, tsCjs, watch }
 
