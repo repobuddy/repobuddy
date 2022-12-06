@@ -1,4 +1,5 @@
 import type { Config } from 'jest'
+import { satisfies } from 'satisfier'
 
 export const electron = {
   runner: '@kayahr/jest-electron-runner/main',
@@ -17,9 +18,9 @@ export const jsdom = {
   testMatch: ['**/?*.(spec|test|unit|accept|integrate|system)?(.jsdom).(js|jsx|cjs|mjs|ts|tsx|cts|mts)'],
 } satisfies Config
 
-export const nodejs = createNodejsConfig()
+export const nodejs = configNodejs()
 
-export function createNodejsConfig(
+export function configNodejs(
   identifiers = ['spec', 'test', 'unit', 'accept', 'integrate', 'system'],
   minNodeVersion = 14,
 ) {
@@ -33,6 +34,7 @@ export function createNodejsConfig(
       .concat(nodeVersions.map((v) => `(${id})\\.node${v}\\.(js|jtx|cjs|mjs|ts|tsx|cts|mts)$`))
   } satisfies Config
 }
+export const createNodejsConfig = configNodejs
 
 export const jsEsm = {
   extensionsToTreatAsEsm: ['.jsx'],
@@ -76,3 +78,15 @@ export const watch = {
     ]
   ]
 } satisfies Config
+
+/**
+ * Configure the source directory of the project
+ */
+export function configSourceDir(dir = 'src') {
+  return {
+    collectCoverageFrom: [
+      `<rootDir>/${dir}/**/*.{js,jsx,cjs,mjs,ts,tsx,cts,mts}`,
+    ],
+    roots: [`<rootDir>/${dir}`],
+  } satisfies Config
+}
