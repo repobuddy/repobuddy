@@ -1,9 +1,15 @@
 {
   "folders": [
     {
+      "name": "jest",
       "path": "."
     },
     {
+      "name": "jest-watch-toggle-config",
+      "path": "../jest-watch-toggle-config"
+    },
+    {
+      "name": ".github",
       "path": "../.github"
     }
   ],

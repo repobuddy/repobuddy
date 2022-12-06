@@ -1,1 +1,2 @@
-export { nodejs, tsCjs, watch, default } from '../../cjs/presets/ts-cjs/jest-preset.js'
+const preset = require('../../cjs/presets/ts-cjs/jest-preset.js')
+module.exports = preset
