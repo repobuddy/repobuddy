@@ -4,6 +4,7 @@ import { configSourceDir, nodejs, tsCjs, watch } from '../../config.js'
 const tsCjsPreset = {
   ...tsCjs,
   ...configSourceDir(),
+  resolver: '@repobuddy/jest/resolver',
   ...nodejs,
   ...watch
 } satisfies Config

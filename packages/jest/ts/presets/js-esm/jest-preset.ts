@@ -4,6 +4,7 @@ import { configSourceDir, jsEsm, nodejs, watch } from '../../config.js'
 const jsEsmPreset = {
   ...jsEsm,
   ...configSourceDir(),
+  resolver: '@repobuddy/jest/resolver',
   ...nodejs,
   ...watch
 } satisfies Config

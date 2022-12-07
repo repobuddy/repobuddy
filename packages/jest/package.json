@@ -70,7 +70,12 @@
       "import": "./esm/presets/ts-esm/jest-preset.js",
       "default": "./cjs/presets/ts-esm/jest-preset.js"
     },
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./resolver": {
+      "types": "./esm/resolver.d.ts",
+      "import": "./esm/resolver.js",
+      "default": "./cjs/resolver.js"
+    }
   },
   "main": "./cjs/index.js",
   "types": "./esm/index.d.ts",
@@ -101,8 +106,10 @@
     "verify": "npm-run-all -p build -p test depcheck size"
   },
   "dependencies": {
-    "satisfier": "^5.4.2",
-    "uni-require": "^0.0.1"
+    "jest-resolve": "^29.3.1",
+    "read-pkg-up": "^7.0.1",
+    "resolve.imports": "^1.0.1",
+    "satisfier": "^5.4.2"
   },
   "devDependencies": {
     "@jest/expect": "^29.3.1",

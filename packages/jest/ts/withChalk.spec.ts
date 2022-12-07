@@ -11,8 +11,8 @@ describe(`${withChalk.name}()`, () => {
 
     expect(preset.moduleNameMapper).toEqual({
       foo: 'bar',
-      '#ansi-styles': expect.stringMatching(/ansi-styles/),
-      '#supports-color': expect.stringMatching(/supports-color/)
+      // '#ansi-styles': expect.stringMatching(/ansi-styles/),
+      // '#supports-color': expect.stringMatching(/supports-color/)
     })
   })
 
