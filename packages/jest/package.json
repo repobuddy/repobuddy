@@ -107,7 +107,7 @@
   },
   "dependencies": {
     "jest-resolve": "^29.3.1",
-    "read-pkg-up": "^7.0.1",
+    "read-pkg-up": "^9.0.0",
     "resolve.imports": "^1.0.1",
     "satisfier": "^5.4.2"
   },
