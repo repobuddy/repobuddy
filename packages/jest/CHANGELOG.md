@@ -1,5 +1,11 @@
 # @unional/jest-presets
 
+## 1.4.0
+
+### Minor Changes
+
+- 35078f8: add `@repobuddy/jest/resolver`
+
 ## 1.3.1
 
 ### Patch Changes
