@@ -1,5 +1,5 @@
 import type { Config } from 'jest'
-import { knownTestEnvironments } from '../fields/testEnvironment.js'
+import { knownTestEnvironments } from '../fields/index.js'
 
 export const node = configNode()
 
