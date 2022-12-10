@@ -10,7 +10,3 @@ const jsCjsPreset = {
 } satisfies Config
 
 export default jsCjsPreset
-
-// need to export all imports for dogfooding to work
-// looks like a bug in `jest`
-export { configSourceDir, node as nodejs, defineWatchPlugins }
