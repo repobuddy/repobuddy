@@ -16,19 +16,11 @@ export namespace watchPlugins {
   }
 }
 
-export function defineWatchPlugins(
-  config: WatchPlugins = [
-    watchPlugins.suspend(),
-    watchPlugins.toggleConfig({ setting: 'collectCoverage' }),
-    watchPlugins.toggleConfig({ setting: 'verbose' }),
-    watchPlugins.typeaheadFilename(),
-    watchPlugins.typeaheadTestname()
-  ]
-) {
+export function defineWatchPlugins(config: WatchPlugins = watchPlugins) {
   return { watchPlugins: config }
 }
 
-export const watchPlugins = {
+export const knownWatchPlugins = {
   suspend(options?: watchPlugins.SuspendOptions) {
     return optionize('jest-watch-suspend', options)
   },
@@ -42,6 +34,14 @@ export const watchPlugins = {
     return optionize('jest-watch-toggle-config-2', options)
   }
 }
+
+export const watchPlugins: WatchPlugins = [
+  knownWatchPlugins.suspend(),
+  knownWatchPlugins.toggleConfig({ setting: 'collectCoverage' }),
+  knownWatchPlugins.toggleConfig({ setting: 'verbose' }),
+  knownWatchPlugins.typeaheadFilename(),
+  knownWatchPlugins.typeaheadTestname()
+]
 
 function optionize(name: string, options?: watchPlugins.BaseOptions): ArrayValue<WatchPlugins> {
   return options ? [name, options] : name

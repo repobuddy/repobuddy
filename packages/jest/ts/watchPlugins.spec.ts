@@ -1,4 +1,4 @@
-import { defineWatchPlugins, watchPlugins } from './watchPlugins.js'
+import { defineWatchPlugins, knownWatchPlugins } from './watchPlugins.js'
 
 describe(`${defineWatchPlugins.name}()`, () => {
   it(`defaults to use: suspend, toggle-config, and typeahead`, () => {
@@ -13,9 +13,9 @@ describe(`${defineWatchPlugins.name}()`, () => {
     })
   })
 })
-describe(`${watchPlugins.suspend.name}()`, () => {
+describe(`${knownWatchPlugins.suspend.name}()`, () => {
   it('can specify suspend-on-start', () => {
-    expect(watchPlugins.suspend({ 'suspend-on-start': true })).toEqual([
+    expect(knownWatchPlugins.suspend({ 'suspend-on-start': true })).toEqual([
       'jest-watch-suspend',
       { 'suspend-on-start': true }
     ])
