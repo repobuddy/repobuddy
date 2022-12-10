@@ -20,28 +20,6 @@ export const jsdom = {
   testMatch: ['**/?*.(spec|test|unit|accept|integrate|system)?(.jsdom).(js|jsx|cjs|mjs|ts|tsx|cts|mts)']
 } satisfies Config
 
-export const nodejs = configNodejs()
-
-export function configNodejs(
-  identifiers = ['spec', 'test', 'unit', 'accept', 'integrate', 'system'],
-  minNodeVersion = 14
-) {
-  const id = identifiers.join('|')
-  const nodeMajorVersion = parseInt(process.version.slice(1, process.version.indexOf('.')), 10)
-  const nodeVersions = Array.from(
-    new Array(nodeMajorVersion - minNodeVersion + 1),
-    (_, i) => i + minNodeVersion
-  )
-
-  return {
-    testEnvironment: 'node',
-    testRegex: [`(${id})(\\.node)?\\.(js|jsx|cjs|mjs|ts|tsx|cts|mts)$`].concat(
-      nodeVersions.map((v) => `(${id})\\.node${v}\\.(js|jtx|cjs|mjs|ts|tsx|cts|mts)$`)
-    )
-  } satisfies Config
-}
-export const createNodejsConfig = configNodejs
-
 export const jsEsm = {
   extensionsToTreatAsEsm: ['.jsx']
 } satisfies Config
