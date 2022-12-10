@@ -1,13 +1,14 @@
 import type { Config } from 'jest'
-import { configSourceDir, nodejs, watch } from '../../config.js'
+import { configSourceDir, nodejs } from '../../config.js'
+import { defineWatchPlugins } from '../../watchPlugins.js'
 
 const jsCjsPreset = {
   ...configSourceDir(),
   resolver: '@repobuddy/jest/resolver',
   ...nodejs,
-  ...watch
+  ...defineWatchPlugins()
 } satisfies Config
 
 export default jsCjsPreset
 
-export { configSourceDir, nodejs, watch }
+export { configSourceDir, nodejs, defineWatchPlugins }

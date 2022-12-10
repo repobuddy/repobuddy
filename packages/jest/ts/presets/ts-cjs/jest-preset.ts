@@ -1,5 +1,6 @@
 import type { Config } from 'jest'
-import { configSourceDir, nodejs, tsCjs, watch } from '../../config.js'
+import { configSourceDir, nodejs, tsCjs } from '../../config.js'
+import { defineWatchPlugins } from '../../watchPlugins.js'
 import { withTransformEsmPackages } from '../../withTransformEsmPackages.js'
 
 const tsCjsPreset = withTransformEsmPackages({
@@ -7,9 +8,9 @@ const tsCjsPreset = withTransformEsmPackages({
   ...configSourceDir(),
   resolver: '@repobuddy/jest/resolver',
   ...nodejs,
-  ...watch
+  ...defineWatchPlugins()
 }) satisfies Config
 
 export default tsCjsPreset
 
-export { configSourceDir, withTransformEsmPackages, nodejs, tsCjs, watch }
+export { configSourceDir, withTransformEsmPackages, nodejs, tsCjs, defineWatchPlugins }
