@@ -1,2 +1,2 @@
 import './extend'
-export * from '../cjs/matchers'
+export * from '../cjs/matchers/index.js'
