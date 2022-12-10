@@ -1,4 +1,5 @@
 import type { Config } from 'jest'
+import { knownTestEnvironments } from '../fields/testEnvironment.js'
 
 export const node = configNode()
 
@@ -20,7 +21,7 @@ export function configNode(
   return {
     coveragePathIgnorePatterns: testRegex,
     resolver: '@repobuddy/jest/resolver',
-    testEnvironment: 'node',
+    testEnvironment: knownTestEnvironments.node,
     testRegex
   } satisfies Config
 }

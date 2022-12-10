@@ -11,7 +11,3 @@ const tsEsmPreset = {
 } satisfies Config
 
 export default tsEsmPreset
-
-// need to export all imports for dogfooding to work
-// looks like a bug in `jest`
-export { configSourceDir, node as nodejs, tsEsm, defineWatchPlugins }

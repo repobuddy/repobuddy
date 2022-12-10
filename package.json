@@ -20,6 +20,7 @@
     "size": "turbo run size",
     "test": "turbo run test",
     "test:list": "turbo run test:list",
+    "test:watch": "jest --watch",
     "verify": "turbo run coverage depcheck size",
     "version": "changeset version"
   },
