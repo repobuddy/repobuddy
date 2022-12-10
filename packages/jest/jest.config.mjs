@@ -32,7 +32,7 @@ export default {
     '(spec|test|unit|accept|integrate|system)\\.node17\\.(js|jtx|cjs|mjs|ts|tsx|cts|mts)$',
     '(spec|test|unit|accept|integrate|system)\\.node18\\.(js|jtx|cjs|mjs|ts|tsx|cts|mts)$'
   ],
-  resolver: '@repobuddy/jest/resolver',
+  resolver: './cjs/resolver.js',
   testEnvironment: 'node',
   testRegex: [
     '(spec|test|unit|accept|integrate|system)(\\.node)?\\.(js|jsx|cjs|mjs|ts|tsx|cts|mts)$',
