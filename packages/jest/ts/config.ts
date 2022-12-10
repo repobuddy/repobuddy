@@ -3,23 +3,6 @@ import { existsSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { defineTransform, knownExtensionsToTreatAsEsm, knownTransforms } from './fields/index.js'
 
-export const electron = {
-  runner: '@kayahr/jest-electron-runner/main',
-  testEnvironment: 'node',
-  testMatch: ['**/?*.(spec|test|unit|accept|integrate|system)?(.electron).(js|jsx|cjs|mjs|ts|tsx|cts|mts)']
-} satisfies Config
-
-export const electronRenderer = {
-  runner: '@kayahr/jest-electron-runner',
-  testEnvironment: '@kayahr/jest-electron-runner/environment',
-  testMatch: ['**/?*.(spec|test|unit|accept|integrate|system).(js|jsx|cjs|mjs|ts|tsx|cts|mts)']
-} satisfies Config
-
-export const jsdom = {
-  testEnvironment: 'jsdom',
-  testMatch: ['**/?*.(spec|test|unit|accept|integrate|system)?(.jsdom).(js|jsx|cjs|mjs|ts|tsx|cts|mts)']
-} satisfies Config
-
 export const jsEsm = {
   extensionsToTreatAsEsm: knownExtensionsToTreatAsEsm.js
 } satisfies Config
