@@ -44,7 +44,7 @@ importers:
       ncp: ^2.0.0
       npm-run-all: ^4.1.5
       read-pkg-up: ^7.0.1
-      resolve.imports: ^1.0.1
+      resolve.imports: ^1.2.3
       rimraf: ^3.0.2
       satisfier: ^5.4.2
       strip-ansi: ^7.0.1
@@ -53,7 +53,7 @@ importers:
     dependencies:
       jest-resolve: 29.3.1
       read-pkg-up: 7.0.1
-      resolve.imports: 1.0.1
+      resolve.imports: 1.2.3
       satisfier: 5.4.2
     devDependencies:
       '@jest/expect': 29.3.1
@@ -4603,8 +4603,8 @@ packages:
     resolution: {integrity: sha512-J1l+Zxxp4XK3LUDZ9m60LRJF/mAe4z6a4xyabPHk7pvK5t35dACV32iIjJDFeWZFfZlO29w6SZ67knR0tHzJtQ==}
     engines: {node: '>=10'}
 
-  /resolve.imports/1.0.1:
-    resolution: {integrity: sha512-R5NOdsbtpNQzAk6nxVvqr7JlGvVccjdFjY/XuJjxwd9BoimfZDE9k8s3MlJWl6tOQPrEcnsuHVN/gjik6+Ij0A==}
+  /resolve.imports/1.2.3:
+    resolution: {integrity: sha512-/NPVFOO6c/Rwy9jARc/8v2kb8Y9+Peh+JPKPZdKyPgaAIwkbw+Yipy5X5j9nKSbw2ZW2XiNouXC4Gik/w1HTIw==}
     dev: false
 
   /resolve/1.22.1:
