@@ -1,7 +1,7 @@
 import type { Config } from 'jest'
 import { existsSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { defineTransform, knownTransforms } from './fields/index.js'
+import { defineTransform, knownExtensionsToTreatAsEsm, knownTransforms } from './fields/index.js'
 
 export const electron = {
   runner: '@kayahr/jest-electron-runner/main',
@@ -21,11 +21,11 @@ export const jsdom = {
 } satisfies Config
 
 export const jsEsm = {
-  extensionsToTreatAsEsm: ['.jsx']
+  extensionsToTreatAsEsm: knownExtensionsToTreatAsEsm.js
 } satisfies Config
 
 export const tsEsm = {
-  extensionsToTreatAsEsm: ['.ts', '.tsx', '.mts'],
+  extensionsToTreatAsEsm: knownExtensionsToTreatAsEsm.ts,
   moduleNameMapper: {
     '^(\\.{1,2}/.*)\\.js$': '$1'
   },
