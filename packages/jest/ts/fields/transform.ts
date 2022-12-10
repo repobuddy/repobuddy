@@ -16,7 +16,10 @@ export namespace Transform {
 
 export const knownTransforms = {
   tsJestCjs(options: Transform.TsJestOptions = { isolatedModules: true }) {
-    return this.tsJest(options)
+    return {
+      ...this.tsJest(options),
+      ...this.esmPackages()
+    }
   },
   tsJestEsm(
     options: Transform.TsJestOptions = {
@@ -33,6 +36,11 @@ export const knownTransforms = {
   tsJest(options: Transform.TsJestOptions) {
     return {
       '^.+\\.(ts|tsx|cts|mts)$': ['ts-jest', options] satisfies Transform.TransformerConfig
+    }
+  },
+  esmPackages() {
+    return {
+      '\\.m?jsx?$': 'jest-esm-transformer-2' satisfies Transform.TransformerConfig
     }
   }
 }

@@ -24,6 +24,10 @@ export const jsEsm = {
   extensionsToTreatAsEsm: knownExtensionsToTreatAsEsm.js
 } satisfies Config
 
+export const jsCjs = {
+  ...defineTransform(knownTransforms.esmPackages()),
+} satisfies Config
+
 export const tsEsm = {
   extensionsToTreatAsEsm: knownExtensionsToTreatAsEsm.ts,
   moduleNameMapper: {
@@ -32,7 +36,10 @@ export const tsEsm = {
   ...defineTransform(knownTransforms.tsJestEsm())
 } satisfies Config
 
-export const tsCjs = defineTransform(knownTransforms.tsJestCjs())
+export const tsCjs = {
+  ...defineTransform(knownTransforms.tsJestCjs()),
+  transformIgnorePatterns: []
+} satisfies Config
 
 /**
  * Configure the source directory of the project
