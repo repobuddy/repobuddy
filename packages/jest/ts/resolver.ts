@@ -1,13 +1,13 @@
 import { dirname, join } from 'node:path'
-import { sync } from 'read-pkg-up'
+import { sync as readPkgSync } from 'read-pkg-up'
 import { resolve } from 'resolve.imports'
 import type { ResolverOptions } from 'jest-resolve'
 
-function resolver(path: string, options: ResolverOptions) {
+export function sync(path: string, options: ResolverOptions) {
   try {
     return options.defaultResolver(path, options)
   } catch {
-    const result = sync({ cwd: options.basedir })
+    const result = readPkgSync({ cwd: options.basedir })
     // `options.conditions` is `[ 'require', 'default', 'node', 'node-addons' ]`
     // which is not correct as it will take `default` over `node`.
     const conditions = options.conditions ? options.conditions.filter((c) => c !== 'default') : undefined
@@ -22,4 +22,6 @@ function resolver(path: string, options: ResolverOptions) {
   }
 }
 
-export { resolver as sync }
+export function async(path: string, options: ResolverOptions) {
+  return Promise.resolve(sync(path, options))
+}
