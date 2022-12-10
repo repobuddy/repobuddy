@@ -68,4 +68,23 @@ export default {
 }
 ```
 
+## Specific Jest configs
+
+### `transformIgnorePatterns`
+
+[jest] could not understands ESM code.
+And by default, the code under `node_modules` are not transformed.
+
+To work with packages that are distributed as ESM,
+one workaround is to use negative regex match in [transformIgnorePatterns] so that `jest` will actually transpile them.
+
+However, it does not work with all package managers.
+For example, it doesn't work with monorepo using [pnpm].
+(the example in [jest] docs only works for simple repo using [pnpm])
+
+Therefore, for simplicity, [@repobuddy/jest] uses [jest-esm-transformer-2] to handle that and keep [transformIgnorePatterns] empty.
+
 [@repobuddy/jest]: https://github.com/repobuddy/jest
+[jest]: https://jestjs.io
+[transformIgnorePatterns]: https://jestjs.io/docs/configuration#transformignorepatterns-arraystring
+[pnpm]: https://pnpm.io/
