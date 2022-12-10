@@ -3,7 +3,7 @@ import type { ArrayValue, NonUndefined } from 'type-plus'
 
 export type WatchPlugins = NonUndefined<Config['watchPlugins']>
 
-export namespace watchPlugins {
+export namespace WatchPlugins {
   export type BaseOptions = {
     key?: string
     prompt?: string
@@ -16,23 +16,23 @@ export namespace watchPlugins {
   }
 }
 
-export function defineWatchPlugins(config: WatchPlugins = watchPlugins) {
-  return { watchPlugins: config }
-}
-
 export const knownWatchPlugins = {
-  suspend(options?: watchPlugins.SuspendOptions) {
+  suspend(options?: WatchPlugins.SuspendOptions) {
     return optionize('jest-watch-suspend', options)
   },
-  typeaheadFilename(options?: watchPlugins.BaseOptions) {
+  typeaheadFilename(options?: WatchPlugins.BaseOptions) {
     return optionize('jest-watch-typeahead/filename', options)
   },
-  typeaheadTestname(options?: watchPlugins.BaseOptions) {
+  typeaheadTestname(options?: WatchPlugins.BaseOptions) {
     return optionize('jest-watch-typeahead/testname', options)
   },
-  toggleConfig(options?: watchPlugins.ToggleConfig) {
+  toggleConfig(options?: WatchPlugins.ToggleConfig) {
     return optionize('jest-watch-toggle-config-2', options)
   }
+}
+
+export function defineWatchPlugins(config: WatchPlugins = watchPlugins) {
+  return { watchPlugins: config }
 }
 
 export const watchPlugins: WatchPlugins = [
@@ -43,6 +43,6 @@ export const watchPlugins: WatchPlugins = [
   knownWatchPlugins.typeaheadTestname()
 ]
 
-function optionize(name: string, options?: watchPlugins.BaseOptions): ArrayValue<WatchPlugins> {
+function optionize(name: string, options?: WatchPlugins.BaseOptions): ArrayValue<WatchPlugins> {
   return options ? [name, options] : name
 }
