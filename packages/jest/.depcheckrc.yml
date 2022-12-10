@@ -4,6 +4,7 @@ ignores:
   - jest
   - jest-*
   - tslib
+  - type-plus
   # `expect` augmentation
   - '@jest/expect'
   # testing augmentation (skipped right now)

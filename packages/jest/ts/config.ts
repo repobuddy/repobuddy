@@ -66,20 +66,6 @@ export const tsCjs = {
   },
 } satisfies Config
 
-export const watch = {
-  watchPlugins: [
-    'jest-watch-suspend',
-    'jest-watch-typeahead/filename',
-    'jest-watch-typeahead/testname',
-    [
-      'jest-watch-toggle-config', { 'setting': 'verbose' }
-    ],
-    [
-      'jest-watch-toggle-config', { 'setting': 'collectCoverage' }
-    ]
-  ]
-} satisfies Config
-
 /**
  * Configure the source directory of the project
  */
