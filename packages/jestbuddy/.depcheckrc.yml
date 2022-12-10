@@ -1,0 +1,13 @@
+ignores:
+  - '@size-limit/*'
+  - '@types/node'
+  - jest
+  - jest-*
+  - tslib
+  - type-plus
+  # `expect` augmentation
+  - '@jest/expect'
+  # testing augmentation (skipped right now)
+  - strip-ansi
+  # `withChalk` test (skipped right now)
+  - chalk
