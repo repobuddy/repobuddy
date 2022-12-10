@@ -1,7 +1,7 @@
 import type { Config } from 'jest'
 import { existsSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { defineTransform, knownTransforms } from './transform.js'
+import { defineTransform, knownTransforms } from './fields/index.js'
 
 export const electron = {
   runner: '@kayahr/jest-electron-runner/main',
