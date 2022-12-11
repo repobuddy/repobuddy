@@ -2,6 +2,7 @@
   "name": "js-cjs",
   "private": true,
   "scripts": {
+    "coverage": "jest --coverage",
     "test": "jest",
     "test:list": "jest --list-tests",
     "test:watch": "jest --watch"
