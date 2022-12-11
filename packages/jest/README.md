@@ -93,8 +93,13 @@ these presets should work without additional configuration.
 
 Here are some highlights:
 
-- all of the presets will automatically detects your source folder.
-- uses [@repobuddy/jest/resolver] that handles [subpath imports][subpath-imports] correctly
+- all of the presets will automatically detects your source folder (in either `src`, `source`, `ts`, or `js`).
+- support platform specific tests:
+  - `feature.spec.node.ts`
+  - `feature.spec.node16.ts`
+  - `feature.spec.jsdom.ts`
+  - `feature.spec.electron.ts`
+- uses [@repobuddy/jest/resolver] that handles [subpath imports][subpath-imports] correctly.
 - `cjs` uses [jest-esm-transformer-2] to transforms ESM dependencies.
 - `ts` uses [ts-jest] with `isolatedModule: true`.
 - `watch` uses these plugins by default:
