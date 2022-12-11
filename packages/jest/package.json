@@ -39,40 +39,40 @@
       "import": "./esm/presets/js-cjs/jest-preset.js",
       "default": "./cjs/presets/js-cjs/jest-preset.js"
     },
-    "./presets/js-cjs/jest-preset": {
-      "types": "./esm/presets/js-cjs/jest-preset.d.ts",
-      "import": "./esm/presets/js-cjs/jest-preset.js",
-      "default": "./cjs/presets/js-cjs/jest-preset.js"
+    "./presets/js-cjs-watch": {
+      "types": "./esm/presets/js-cjs-watch/jest-preset.d.ts",
+      "import": "./esm/presets/js-cjs-watch/jest-preset.js",
+      "default": "./cjs/presets/js-cjs-watch/jest-preset.js"
     },
     "./presets/js-esm": {
       "types": "./esm/presets/js-esm/jest-preset.d.ts",
       "import": "./esm/presets/js-esm/jest-preset.js",
       "default": "./cjs/presets/js-esm/jest-preset.js"
     },
-    "./presets/js-esm/jest-preset": {
-      "types": "./esm/presets/js-esm/jest-preset.d.ts",
-      "import": "./esm/presets/js-esm/jest-preset.js",
-      "default": "./cjs/presets/js-esm/jest-preset.js"
+    "./presets/js-esm-watch": {
+      "types": "./esm/presets/js-esm-watch/jest-preset.d.ts",
+      "import": "./esm/presets/js-esm-watch/jest-preset.js",
+      "default": "./cjs/presets/js-esm-watch/jest-preset.js"
     },
     "./presets/ts-cjs": {
       "types": "./esm/presets/ts-cjs/jest-preset.d.ts",
       "import": "./esm/presets/ts-cjs/jest-preset.js",
       "default": "./cjs/presets/ts-cjs/jest-preset.js"
     },
-    "./presets/ts-cjs/jest-preset": {
-      "types": "./esm/presets/ts-cjs/jest-preset.d.ts",
-      "import": "./esm/presets/ts-cjs/jest-preset.js",
-      "default": "./cjs/presets/ts-cjs/jest-preset.js"
+    "./presets/ts-cjs-watch": {
+      "types": "./esm/presets/ts-cjs-watch/jest-preset.d.ts",
+      "import": "./esm/presets/ts-cjs-watch/jest-preset.js",
+      "default": "./cjs/presets/ts-cjs-watch/jest-preset.js"
     },
     "./presets/ts-esm": {
       "types": "./esm/presets/ts-esm/jest-preset.d.ts",
       "import": "./esm/presets/ts-esm/jest-preset.js",
       "default": "./cjs/presets/ts-esm/jest-preset.js"
     },
-    "./presets/ts-esm/jest-preset": {
-      "types": "./esm/presets/ts-esm/jest-preset.d.ts",
-      "import": "./esm/presets/ts-esm/jest-preset.js",
-      "default": "./cjs/presets/ts-esm/jest-preset.js"
+    "./presets/ts-esm-watch": {
+      "types": "./esm/presets/ts-esm-watch/jest-preset.d.ts",
+      "import": "./esm/presets/ts-esm-watch/jest-preset.js",
+      "default": "./cjs/presets/ts-esm-watch/jest-preset.js"
     },
     "./package.json": "./package.json",
     "./resolver": {
