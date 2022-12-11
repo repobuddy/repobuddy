@@ -54,6 +54,16 @@
       "import": "./esm/presets/js-esm-watch/jest-preset.js",
       "default": "./cjs/presets/js-esm-watch/jest-preset.js"
     },
+    "./presets/ts": {
+      "types": "./esm/presets/ts/jest-preset.d.ts",
+      "import": "./esm/presets/ts/jest-preset.js",
+      "default": "./cjs/presets/ts/jest-preset.js"
+    },
+    "./presets/ts-watch": {
+      "types": "./esm/presets/ts-watch/jest-preset.d.ts",
+      "import": "./esm/presets/ts-watch/jest-preset.js",
+      "default": "./cjs/presets/ts-watch/jest-preset.js"
+    },
     "./presets/ts-cjs": {
       "types": "./esm/presets/ts-cjs/jest-preset.d.ts",
       "import": "./esm/presets/ts-cjs/jest-preset.js",
