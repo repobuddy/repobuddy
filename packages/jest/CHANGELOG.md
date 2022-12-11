@@ -1,5 +1,17 @@
 # @unional/jest-presets
 
+## 2.1.0
+
+### Minor Changes
+
+- 4a9e534: Add `ts` and `ts-watch` presets.
+
+  These presets will auto detect if your project is CJS or ESM.
+
+### Patch Changes
+
+- 01b4ebc: fix `-watch` presets redirect
+
 ## 2.0.0
 
 ### Major Changes
