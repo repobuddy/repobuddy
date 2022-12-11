@@ -19,7 +19,6 @@ export default {
   testRegex: [
     /* ... */
   ],
-  resolver: './cjs/resolver.js',
   roots: ['<rootDir>/ts'],
   transform: {
     '^.+\\.(ts|tsx|cts|mts)$': ['ts-jest', [{
