@@ -12,7 +12,6 @@ declare module '@jest/expect' {
   }
 }
 
-
 export function toSatisfies(this: any, actual: unknown, expectation: Expectation) {
   const diff = createSatisfier(expectation).exec(actual)
   const pass = !diff

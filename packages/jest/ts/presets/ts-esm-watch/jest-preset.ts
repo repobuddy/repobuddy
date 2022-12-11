@@ -6,6 +6,7 @@ const tsEsmPreset = {
   ...tsEsm,
   ...configSource(),
   ...node,
+  ...defineWatchPlugins()
 } satisfies Config
 
 export default tsEsmPreset

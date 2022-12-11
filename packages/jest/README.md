@@ -23,52 +23,80 @@ rush add -p @repobuddy/jest --dev
 [@repobuddy/jest] comes with a few presets:
 
 - `@repobuddy/jest/presets/ts-cjs`
+- `@repobuddy/jest/presets/ts-cjs-watch`
 - `@repobuddy/jest/presets/ts-esm`
+- `@repobuddy/jest/presets/ts-esm-watch`
 - `@repobuddy/jest/presets/js-cjs`
-- `@repobuddy/jest/presets/js-esm`
+- `@repobuddy/jest/presets/js-cjs-watch`
+- `@repobuddy/jest/presets/js-esm-watch`
 
-Each preset also exposes the config they use, so you can override part of the config as needed:
+If you do not have any specific configs,
+these presets should work without additional configuration.
 
-```js
-// jest.config.mjs
-import { tsEsmPreset } from '@repobuddy/jest'
+Here are some highlights:
 
-export default {
-  preset: '@repobuddy/jest/presets/ts-esm',
-  moduleNameMapper: {
-    ...tsEsmPreset.moduleNameMapper,
-    // your additional config
-  }
-}
-```
+- all of the presets will automatically detects your source folder.
+- `cjs` uses `jest-esm-transformer-2` to transforms ESM dependencies.
+- `watch` uses these plugins by default:
+  - `jest-watch-suspend`
+  - `jest-watch-typeahead`
+  - `jest-watch-toggle-config-2`
 
-```js
-// jest.config.cjs
-const { tsEsmPreset } = require('@repobuddy/jest')
+Since your project will only use a specific config,
+none of these packages are marked as required peer dependencies.
+You will need to add them to your project manually.
 
-module.exports = {
-  ...preset,
-  moduleNameMapper: {
-    ...tsEsmPreset.moduleNameMapper,
-    // your additional config
-  }
-}
-```
+There will be a CLI tool in the future to help simplify that. Contribution welcome! 🍺
 
 ## Configs
 
-Every config are exposed so you can compose them as needed:
+The configurations for specific use cases are exposed and available for you to compose the exact config that you need.
 
-```js
-import { nodejs, watch, ... } from '@repobuddy/jest'
+They can be predefined configs:
 
-export default {
-  ...nodejs,
-  ...watch
-}
-```
+- [node](./ts/configs/node.ts)
+- [electron](./ts/configs/electron.ts)
+- [electronRenderer](./ts/configs/electron.ts)
+- [jsdom](./ts/configs/jsdom.ts)
+- [jsCjs](./ts/configs/javascript.ts)
+- [jsEsm](./ts/configs/javascript.ts)
+- [tsCjs](./ts/configs/typescript.ts)
+- [tsEsm](./ts/configs/typescript.ts)
 
-## Specific Jest configs
+or functions prefixed with `config`:
+
+- [configNode()](./ts/configs/node.ts)
+- [configSource()](./ts/configs/configSource.ts)
+
+## Fields
+
+Fields are predefined fields or functions about a particular field of the [jest config](https://jestjs.io/docs/configuration).
+
+They can be `define` functions, which provides type assistants to define the particular field:
+
+- [defineTransform](./ts/fields/transform.ts)
+- [defineWatchPlugins](./ts/fields/watchPlugins.ts)
+
+They can be `known` configurations, which you can use to build your configuration easily:
+
+- [knownExtensionsToTreatAsEsm](./ts/fields/extensionsToTrestAsEsm.ts)
+- [knownRunners](./ts/fields/runner.ts)
+- [knownTestEnvironments](./ts/fields/testEnvironment.ts)
+- [knownTestEnvironmentOptions](./ts/fields/testEnvironment.ts)
+- [knownTransforms](./ts/fields/transform.ts)
+- [knownWatchPlugins](./ts/fields/watchPlugins.ts)
+
+## Matchers
+
+There are also matchers which you can use to extends the `expect()` function:
+
+- [toSatisfies](./ts/matchers/toSatisfies.ts): Similar functionality provided by [assertron](https://github.com/unional/assertron) and [satisfier](https://github.com/unional/satisfier)
+
+Use `expect.extend({ toSatisfier })` to add it to your `expect()` function.
+
+You can also do `import '@repobuddy/jest/matchers'` in your setup to import them automatically.
+
+## Notes about Jest configs
 
 ### `transformIgnorePatterns`
 
