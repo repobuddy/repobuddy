@@ -1,5 +1,39 @@
 # @unional/jest-presets
 
+## 2.0.0
+
+### Major Changes
+
+- 4043b19: rename `configSourceDir()` to `configSource()`.
+  It now accepts multiple `dir`
+- 7308011: Add `definedWatchPlugins()`.
+  Add `watchPlugins`.
+  Remove `watch`
+
+### Minor Changes
+
+- a5fa056: Remove `withChalk()` no need anymore
+- 397638d: Add `transform`
+- b015ca9: add `testEnviornment`
+- 3fb7682: Add `knownRunners`
+- c188ac8: Rename `watchPlugins` to `knownWatchPlugins`
+  Add `watchPlugins` as the default set of plugins.
+- 08fd09f: Move watch to watch presets
+- c8cc7af: Add `knownTransforms.esmPackages()`.
+
+  `ts-cjs` and `js-cjs` uses it by default.
+
+- e8cff70: Add `extensionsToTreatAsEsm`
+
+### Patch Changes
+
+- 3939136: Upgrade `resolve.imports` to 1.2.3
+- d2163ad: Add `resolver.async` just for completeness
+- a7c5845: Fix coverage for node specific tests.
+- d760b91: fix `withTransformEsmPackages()`.
+  It needs to set `transformIgnorePatterns` to `[]`.
+- e963322: fix matchers typing
+
 ## 1.4.0
 
 ### Minor Changes
