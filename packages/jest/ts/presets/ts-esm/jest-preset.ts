@@ -1,6 +1,6 @@
 import type { Config } from 'jest'
-import { configSourceDir, tsEsm } from '../../config.js'
-import { node } from '../../configs/index.js'
+import { configSourceDir } from '../../config.js'
+import { node, tsEsm } from '../../configs/index.js'
 import { defineWatchPlugins } from '../../fields/index.js'
 
 const tsEsmPreset = {
