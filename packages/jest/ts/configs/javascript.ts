@@ -1,10 +1,11 @@
 import type { Config } from 'jest'
 import { defineTransform, knownExtensionsToTreatAsEsm, knownTransforms } from '../fields/index.js'
 
-export const jsEsm = {
-  extensionsToTreatAsEsm: knownExtensionsToTreatAsEsm.js
+export const jsCjs = {
+  ...defineTransform(knownTransforms.esmPackages()),
+  transformIgnorePatterns: []
 } satisfies Config
 
-export const jsCjs = {
-  ...defineTransform(knownTransforms.esmPackages())
+export const jsEsm = {
+  extensionsToTreatAsEsm: knownExtensionsToTreatAsEsm.js
 } satisfies Config
