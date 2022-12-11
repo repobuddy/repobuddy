@@ -1,5 +1,6 @@
 import type { Config } from 'jest'
-import type { ArrayValue, NonUndefined } from 'type-plus'
+import type { NonUndefined } from 'type-plus'
+import { optionize } from '../utils/index.js'
 
 export type WatchPlugins = NonUndefined<Config['watchPlugins']>
 
@@ -42,7 +43,3 @@ export const watchPlugins: WatchPlugins = [
   knownWatchPlugins.typeaheadFilename(),
   knownWatchPlugins.typeaheadTestname()
 ]
-
-function optionize(name: string, options?: WatchPlugins.BaseOptions): ArrayValue<WatchPlugins> {
-  return options ? [name, options] : name
-}
