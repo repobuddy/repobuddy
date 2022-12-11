@@ -19,7 +19,8 @@ export function configNode(
   )
 
   return {
-    coveragePathIgnorePatterns: testRegex,
+    // `(\\.node.\*)?` looks too eager, but can't find a better solution yet.
+    coveragePathIgnorePatterns: [`(${id})(\\.node.\*)?\\.(js|jsx|cjs|mjs|ts|tsx|cts|mts)$`],
     resolver: '@repobuddy/jest/resolver',
     testEnvironment: knownTestEnvironments.node,
     testRegex
