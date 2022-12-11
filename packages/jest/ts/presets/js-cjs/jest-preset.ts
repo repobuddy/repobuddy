@@ -1,11 +1,10 @@
 import type { Config } from 'jest'
-import { configSourceDir } from '../../config.js'
-import { jsCjs, node } from '../../configs/index.js'
+import { jsCjs, node, configSource } from '../../configs/index.js'
 import { defineWatchPlugins } from '../../fields/index.js'
 
 const jsCjsPreset = {
   ...jsCjs,
-  ...configSourceDir(),
+  ...configSource(),
   ...node,
   ...defineWatchPlugins()
 } satisfies Config
