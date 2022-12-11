@@ -243,6 +243,38 @@ Or use one of the NodeJS presets!
 
 ## Notes
 
+Here are some notes about [@repobuddy/jest] that you may find useful.
+
+### `ts-jest`: `isolatedModules`
+
+By default, all `ts` presets have `isolatedModules` set to `true`.
+
+If you want to change that, you can override with the `knownTransforms.tsJest*()` functions:
+
+```ts
+import { knownTransforms } from '@repobuddy/jest'
+
+export default {
+  preset: '@repobuddy/jest/presets/ts-esm',
+  transform: knownTransforms.tsJest(/* your option */)
+}
+```
+
+While you may want the type checking benefits,
+in my experience it is ok to break the types when you are in the middle of your code,
+e.g. when you are doing TDD.
+
+I would recommend to use the build process and IDE to help you catching any type errors,
+while allowing the type to break while writing code and tests.
+
+The tigher feelback loop makes it much easier to work with.
+
+This also avoid getting the bad habbit of marking things `any` along the way,
+just to silents the type checker.
+
+Writing the correct type is not an easy task,
+and it is better to leave at the refactoring stage IMO.
+
 ### `transformIgnorePatterns`
 
 [jest] could not understands ESM code.
