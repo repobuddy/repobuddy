@@ -9,8 +9,28 @@
 
 /** @type {import('jest').Config} */
 export default {
+  collectCoverageFrom: ['<rootDir>/ts/**/*.{js,jsx,cjs,mjs,ts,tsx,cts,mts}'],
+  coveragePathIgnorePatterns: [
+    '(spec|test|unit|accept|integrate|system)(\\.node)?\\.(js|jsx|cjs|mjs|ts|tsx|cts|mts)$',
+    '(spec|test|unit|accept|integrate|system)\\.node14\\.(js|jtx|cjs|mjs|ts|tsx|cts|mts)$',
+    '(spec|test|unit|accept|integrate|system)\\.node15\\.(js|jtx|cjs|mjs|ts|tsx|cts|mts)$',
+    '(spec|test|unit|accept|integrate|system)\\.node16\\.(js|jtx|cjs|mjs|ts|tsx|cts|mts)$',
+    '(spec|test|unit|accept|integrate|system)\\.node17\\.(js|jtx|cjs|mjs|ts|tsx|cts|mts)$',
+    '(spec|test|unit|accept|integrate|system)\\.node18\\.(js|jtx|cjs|mjs|ts|tsx|cts|mts)$'
+  ],
   extensionsToTreatAsEsm: ['.ts', '.tsx', '.mts'],
   moduleNameMapper: { '^(\\.{1,2}/.*)\\.js$': '$1' },
+  testEnvironment: 'node',
+  testRegex: [
+    '(spec|test|unit|accept|integrate|system)(\\.node)?\\.(js|jsx|cjs|mjs|ts|tsx|cts|mts)$',
+    '(spec|test|unit|accept|integrate|system)\\.node14\\.(js|jtx|cjs|mjs|ts|tsx|cts|mts)$',
+    '(spec|test|unit|accept|integrate|system)\\.node15\\.(js|jtx|cjs|mjs|ts|tsx|cts|mts)$',
+    '(spec|test|unit|accept|integrate|system)\\.node16\\.(js|jtx|cjs|mjs|ts|tsx|cts|mts)$',
+    '(spec|test|unit|accept|integrate|system)\\.node17\\.(js|jtx|cjs|mjs|ts|tsx|cts|mts)$',
+    '(spec|test|unit|accept|integrate|system)\\.node18\\.(js|jtx|cjs|mjs|ts|tsx|cts|mts)$'
+  ],
+  resolver: './cjs/resolver.js',
+  roots: ['<rootDir>/ts'],
   transform: {
     '^.+\\.(ts|tsx|cts|mts)$': ['ts-jest', [{
       isolatedModules: true,
@@ -22,32 +42,12 @@ export default {
     }]],
     '\\.m?jsx?$': 'jest-esm-transformer-2'
   },
-  collectCoverageFrom: ['<rootDir>/ts/**/*.{js,jsx,cjs,mjs,ts,tsx,cts,mts}'],
-  roots: ['<rootDir>/ts'],
-  coveragePathIgnorePatterns: [
-    '(spec|test|unit|accept|integrate|system)(\\.node)?\\.(js|jsx|cjs|mjs|ts|tsx|cts|mts)$',
-    '(spec|test|unit|accept|integrate|system)\\.node14\\.(js|jtx|cjs|mjs|ts|tsx|cts|mts)$',
-    '(spec|test|unit|accept|integrate|system)\\.node15\\.(js|jtx|cjs|mjs|ts|tsx|cts|mts)$',
-    '(spec|test|unit|accept|integrate|system)\\.node16\\.(js|jtx|cjs|mjs|ts|tsx|cts|mts)$',
-    '(spec|test|unit|accept|integrate|system)\\.node17\\.(js|jtx|cjs|mjs|ts|tsx|cts|mts)$',
-    '(spec|test|unit|accept|integrate|system)\\.node18\\.(js|jtx|cjs|mjs|ts|tsx|cts|mts)$'
-  ],
-  resolver: './cjs/resolver.js',
-  testEnvironment: 'node',
-  testRegex: [
-    '(spec|test|unit|accept|integrate|system)(\\.node)?\\.(js|jsx|cjs|mjs|ts|tsx|cts|mts)$',
-    '(spec|test|unit|accept|integrate|system)\\.node14\\.(js|jtx|cjs|mjs|ts|tsx|cts|mts)$',
-    '(spec|test|unit|accept|integrate|system)\\.node15\\.(js|jtx|cjs|mjs|ts|tsx|cts|mts)$',
-    '(spec|test|unit|accept|integrate|system)\\.node16\\.(js|jtx|cjs|mjs|ts|tsx|cts|mts)$',
-    '(spec|test|unit|accept|integrate|system)\\.node17\\.(js|jtx|cjs|mjs|ts|tsx|cts|mts)$',
-    '(spec|test|unit|accept|integrate|system)\\.node18\\.(js|jtx|cjs|mjs|ts|tsx|cts|mts)$'
-  ],
+  transformIgnorePatterns: [],
   watchPlugins: [
     'jest-watch-suspend',
     ['jest-watch-toggle-config-2', { setting: 'collectCoverage' }],
     ['jest-watch-toggle-config-2', { setting: 'verbose' }],
     'jest-watch-typeahead/filename',
     'jest-watch-typeahead/testname'
-  ],
-  transformIgnorePatterns: []
+  ]
 }

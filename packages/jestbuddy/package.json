@@ -36,17 +36,17 @@
     "verify": "npm-run-all -p build -p test depcheck size"
   },
   "dependencies": {
-    "clibuilder": "^8.0.4",
+    "clibuilder": "^8.0.4"
+  },
+  "devDependencies": {
+    "@jest/globals": "^29.3.1",
+    "@repobuddy/jest": "workspace:^",
+    "@types/node": "^14",
     "cross-env": "^7.0.3",
     "depcheck": "^1.4.3",
     "jest": "^29.3.1",
     "npm-run-all": "^4.1.5",
     "rimraf": "^3.0.2",
     "typescript": "^4.9.3"
-  },
-  "devDependencies": {
-    "@jest/globals": "^29.3.1",
-    "@repobuddy/jest": "workspace:^1.4.0",
-    "@types/node": "^14"
   }
 }

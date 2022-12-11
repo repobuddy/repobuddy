@@ -2,6 +2,56 @@
 
 [@repobuddy/jest] provides tools and utilities to manage your [jest] usage so you don't have to.
 
+Turn your config from this:
+
+```ts
+export default {
+  collectCoverageFrom: ['<rootDir>/ts/**/*.{js,jsx,cjs,mjs,ts,tsx,cts,mts}'],
+  coveragePathIgnorePatterns: [
+    /* ... */
+  ],
+  extensionsToTreatAsEsm: ['.ts', '.tsx', '.mts'],
+  moduleNameMapper: {
+    '^(\\.{1,2}/.*)\\.js$': '$1',
+    /* ... and the ESM madness like `chalk` ... */
+  },
+  testEnvironment: 'node',
+  testRegex: [
+    /* ... */
+  ],
+  resolver: './cjs/resolver.js',
+  roots: ['<rootDir>/ts'],
+  transform: {
+    '^.+\\.(ts|tsx|cts|mts)$': ['ts-jest', [{
+      isolatedModules: true,
+      useESM: true,
+      diagnostics: {
+        // https://github.com/kulshekhar/ts-jest/issues/3820
+        ignoreCodes: [151001]
+      }
+    }]],
+    '\\.m?jsx?$': 'jest-esm-transformer-2',
+    /* ... more ESM madness ... */
+  },
+  transformIgnorePatterns: [],
+  watchPlugins: [
+    'jest-watch-suspend',
+    ['jest-watch-toggle-config-2', { setting: 'collectCoverage' }],
+    ['jest-watch-toggle-config-2', { setting: 'verbose' }],
+    'jest-watch-typeahead/filename',
+    'jest-watch-typeahead/testname'
+  ]
+}
+```
+
+to this:
+
+```ts
+export default {
+  preset: '@repobuddy/jest/presets/ts-esm-watch'
+}
+```
+
 ## Install
 
 ```sh
@@ -28,6 +78,7 @@ rush add -p @repobuddy/jest --dev
 - `@repobuddy/jest/presets/ts-esm-watch`
 - `@repobuddy/jest/presets/js-cjs`
 - `@repobuddy/jest/presets/js-cjs-watch`
+- `@repobuddy/jest/presets/js-esm`
 - `@repobuddy/jest/presets/js-esm-watch`
 
 If you do not have any specific configs,
@@ -36,17 +87,48 @@ these presets should work without additional configuration.
 Here are some highlights:
 
 - all of the presets will automatically detects your source folder.
-- `cjs` uses `jest-esm-transformer-2` to transforms ESM dependencies.
+- uses [@repobuddy/jest/resolver] that handles [subpath imports][subpath-imports] correctly
+- `cjs` uses [jest-esm-transformer-2] to transforms ESM dependencies.
+- `ts` uses [ts-jest] with `isolatedModule: true`.
 - `watch` uses these plugins by default:
-  - `jest-watch-suspend`
-  - `jest-watch-typeahead`
-  - `jest-watch-toggle-config-2`
+  - [jest-watch-suspend]
+  - [jest-watch-toggle-config-2]
+  - [jest-watch-typeahead]
 
 Since your project will only use a specific config,
 none of these packages are marked as required peer dependencies.
 You will need to add them to your project manually.
 
 There will be a CLI tool in the future to help simplify that. Contribution welcome! 🍺
+
+If you want to make some adjustments based on a particular preset,
+you can import the preset and customize it like so:
+
+```ts
+import preset from '@repobuddy/jest/presets/ts-esm-watch'
+
+export default {
+  ...preset,
+  moduleNameMapper: {
+    ...preset.moduleNameMapper,
+    // your customization
+  }
+}
+
+// or using `deepmerge`
+import preset from '@repobuddy/jest/presets/ts-esm-watch'
+import deepmerge from 'deepmerge'
+
+export default deepmerge(preset, {
+  moduleNameMapper: {
+    // your customization
+  }
+})
+```
+
+Besides customizing your config manually,
+[@repobuddy/jest] exposes everything it uses,
+so you can compose and customize them exactly the way you like.
 
 ## Configs
 
@@ -90,11 +172,63 @@ They can be `known` configurations, which you can use to build your configuratio
 
 There are also matchers which you can use to extends the `expect()` function:
 
-- [toSatisfies](./ts/matchers/toSatisfies.ts): Similar functionality provided by [assertron](https://github.com/unional/assertron) and [satisfier](https://github.com/unional/satisfier)
+- [toSatisfies](./ts/matchers/toSatisfies.ts): Similar functionality provided by [assertron] and [satisfier]
 
 Use `expect.extend({ toSatisfier })` to add it to your `expect()` function.
 
 You can also do `import '@repobuddy/jest/matchers'` in your setup to import them automatically.
+
+## Resolver
+
+[@repobuddy/jest/resolver] fixes the ESM [subpath imports] issue,
+by using [resolve.imports].
+
+So you don't need to do crazy hacks like:
+
+```ts
+export default {
+  moduleNameMapper: {
+    '#(.*)': '$1'  // and this actually doesn't work in some cases
+  },
+  transformIgnorePatterns: [
+    'node_modules/(?!(chalk|#ansi-styles)/)'
+  ]
+}
+```
+
+or even
+
+```ts
+const path = require('node:path')
+
+const chalk = require.resolve('chalk')
+const chalkRootDir = chalk.slice(0, chalk.lastIndexOf('chalk'))
+
+module.exports = {
+  // ...
+  moduleNameMapper: {
+    chalk,
+    '#ansi-styles': path.join(
+      chalkRootDir,
+      'chalk/source/vendor/ansi-styles/index.js',
+    ),
+    '#supports-color': path.join(
+      chalkRootDir,
+      'chalk/source/vendor/supports-color/index.js',
+    )
+  }
+}
+```
+
+Now all you need is:
+
+```ts
+export default {
+  resolver: '@repobuddy/jest/resolver'
+}
+```
+
+Or use one of the presets!
 
 ## Notes about Jest configs
 
@@ -108,11 +242,21 @@ one workaround is to use negative regex match in [transformIgnorePatterns] so th
 
 However, it does not work with all package managers.
 For example, it doesn't work with monorepo using [pnpm].
-(the example in [jest] docs only works for simple repo using [pnpm])
+(the example in [jest docs][transformIgnorePatterns] only works for simple repo using [pnpm])
 
 Therefore, for simplicity, [@repobuddy/jest] uses [jest-esm-transformer-2] to handle that and keep [transformIgnorePatterns] empty.
 
 [@repobuddy/jest]: https://github.com/repobuddy/jest
+[@repobuddy/jest/resolver]: ./ts/resolver.ts
+[assertron]: https://github.com/unional/assertron
+[jest-esm-transformer-2]: https://www.npmjs.com/package/jest-esm-transformer-2
+[jest-watch-suspend]: https://www.npmjs.com/package/jest-watch-suspend
+[jest-watch-toggle-config-2]: https://www.npmjs.com/package/jest-watch-toggle-config-2
+[jest-watch-typeahead]: https://www.npmjs.com/package/jest-watch-typeahead
 [jest]: https://jestjs.io
-[transformIgnorePatterns]: https://jestjs.io/docs/configuration#transformignorepatterns-arraystring
 [pnpm]: https://pnpm.io/
+[resolve.imports]: https://github.com/cyberuni/resolve.imports
+[satisfier]: https://github.com/unional/satisfier
+[subpath-imports]: https://nodejs.org/api/packages.html#subpath-imports
+[transformIgnorePatterns]: https://jestjs.io/docs/configuration#transformignorepatterns-arraystring
+[ts-jest]: https://www.npmjs.com/package/ts-jest
