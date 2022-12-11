@@ -1,8 +1,9 @@
+import type { ResolverOptions } from 'jest-resolve'
 import { dirname, join } from 'node:path'
 import { sync as readPkgSync } from 'read-pkg-up'
 import { resolve } from 'resolve.imports'
-import type { ResolverOptions } from 'jest-resolve'
 
+// istanbul ignore next
 export function sync(path: string, options: ResolverOptions) {
   try {
     return options.defaultResolver(path, options)
