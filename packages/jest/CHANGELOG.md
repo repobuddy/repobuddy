@@ -1,5 +1,12 @@
 # @unional/jest-presets
 
+## 2.2.0
+
+### Minor Changes
+
+- 1a5d8a1: Add `jsdom` presets.
+  Add `knownTransforms.swc()`.
+
 ## 2.1.0
 
 ### Minor Changes
