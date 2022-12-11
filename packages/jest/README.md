@@ -72,6 +72,8 @@ rush add -p @repobuddy/jest --dev
 
 [@repobuddy/jest] comes with a few presets:
 
+- `@repobuddy/jest/presets/ts`: auto detect if your project is CJS or ESM
+- `@repobuddy/jest/presets/ts-watch`: auto detect if your project is CJS or ESM
 - `@repobuddy/jest/presets/ts-cjs`
 - `@repobuddy/jest/presets/ts-cjs-watch`
 - `@repobuddy/jest/presets/ts-esm`
