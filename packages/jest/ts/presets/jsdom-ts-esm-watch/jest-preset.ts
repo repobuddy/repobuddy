@@ -1,12 +1,12 @@
 import type { Config } from 'jest'
-import { configSource, node, tsEsm } from '../../configs/index.js'
+import { configSource, jsdom, tsEsm } from '../../configs/index.js'
 import { defineWatchPlugins } from '../../fields/index.js'
 
-const tsEsmWatchPreset = {
+const jsdomTsEsmWatchPreset = {
   ...tsEsm,
   ...configSource(),
-  ...node,
+  ...jsdom,
   ...defineWatchPlugins()
 } satisfies Config
 
-export default tsEsmWatchPreset
+export default jsdomTsEsmWatchPreset

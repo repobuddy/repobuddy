@@ -1,5 +1,6 @@
 import { Config } from 'jest'
 import { NonUndefined } from 'type-plus'
+import { optionize } from '../utils/index.js'
 
 export type Transform = NonUndefined<Config['transform']>
 
@@ -35,7 +36,15 @@ export const knownTransforms = {
   },
   tsJest(options: Transform.TsJestOptions) {
     return {
-      '^.+\\.(ts|tsx|cts|mts)$': ['ts-jest', options] satisfies Transform.TransformerConfig
+      '^.+\\.(ts|tsx|cts|mts)$': optionize('ts-jest', options) satisfies Transform.TransformerConfig
+    }
+  },
+  swc(options?: Record<string, unknown>) {
+    return {
+      '^.+\\.(js|jsx|cjs|mjs|ts|tsx|cts|mts)$': optionize(
+        '@swc/jest',
+        options
+      ) satisfies Transform.TransformerConfig
     }
   },
   esmPackages() {
