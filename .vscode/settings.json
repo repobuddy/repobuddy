@@ -1,13 +1,32 @@
 {
-  "material-icon-theme.files.associations": {
-    "*.spec.electron.ts": "test-ts",
-    "*.spec.jsdom.ts": "test-ts",
-    "*.spec.node.ts": "test-ts",
-    "*.spec.node14.ts": "test-ts",
-    "*.spec.node16.ts": "test-ts",
-    "*.spec.node18.ts": "test-ts",
-  },
   "javascript.format.semicolons": "remove",
+  "material-icon-theme.files.associations": {
+    "*.accept.js": "test-js",
+    "*.accept.ts": "test-ts",
+    "*.integrate.js": "test-js",
+    "*.integrate.ts": "test-ts",
+    "*.spec.electron.js": "test-js",
+    "*.spec.electron.ts": "test-ts",
+    "*.spec.jsdom.js": "test-js",
+    "*.spec.jsdom.ts": "test-ts",
+    "*.spec.node.js": "test-js",
+    "*.spec.node.ts": "test-ts",
+    "*.spec.node14.js": "test-js",
+    "*.spec.node14.ts": "test-ts",
+    "*.spec.node16.js": "test-js",
+    "*.spec.node16.ts": "test-ts",
+    "*.spec.node18.js": "test-js",
+    "*.spec.node18.ts": "test-ts",
+    "*.system.js": "test-js",
+    "*.system.ts": "test-ts",
+    "*.unit.js": "test-js",
+    "*.unit.ts": "test-ts",
+    "plopfile.mjs": "plop"
+  },
+  "material-icon-theme.folders.associations": {
+    "plops": "template",
+    "testcases": "test"
+  },
   "typescript.format.semicolons": "remove",
   "typescript.tsdk": "node_modules/typescript/lib"
 }
