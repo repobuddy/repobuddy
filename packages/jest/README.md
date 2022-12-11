@@ -81,6 +81,12 @@ rush add -p @repobuddy/jest --dev
 - `@repobuddy/jest/presets/js-cjs-watch`
 - `@repobuddy/jest/presets/js-esm`
 - `@repobuddy/jest/presets/js-esm-watch`
+- `@repobuddy/jest/presets/jsdom-ts`: auto detect if your project is CJS or ESM
+- `@repobuddy/jest/presets/jsdom-ts-watch`: auto detect if your project is CJS or ESM
+- `@repobuddy/jest/presets/jsdom-ts-cjs`
+- `@repobuddy/jest/presets/jsdom-ts-cjs-watch`
+- `@repobuddy/jest/presets/jsdom-ts-esm`
+- `@repobuddy/jest/presets/jsdom-ts-esm-watch`
 
 If you do not have any specific configs,
 these presets should work without additional configuration.
@@ -181,8 +187,7 @@ You can also do `import '@repobuddy/jest/matchers'` in your setup to import them
 
 ## Resolver
 
-[@repobuddy/jest/resolver] fixes the ESM [subpath imports] issue,
-by using [resolve.imports].
+[@repobuddy/jest/resolver] fixes the ESM [subpath imports][subpath-imports] issue by using [resolve.imports].
 
 So you don't need to do crazy hacks like:
 
@@ -221,7 +226,7 @@ module.exports = {
 }
 ```
 
-Now all you need is:
+Now, all you need is:
 
 ```ts
 export default {
@@ -229,7 +234,7 @@ export default {
 }
 ```
 
-Or use one of the presets!
+Or use one of the NodeJS presets!
 
 ## Notes
 
