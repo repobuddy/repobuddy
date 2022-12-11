@@ -46,6 +46,5 @@ export const knownTransforms = {
 }
 
 export function defineTransform(confg: Transform) {
-  // TODO detect if ts-jest is installed
   return { transform: confg } satisfies Config
 }
