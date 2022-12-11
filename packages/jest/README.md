@@ -232,7 +232,7 @@ export default {
 
 Or use one of the presets!
 
-## Notes about Jest configs
+## Notes
 
 ### `transformIgnorePatterns`
 
@@ -247,6 +247,33 @@ For example, it doesn't work with monorepo using [pnpm].
 (the example in [jest docs][transformIgnorePatterns] only works for simple repo using [pnpm])
 
 Therefore, for simplicity, [@repobuddy/jest] uses [jest-esm-transformer-2] to handle that and keep [transformIgnorePatterns] empty.
+
+### about the `exports` field
+
+You may wonder why there are:
+
+```js
+{
+  "./presets/ts": {
+    "types": "./esm/presets/ts/jest-preset.d.ts",
+    "import": "./esm/presets/ts/jest-preset.js",
+    "default": "./cjs/presets/ts/jest-preset.js"
+  },
+  "./presets/ts/jest-preset": {
+    "types": "./esm/presets/ts/jest-preset.d.ts",
+    "import": "./esm/presets/ts/jest-preset.js",
+    "default": "./cjs/presets/ts/jest-preset.js"
+  },
+}
+```
+
+and `/packages/jest/presets/ts` files.
+
+The `.../ts` export is needed to export the code and type correctly in TypeScript/JavaScript.
+The `.../ts/jest-preset` export is need by `jest` to work correctly in linux environment.
+and the `/packages/jest/presets/ts` is needed to work in Windows environment (or CJS).
+
+🤦
 
 [@repobuddy/jest]: https://github.com/repobuddy/jest
 [@repobuddy/jest/resolver]: ./ts/resolver.ts
