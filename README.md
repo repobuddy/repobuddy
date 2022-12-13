@@ -5,12 +5,13 @@
 
 This repository contains packages that help you to manage [jest].
 
-## @repobuddy/jest
+## [@repobuddy/jest]
 
 [![NPM version][npm-image]][npm-url] [![NPM downloads][downloads-image]][npm-url] [![Codecov][codecov-image]][codecov-url]
 
 > Contains various presets and config to customize [jest].
 
+[@repobuddy/jest]: ./packages/jest/README.md
 [codecov-image]: https://codecov.io/gh/repobuddy/jest/branch/main/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/repobuddy/jest
 [downloads-image]: https://img.shields.io/npm/dm/@repobuddy/jest.svg?style=flat
