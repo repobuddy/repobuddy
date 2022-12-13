@@ -1,5 +1,11 @@
 # @unional/jest-presets
 
+## 2.3.0
+
+### Minor Changes
+
+- 6f3d193: Add `moduleNameMapper` field helpers
+
 ## 2.2.1
 
 ### Patch Changes
