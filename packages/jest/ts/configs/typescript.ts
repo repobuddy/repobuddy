@@ -1,11 +1,14 @@
 import type { Config } from 'jest'
-import { defineTransform, knownExtensionsToTreatAsEsm, knownTransforms } from '../fields/index.js'
+import {
+  defineTransform,
+  knownExtensionsToTreatAsEsm,
+  knownModuleNameMappers,
+  knownTransforms
+} from '../fields/index.js'
 
 export const tsEsm = {
   extensionsToTreatAsEsm: knownExtensionsToTreatAsEsm.ts,
-  moduleNameMapper: {
-    '^(\\.{1,2}/.*)\\.js$': '$1'
-  },
+  moduleNameMapper: knownModuleNameMappers.tsEsm,
   ...defineTransform(knownTransforms.tsJestEsm())
 } satisfies Config
 
