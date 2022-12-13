@@ -1,5 +1,9 @@
 # @repobuddy/jest
 
+[![NPM version][npm-image]][npm-url]
+[![NPM downloads][downloads-image]][npm-url]
+[![Codecov][codecov-image]][codecov-url]
+
 [@repobuddy/jest] provides tools and utilities to manage your [jest] usage so you don't have to.
 
 Turn your config from this:
@@ -319,11 +323,16 @@ and the `/packages/jest/presets/ts` is needed to work in Windows environment (or
 [@repobuddy/jest]: https://github.com/repobuddy/jest
 [@repobuddy/jest/resolver]: ./ts/resolver.ts
 [assertron]: https://github.com/unional/assertron
+[codecov-image]: https://codecov.io/gh/repobuddy/jest/branch/main/graph/badge.svg
+[codecov-url]: https://codecov.io/gh/repobuddy/jest
+[downloads-image]: https://img.shields.io/npm/dm/@repobuddy/jest.svg?style=flat
 [jest-esm-transformer-2]: https://www.npmjs.com/package/jest-esm-transformer-2
 [jest-watch-suspend]: https://www.npmjs.com/package/jest-watch-suspend
 [jest-watch-toggle-config-2]: https://www.npmjs.com/package/jest-watch-toggle-config-2
 [jest-watch-typeahead]: https://www.npmjs.com/package/jest-watch-typeahead
 [jest]: https://jestjs.io
+[npm-image]: https://img.shields.io/npm/v/@repobuddy/jest.svg?style=flat
+[npm-url]: https://npmjs.org/package/@repobuddy/jest
 [pnpm]: https://pnpm.io/
 [resolve.imports]: https://github.com/cyberuni/resolve.imports
 [satisfier]: https://github.com/unional/satisfier
