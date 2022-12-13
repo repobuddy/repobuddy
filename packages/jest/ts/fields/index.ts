@@ -1,4 +1,5 @@
 export * from './extensionsToTrestAsEsm.js'
+export * from './moduleNameMapper.js'
 export * from './runner.js'
 export * from './testEnvironment.js'
 export * from './transform.js'
