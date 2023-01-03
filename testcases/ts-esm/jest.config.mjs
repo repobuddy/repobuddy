@@ -1,4 +1,5 @@
 /** @type {import('jest').Config} */
 export default {
-  preset: '@repobuddy/jest/presets/ts-watch'
+  preset: '@repobuddy/jest/presets/ts-watch',
+  detectOpenHandles: true
 }
