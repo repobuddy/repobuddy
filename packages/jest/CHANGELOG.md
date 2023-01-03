@@ -1,5 +1,12 @@
 # @unional/jest-presets
 
+## 2.3.1
+
+### Patch Changes
+
+- 2977fa2: Update `type-plus` to 5.0.0
+- 4b6c696: Update `resolve.imports` to 1.2.7
+
 ## 2.3.0
 
 ### Minor Changes
