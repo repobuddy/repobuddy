@@ -47,7 +47,7 @@ importers:
       ncp: ^2.0.0
       npm-run-all: ^4.1.5
       read-pkg-up: ^7.0.1
-      resolve.imports: ^1.2.7
+      resolve.imports: ^2.0.0
       rimraf: ^3.0.2
       satisfier: ^5.4.2
       strip-ansi: ^7.0.1
@@ -57,7 +57,7 @@ importers:
     dependencies:
       jest-resolve: 29.3.1
       read-pkg-up: 7.0.1
-      resolve.imports: 1.2.7
+      resolve.imports: 2.0.3
       satisfier: 5.4.2
       type-plus: 5.0.0
     devDependencies:
@@ -5723,8 +5723,8 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /pattern-key-compare/1.0.0:
-    resolution: {integrity: sha512-7wi8a7OFmdx4Hx31+KY9kcD7gO+MWWupXtlAx7ANqoE8Pypl501FsDAPX2tSYLOuafED82A0Mv3lzeNfn82Jlg==}
+  /pattern-key-compare/2.0.0:
+    resolution: {integrity: sha512-b+yp/Q0KwFotxRgemVsNQ4qyqcA/LxzyfSjqJ7maKSlYTRmaUffwfX07l7KdxkVdc89k6WYtC3SwFCEo8GhbWQ==}
     dev: false
 
   /picocolors/1.0.0:
@@ -6021,10 +6021,10 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /resolve.imports/1.2.7:
-    resolution: {integrity: sha512-q+UNv8vIE8wiB3BYjN9cAEtx17TnV6PoQSBWLCWaI9DDumevUifHY5ocKL4S5qcETHm++Gia3EdNJO81IW3PaQ==}
+  /resolve.imports/2.0.3:
+    resolution: {integrity: sha512-aQaI4EGxTXnhA9EWScjgcpuUAbm51MXGkIHQ0WOEUyFMNjb8Yp/jIKGUu6y1SXMYG3FhTqnnscFNxs2+Pjp9YQ==}
     dependencies:
-      pattern-key-compare: 1.0.0
+      pattern-key-compare: 2.0.0
     dev: false
 
   /resolve/1.22.1:
