@@ -29,7 +29,6 @@ export default {
     '(spec|test|unit|accept|integrate|system)\\.node17\\.(js|jtx|cjs|mjs|ts|tsx|cts|mts)$',
     '(spec|test|unit|accept|integrate|system)\\.node18\\.(js|jtx|cjs|mjs|ts|tsx|cts|mts)$'
   ],
-  resolver: './cjs/resolver.js',
   roots: ['<rootDir>/ts'],
   transform: {
     '^.+\\.(ts|tsx|cts|mts)$': ['ts-jest', [{
