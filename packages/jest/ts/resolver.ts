@@ -8,11 +8,15 @@ export function sync(path: string, options: ResolverOptions) {
   try {
     return options.defaultResolver(path, options)
   } catch {
-    const result = readPkgSync({ cwd: options.basedir })
+    const result = readPkgSync({ cwd: options.basedir })!
     // `options.conditions` is `[ 'require', 'default', 'node', 'node-addons' ]`
     // which is not correct as it will take `default` over `node`.
     const conditions = options.conditions ? options.conditions.filter((c) => c !== 'default') : undefined
-    const mapped = resolve(result!.packageJson, path, { conditions })
+    const mapped = resolve(
+      { content: result.packageJson.imports, base: options.basedir, path: result.path },
+      path,
+      { conditions }
+    )
     if (mapped) {
       if (Array.isArray(mapped)) {
         return mapped.map((p) => options.defaultResolver(join(dirname(result!.path), p), options))
