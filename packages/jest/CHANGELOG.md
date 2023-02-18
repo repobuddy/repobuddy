@@ -1,5 +1,11 @@
 # @unional/jest-presets
 
+## 3.0.1
+
+### Patch Changes
+
+- e08a0e7: Exclude files like `a_spec.ts` as tests
+
 ## 3.0.0
 
 ### Major Changes
