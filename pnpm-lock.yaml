@@ -239,7 +239,7 @@ importers:
       strip-ansi: ^7.0.1
       ts-jest: ^29.0.3
       typescript: ^4.9.5
-      uni-require: ^0.0.1
+      uni-require: ^1.0.0
     devDependencies:
       '@jest/globals': 29.3.1
       '@repobuddy/jest': link:../../packages/jest
@@ -258,7 +258,7 @@ importers:
       strip-ansi: 7.0.1
       ts-jest: 29.0.3_gelezmms3va3pnkofxaadhcvma
       typescript: 4.9.5
-      uni-require: 0.0.1_@types+node@18.11.18
+      uni-require: 1.0.0_@types+node@18.11.18
 
   testcases/two-chalk:
     specifiers:
@@ -6764,8 +6764,8 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
-  /uni-require/0.0.1_@types+node@18.11.18:
-    resolution: {integrity: sha512-DdzHYzSfY5TszEMhVjQNf+Q8Nw/srZhd0cDbEtSYXqLZ+K+4UHFH8v/dP6uw7UtzgcvfjhLrSnp0rAT5P/E4IA==}
+  /uni-require/1.0.0_@types+node@18.11.18:
+    resolution: {integrity: sha512-XfvyajAyZxkQetWfbMMZuWch+fVR4WQN+mJLyaIVts8Y0o8b+Z6oIuNe96VBdXxjBwOqH/6BW/ExUp5NtmV45Q==}
     peerDependencies:
       '@types/node': '*'
     dependencies:
