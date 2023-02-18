@@ -14,13 +14,13 @@ export function configNode(
     (_, i) => i + minNodeVersion
   )
 
-  const testRegex = [`(${id})(\\.node)?\\.(js|jsx|cjs|mjs|ts|tsx|cts|mts)$`].concat(
-    nodeVersions.map((v) => `(${id})\\.node${v}\\.(js|jtx|cjs|mjs|ts|tsx|cts|mts)$`)
+  const testRegex = [`\\.(${id})(\\.node)?\\.(js|jsx|cjs|mjs|ts|tsx|cts|mts)$`].concat(
+    nodeVersions.map((v) => `\\.(${id})\\.node${v}\\.(js|jtx|cjs|mjs|ts|tsx|cts|mts)$`)
   )
 
   return {
     // `(\\.node.\*)?` looks too eager, but can't find a better solution yet.
-    coveragePathIgnorePatterns: [`(${id})(\\.node.\*)?\\.(js|jsx|cjs|mjs|ts|tsx|cts|mts)$`],
+    coveragePathIgnorePatterns: [`\\.(${id})(\\.node.\*)?\\.(js|jsx|cjs|mjs|ts|tsx|cts|mts)$`],
     testEnvironment: knownTestEnvironments.node,
     testRegex
   } satisfies Config
