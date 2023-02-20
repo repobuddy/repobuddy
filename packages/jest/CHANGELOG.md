@@ -1,5 +1,11 @@
 # @unional/jest-presets
 
+## 3.1.1
+
+### Patch Changes
+
+- cf83ffc: Add `electron-renderer` presets
+
 ## 3.1.0
 
 ### Minor Changes
