@@ -74,6 +74,66 @@
       "import": "./esm/presets/js-esm-watch/jest-preset.js",
       "default": "./cjs/presets/js-esm-watch/jest-preset.js"
     },
+    "./presets/electron-ts": {
+      "types": "./esm/presets/electron-ts/jest-preset.d.ts",
+      "import": "./esm/presets/electron-ts/jest-preset.js",
+      "default": "./cjs/presets/electron-ts/jest-preset.js"
+    },
+    "./presets/electron-ts/jest-preset": {
+      "types": "./esm/presets/electron-ts/jest-preset.d.ts",
+      "import": "./esm/presets/electron-ts/jest-preset.js",
+      "default": "./cjs/presets/electron-ts/jest-preset.js"
+    },
+    "./presets/electron-ts-watch": {
+      "types": "./esm/presets/electron-ts-watch/jest-preset.d.ts",
+      "import": "./esm/presets/electron-ts-watch/jest-preset.js",
+      "default": "./cjs/presets/electron-ts-watch/jest-preset.js"
+    },
+    "./presets/electron-ts-watch/jest-preset": {
+      "types": "./esm/presets/electron-ts-watch/jest-preset.d.ts",
+      "import": "./esm/presets/electron-ts-watch/jest-preset.js",
+      "default": "./cjs/presets/electron-ts-watch/jest-preset.js"
+    },
+    "./presets/electron-ts-cjs": {
+      "types": "./esm/presets/electron-ts-cjs/jest-preset.d.ts",
+      "import": "./esm/presets/electron-ts-cjs/jest-preset.js",
+      "default": "./cjs/presets/electron-ts-cjs/jest-preset.js"
+    },
+    "./presets/electron-ts-cjs/jest-preset": {
+      "types": "./esm/presets/electron-ts-cjs/jest-preset.d.ts",
+      "import": "./esm/presets/electron-ts-cjs/jest-preset.js",
+      "default": "./cjs/presets/electron-ts-cjs/jest-preset.js"
+    },
+    "./presets/electron-ts-cjs-watch": {
+      "types": "./esm/presets/electron-ts-cjs-watch/jest-preset.d.ts",
+      "import": "./esm/presets/electron-ts-cjs-watch/jest-preset.js",
+      "default": "./cjs/presets/electron-ts-cjs-watch/jest-preset.js"
+    },
+    "./presets/electron-ts-cjs-watch/jest-preset": {
+      "types": "./esm/presets/electron-ts-cjs-watch/jest-preset.d.ts",
+      "import": "./esm/presets/electron-ts-cjs-watch/jest-preset.js",
+      "default": "./cjs/presets/electron-ts-cjs-watch/jest-preset.js"
+    },
+    "./presets/electron-ts-esm": {
+      "types": "./esm/presets/electron-ts-esm/jest-preset.d.ts",
+      "import": "./esm/presets/electron-ts-esm/jest-preset.js",
+      "default": "./cjs/presets/electron-ts-esm/jest-preset.js"
+    },
+    "./presets/electron-ts-esm/jest-preset": {
+      "types": "./esm/presets/electron-ts-esm/jest-preset.d.ts",
+      "import": "./esm/presets/electron-ts-esm/jest-preset.js",
+      "default": "./cjs/presets/electron-ts-esm/jest-preset.js"
+    },
+    "./presets/electron-ts-esm-watch": {
+      "types": "./esm/presets/electron-ts-esm-watch/jest-preset.d.ts",
+      "import": "./esm/presets/electron-ts-esm-watch/jest-preset.js",
+      "default": "./cjs/presets/electron-ts-esm-watch/jest-preset.js"
+    },
+    "./presets/electron-ts-esm-watch/jest-preset": {
+      "types": "./esm/presets/electron-ts-esm-watch/jest-preset.d.ts",
+      "import": "./esm/presets/electron-ts-esm-watch/jest-preset.js",
+      "default": "./cjs/presets/electron-ts-esm-watch/jest-preset.js"
+    },
     "./presets/jsdom-ts": {
       "types": "./esm/presets/jsdom-ts/jest-preset.d.ts",
       "import": "./esm/presets/jsdom-ts/jest-preset.js",
@@ -210,12 +270,7 @@
     "presets",
     "ts",
     "config.mjs",
-    "!**/*.test.*",
-    "!**/*.spec.*",
-    "!**/*.unit.*",
-    "!**/*.integrate.*",
-    "!**/*.system.*",
-    "!**/*.accept.*"
+    "!**/*.{accept,integrate,spec,system,test,unit}.*"
   ],
   "scripts": {
     "build": "run-p build:cjs build:esm build:tslib",

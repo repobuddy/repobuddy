@@ -91,6 +91,12 @@ rush add -p @repobuddy/jest --dev
 - `@repobuddy/jest/presets/jsdom-ts-cjs-watch`
 - `@repobuddy/jest/presets/jsdom-ts-esm`
 - `@repobuddy/jest/presets/jsdom-ts-esm-watch`
+- `@repobuddy/jest/presets/electron-ts`: auto detect if your project is CJS or ESM
+- `@repobuddy/jest/presets/electron-ts-watch`: auto detect if your project is CJS or ESM
+- `@repobuddy/jest/presets/electron-ts-cjs`
+- `@repobuddy/jest/presets/electron-ts-cjs-watch`
+- `@repobuddy/jest/presets/electron-ts-esm`
+- `@repobuddy/jest/presets/electron-ts-esm-watch`
 
 If you do not have any specific configs,
 these presets should work without additional configuration.
