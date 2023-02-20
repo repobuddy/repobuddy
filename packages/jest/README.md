@@ -152,6 +152,18 @@ Besides customizing your config manually,
 [@repobuddy/jest] exposes everything it uses,
 so you can compose and customize them exactly the way you like.
 
+## Runners
+
+[@repobuddy/jest] supports running [jest] in [Node.js][nodejs], [jsdom], and [electron].
+
+For [electron], you need to install the [electron runner](https://www.npmjs.com/package/@kayahr/jest-electron-runner):
+
+```sh
+npm install -D @@kayahr/jest-electron-runner
+yarn add -D @@kayahr/jest-electron-runner
+pnpm add -D @@kayahr/jest-electron-runner
+```
+
 ## Configs
 
 The configurations for specific use cases are exposed and available for you to compose the exact config that you need.
@@ -345,3 +357,6 @@ and the `/packages/jest/presets/ts` is needed to work in Windows environment (or
 [subpath-imports]: https://nodejs.org/api/packages.html#subpath-imports
 [transformIgnorePatterns]: https://jestjs.io/docs/configuration#transformignorepatterns-arraystring
 [ts-jest]: https://www.npmjs.com/package/ts-jest
+[electron]: https://www.electronjs.org/
+[jsdom]: https://github.com/jsdom/jsdom
+[nodejs]: https://nodejs.org/en/
