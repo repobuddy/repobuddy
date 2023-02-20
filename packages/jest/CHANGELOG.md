@@ -1,5 +1,11 @@
 # @unional/jest-presets
 
+## 3.1.0
+
+### Minor Changes
+
+- bb860b6: Add electron presets
+
 ## 3.0.1
 
 ### Patch Changes
