@@ -73,7 +73,7 @@ rush add -p @repobuddy/jest --dev
 
 ## Presets
 
-[@repobuddy/jest] comes with a few presets:
+[@repobuddy/jest] comes with many presets:
 
 - `@repobuddy/jest/presets/ts`: auto detect if your project is CJS or ESM
 - `@repobuddy/jest/presets/ts-watch`: auto detect if your project is CJS or ESM
@@ -97,6 +97,12 @@ rush add -p @repobuddy/jest --dev
 - `@repobuddy/jest/presets/electron-ts-cjs-watch`
 - `@repobuddy/jest/presets/electron-ts-esm`
 - `@repobuddy/jest/presets/electron-ts-esm-watch`
+- `@repobuddy/jest/presets/electron-renderer-ts`: auto detect if your project is CJS or ESM
+- `@repobuddy/jest/presets/electron-renderer-ts-watch`: auto detect if your project is CJS or ESM
+- `@repobuddy/jest/presets/electron-renderer-ts-cjs`
+- `@repobuddy/jest/presets/electron-renderer-ts-cjs-watch`
+- `@repobuddy/jest/presets/electron-renderer-ts-esm`
+- `@repobuddy/jest/presets/electron-renderer-ts-esm-watch`
 
 If you do not have any specific configs,
 these presets should work without additional configuration.

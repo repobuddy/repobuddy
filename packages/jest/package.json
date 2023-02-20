@@ -134,6 +134,66 @@
       "import": "./esm/presets/electron-ts-esm-watch/jest-preset.js",
       "default": "./cjs/presets/electron-ts-esm-watch/jest-preset.js"
     },
+    "./presets/electron-renderer-ts": {
+      "types": "./esm/presets/electron-renderer-ts/jest-preset.d.ts",
+      "import": "./esm/presets/electron-renderer-ts/jest-preset.js",
+      "default": "./cjs/presets/electron-renderer-ts/jest-preset.js"
+    },
+    "./presets/electron-renderer-ts/jest-preset": {
+      "types": "./esm/presets/electron-renderer-ts/jest-preset.d.ts",
+      "import": "./esm/presets/electron-renderer-ts/jest-preset.js",
+      "default": "./cjs/presets/electron-renderer-ts/jest-preset.js"
+    },
+    "./presets/electron-renderer-ts-watch": {
+      "types": "./esm/presets/electron-renderer-ts-watch/jest-preset.d.ts",
+      "import": "./esm/presets/electron-renderer-ts-watch/jest-preset.js",
+      "default": "./cjs/presets/electron-renderer-ts-watch/jest-preset.js"
+    },
+    "./presets/electron-renderer-ts-watch/jest-preset": {
+      "types": "./esm/presets/electron-renderer-ts-watch/jest-preset.d.ts",
+      "import": "./esm/presets/electron-renderer-ts-watch/jest-preset.js",
+      "default": "./cjs/presets/electron-renderer-ts-watch/jest-preset.js"
+    },
+    "./presets/electron-renderer-ts-cjs": {
+      "types": "./esm/presets/electron-renderer-ts-cjs/jest-preset.d.ts",
+      "import": "./esm/presets/electron-renderer-ts-cjs/jest-preset.js",
+      "default": "./cjs/presets/electron-renderer-ts-cjs/jest-preset.js"
+    },
+    "./presets/electron-renderer-ts-cjs/jest-preset": {
+      "types": "./esm/presets/electron-renderer-ts-cjs/jest-preset.d.ts",
+      "import": "./esm/presets/electron-renderer-ts-cjs/jest-preset.js",
+      "default": "./cjs/presets/electron-renderer-ts-cjs/jest-preset.js"
+    },
+    "./presets/electron-renderer-ts-cjs-watch": {
+      "types": "./esm/presets/electron-renderer-ts-cjs-watch/jest-preset.d.ts",
+      "import": "./esm/presets/electron-renderer-ts-cjs-watch/jest-preset.js",
+      "default": "./cjs/presets/electron-renderer-ts-cjs-watch/jest-preset.js"
+    },
+    "./presets/electron-renderer-ts-cjs-watch/jest-preset": {
+      "types": "./esm/presets/electron-renderer-ts-cjs-watch/jest-preset.d.ts",
+      "import": "./esm/presets/electron-renderer-ts-cjs-watch/jest-preset.js",
+      "default": "./cjs/presets/electron-renderer-ts-cjs-watch/jest-preset.js"
+    },
+    "./presets/electron-renderer-ts-esm": {
+      "types": "./esm/presets/electron-renderer-ts-esm/jest-preset.d.ts",
+      "import": "./esm/presets/electron-renderer-ts-esm/jest-preset.js",
+      "default": "./cjs/presets/electron-renderer-ts-esm/jest-preset.js"
+    },
+    "./presets/electron-renderer-ts-esm/jest-preset": {
+      "types": "./esm/presets/electron-renderer-ts-esm/jest-preset.d.ts",
+      "import": "./esm/presets/electron-renderer-ts-esm/jest-preset.js",
+      "default": "./cjs/presets/electron-renderer-ts-esm/jest-preset.js"
+    },
+    "./presets/electron-renderer-ts-esm-watch": {
+      "types": "./esm/presets/electron-renderer-ts-esm-watch/jest-preset.d.ts",
+      "import": "./esm/presets/electron-renderer-ts-esm-watch/jest-preset.js",
+      "default": "./cjs/presets/electron-renderer-ts-esm-watch/jest-preset.js"
+    },
+    "./presets/electron-renderer-ts-esm-watch/jest-preset": {
+      "types": "./esm/presets/electron-renderer-ts-esm-watch/jest-preset.d.ts",
+      "import": "./esm/presets/electron-renderer-ts-esm-watch/jest-preset.js",
+      "default": "./cjs/presets/electron-renderer-ts-esm-watch/jest-preset.js"
+    },
     "./presets/jsdom-ts": {
       "types": "./esm/presets/jsdom-ts/jest-preset.d.ts",
       "import": "./esm/presets/jsdom-ts/jest-preset.js",
