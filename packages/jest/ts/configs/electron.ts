@@ -10,5 +10,5 @@ export const electron = {
 export const electronRenderer = {
   runner: knownRunners.electronRenderer,
   testEnvironment: knownTestEnvironments.electron,
-  testMatch: ['**/?*\\.(spec|test|unit|accept|integrate|system).(js|jsx|cjs|mjs|ts|tsx|cts|mts)']
+  testMatch: ['**/?*\\.(spec|test|unit|accept|integrate|system)?(.electron_renderer).(js|jsx|cjs|mjs|ts|tsx|cts|mts)']
 } satisfies Config
