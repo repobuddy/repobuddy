@@ -1,5 +1,12 @@
 # @unional/jest-presets
 
+## 3.1.2
+
+### Patch Changes
+
+- 19db21d: Add support of other ts-jest configs
+- de62a15: Add `spec.electron_renderer.*` test match
+
 ## 3.1.1
 
 ### Patch Changes
