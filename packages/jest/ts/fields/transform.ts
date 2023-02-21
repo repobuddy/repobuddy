@@ -1,16 +1,23 @@
 import { Config } from 'jest'
-import { NonUndefined } from 'type-plus'
+import { AnyRecord, NonUndefined } from 'type-plus'
 import { optionize } from '../utils/index.js'
 
 export type Transform = NonUndefined<Config['transform']>
 
 export namespace Transform {
   export type TsJestOptions = {
+    compiler?: string
+    tsconfig?: string
     isolatedModules?: boolean
+    astTransformers?: AnyRecord
+    diagnostics?:
+      | boolean
+      | {
+          ignoreCodes?: Array<number | string>
+        }
+    babelConfig?: boolean | string | AnyRecord
+    stringifyContentPathRegex?: string | RegExp
     useESM?: boolean
-    diagnostics?: {
-      ignoreCodes?: Array<number | string>
-    }
   }
   export type TransformerConfig = string | [string, Record<string, unknown>]
 }
