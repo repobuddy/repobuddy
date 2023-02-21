@@ -133,25 +133,15 @@ If you want to make some adjustments based on a particular preset,
 you can import the preset and customize it like so:
 
 ```ts
-import preset from '@repobuddy/jest/presets/ts-esm-watch'
+import { moduleNameMapper } from '@repobuddy/jest/presets/ts-esm-watch'
 
 export default {
-  ...preset,
+  preset: '@repobuddy/jest/presets/ts-esm-watch',
   moduleNameMapper: {
-    ...preset.moduleNameMapper,
+    ...moduleNameMapper,
     // your customization
   }
 }
-
-// or using `deepmerge`
-import preset from '@repobuddy/jest/presets/ts-esm-watch'
-import deepmerge from 'deepmerge'
-
-export default deepmerge(preset, {
-  moduleNameMapper: {
-    // your customization
-  }
-})
 ```
 
 Besides customizing your config manually,
