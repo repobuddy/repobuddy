@@ -19,8 +19,7 @@ export function configNode(
   )
 
   return {
-    // `(\\.node.\*)?` looks too eager, but can't find a better solution yet.
-    coveragePathIgnorePatterns: [`\\.(${id})(\\.node.\*)?\\.(js|jsx|cjs|mjs|ts|tsx|cts|mts)$`],
+    coveragePathIgnorePatterns: [`\\.(${id})(\\..\*)?\\.(js|jsx|cjs|mjs|ts|tsx|cts|mts)$`],
     testEnvironment: knownTestEnvironments.node,
     testRegex
   } satisfies Config
