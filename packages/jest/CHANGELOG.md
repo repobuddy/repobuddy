@@ -1,5 +1,11 @@
 # @unional/jest-presets
 
+## 3.1.3
+
+### Patch Changes
+
+- 752ba3c: Ignore spec.\*.ext from coverage
+
 ## 3.1.2
 
 ### Patch Changes
