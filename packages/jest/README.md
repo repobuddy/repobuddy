@@ -155,9 +155,9 @@ so you can compose and customize them exactly the way you like.
 For [electron], you need to install the [electron runner](https://www.npmjs.com/package/@kayahr/jest-electron-runner):
 
 ```sh
-npm install -D @@kayahr/jest-electron-runner
-yarn add -D @@kayahr/jest-electron-runner
-pnpm add -D @@kayahr/jest-electron-runner
+npm install -D @kayahr/jest-electron-runner
+yarn add -D @kayahr/jest-electron-runner
+pnpm add -D @kayahr/jest-electron-runner
 ```
 
 ## Configs
