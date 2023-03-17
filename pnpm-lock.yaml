@@ -52,14 +52,14 @@ importers:
       satisfier: ^5.4.2
       strip-ansi: ^7.0.1
       tslib: ^2.4.1
-      type-plus: ^5.0.0
+      type-plus: ^6.0.0
       typescript: ^5.0.0
     dependencies:
       jest-resolve: 29.3.1
       read-pkg-up: 7.0.1
       resolve.imports: 2.0.3
       satisfier: 5.4.2
-      type-plus: 5.0.0
+      type-plus: 6.0.0
     devDependencies:
       '@jest/expect': 29.3.1
       '@jest/globals': 29.3.1
@@ -7693,6 +7693,13 @@ packages:
     dependencies:
       tersify: 3.11.1
       unpartial: 1.0.4
+
+  /type-plus/6.0.0:
+    resolution: {integrity: sha512-ezkCTr6LGC87w9LHc83XJnJFfaeEa/nPhr4yzBKv2+Pw0y4FXKHgrJ2GWM4H1nSKzcEPv4q/Sfw4MKmi8NTxbg==}
+    dependencies:
+      tersify: 3.11.1
+      unpartial: 1.0.4
+    dev: false
 
   /typescript/5.0.2:
     resolution: {integrity: sha512-wVORMBGO/FAs/++blGNeAVdbNKtIh1rbBL2EyQ1+J9lClJ93KiiKe8PmFIVdXhHcyv44SL9oglmfeSsndo0jRw==}
