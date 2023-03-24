@@ -1,5 +1,11 @@
 # @unional/jest-presets
 
+## 3.1.4
+
+### Patch Changes
+
+- 5c80d67: Add `identity-obj-proxy` and `jest-esm-transformer-2` as optional peer deps
+
 ## 3.1.3
 
 ### Patch Changes
