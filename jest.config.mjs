@@ -5,8 +5,7 @@
 /** @type {import('jest').Config} */
 const config = {
   projects: [
-    "<rootDir>/packages/*",
-    "<rootDir>/scenarios/*",
+    "<rootDir>/packages/*"
   ]
 }
 
