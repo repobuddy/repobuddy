@@ -1,5 +1,11 @@
 # @unional/jest-presets
 
+## 3.1.5
+
+### Patch Changes
+
+- 07dee2e: Ignore storybook stories from coverage.
+
 ## 3.1.4
 
 ### Patch Changes
