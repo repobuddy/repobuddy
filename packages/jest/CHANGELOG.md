@@ -1,5 +1,11 @@
 # @unional/jest-presets
 
+## 3.1.6
+
+### Patch Changes
+
+- cc5a8df: Fix `knownTransforms.tsJestCjs` and `knownTransforms.tsJestEsm` to keep their default options when provides with overriding options.
+
 ## 3.1.5
 
 ### Patch Changes
