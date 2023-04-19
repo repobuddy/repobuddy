@@ -23,23 +23,36 @@ export namespace Transform {
 }
 
 export const knownTransforms = {
-  tsJestCjs(options: Transform.TsJestOptions = { isolatedModules: true }) {
+  /**
+   * Using `ts-jest` transform with CJS default options.
+   *
+   * By default it will enable `isolatedModules`,
+   * and transforms ESM dependencies to CJS.
+   */
+  tsJestCjs(options?: Transform.TsJestOptions) {
     return {
-      ...this.tsJest(options),
+      ...this.tsJest({
+        isolatedModules: true,
+        ...options
+      }),
       ...this.esmPackages()
     }
   },
-  tsJestEsm(
-    options: Transform.TsJestOptions = {
+  /**
+   * Using `ts-jest` transform with ESM default options.
+   *
+   * By default it will enable `isolatedModules`.
+   */
+  tsJestEsm(options?: Transform.TsJestOptions) {
+    return this.tsJest({
       isolatedModules: true,
       useESM: true,
       diagnostics: {
         // https://github.com/kulshekhar/ts-jest/issues/3820
         ignoreCodes: [151001]
-      }
-    }
-  ) {
-    return this.tsJest(options)
+      },
+      ...options
+    })
   },
   tsJest(options: Transform.TsJestOptions) {
     return {
@@ -61,6 +74,6 @@ export const knownTransforms = {
   }
 }
 
-export function defineTransform(confg: Transform) {
-  return { transform: confg } satisfies Config
+export function defineTransform(transform: Transform) {
+  return { transform } satisfies Config
 }
