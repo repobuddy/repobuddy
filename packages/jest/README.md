@@ -285,7 +285,7 @@ e.g. when you are doing TDD.
 I would recommend to use the build process and IDE to help you catching any type errors,
 while allowing the type to break while writing code and tests.
 
-The tigher feelback loop makes it much easier to work with.
+The tighter feelback loop makes it much easier to work with.
 
 This also avoid getting the bad habbit of marking things `any` along the way,
 just to silents the type checker.
