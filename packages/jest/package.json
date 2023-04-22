@@ -343,7 +343,8 @@
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_OPTIONS=--experimental-import-meta-resolve jest",
     "test:list": "jest --list-tests",
     "test:watch": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_OPTIONS=--experimental-import-meta-resolve jest --watch",
-    "verify": "npm-run-all -p build -p test depcheck size"
+    "verify": "npm-run-all -p build -p test depcheck size",
+    "w": "pnpm test:watch"
   },
   "dependencies": {
     "jest-resolve": "^29.3.1",
