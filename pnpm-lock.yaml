@@ -74,8 +74,8 @@ importers:
         specifier: ^29
         version: 29.0.3(@babel/core@7.21.4)(jest@29.5.0)(typescript@5.0.2)
       type-plus:
-        specifier: ^6.0.0
-        version: 6.0.0
+        specifier: ^6.6.0
+        version: 6.6.0
     devDependencies:
       '@jest/expect':
         specifier: ^29.5.0
@@ -1781,7 +1781,7 @@ packages:
   /@just-func/types@0.5.1:
     resolution: {integrity: sha512-yP+XbIIT5qGI/6TOZ0lRFHq2UubCfpf+2EKQPhEwOGsvh1vJTdDTPGyNWYHmLMLT5jx8h/SR3mAAVDmYyAjpwA==}
     dependencies:
-      type-plus: 5.0.0
+      type-plus: 5.6.0
 
   /@kayahr/jest-electron-runner@29.3.1(@types/node@18.11.18):
     resolution: {integrity: sha512-oYl+8FEMiRw923FjY5zJWMcyI9VRmp8bQQq4RjLVy/D/4j/Y56eodPr5nc/dA9WbCYNkv4sT+yCjxxhJC/ji+w==}
@@ -2051,7 +2051,6 @@ packages:
 
   /@types/node@18.13.0:
     resolution: {integrity: sha512-gC3TazRzGoOnoKAhUx+Q0t8S9Tzs74z7m0ipwGpSqQrleP14hKxP4/JUeEQcD3W1/aIpnWl8pHowI7WokuZpXg==}
-    dev: true
 
   /@types/node@18.15.13:
     resolution: {integrity: sha512-N+0kuo9KgrUQ1Sn/ifDXsvg0TTleP7rIy4zOBGECxAljqvqfqpTfzx0Q1NUedOixRMBfe2Whhb056a42cWs26Q==}
@@ -2274,7 +2273,7 @@ packages:
       standard-log: 11.5.1
       standard-log-color: 11.5.1(standard-log@11.5.1)
       tersify: 3.11.1
-      type-plus: 5.0.0
+      type-plus: 5.6.0
     dev: true
 
   /@vue/compiler-core@3.2.45:
@@ -2489,7 +2488,7 @@ packages:
       path-equal: 1.2.5
       satisfier: 5.4.2
       tersify: 3.11.1
-      type-plus: 5.0.0
+      type-plus: 5.6.0
     dev: true
 
   /asynckit@0.4.0:
@@ -4791,7 +4790,6 @@ packages:
       - '@types/node'
       - supports-color
       - ts-node
-    dev: true
 
   /jest-config@29.4.2(@types/node@18.11.18):
     resolution: {integrity: sha512-919CtnXic52YM0zW4C1QxjG6aNueX1kBGthuMtvFtRTAxhKfJmiXC9qwHmi6o2josjbDz8QlWyY55F1SIVmCWA==}
@@ -4984,7 +4982,6 @@ packages:
       strip-json-comments: 3.1.1
     transitivePeerDependencies:
       - supports-color
-    dev: true
 
   /jest-config@29.5.0(@types/node@18.15.13):
     resolution: {integrity: sha512-kvDUKBnNJPNBmFFOhDbm59iu1Fii1Q6SxyhXfvylq3UTHbg6o7j/g8k2dZyXWLvfdKB1vAPxNZnMgtKJcmu3kA==}
@@ -5755,7 +5752,7 @@ packages:
       jest: '>=23'
     dependencies:
       chalk: 2.4.2
-      jest: 29.5.0(@types/node@18.11.18)
+      jest: 29.5.0(@types/node@18.13.0)
       unpartial: 0.6.4
 
   /jest-watch-toggle-config-2@2.1.0(jest@29.5.0):
@@ -5765,7 +5762,7 @@ packages:
       jest: '>= 23.4.1'
     dependencies:
       chalk: 4.1.2
-      jest: 29.5.0(@types/node@18.11.18)
+      jest: 29.5.0(@types/node@18.13.0)
 
   /jest-watch-typeahead@2.2.1(jest@29.5.0):
     resolution: {integrity: sha512-jYpYmUnTzysmVnwq49TAxlmtOAwp8QIqvZyoofQFn8fiWhEDZj33ZXzg3JA4nGnzWFm1hbWf3ADpteUokvXgFA==}
@@ -5929,7 +5926,6 @@ packages:
       - '@types/node'
       - supports-color
       - ts-node
-    dev: true
 
   /js-message@1.0.7:
     resolution: {integrity: sha512-efJLHhLjIyKRewNS9EGZ4UpI8NguuL6fKkhRxVuMmrGV2xN/0APGdQYwLFky5w9naebSZ0OwAGp0G6/2Cg90rA==}
@@ -6037,7 +6033,7 @@ packages:
   /jsonfile@4.0.0:
     resolution: {integrity: sha512-m6F1R3z8jjlf2imQHS2Qez5sjKWQzbuuhuJ/FKYFRZvPE3PuHcSMVZzfsLhGVOkfd20obL5SWEBew5ShlquNxg==}
     optionalDependencies:
-      graceful-fs: 4.2.11
+      graceful-fs: 4.2.10
 
   /keyv@4.5.2:
     resolution: {integrity: sha512-5MHbFaKn8cNSmVW7BYnijeAVlE4cYA/SVkifVgrh7yotnfhKmjuXpDKjrABLnT0SfHWV21P8ow07OGfRrNDg8g==}
@@ -7549,7 +7545,7 @@ packages:
       '@just-func/types': 0.5.1
       iso-error: 5.0.2
       ms: 2.1.3
-      type-plus: 5.0.0
+      type-plus: 5.6.0
       upper-case: 2.0.2
 
   /stream-transform@2.1.3:
@@ -8012,14 +8008,14 @@ packages:
       unpartial: 1.0.4
     dev: false
 
-  /type-plus@5.0.0:
-    resolution: {integrity: sha512-nKp5pOQDldmR9BdEjLplLFwiXTVhOK2kReBSgVJ65URDLXCqENYzVDCONaExADIIc1CAGzvzTkB0TUgMAWR2qQ==}
+  /type-plus@5.6.0:
+    resolution: {integrity: sha512-LAIvZzs6mKXYHzwRfGeOuWKsE5jHndwWlLheulMl6eWDSGa1bfZCd0aLQSMgP3HZTbazx/P2UumCqtOz5AMctA==}
     dependencies:
       tersify: 3.11.1
       unpartial: 1.0.4
 
-  /type-plus@6.0.0:
-    resolution: {integrity: sha512-ezkCTr6LGC87w9LHc83XJnJFfaeEa/nPhr4yzBKv2+Pw0y4FXKHgrJ2GWM4H1nSKzcEPv4q/Sfw4MKmi8NTxbg==}
+  /type-plus@6.6.0:
+    resolution: {integrity: sha512-mTi2ZIx9+Uh9vh2Xr/ydjpfbwl8iDADTAty5JNZ1fo5qIzEqWVMT0YnCqnESQk5mEc6g7Xg5fC95X6HSntzhlw==}
     dependencies:
       tersify: 3.11.1
       unpartial: 1.0.4
