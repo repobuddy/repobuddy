@@ -1,3 +1,4 @@
+import { describe, expect, it } from '@jest/globals'
 import { defineWatchPlugins, knownWatchPlugins } from './watchPlugins.js'
 
 describe(`${defineWatchPlugins.name}()`, () => {

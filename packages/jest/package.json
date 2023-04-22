@@ -354,9 +354,8 @@
     "type-plus": "^6.0.0"
   },
   "devDependencies": {
-    "@jest/expect": "^29.3.1",
+    "@jest/expect": "^29.5.0",
     "@jest/globals": "^29.5.0",
-    "@types/jest": "^29.2.5",
     "@types/node": "^18.11.18",
     "assertron": "^11.0.3",
     "chalk": "^5.2.0",

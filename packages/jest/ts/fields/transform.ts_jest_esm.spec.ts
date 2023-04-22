@@ -1,3 +1,4 @@
+import { expect, it } from '@jest/globals'
 import { knownTransforms } from './transform.js'
 
 it('provides default transform options for ESM', () => {

@@ -1,3 +1,4 @@
+import { describe, it } from '@jest/globals'
 import { defineTransform } from './transform.js'
 
 describe(`${defineTransform.name}()`, () => {

@@ -1,3 +1,4 @@
+import { describe, expect, it } from '@jest/globals'
 import { defineModuleNameMappers, knownModuleNameMappers } from './moduleNameMapper.js'
 
 describe(`${defineModuleNameMappers.name}()`, () => {

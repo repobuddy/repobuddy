@@ -1,4 +1,4 @@
-import { describe, it } from '@jest/globals'
+import { describe, expect, it, jest } from '@jest/globals'
 import { ctx } from './configSource.ctx.js'
 import { configSource } from './index.js'
 
@@ -24,7 +24,7 @@ describe(`${configSource.name}()`, () => {
   })
 
   it('defaults to src', () => {
-    ctx.existsSync = jest.fn().mockReturnValue(false)
+    ctx.existsSync = jest.fn(ctx.existsSync).mockReturnValue(false)
     expect(configSource()).toEqual({
       collectCoverageFrom: [
         '<rootDir>/src/**/*.{js,jsx,cjs,mjs,ts,tsx,cts,mts}',
