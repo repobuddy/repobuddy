@@ -13,7 +13,7 @@ importers:
       eslint-plugin-yml: ~1.5.0
       jest: ^29.4.2
       plop: ^3.1.1
-      rimraf: ^3.0.2
+      rimraf: ^5.0.0
       turbo: ^1.6.3
       typescript: ^5.0.0
     devDependencies:
@@ -26,7 +26,7 @@ importers:
       eslint-plugin-yml: 1.5.0_eslint@8.31.0
       jest: 29.4.2
       plop: 3.1.1
-      rimraf: 3.0.2
+      rimraf: 5.0.0
       turbo: 1.6.3
       typescript: 5.0.2
 
@@ -48,7 +48,7 @@ importers:
       npm-run-all: ^4.1.5
       read-pkg-up: ^7.0.1
       resolve.imports: ^2.0.0
-      rimraf: ^3.0.2
+      rimraf: ^5.0.0
       satisfier: ^5.4.2
       strip-ansi: ^7.0.1
       tslib: ^2.4.1
@@ -74,7 +74,7 @@ importers:
       jest-extended: 3.2.1_jest@29.4.2
       ncp: 2.0.0
       npm-run-all: 4.1.5
-      rimraf: 3.0.2
+      rimraf: 5.0.0
       strip-ansi: 7.0.1
       tslib: 2.4.1
       typescript: 5.0.2
@@ -89,7 +89,7 @@ importers:
       depcheck: ^1.4.3
       jest: ^29.4.2
       npm-run-all: ^4.1.5
-      rimraf: ^3.0.2
+      rimraf: ^5.0.0
       typescript: ^5.0.0
     dependencies:
       clibuilder: 8.0.4
@@ -101,7 +101,7 @@ importers:
       depcheck: 1.4.3
       jest: 29.4.2_@types+node@18.11.18
       npm-run-all: 4.1.5
-      rimraf: 3.0.2
+      rimraf: 5.0.0
       typescript: 5.0.2
 
   testcases/electron-renderer-ts:
@@ -117,7 +117,7 @@ importers:
       jest-watch-toggle-config-2: ^2.1.0
       jest-watch-typeahead: ^2.2.1
       npm-run-all: ^4.1.5
-      rimraf: ^3.0.2
+      rimraf: ^5.0.0
       ts-jest: ^29.0.3
       typescript: ^5.0.0
     devDependencies:
@@ -132,7 +132,7 @@ importers:
       jest-watch-toggle-config-2: 2.1.0_jest@29.4.2
       jest-watch-typeahead: 2.2.1_jest@29.4.2
       npm-run-all: 4.1.5
-      rimraf: 3.0.2
+      rimraf: 5.0.0
       ts-jest: 29.0.3_rxahpvrqygs7ofmhax2vsn2kmm
       typescript: 5.0.2
 
@@ -149,7 +149,7 @@ importers:
       jest-watch-toggle-config-2: ^2.1.0
       jest-watch-typeahead: ^2.2.1
       npm-run-all: ^4.1.5
-      rimraf: ^3.0.2
+      rimraf: ^5.0.0
       ts-jest: ^29.0.3
       typescript: ^5.0.0
     devDependencies:
@@ -164,7 +164,7 @@ importers:
       jest-watch-toggle-config-2: 2.1.0_jest@29.4.2
       jest-watch-typeahead: 2.2.1_jest@29.4.2
       npm-run-all: 4.1.5
-      rimraf: 3.0.2
+      rimraf: 5.0.0
       ts-jest: 29.0.3_rxahpvrqygs7ofmhax2vsn2kmm
       typescript: 5.0.2
 
@@ -178,7 +178,7 @@ importers:
       jest-watch-toggle-config-2: ^2.1.0
       jest-watch-typeahead: ^2.2.1
       npm-run-all: ^4.1.5
-      rimraf: ^3.0.2
+      rimraf: ^5.0.0
     devDependencies:
       '@jest/globals': 29.3.1
       '@repobuddy/jest': link:../../packages/jest
@@ -188,7 +188,7 @@ importers:
       jest-watch-toggle-config-2: 2.1.0_jest@29.4.2
       jest-watch-typeahead: 2.2.1_jest@29.4.2
       npm-run-all: 4.1.5
-      rimraf: 3.0.2
+      rimraf: 5.0.0
 
   testcases/js-esm:
     specifiers:
@@ -201,7 +201,7 @@ importers:
       jest-watch-toggle-config-2: ^2.1.0
       jest-watch-typeahead: ^2.2.1
       npm-run-all: ^4.1.5
-      rimraf: ^3.0.2
+      rimraf: ^5.0.0
       strip-ansi: ^7.0.1
     devDependencies:
       '@jest/globals': 29.3.1
@@ -213,7 +213,7 @@ importers:
       jest-watch-toggle-config-2: 2.1.0_jest@29.4.2
       jest-watch-typeahead: 2.2.1_jest@29.4.2
       npm-run-all: 4.1.5
-      rimraf: 3.0.2
+      rimraf: 5.0.0
       strip-ansi: 7.0.1
 
   testcases/jsdom-ts:
@@ -229,7 +229,7 @@ importers:
       jest-watch-toggle-config-2: ^2.1.0
       jest-watch-typeahead: ^2.2.1
       npm-run-all: ^4.1.5
-      rimraf: ^3.0.2
+      rimraf: ^5.0.0
       ts-jest: ^29.0.3
       typescript: ^5.0.0
     devDependencies:
@@ -244,7 +244,7 @@ importers:
       jest-watch-toggle-config-2: 2.1.0_jest@29.4.2
       jest-watch-typeahead: 2.2.1_jest@29.4.2
       npm-run-all: 4.1.5
-      rimraf: 3.0.2
+      rimraf: 5.0.0
       ts-jest: 29.0.3_rxahpvrqygs7ofmhax2vsn2kmm
       typescript: 5.0.2
 
@@ -262,7 +262,7 @@ importers:
       jest-watch-toggle-config-2: ^2.1.0
       jest-watch-typeahead: ^2.2.1
       npm-run-all: ^4.1.5
-      rimraf: ^3.0.2
+      rimraf: ^5.0.0
       strip-ansi: ^7.0.1
       ts-jest: ^29.0.3
       typescript: ^5.0.0
@@ -279,7 +279,7 @@ importers:
       jest-watch-toggle-config-2: 2.1.0_jest@29.4.2
       jest-watch-typeahead: 2.2.1_jest@29.4.2
       npm-run-all: 4.1.5
-      rimraf: 3.0.2
+      rimraf: 5.0.0
       strip-ansi: 7.0.1
       ts-jest: 29.0.3_rxahpvrqygs7ofmhax2vsn2kmm
       typescript: 5.0.2
@@ -299,7 +299,7 @@ importers:
       jest-watch-toggle-config-2: ^2.1.0
       jest-watch-typeahead: ^2.2.1
       npm-run-all: ^4.1.5
-      rimraf: ^3.0.2
+      rimraf: ^5.0.0
       strip-ansi: ^7.0.1
       ts-jest: ^29.0.3
       typescript: ^5.0.0
@@ -318,7 +318,7 @@ importers:
       jest-watch-toggle-config-2: 2.1.0_jest@29.4.2
       jest-watch-typeahead: 2.2.1_jest@29.4.2
       npm-run-all: 4.1.5
-      rimraf: 3.0.2
+      rimraf: 5.0.0
       strip-ansi: 7.0.1
       ts-jest: 29.0.3_rxahpvrqygs7ofmhax2vsn2kmm
       typescript: 5.0.2
@@ -339,7 +339,7 @@ importers:
       jest-watch-toggle-config-2: ^2.1.0
       jest-watch-typeahead: ^2.2.1
       npm-run-all: ^4.1.5
-      rimraf: ^3.0.2
+      rimraf: ^5.0.0
       strip-ansi: ^7.0.1
       ts-jest: ^29.0.3
       typescript: ^5.0.0
@@ -357,7 +357,7 @@ importers:
       jest-watch-toggle-config-2: 2.1.0_jest@29.4.2
       jest-watch-typeahead: 2.2.1_jest@29.4.2
       npm-run-all: 4.1.5
-      rimraf: 3.0.2
+      rimraf: 5.0.0
       strip-ansi: 7.0.1
       ts-jest: 29.0.3_rxahpvrqygs7ofmhax2vsn2kmm
       typescript: 5.0.2
@@ -1742,6 +1742,13 @@ packages:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.15.0
     dev: true
+
+  /@pkgjs/parseargs/0.11.0:
+    resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
+    engines: {node: '>=14'}
+    requiresBuild: true
+    dev: true
+    optional: true
 
   /@rushstack/eslint-patch/1.2.0:
     resolution: {integrity: sha512-sXo/qW2/pAcmT43VoRKOJbDOfV3cYpq3szSVfIThQXNt+E4DfKj361vaAt3c88U5tPUxzEswam7GW48PJqtKAg==}
@@ -3764,6 +3771,14 @@ packages:
       for-in: 1.0.2
     dev: true
 
+  /foreground-child/3.1.1:
+    resolution: {integrity: sha512-TMKDUnIte6bfb5nWv7V/caI169OHgvwjb7V4WkeUvbQQdjr5rWKqHFiKWb/fcOwB+CzBT+qbWjvj+DVwRskpIg==}
+    engines: {node: '>=14'}
+    dependencies:
+      cross-spawn: 7.0.3
+      signal-exit: 4.0.1
+    dev: true
+
   /form-data/4.0.0:
     resolution: {integrity: sha512-ETEklSGi5t0QMZuiXoA/Q6vcnxcLQP5vdugSpuAyi6SVGi2clPPp+xgEhuMaHC+zGgn31Kd235W35f7Hykkaww==}
     engines: {node: '>= 6'}
@@ -3873,6 +3888,19 @@ packages:
     engines: {node: '>=10.13.0'}
     dependencies:
       is-glob: 4.0.3
+    dev: true
+
+  /glob/10.2.1:
+    resolution: {integrity: sha512-ngom3wq2UhjdbmRE/krgkD8BQyi1KZ5l+D2dVm4+Yj+jJIBp74/ZGunL6gNGc/CYuQmvUBiavWEXIotRiv5R6A==}
+    engines: {node: '>=16 || 14 >=14.17'}
+    hasBin: true
+    dependencies:
+      foreground-child: 3.1.1
+      fs.realpath: 1.0.0
+      jackspeak: 2.0.3
+      minimatch: 9.0.0
+      minipass: 5.0.0
+      path-scurry: 1.7.0
     dev: true
 
   /glob/7.2.3:
@@ -4531,6 +4559,15 @@ packages:
     dependencies:
       html-escaper: 2.0.2
       istanbul-lib-report: 3.0.0
+    dev: true
+
+  /jackspeak/2.0.3:
+    resolution: {integrity: sha512-0Jud3OMUdMbrlr3PyUMKESq51LXVAB+a239Ywdvd+Kgxj3MaBRml/nVRxf8tQFyfthMjuRkxkv7Vg58pmIMfuQ==}
+    engines: {node: '>=14'}
+    dependencies:
+      cliui: 7.0.4
+    optionalDependencies:
+      '@pkgjs/parseargs': 0.11.0
     dev: true
 
   /jest-changed-files/29.4.2:
@@ -5873,6 +5910,11 @@ packages:
       yallist: 4.0.0
     dev: true
 
+  /lru-cache/9.1.0:
+    resolution: {integrity: sha512-qFXQEwchrZcMVen2uIDceR8Tii6kCJak5rzDStfEM0qA3YLMswaxIEZO0DhIbJ3aqaJiDjt+3crlplOb0tDtKQ==}
+    engines: {node: 14 || >=16.14}
+    dev: true
+
   /magic-string/0.25.9:
     resolution: {integrity: sha512-RmF0AsMzgt25qzqqLc1+MbHmhdx0ojF2Fvs4XnOqz2ZOBXzzkEwc/dJQZCYHAn7v1jbVOjAZfK8msRn4BxO4VQ==}
     dependencies:
@@ -6011,6 +6053,13 @@ packages:
       brace-expansion: 2.0.1
     dev: true
 
+  /minimatch/9.0.0:
+    resolution: {integrity: sha512-0jJj8AvgKqWN05mrwuqi8QYKx1WmYSUoKSxu5Qhs9prezTz10sxAHGNZe9J9cqIJzta8DWsleh2KaVaLl6Ru2w==}
+    engines: {node: '>=16 || 14 >=14.17'}
+    dependencies:
+      brace-expansion: 2.0.1
+    dev: true
+
   /minimist-options/4.1.0:
     resolution: {integrity: sha512-Q4r8ghd80yhO/0j1O3B2BjweX3fiHg9cdOwjJd2J76Q135c+NDxGCqdYKQ1SKBuFfgWbAUzBfvYjPUEeNgqN1A==}
     engines: {node: '>= 6'}
@@ -6022,6 +6071,11 @@ packages:
 
   /minimist/1.2.7:
     resolution: {integrity: sha512-bzfL1YUZsP41gmu/qjrEk0Q6i2ix/cVeAhbCbqH9u3zYutS1cLg00qhrD0M2MVdCcx4Sc0UpP2eBWo9rotpq6g==}
+
+  /minipass/5.0.0:
+    resolution: {integrity: sha512-3FnjYuehv9k6ovOEbyOswadCDPX1piCfhV8ncmYtHOjuPwylVWsghTLo7rabjC3Rx5xD4HDx8Wm1xnMF7S5qFQ==}
+    engines: {node: '>=8'}
+    dev: true
 
   /mixme/0.5.4:
     resolution: {integrity: sha512-3KYa4m4Vlqx98GPdOHghxSdNtTvcP8E0kkaJ5Dlh+h2DRzF7zpuVVcA8B0QpKd11YJeP9QQ7ASkKzOeu195Wzw==}
@@ -6527,6 +6581,14 @@ packages:
       path-root-regex: 0.1.2
     dev: true
 
+  /path-scurry/1.7.0:
+    resolution: {integrity: sha512-UkZUeDjczjYRE495+9thsgcVgsaCPkaw80slmfVFgllxY+IO8ubTsOpFVjDPROBqJdHfVPUFRHPBV/WciOVfWg==}
+    engines: {node: '>=16 || 14 >=14.17'}
+    dependencies:
+      lru-cache: 9.1.0
+      minipass: 5.0.0
+    dev: true
+
   /path-type/3.0.0:
     resolution: {integrity: sha512-T2ZUsdZFHgA3u4e5PfPbjd7HDDpxPnQb5jN0SrDsjNSuVXHJqtwTnWqG0B1jZrgmJ/7lj1EmVIByWt1gxGkWvg==}
     engines: {node: '>=4'}
@@ -6950,6 +7012,14 @@ packages:
     dependencies:
       glob: 7.2.3
 
+  /rimraf/5.0.0:
+    resolution: {integrity: sha512-Jf9llaP+RvaEVS5nPShYFhtXIrb3LRKP281ib3So0KkeZKo2wIKyq0Re7TOSwanasA423PSr6CCIL4bP6T040g==}
+    engines: {node: '>=14'}
+    hasBin: true
+    dependencies:
+      glob: 10.2.1
+    dev: true
+
   /roarr/2.15.4:
     resolution: {integrity: sha512-CHhPh+UNHD2GTXNYhPWLnU8ONHdI+5DI+4EYIAOaiD63rHeYlZvyh8P+in5999TTSFgUYuKUAjzRI4mdh/p+2A==}
     engines: {node: '>=8.0'}
@@ -7113,6 +7183,11 @@ packages:
 
   /signal-exit/3.0.7:
     resolution: {integrity: sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ==}
+    dev: true
+
+  /signal-exit/4.0.1:
+    resolution: {integrity: sha512-uUWsN4aOxJAS8KOuf3QMyFtgm1pkb6I+KRZbRF/ghdf5T7sM+B1lLLzPDxswUjkmHyxQAVzEgG35E3NzDM9GVw==}
+    engines: {node: '>=14'}
     dev: true
 
   /sisteransi/1.0.5:
