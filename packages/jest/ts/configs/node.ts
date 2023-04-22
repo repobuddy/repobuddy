@@ -4,7 +4,7 @@ import { knownTestEnvironments } from '../fields/index.js'
 export const node = configNode()
 
 export function configNode(
-  identifiers = ['spec', 'test', 'unit', 'accept', 'integrate', 'system'],
+  identifiers = ['spec', 'test', 'unit', 'accept', 'integrate', 'system', 'perf', 'stress'],
   minNodeVersion = 14
 ) {
   const id = identifiers.join('|')
