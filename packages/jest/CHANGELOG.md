@@ -1,5 +1,11 @@
 # @unional/jest-presets
 
+## 3.2.0
+
+### Minor Changes
+
+- 7a58888: Add `perf` and `stress` as test categories.
+
 ## 3.1.6
 
 ### Patch Changes
