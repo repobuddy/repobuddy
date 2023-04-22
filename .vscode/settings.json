@@ -30,6 +30,9 @@
   "typescript.format.semicolons": "remove",
   "typescript.tsdk": "node_modules/typescript/lib",
   "cSpell.words": [
-    "formatjs"
+    "formatjs",
+    "kayahr",
+    "repobuddy",
+    "tsbuildinfo"
   ]
 }
