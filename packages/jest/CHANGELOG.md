@@ -1,5 +1,15 @@
 # @unional/jest-presets
 
+## 3.3.0
+
+### Minor Changes
+
+- ea8faad: Upgrade to jest 29.5.0
+
+### Patch Changes
+
+- fdddb47: Update `type-plus` to 6.6.0
+
 ## 3.2.0
 
 ### Minor Changes
