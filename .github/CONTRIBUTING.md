@@ -31,5 +31,9 @@ pnpm install
 pnpm build
 ```
 
+## Note
+
+`build: 'turbo run build && pnpm i'`: because the CLI needs to symlink after build during CI.
+
 [pnpm]: https://pnpm.io/
 [corepack]: https://nodejs.org/api/corepack.html
