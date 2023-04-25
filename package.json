@@ -15,7 +15,7 @@
     "nuke": "pnpm --no-bail --filter=* nuke && pnpm --no-bail nuke:local",
     "nuke:local": "rimraf node_modules",
     "plop": "plop",
-    "postinstall": "turbo run build --filter \"./packages/*\"",
+    "preverify": "turbo run build --filter \"./packages/*\" && pnpm i",
     "release": "pnpm build && changeset publish",
     "size": "turbo run size",
     "test": "turbo run test",
@@ -26,7 +26,7 @@
     "ts-esm": "pnpm --filter ts-esm",
     "two-chalk": "pnpm --filter two-chalk",
     "verify": "turbo run build lint coverage depcheck size",
-    "verify:ci": "turbo run build lint coverage depcheck size",
+    "verify:ci": "pnpm preverify && turbo run build lint coverage depcheck size",
     "version": "changeset version"
   },
   "devDependencies": {
