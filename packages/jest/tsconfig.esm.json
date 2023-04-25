@@ -1,9 +1,6 @@
 {
-  "extends": "./tsconfig.base.json",
+  "extends": "./tsconfig.base",
   "compilerOptions": {
-    "declaration": true,
-    "declarationMap": true,
-    "module": "Node16",
     "outDir": "esm"
   }
 }

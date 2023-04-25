@@ -1,4 +1,4 @@
-import { Config } from 'jest'
+import type { Config } from 'jest'
 import { knownTestEnvironments } from '../fields/index.js'
 
 export const jsdom = {

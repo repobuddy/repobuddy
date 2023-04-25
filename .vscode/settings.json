@@ -1,4 +1,9 @@
 {
+  "files.associations": {
+    "**/frontmatter.json": "jsonc",
+    "**/.frontmatter/config/*.json": "jsonc",
+    "**/tsconfig/**/*.json": "jsonc"
+  },
   "javascript.format.semicolons": "remove",
   "material-icon-theme.files.associations": {
     "*.accept.js": "test-js",
@@ -33,8 +38,10 @@
     "formatjs",
     "kayahr",
     "miku",
+    "pjson",
     "repobuddy",
     "styl",
-    "tsbuildinfo"
+    "tsbuildinfo",
+    "tsconfigs"
   ]
 }
