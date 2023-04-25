@@ -1,0 +1,15 @@
+{
+  "extends": "@repobuddy/typescript/tsconfig/monorepo.json",
+  "compilerOptions": {
+    "outDir": "esm",
+    "rootDir": "ts"
+  },
+  "include": [
+    "ts"
+  ],
+  "references": [
+    {
+      "path": "../../packages/typescript"
+    }
+  ]
+}

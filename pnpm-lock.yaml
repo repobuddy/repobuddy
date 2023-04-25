@@ -7,6 +7,9 @@ importers:
       '@changesets/cli':
         specifier: ^2.26.0
         version: 2.26.0
+      '@repobuddy/typescript':
+        specifier: workspace:^
+        version: link:packages/typescript
       '@typescript-eslint/eslint-plugin':
         specifier: ^5.48.0
         version: 5.48.0(@typescript-eslint/parser@5.48.0)(eslint@8.31.0)(typescript@5.0.4)
@@ -222,6 +225,28 @@ importers:
         version: 29.1.0(@babel/core@7.21.4)(jest@29.5.0)(typescript@5.0.4)
       typescript:
         specifier: ^5.0.4
+        version: 5.0.4
+
+  testcases/build-ts:
+    dependencies:
+      tslib:
+        specifier: ^2.5.0
+        version: 2.5.0
+    devDependencies:
+      '@repobuddy/typescript':
+        specifier: workspace:^
+        version: link:../../packages/typescript
+      npm-run-all:
+        specifier: ^4.1.5
+        version: 4.1.5
+      repobuddy:
+        specifier: workspace:^
+        version: link:../../packages/buddy
+      rimraf:
+        specifier: ^5.0.0
+        version: 5.0.0
+      typescript:
+        specifier: ^5.0.0
         version: 5.0.4
 
   testcases/electron-renderer-ts:
@@ -2106,7 +2131,7 @@ packages:
       shell-quote: 1.7.4
       source-map-support: 0.5.21
       throat: 6.0.2
-      tslib: 2.4.1
+      tslib: 2.5.0
       uuid: 9.0.0
     transitivePeerDependencies:
       - '@types/node'
@@ -5458,6 +5483,7 @@ packages:
       - '@types/node'
       - supports-color
       - ts-node
+    dev: true
 
   /jest-config@29.4.2(@types/node@18.11.18):
     resolution: {integrity: sha512-919CtnXic52YM0zW4C1QxjG6aNueX1kBGthuMtvFtRTAxhKfJmiXC9qwHmi6o2josjbDz8QlWyY55F1SIVmCWA==}
@@ -6390,7 +6416,7 @@ packages:
       jest: '>=23'
     dependencies:
       chalk: 2.4.2
-      jest: 29.5.0(@types/node@18.16.0)
+      jest: 29.5.0(@types/node@18.11.18)
       unpartial: 0.6.4
 
   /jest-watch-toggle-config-2@2.1.0(jest@29.5.0):
@@ -6400,7 +6426,7 @@ packages:
       jest: '>= 23.4.1'
     dependencies:
       chalk: 4.1.2
-      jest: 29.5.0(@types/node@18.16.0)
+      jest: 29.5.0(@types/node@18.11.18)
 
   /jest-watch-typeahead@2.2.1(jest@29.5.0):
     resolution: {integrity: sha512-jYpYmUnTzysmVnwq49TAxlmtOAwp8QIqvZyoofQFn8fiWhEDZj33ZXzg3JA4nGnzWFm1hbWf3ADpteUokvXgFA==}
@@ -6584,6 +6610,7 @@ packages:
       - '@types/node'
       - supports-color
       - ts-node
+    dev: true
 
   /js-message@1.0.7:
     resolution: {integrity: sha512-efJLHhLjIyKRewNS9EGZ4UpI8NguuL6fKkhRxVuMmrGV2xN/0APGdQYwLFky5w9naebSZ0OwAGp0G6/2Cg90rA==}
@@ -6691,7 +6718,7 @@ packages:
   /jsonfile@4.0.0:
     resolution: {integrity: sha512-m6F1R3z8jjlf2imQHS2Qez5sjKWQzbuuhuJ/FKYFRZvPE3PuHcSMVZzfsLhGVOkfd20obL5SWEBew5ShlquNxg==}
     optionalDependencies:
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
 
   /keyv@4.5.2:
     resolution: {integrity: sha512-5MHbFaKn8cNSmVW7BYnijeAVlE4cYA/SVkifVgrh7yotnfhKmjuXpDKjrABLnT0SfHWV21P8ow07OGfRrNDg8g==}

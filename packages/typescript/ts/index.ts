@@ -22,10 +22,10 @@ export function activate(cli: PluginActivationContext) {
 					await execa('tsc', ['-p', `tsconfig.${type}.json`])
 					this.ui.info('copying package.json...')
 					await copyFile(
-						join(dirname(import.meta), './nodejs/package.cjs.json'),
+						join(dirname(import.meta), '../nodejs/package.cjs.json'),
 						join(process.cwd(), `./cjs/package.json`)
 					)
-					this.ui.info('build ${type} done')
+					this.ui.info(`build ${type} done`)
 				}
 			})
 		]
