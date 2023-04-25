@@ -45,8 +45,8 @@ It seems like somehow it is treated as CommonJS while it is not (setting `useESM
 
 - 🚧 `buddy ts init`
 - 🚧 `buddy ts up`
-- 🚧 `buddy ts build cjs`
-- 🚧 `buddy ts build tslib`
+- 🐤 `buddy ts build cjs` (in beta)
+- 🐤 `buddy ts build tslib` (in beta)
 
 [@repobuddy/typescript]: ./README.md
 [downloads-image]: https://img.shields.io/npm/dm/@repobuddy/typescript.svg?style=flat
