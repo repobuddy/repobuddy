@@ -1,0 +1,82 @@
+{
+  "name": "@repobuddy/typescript",
+  "version": "0.0.0",
+  "description": "Some description",
+  "keywords": [],
+  "homepage": "https://github.com/repobuddy/repobuddy",
+  "bugs": {
+    "url": "https://github.com/repobuddy/repobuddy/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/repobuddy/repobuddy.git",
+    "directory": "packages/typescript"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Homa Wong (unional)",
+    "email": "homawong@gmail.com",
+    "url": "https://github.com/unional"
+  },
+  "sideEffects": false,
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./esm/index.d.ts",
+        "default": "./esm/index.js"
+      },
+      "require": {
+        "types": "./cjs/index.d.ts",
+        "default": "./cjs/index.js"
+      }
+    },
+    "./nodejs/*": "./nodejs/*",
+    "./tsconfigs/*": "./tsconfigs/*"
+  },
+  "main": "./cjs/index.js",
+  "module": "./esm/index.js",
+  "types": "./cjs/index.d.ts",
+  "files": [
+    "cjs",
+    "esm",
+    "ts",
+    "!**/*.{spec,unit,test,accept,integrate,system,pref,stress}.*"
+  ],
+  "scripts": {
+    "build": "run-p build:esm",
+    "build:cjs": "buddy tsc build cjs",
+    "build:esm": "tsc",
+    "build:tslib": "buddy tsc build tslib",
+    "build:watch": "tsc -w",
+    "clean": "rimraf cjs esm coverage lib --glob *.tsbuildinfo",
+    "coverage": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_NO_WARNINGS=1 jest --coverage",
+    "depcheck": "depcheck",
+    "lint": "cross-env TIMING=1 eslint --ext=ts,tsx,js,yaml,yml .",
+    "nuke": "rimraf node_modules",
+    "size:disabled": "size-limit",
+    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules TS_JEST_LOG=ts-jest.log jest",
+    "test:watch": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_NO_WARNINGS=1 jest --watch",
+    "w": "pnpm test:watch",
+    "verify": "npm-run-all -p build lint coverage depcheck -p size"
+  },
+  "devDependencies": {
+    "@size-limit/preset-small-lib": "~8.2.4",
+    "@types/jest": "^29.5.1",
+    "cross-env": "^7.0.3",
+    "depcheck": "~1.4.3",
+    "eslint": "^8.39.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-harmony": "^7.1.2",
+    "jest": "^29.5.0",
+    "jest-validate": "^29.5.0",
+    "jest-watch-suspend": "^1.1.2",
+    "jest-watch-toggle-config-2": "^2.1.0",
+    "jest-watch-typeahead": "^2.2.2",
+    "npm-run-all": "^4.1.5",
+    "rimraf": "~5.0.0",
+    "size-limit": "~8.2.4",
+    "ts-jest": "^29.1.0",
+    "typescript": "^5.0.4"
+  }
+}

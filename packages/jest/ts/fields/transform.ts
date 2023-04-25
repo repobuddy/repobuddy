@@ -1,5 +1,5 @@
-import { Config } from 'jest'
-import { AnyRecord, NonUndefined } from 'type-plus'
+import type { Config } from 'jest'
+import type { AnyRecord, NonUndefined } from 'type-plus'
 import { optionize } from '../utils/index.js'
 
 export type Transform = NonUndefined<Config['transform']>

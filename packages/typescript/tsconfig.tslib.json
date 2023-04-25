@@ -1,0 +1,7 @@
+{
+  "extends": "./tsconfig.cjs",
+  "compilerOptions": {
+    "importHelpers": true,
+    "outDir": "tslib",
+  }
+}
