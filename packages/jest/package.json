@@ -7,13 +7,13 @@
     "presets",
     "config"
   ],
-  "homepage": "https://github.com/repobuddy/jest",
+  "homepage": "https://github.com/repobuddy/repobuddy",
   "bugs": {
-    "url": "https://github.com/repobuddy/jest/issues"
+    "url": "https://github.com/repobuddy/repobuddy/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/repobuddy/jest.git",
+    "url": "https://github.com/repobuddy/repobuddy.git",
     "directory": "packages/jest"
   },
   "license": "MIT",
@@ -330,7 +330,7 @@
     "presets",
     "ts",
     "config.mjs",
-    "!**/*.{accept,integrate,spec,system,test,unit}.*"
+    "!**/*.{spec,unit,test,accept,integrate,system,pref,stress}.*"
   ],
   "scripts": {
     "build": "run-p build:cjs build:esm build:tslib",

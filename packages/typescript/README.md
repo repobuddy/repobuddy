@@ -25,7 +25,10 @@ rush add -p --dev @repobuddy/typescript
 
 [@repobuddy/typescript] provides a set of [tsconfigs] that you can use in your project.
 
-- `@repobuddy/typescript/tsconfig/monorepo`: for monorepo projects
+- `@repobuddy/typescript/tsconfig/monorepo`: for monorepo projects.
+
+There are individual configs available for you to compose your own config.
+For more information, see [tsconfig](./tsconfig/readme.md).
 
 ## Notes
 
@@ -40,10 +43,10 @@ It seems like somehow it is treated as CommonJS while it is not (setting `useESM
 
 ## buddy CLI
 
-- 🚧 `npx buddy ts init`
-- 🚧 `npx buddy ts up`
-- 🚧 `npx buddy ts build cjs`
-- 🚧 `npx buddy ts build tslib`
+- 🚧 `buddy ts init`
+- 🚧 `buddy ts up`
+- 🚧 `buddy ts build cjs`
+- 🚧 `buddy ts build tslib`
 
 [downloads-image]: https://img.shields.io/npm/dm/@repobuddy/typescript.svg?style=flat
 [downloads-url]: https://npmjs.org/package/@repobuddy/typescript

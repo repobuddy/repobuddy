@@ -1,8 +1,11 @@
 {
   "name": "@repobuddy/typescript",
   "version": "0.0.0",
-  "description": "Some description",
-  "keywords": [],
+  "description": "Your TypeScript buddy",
+  "keywords": [
+    "typescript",
+    "tsconfig"
+  ],
   "homepage": "https://github.com/repobuddy/repobuddy",
   "bugs": {
     "url": "https://github.com/repobuddy/repobuddy/issues"
@@ -40,7 +43,9 @@
   "files": [
     "cjs",
     "esm",
+    "nodejs",
     "ts",
+    "tsconfig",
     "!**/*.{spec,unit,test,accept,integrate,system,pref,stress}.*"
   ],
   "scripts": {
