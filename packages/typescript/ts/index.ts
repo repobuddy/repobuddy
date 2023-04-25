@@ -23,7 +23,7 @@ export function activate(cli: PluginActivationContext) {
 					this.ui.info('copying package.json...')
 					await copyFile(
 						join(dirname(import.meta), '../nodejs/package.cjs.json'),
-						join(process.cwd(), `./cjs/package.json`)
+						join(process.cwd(), `./${type}/package.json`)
 					)
 					this.ui.info(`build ${type} done`)
 				}

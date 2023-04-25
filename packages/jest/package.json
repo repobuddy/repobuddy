@@ -340,6 +340,7 @@
     "clean": "rimraf cjs esm tslib --glob *.tsbuildinfo",
     "coverage": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_OPTIONS=--experimental-import-meta-resolve NODE_NO_WARNINGS=1 jest --coverage",
     "depcheck": "depcheck",
+    "nuke": "run-s clean && rimraf node_modules",
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_OPTIONS=--experimental-import-meta-resolve jest",
     "test:list": "jest --list-tests",
     "test:watch": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_OPTIONS=--experimental-import-meta-resolve jest --watch",

@@ -51,7 +51,7 @@
     "coverage": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_NO_WARNINGS=1 jest --coverage",
     "depcheck": "depcheck",
     "lint": "cross-env TIMING=1 eslint --ext=ts,tsx,js,yaml,yml .",
-    "nuke": "rimraf node_modules",
+    "nuke": "run-s clean && rimraf node_modules",
     "size:disabled": "size-limit",
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules TS_JEST_LOG=ts-jest.log jest",
     "test:watch": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_NO_WARNINGS=1 jest --watch",

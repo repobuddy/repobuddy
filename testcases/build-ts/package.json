@@ -6,7 +6,8 @@
     "build": "run-p build:*",
     "build:cjs": "buddy ts build cjs",
     "build:tslib": "buddy ts build tslib",
-    "clean": "rimraf cjs esm tslib --glob *.tsbuildinfo"
+    "clean": "rimraf cjs esm tslib --glob *.tsbuildinfo",
+    "nuke": "run-s clean && rimraf node_modules"
   },
   "dependencies": {
     "tslib": "^2.5.0"
