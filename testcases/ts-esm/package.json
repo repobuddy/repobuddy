@@ -11,6 +11,8 @@
   "devDependencies": {
     "@jest/globals": "^29.5.0",
     "@repobuddy/jest": "workspace:^",
+    "@tsconfig/recommended": "^1.0.2",
+    "@repobuddy/typescript": "workspace:^",
     "@types/node": "^18.11.18",
     "assertron": "^11.0.3",
     "chalk": "^5.2.0",

@@ -36,6 +36,7 @@
   "typescript.tsdk": "node_modules/typescript/lib",
   "cSpell.words": [
     "clibuilder",
+    "execa",
     "formatjs",
     "kayahr",
     "miku",

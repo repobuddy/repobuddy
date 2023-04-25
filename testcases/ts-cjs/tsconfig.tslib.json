@@ -1,0 +1,7 @@
+{
+  "extends": "./tsconfig.base",
+  "compilerOptions": {
+    "importHelpers": true,
+    "outDir": "tslib"
+  }
+}
