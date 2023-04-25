@@ -48,7 +48,9 @@ It seems like somehow it is treated as CommonJS while it is not (setting `useESM
 - 🚧 `buddy ts build cjs`
 - 🚧 `buddy ts build tslib`
 
+[@repobuddy/typescript]: ./README.md
 [downloads-image]: https://img.shields.io/npm/dm/@repobuddy/typescript.svg?style=flat
 [downloads-url]: https://npmjs.org/package/@repobuddy/typescript
 [npm-image]: https://img.shields.io/npm/v/@repobuddy/typescript.svg?style=flat
 [npm-url]: https://npmjs.org/package/@repobuddy/typescript
+[typescript]: https://typescriptlang.org/
