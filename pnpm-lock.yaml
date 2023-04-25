@@ -44,8 +44,8 @@ importers:
   packages/buddy:
     dependencies:
       clibuilder:
-        specifier: ^8.0.14
-        version: 8.0.14
+        specifier: ^8.0.15
+        version: 8.0.15
     devDependencies:
       '@jest/globals':
         specifier: ^29.5.0
@@ -160,8 +160,11 @@ importers:
   packages/typescript:
     dependencies:
       clibuilder:
-        specifier: ^8.0.14
-        version: 8.0.14
+        specifier: ^8.0.15
+        version: 8.0.15
+      dirname-filename-esm:
+        specifier: ^1.1.1
+        version: 1.1.1
       execa:
         specifier: ^7.1.1
         version: 7.1.1
@@ -3361,8 +3364,8 @@ packages:
     engines: {node: '>= 10'}
     dev: true
 
-  /clibuilder@8.0.14:
-    resolution: {integrity: sha512-f9Q1W/SJ3peIY/TgGXEpIDWOLxlKRQNGFF/nK7925d6fyH6EhIkjo0TAhEsapFnqNfy1K9G/T3V7CuHKcC8ALQ==}
+  /clibuilder@8.0.15:
+    resolution: {integrity: sha512-yIEP8H4EKrPVXg7V1VB/e5D9yurQNePNXruSRxxssC4JZNLnDupdv8Ib/wLeYBplo90Ns0ZN+pz1GwrTc8BIKw==}
     engines: {node: '>= 8'}
     dependencies:
       find-installed-packages: 3.0.2
@@ -3754,7 +3757,6 @@ packages:
 
   /dirname-filename-esm@1.1.1:
     resolution: {integrity: sha512-BWBkv157Cf/z7Hjod2v2JS7vyC36Dk1QQolAtuLjpl8RBlv7Z92X7+Ufc2cjfR/B3iJUiK0QmGZkgtsmmLz0Tw==}
-    dev: true
 
   /doctrine@3.0.0:
     resolution: {integrity: sha512-yS+Q5i3hBf7GBkd4KG8a7eBNNWNGLTaEwwYWUijIYM7zrlYDM0BFXHjjPWlWZ1Rg7UaddZeIDmi9jF3HmqiQ2w==}

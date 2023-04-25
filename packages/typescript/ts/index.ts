@@ -1,4 +1,5 @@
-import { PluginActivationContext, command, z } from 'clibuilder'
+import { command, z, type PluginActivationContext } from 'clibuilder'
+import { dirname } from 'dirname-filename-esm'
 import { execa } from 'execa'
 import { copyFile } from 'fs/promises'
 import { join } from 'path'
@@ -20,7 +21,10 @@ export function activate(cli: PluginActivationContext) {
 					this.ui.info(`building ${type}...`)
 					await execa('tsc', ['-p', `tsconfig.${type}.json`])
 					this.ui.info('copying package.json...')
-					await copyFile('./nodejs/package.cjs.json', join(process.cwd(), `./cjs/package.json`))
+					await copyFile(
+						join(dirname(import.meta), './nodejs/package.cjs.json'),
+						join(process.cwd(), `./cjs/package.json`)
+					)
 					this.ui.info('build ${type} done')
 				}
 			})

@@ -67,7 +67,8 @@
     "verify": "npm-run-all -p build lint coverage depcheck -p size"
   },
   "dependencies": {
-    "clibuilder": "^8.0.14",
+    "clibuilder": "^8.0.15",
+    "dirname-filename-esm": "^1.1.1",
     "execa": "^7.1.1"
   },
   "devDependencies": {

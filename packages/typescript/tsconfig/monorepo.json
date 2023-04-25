@@ -1,11 +1,11 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
   "extends": [
-    "./emit/buddy",
-    "./interop/buddy",
-    "./language/buddy",
-    "./modules/buddy",
-    "./projects/composite",
-    "./type-checking/buddy"
+    "./emit/buddy.json",
+    "./interop/buddy.json",
+    "./language/buddy.json",
+    "./modules/buddy.json",
+    "./projects/composite.json",
+    "./type-checking/buddy.json"
   ]
 }

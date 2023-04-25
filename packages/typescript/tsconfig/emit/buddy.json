@@ -1,8 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
   "extends": [
-    "./declaration",
-    "./sourcemap",
-    "./line-endings"
+    "./declaration.json",
+    "./sourcemap.json",
+    "./line-endings.json"
   ]
 }
