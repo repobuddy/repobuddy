@@ -1,10 +1,13 @@
 {
-  "name": "jestbuddy",
+  "name": "repobuddy",
   "version": "0.0.0",
-  "description": "jest buddy helper CLI",
+  "description": "Your Repobuddy CLI",
   "keywords": [
+    "cli",
+    "repository",
+    "tools",
     "jest",
-    "cli"
+    "typescript"
   ],
   "homepage": "https://github.com/repobuddy/repobuddy",
   "bugs": {
@@ -13,7 +16,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/repobuddy/repobuddy.git",
-    "directory": "packages/jestbuddy"
+    "directory": "packages/buddy"
   },
   "license": "MIT",
   "author": {
@@ -23,7 +26,10 @@
   "sideEffects": false,
   "type": "module",
   "bin": {
-    "jestbuddy": "./esm/bin.js"
+    "buddy": "./esm/bin.js"
+  },
+  "exports": {
+    "./package.json": "./package.json"
   },
   "scripts": {
     "build": "run-p build:esm",
@@ -36,11 +42,10 @@
     "verify": "npm-run-all -p build -p test depcheck size"
   },
   "dependencies": {
-    "clibuilder": "^8.0.4"
+    "clibuilder": "^8.0.13"
   },
   "devDependencies": {
     "@jest/globals": "^29.5.0",
-    "@repobuddy/jest": "workspace:^",
     "@types/node": "^18.11.18",
     "cross-env": "^7.0.3",
     "depcheck": "^1.4.3",

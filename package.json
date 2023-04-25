@@ -7,7 +7,7 @@
     "cs": "changeset",
     "depcheck": "turbo run depcheck",
     "jest": "pnpm --filter @repobuddy/jest",
-    "jestbuddy": "pnpm --filter jestbuddy",
+    "buddy": "pnpm --filter ./packages/buddy",
     "js-cjs": "pnpm --filter js-cjs",
     "js-esm": "pnpm --filter js-esm",
     "jsdom-ts": "pnpm --filter jsdom-ts",

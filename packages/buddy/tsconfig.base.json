@@ -1,0 +1,10 @@
+{
+  "extends": "../typescript/tsconfig/monorepo",
+  "compilerOptions": {
+    "rootDir": "ts"
+  },
+  "include": [
+    "ts",
+    "types"
+  ]
+}
