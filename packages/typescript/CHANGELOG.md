@@ -1,5 +1,13 @@
 # @repobuddy/typescript
 
+## 1.1.0
+
+### Minor Changes
+
+- 68dc49e: Add cli command `ts build cjs|tslib`.
+
+  Fix exports fields for the tsconfigs.
+
 ## 1.0.0
 
 ### Major Changes
