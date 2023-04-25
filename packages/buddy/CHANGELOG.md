@@ -1,5 +1,12 @@
 # repobuddy
 
+## 1.0.1
+
+### Patch Changes
+
+- 75de779: Update clibuilder
+- 81dc7e2: Update `clibuilder`
+
 ## 1.0.0
 
 ### Major Changes

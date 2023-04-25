@@ -1,5 +1,13 @@
 # @repobuddy/typescript
 
+## 1.1.1
+
+### Patch Changes
+
+- 75de779: Update clibuilder
+- 75de779: fix copy package.cjs.json code
+- 81dc7e2: Update `clibuilder`
+
 ## 1.1.0
 
 ### Minor Changes
