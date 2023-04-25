@@ -44,8 +44,8 @@ importers:
   packages/buddy:
     dependencies:
       clibuilder:
-        specifier: ^8.0.13
-        version: 8.0.13
+        specifier: ^8.0.14
+        version: 8.0.14
     devDependencies:
       '@jest/globals':
         specifier: ^29.5.0
@@ -160,8 +160,8 @@ importers:
   packages/typescript:
     dependencies:
       clibuilder:
-        specifier: ^8.0.13
-        version: 8.0.13
+        specifier: ^8.0.14
+        version: 8.0.14
       execa:
         specifier: ^7.1.1
         version: 7.1.1
@@ -3361,8 +3361,8 @@ packages:
     engines: {node: '>= 10'}
     dev: true
 
-  /clibuilder@8.0.13:
-    resolution: {integrity: sha512-DYRNrDwCzewree02ApgHJaLRR5WXxCzJi6O1qC/6ImX/qhFXEr0pVtX4vLOYQY/eA+OI3fMH3uAT2otQrMoDGw==}
+  /clibuilder@8.0.14:
+    resolution: {integrity: sha512-f9Q1W/SJ3peIY/TgGXEpIDWOLxlKRQNGFF/nK7925d6fyH6EhIkjo0TAhEsapFnqNfy1K9G/T3V7CuHKcC8ALQ==}
     engines: {node: '>= 8'}
     dependencies:
       find-installed-packages: 3.0.2
@@ -5456,7 +5456,6 @@ packages:
       - '@types/node'
       - supports-color
       - ts-node
-    dev: true
 
   /jest-config@29.4.2(@types/node@18.11.18):
     resolution: {integrity: sha512-919CtnXic52YM0zW4C1QxjG6aNueX1kBGthuMtvFtRTAxhKfJmiXC9qwHmi6o2josjbDz8QlWyY55F1SIVmCWA==}
@@ -6389,7 +6388,7 @@ packages:
       jest: '>=23'
     dependencies:
       chalk: 2.4.2
-      jest: 29.5.0(@types/node@18.11.18)
+      jest: 29.5.0(@types/node@18.16.0)
       unpartial: 0.6.4
 
   /jest-watch-toggle-config-2@2.1.0(jest@29.5.0):
@@ -6399,7 +6398,7 @@ packages:
       jest: '>= 23.4.1'
     dependencies:
       chalk: 4.1.2
-      jest: 29.5.0(@types/node@18.11.18)
+      jest: 29.5.0(@types/node@18.16.0)
 
   /jest-watch-typeahead@2.2.1(jest@29.5.0):
     resolution: {integrity: sha512-jYpYmUnTzysmVnwq49TAxlmtOAwp8QIqvZyoofQFn8fiWhEDZj33ZXzg3JA4nGnzWFm1hbWf3ADpteUokvXgFA==}
@@ -6583,7 +6582,6 @@ packages:
       - '@types/node'
       - supports-color
       - ts-node
-    dev: true
 
   /js-message@1.0.7:
     resolution: {integrity: sha512-efJLHhLjIyKRewNS9EGZ4UpI8NguuL6fKkhRxVuMmrGV2xN/0APGdQYwLFky5w9naebSZ0OwAGp0G6/2Cg90rA==}
@@ -6691,7 +6689,7 @@ packages:
   /jsonfile@4.0.0:
     resolution: {integrity: sha512-m6F1R3z8jjlf2imQHS2Qez5sjKWQzbuuhuJ/FKYFRZvPE3PuHcSMVZzfsLhGVOkfd20obL5SWEBew5ShlquNxg==}
     optionalDependencies:
-      graceful-fs: 4.2.11
+      graceful-fs: 4.2.10
 
   /keyv@4.5.2:
     resolution: {integrity: sha512-5MHbFaKn8cNSmVW7BYnijeAVlE4cYA/SVkifVgrh7yotnfhKmjuXpDKjrABLnT0SfHWV21P8ow07OGfRrNDg8g==}

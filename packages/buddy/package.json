@@ -42,7 +42,7 @@
     "verify": "npm-run-all -p build -p test depcheck size"
   },
   "dependencies": {
-    "clibuilder": "^8.0.13"
+    "clibuilder": "^8.0.14"
   },
   "devDependencies": {
     "@jest/globals": "^29.5.0",
