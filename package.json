@@ -24,8 +24,8 @@
     "ts-cjs": "pnpm --filter ts-cjs",
     "ts-esm": "pnpm --filter ts-esm",
     "two-chalk": "pnpm --filter two-chalk",
-    "preverify": "turbo run build",
-    "verify": "turbo run build && pnpm i && turbo run lint coverage depcheck size",
+    "verify": "turbo run build lint coverage depcheck size",
+    "verify:ci": "turbo run build && pnpm i && turbo run lint coverage depcheck size",
     "version": "changeset version"
   },
   "devDependencies": {
