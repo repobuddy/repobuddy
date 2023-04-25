@@ -1,5 +1,6 @@
 ignores:
   - '@types/node'
+  - eslint-plugin-harmony
   - jest
   - jest-*
   - rimraf # depcheck issue

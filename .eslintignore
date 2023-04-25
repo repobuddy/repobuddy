@@ -1,4 +1,7 @@
-cjs
-esm
-node_modules
-tslib
+node_modules/
+testcases/
+.turbo/
+cjs/
+coverage/
+esm/
+tslib/

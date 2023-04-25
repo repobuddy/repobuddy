@@ -14,19 +14,5 @@ module.exports = {
   rules: {
     'yml/quotes': ['error', { prefer: 'single' }]
   },
-  overrides: [
-    {
-      extends: [
-        'plugin:harmony/ts-prettier'
-      ],
-      files: [
-        '*.ts',
-        '*.tsx'
-      ],
-      rules: {
-        '@typescript-eslint/require-await': 'off',
-      }
-    }
-  ],
   root: true
 }

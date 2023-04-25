@@ -20,8 +20,11 @@ importers:
         specifier: ^7.0.3
         version: 7.0.3
       eslint:
-        specifier: ^8.31.0
+        specifier: ^8.39.0
         version: 8.39.0
+      eslint-config-prettier:
+        specifier: ^8.8.0
+        version: 8.8.0(eslint@8.39.0)
       eslint-plugin-harmony:
         specifier: ^7.1.2
         version: 7.1.2(@typescript-eslint/eslint-plugin@5.48.0)(eslint-config-prettier@8.8.0)(eslint@8.39.0)(typescript@5.0.4)
@@ -187,15 +190,6 @@ importers:
       depcheck:
         specifier: ~1.4.3
         version: 1.4.3
-      eslint:
-        specifier: ^8.39.0
-        version: 8.39.0
-      eslint-config-prettier:
-        specifier: ^8.8.0
-        version: 8.8.0(eslint@8.39.0)
-      eslint-plugin-harmony:
-        specifier: ^7.1.2
-        version: 7.1.2(@typescript-eslint/eslint-plugin@5.48.0)(eslint-config-prettier@8.8.0)(eslint@8.39.0)(typescript@5.0.4)
       jest:
         specifier: ^29.5.0
         version: 29.5.0(@types/node@18.11.18)

@@ -2,6 +2,7 @@ ignores:
   - '@jest/expect' # `expect` augmentation
   - '@size-limit/*'
   - '@types/node'
+  - eslint-plugin-harmony
   - jest
   - jest-*
   - rimraf # depcheck issue

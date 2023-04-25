@@ -2,6 +2,7 @@ ignores:
   - '@repobuddy/jest'
   - '@size-limit/*'
   - '@types/jest'
+  - eslint-plugin-harmony
   - 'jest-*'
   - rimraf # https://github.com/depcheck/depcheck/issues/776
   - size-limit
