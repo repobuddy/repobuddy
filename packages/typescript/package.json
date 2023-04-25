@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "Your TypeScript buddy",
   "keywords": [
-    "typescript",
-    "tsconfig"
+    "repobuddy",
+    "tsconfig",
+    "typescript"
   ],
   "homepage": "https://github.com/repobuddy/repobuddy",
   "bugs": {
@@ -35,7 +36,7 @@
       }
     },
     "./nodejs/*": "./nodejs/*",
-    "./tsconfigs/*": "./tsconfigs/*"
+    "./tsconfig/*": "./tsconfig/*"
   },
   "main": "./cjs/index.js",
   "module": "./esm/index.js",
@@ -65,9 +66,14 @@
     "w": "pnpm test:watch",
     "verify": "npm-run-all -p build lint coverage depcheck -p size"
   },
+  "dependencies": {
+    "clibuilder": "^8.0.13",
+    "execa": "^7.1.1"
+  },
   "devDependencies": {
     "@size-limit/preset-small-lib": "~8.2.4",
     "@types/jest": "^29.5.1",
+    "@types/node": "^18.11.18",
     "cross-env": "^7.0.3",
     "depcheck": "~1.4.3",
     "eslint": "^8.39.0",
