@@ -6,13 +6,13 @@
     "jest",
     "cli"
   ],
-  "homepage": "https://github.com/repobuddy/jest",
+  "homepage": "https://github.com/repobuddy/repobuddy",
   "bugs": {
-    "url": "https://github.com/repobuddy/jest/issues"
+    "url": "https://github.com/repobuddy/repobuddy/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/repobuddy/jest.git",
+    "url": "https://github.com/repobuddy/repobuddy.git",
     "directory": "packages/jestbuddy"
   },
   "license": "MIT",
