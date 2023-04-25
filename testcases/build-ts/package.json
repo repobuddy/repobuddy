@@ -3,11 +3,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "run-p build:*",
-    "build:cjs": "buddy ts build cjs",
-    "build:tslib": "buddy ts build tslib",
     "clean": "rimraf cjs esm tslib --glob *.tsbuildinfo",
-    "nuke": "run-s clean && rimraf node_modules"
+    "nuke": "run-s clean && rimraf node_modules",
+    "test": "run-p test:*",
+    "test:cjs": "buddy ts build cjs",
+    "test:tslib": "buddy ts build tslib"
   },
   "dependencies": {
     "tslib": "^2.5.0"

@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "buddy": "pnpm --filter ./packages/buddy",
-    "build": "turbo run build && pnpm i",
+    "build": "turbo run build",
     "clean": "turbo run clean",
     "coverage": "turbo run coverage",
     "cs": "changeset",
