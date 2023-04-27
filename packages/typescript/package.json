@@ -32,7 +32,7 @@
       }
     },
     "./nodejs/*": "./nodejs/*",
-    "./tsconfig/*.json": "./tsconfig/*",
+    "./tsconfig/*.json": "./tsconfig/*.json",
     "./tsconfig/*": "./tsconfig/*.json"
   },
   "files": [
