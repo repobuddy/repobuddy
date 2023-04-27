@@ -26,6 +26,8 @@ rush add -p --dev @repobuddy/typescript
 [@repobuddy/typescript] provides a set of [tsconfigs] that you can use in your project.
 
 - `@repobuddy/typescript/tsconfig/monorepo`: for monorepo projects.
+- `@repobuddy/typescript/tsconfig/legacy/monorepo`: for monorepo projects using TypeScript < 5.0\
+  including `astro` project which uses `tsconfig-resolver` (<https://github.com/withastro/astro/issues/6918>).
 
 There are individual configs available for you to compose your own config.
 For more information, see [tsconfig](./tsconfig/readme.md).
