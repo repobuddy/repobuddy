@@ -1,5 +1,11 @@
 # @repobuddy/typescript
 
+## 1.1.2
+
+### Patch Changes
+
+- f09b913: Support extends tsconfig without `.json`.
+
 ## 1.1.1
 
 ### Patch Changes
