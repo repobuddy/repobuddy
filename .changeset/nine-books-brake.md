@@ -1,0 +1,5 @@
+---
+'repobuddy': patch
+---
+
+update readme

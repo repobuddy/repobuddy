@@ -1,15 +1,27 @@
-# jestbuddy
+# repobuddy
 
-[jest] buddy CLI tool to configure your repository using [@repobuddy/jest].
+[repobuddy] is a CLI tools to manage your repository.
 
-## Usage
-
-- 🚧 `npx jestbuddy init`
-- 🚧 `npx jestbuddy up`
+It is a plugin-based CLI tool based on [clibuilder](https://www.npmjs.com/package/clibuilder).
 
 ## Install
 
-You typically don't need to install this package.
+```sh
+npm install -D repobuddy
 
-[@repobuddy/jest]: https://github.com/repobuddy/jest
-[jest]: https://jestjs.io
+yarn add -D repobuddy
+
+pnpm add -D repobuddy
+```
+
+## Usage
+
+As a plugin-based CLI,
+each plugin will provide additional commands to the CLI.
+
+- 🚧 `repobuddy init`: creates a `.repobuddy.json` file in the current directory.
+- 🚧 `repobuddy add <plugin>`: adds a `@repobuddy/<plugin>` to your project.
+
+### Available plugins
+
+- [@repobuddy/typescript](./packages/typescript/README.md)
