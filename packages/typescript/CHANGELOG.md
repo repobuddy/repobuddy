@@ -1,5 +1,11 @@
 # @repobuddy/typescript
 
+## 1.2.0
+
+### Minor Changes
+
+- bff87cb: Add legacy monorepo.json for TypeScript version older than 5.0
+
 ## 1.1.2
 
 ### Patch Changes
