@@ -1,9 +1,9 @@
-# Your jest buddy
+# Your repository buddy
 
 [![GitHub NodeJS][github-nodejs]][github-action-url]
 [![Visual Studio Code][vscode-image]][vscode-url]
 
-This repository contains packages that help you to manage [jest].
+[repobuddy] helps you managing your repository.
 
 ## [@repobuddy/jest]
 
@@ -35,3 +35,4 @@ This repository contains packages that help you to manage [jest].
 [typescript]: https://typescriptlang.org/
 [vscode-image]: https://img.shields.io/badge/vscode-ready-green.svg
 [vscode-url]: https://code.visualstudio.com/
+[repobuddy]: https://www.npmjs.com/package/repobuddy
