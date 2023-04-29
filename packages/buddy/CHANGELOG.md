@@ -1,5 +1,11 @@
 # repobuddy
 
+## 1.0.2
+
+### Patch Changes
+
+- 76dac3b: update readme
+
 ## 1.0.1
 
 ### Patch Changes
