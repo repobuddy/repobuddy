@@ -1,5 +1,5 @@
 import { describe, expect, it, jest } from '@jest/globals'
-import { ctx } from './configSource.ctx.js'
+import { ctx } from './source.ctx.js'
 import { configSource } from './index.js'
 
 describe(`${configSource.name}()`, () => {

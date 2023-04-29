@@ -1,4 +1,4 @@
-export * from './configSource.js'
+export * from './source.js'
 export * from './electron.js'
 export * from './javascript.js'
 export * from './jsdom.js'

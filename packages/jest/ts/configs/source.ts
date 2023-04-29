@@ -1,6 +1,6 @@
 import type { Config } from 'jest'
 import { resolve } from 'node:path'
-import { ctx } from './configSource.ctx.js'
+import { ctx } from './source.ctx.js'
 
 /**
  * Configure the source directory of the project
