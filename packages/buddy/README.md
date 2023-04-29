@@ -19,8 +19,8 @@ pnpm add -D repobuddy
 As a plugin-based CLI,
 each plugin will provide additional commands to the CLI.
 
-- 🚧 `repobuddy init`: creates a `.repobuddy.json` file in the current directory.
-- 🚧 `repobuddy add <plugin>`: adds a `@repobuddy/<plugin>` to your project.
+- 🚧 `buddy init`: creates a `.repobuddy.json` file in the current directory.
+- 🚧 `buddy add <plugin>`: adds a `@repobuddy/<plugin>` to your project.
 
 ### Available plugins
 
