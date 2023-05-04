@@ -1,5 +1,11 @@
 # @unional/jest-presets
 
+## 3.4.0
+
+### Minor Changes
+
+- 1de4cdb: Add `watch` preset
+
 ## 3.3.0
 
 ### Minor Changes
