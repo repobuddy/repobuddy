@@ -314,6 +314,16 @@
       "import": "./esm/presets/ts-esm-watch/jest-preset.js",
       "default": "./cjs/presets/ts-esm-watch/jest-preset.js"
     },
+    "./presets/watch": {
+      "types": "./esm/presets/watch/jest-preset.d.ts",
+      "import": "./esm/presets/watch/jest-preset.js",
+      "default": "./cjs/presets/watch/jest-preset.js"
+    },
+    "./presets/watch/jest-preset": {
+      "types": "./esm/presets/watch/jest-preset.d.ts",
+      "import": "./esm/presets/watch/jest-preset.js",
+      "default": "./cjs/presets/watch/jest-preset.js"
+    },
     "./package.json": "./package.json",
     "./resolver": {
       "types": "./esm/resolver.d.ts",
@@ -330,7 +340,7 @@
     "presets",
     "ts",
     "config.mjs",
-    "!**/*.{spec,unit,test,accept,integrate,system,pref,stress}.*"
+    "!**/*.{spec,unit,test,accept,integrate,system,perf,stress}.*"
   ],
   "scripts": {
     "build": "run-p build:cjs build:esm build:tslib",

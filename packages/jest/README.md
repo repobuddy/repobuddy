@@ -103,6 +103,7 @@ rush add -p @repobuddy/jest --dev
 - `@repobuddy/jest/presets/electron-renderer-ts-cjs-watch`
 - `@repobuddy/jest/presets/electron-renderer-ts-esm`
 - `@repobuddy/jest/presets/electron-renderer-ts-esm-watch`
+- `@repobuddy/jest/presets/watch`: watch mode presets for multi-environment config
 
 If you do not have any specific configs,
 these presets should work without additional configuration.
