@@ -29,8 +29,8 @@ importers:
         specifier: ^7.1.2
         version: 7.1.2(@typescript-eslint/eslint-plugin@5.48.0)(eslint-config-prettier@8.8.0)(eslint@8.39.0)(typescript@5.0.4)
       eslint-plugin-yml:
-        specifier: ~1.5.0
-        version: 1.5.0(eslint@8.39.0)
+        specifier: ~1.6.0
+        version: 1.6.0(eslint@8.39.0)
       jest:
         specifier: ^29.5.0
         version: 29.5.0(@types/node@18.11.18)
@@ -3428,8 +3428,8 @@ packages:
       - typescript
     dev: true
 
-  /eslint-plugin-yml@1.5.0(eslint@8.39.0):
-    resolution: {integrity: sha512-iygN054g+ZrnYmtOXMnT+sx9iDNXt89/m0+506cQHeG0+5jJN8hY5iOPQLd3yfd50AfK/mSasajBWruf1SoHpQ==}
+  /eslint-plugin-yml@1.6.0(eslint@8.39.0):
+    resolution: {integrity: sha512-KK3tu8notai2l6BgMvK1yay6RW7FwVRqL48PlKI1AGEpQNwvq/OfNwPMmNWb4/Eu2X22FHUjCnCfCP+bc0pzLw==}
     engines: {node: ^14.17.0 || >=16.0.0}
     peerDependencies:
       eslint: '>=6.0.0'
@@ -3438,7 +3438,7 @@ packages:
       eslint: 8.39.0
       lodash: 4.17.21
       natural-compare: 1.4.0
-      yaml-eslint-parser: 1.2.0
+      yaml-eslint-parser: 1.2.1
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -7561,8 +7561,8 @@ packages:
   /yallist@4.0.0:
     resolution: {integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==}
 
-  /yaml-eslint-parser@1.2.0:
-    resolution: {integrity: sha512-OmuvQd5lyIJWfFALc39K5fGqp0aWNc+EtyhVgcQIPZaUKMnTb7An3RMp+QJizJ/x0F4kpgTNe6BL/ctdvoIwIg==}
+  /yaml-eslint-parser@1.2.1:
+    resolution: {integrity: sha512-XxLosxcDd0lBF1OEANOod8I/gn+VrYdSbUFAgfoYntY/vktK2V38Nknu4ZbQELTt38CJfxRlYOWYQC2kTytX8Q==}
     engines: {node: ^14.17.0 || >=16.0.0}
     dependencies:
       eslint-visitor-keys: 3.4.0
