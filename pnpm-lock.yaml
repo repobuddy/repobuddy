@@ -29,8 +29,8 @@ importers:
         specifier: ^7.1.2
         version: 7.1.2(@typescript-eslint/eslint-plugin@5.48.0)(eslint-config-prettier@8.8.0)(eslint@8.39.0)(typescript@5.0.4)
       eslint-plugin-yml:
-        specifier: ~1.6.0
-        version: 1.6.0(eslint@8.39.0)
+        specifier: ~1.7.0
+        version: 1.7.0(eslint@8.39.0)
       jest:
         specifier: ^29.5.0
         version: 29.5.0(@types/node@18.11.18)
@@ -3428,8 +3428,8 @@ packages:
       - typescript
     dev: true
 
-  /eslint-plugin-yml@1.6.0(eslint@8.39.0):
-    resolution: {integrity: sha512-KK3tu8notai2l6BgMvK1yay6RW7FwVRqL48PlKI1AGEpQNwvq/OfNwPMmNWb4/Eu2X22FHUjCnCfCP+bc0pzLw==}
+  /eslint-plugin-yml@1.7.0(eslint@8.39.0):
+    resolution: {integrity: sha512-qq61FQJk+qIgWl0R06bec7UQQEIBrUH22jS+MroTbFUKu+3/iVlGRpZd8mjpOAm/+H/WEDFwy4x/+kKgVGbsWw==}
     engines: {node: ^14.17.0 || >=16.0.0}
     peerDependencies:
       eslint: '>=6.0.0'
