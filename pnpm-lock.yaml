@@ -111,8 +111,8 @@ importers:
         specifier: ^29
         version: 29.1.0(@babel/core@7.21.4)(jest@29.5.0)(typescript@5.0.4)
       type-plus:
-        specifier: ^6.6.0
-        version: 6.6.0
+        specifier: ^7.0.0
+        version: 7.0.0
     devDependencies:
       '@jest/expect':
         specifier: ^29.5.0
@@ -7260,6 +7260,13 @@ packages:
     dependencies:
       tersify: 3.12.1
       unpartial: 1.0.4
+
+  /type-plus@7.0.0:
+    resolution: {integrity: sha512-QPKWJGAjXOgPt0ecl7A1BZvII1BN8Y3IYpiG/ycxHL7ZpN41qz9ktaVGANj6foJEMUVVNaukVI7l9DMijcIK/A==}
+    dependencies:
+      tersify: 3.12.1
+      unpartial: 1.0.4
+    dev: false
 
   /typed-array-length@1.0.4:
     resolution: {integrity: sha512-KjZypGq+I/H7HI5HlOoGHkWUUGq+Q0TPhQurLbyrVrvnKTBgzLhIJ7j6J/XTQOi0d1RjyZ0wdas8bKs2p0x3Ng==}
