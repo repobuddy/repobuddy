@@ -146,8 +146,8 @@ importers:
         specifier: ^1.0.0
         version: 1.0.0
       jest-extended:
-        specifier: ^3.2.4
-        version: 3.2.4(jest@29.5.0)
+        specifier: ^4.0.0
+        version: 4.0.0(jest@29.5.0)
       ncp:
         specifier: ^2.0.0
         version: 2.0.0
@@ -479,8 +479,8 @@ importers:
         specifier: ^29.5.0
         version: 29.5.0(@types/node@18.11.18)
       jest-extended:
-        specifier: ^3.2.4
-        version: 3.2.4(jest@29.5.0)
+        specifier: ^4.0.0
+        version: 4.0.0(jest@29.5.0)
       jest-watch-suspend:
         specifier: ^1.1.2
         version: 1.1.2(jest@29.5.0)
@@ -4822,8 +4822,8 @@ packages:
       - supports-color
     dev: true
 
-  /jest-extended@3.2.4(jest@29.5.0):
-    resolution: {integrity: sha512-lSEYhSmvXZG/7YXI7KO3LpiUiQ90gi5giwCJNDMMsX5a+/NZhdbQF2G4ALOBN+KcXVT3H6FPVPohAuMXooaLTQ==}
+  /jest-extended@4.0.0(jest@29.5.0):
+    resolution: {integrity: sha512-GMhMFdrwhYPB0y+cmI/5esz+F/Xc0OIzKbnr8SaiZ74YcWamxf7sVT78YlA15+JIQMTlpHBEgcxheyRBdHFqPA==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     peerDependencies:
       jest: '>=27.2.5'
