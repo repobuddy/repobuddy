@@ -9,7 +9,7 @@ export const build = command({
 	arguments: [
 		{
 			name: 'type',
-			description: 'type of build: cjs or tslib',
+			description: 'type of build: cjs, esm, or tslib',
 			type: z.union([z.literal('cjs'), z.literal('tslib'), z.literal('esm')])
 		}
 	],
