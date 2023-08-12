@@ -1,5 +1,11 @@
 # @repobuddy/typescript
 
+## 1.2.1
+
+### Patch Changes
+
+- c2a433e: accepts esm and skip copy package json
+
 ## 1.2.0
 
 ### Minor Changes
