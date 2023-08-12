@@ -10,17 +10,19 @@ export const build = command({
 		{
 			name: 'type',
 			description: 'type of build: cjs or tslib',
-			type: z.literal('cjs').or(z.literal('tslib'))
+			type: z.union([z.literal('cjs'), z.literal('tslib'), z.literal('esm')])
 		}
 	],
 	async run({ type }) {
 		this.ui.info(`building ${type}...`)
 		await execa('tsc', ['-p', `tsconfig.${type}.json`])
-		this.ui.info('copying package.json...')
-		await copyFile(
-			join(dirname(import.meta), '../nodejs/package.cjs.json'),
-			join(process.cwd(), `./${type}/package.json`)
-		)
+		if (type !== 'esm') {
+			this.ui.info('copying package.json...')
+			await copyFile(
+				join(dirname(import.meta), '../nodejs/package.cjs.json'),
+				join(process.cwd(), `./${type}/package.json`)
+			)
+		}
 		this.ui.info(`build ${type} done`)
 	}
 })
