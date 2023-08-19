@@ -62,7 +62,7 @@
   "dependencies": {
     "clibuilder": "^8.0.15",
     "dirname-filename-esm": "^1.1.1",
-    "execa": "^7.1.1"
+    "execa": "^8.0.0"
   },
   "devDependencies": {
     "@size-limit/preset-small-lib": "~8.2.4",
