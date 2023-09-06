@@ -181,7 +181,7 @@ importers:
     devDependencies:
       '@size-limit/preset-small-lib':
         specifier: ~8.2.4
-        version: 8.2.4(size-limit@8.2.4)
+        version: 8.2.4(size-limit@9.0.0)
       '@types/jest':
         specifier: ^29.5.1
         version: 29.5.1
@@ -216,8 +216,8 @@ importers:
         specifier: ~5.0.0
         version: 5.0.0
       size-limit:
-        specifier: ~8.2.4
-        version: 8.2.4
+        specifier: ~9.0.0
+        version: 9.0.0
       ts-jest:
         specifier: ^29.1.0
         version: 29.1.0(@babel/core@7.21.4)(jest@29.5.0)(typescript@5.0.4)
@@ -1801,7 +1801,7 @@ packages:
     dependencies:
       '@sinonjs/commons': 2.0.0
 
-  /@size-limit/esbuild@8.2.4(size-limit@8.2.4):
+  /@size-limit/esbuild@8.2.4(size-limit@9.0.0):
     resolution: {integrity: sha512-kPgNfpwUvBD98s5axlf1UciFg4Ki4AYSl/cOmSyyYBuzksHiwW7Myeu0w4mTxtV9nwBFbkrrNXqszE7b+OhFLA==}
     engines: {node: ^14.0.0 || ^16.0.0 || >=18.0.0}
     peerDependencies:
@@ -1809,27 +1809,27 @@ packages:
     dependencies:
       esbuild: 0.17.18
       nanoid: 3.3.6
-      size-limit: 8.2.4
+      size-limit: 9.0.0
     dev: true
 
-  /@size-limit/file@8.2.4(size-limit@8.2.4):
+  /@size-limit/file@8.2.4(size-limit@9.0.0):
     resolution: {integrity: sha512-xLuF97W7m7lxrRJvqXRlxO/4t7cpXtfxOnjml/t4aRVUCMXLdyvebRr9OM4jjoK8Fmiz8jomCbETUCI3jVhLzA==}
     engines: {node: ^14.0.0 || ^16.0.0 || >=18.0.0}
     peerDependencies:
       size-limit: 8.2.4
     dependencies:
       semver: 7.3.8
-      size-limit: 8.2.4
+      size-limit: 9.0.0
     dev: true
 
-  /@size-limit/preset-small-lib@8.2.4(size-limit@8.2.4):
+  /@size-limit/preset-small-lib@8.2.4(size-limit@9.0.0):
     resolution: {integrity: sha512-AL4384oBgMcDPlNblgWHreqFSSOui0J9NbgyHhegB1h8AgRyHbdVGC3yWLpEESYQXHYnKdbNrYeRE/TclsViog==}
     peerDependencies:
       size-limit: 8.2.4
     dependencies:
-      '@size-limit/esbuild': 8.2.4(size-limit@8.2.4)
-      '@size-limit/file': 8.2.4(size-limit@8.2.4)
-      size-limit: 8.2.4
+      '@size-limit/esbuild': 8.2.4(size-limit@9.0.0)
+      '@size-limit/file': 8.2.4(size-limit@9.0.0)
+      size-limit: 9.0.0
     dev: true
 
   /@szmarczak/http-timer@1.1.2:
@@ -6676,9 +6676,9 @@ packages:
   /sisteransi@1.0.5:
     resolution: {integrity: sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==}
 
-  /size-limit@8.2.4:
-    resolution: {integrity: sha512-Un16nSreD1v2CYwSorattiJcHuAWqXvg4TsGgzpjnoByqQwsSfCIEQHuaD14HNStzredR8cdsO9oGH91ibypTA==}
-    engines: {node: ^14.0.0 || ^16.0.0 || >=18.0.0}
+  /size-limit@9.0.0:
+    resolution: {integrity: sha512-DrA7o2DeRN3s+vwCA9nn7Ck9Y4pn9t0GNUwQRpKqBtBmNkl6LA2s/NlNCdtKHrEkRTeYA1ZQ65mnYveo9rUqgA==}
+    engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
     dependencies:
       bytes-iec: 3.1.1
