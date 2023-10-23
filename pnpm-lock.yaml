@@ -181,7 +181,7 @@ importers:
     devDependencies:
       '@size-limit/preset-small-lib':
         specifier: ~8.2.4
-        version: 8.2.4(size-limit@8.2.4)
+        version: 8.2.4(size-limit@10.0.0)
       '@types/jest':
         specifier: ^29.5.1
         version: 29.5.1
@@ -216,8 +216,8 @@ importers:
         specifier: ~5.0.0
         version: 5.0.0
       size-limit:
-        specifier: ~8.2.4
-        version: 8.2.4
+        specifier: ~10.0.0
+        version: 10.0.0
       ts-jest:
         specifier: ^29.1.0
         version: 29.1.0(@babel/core@7.21.4)(jest@29.5.0)(typescript@5.0.4)
@@ -1801,7 +1801,7 @@ packages:
     dependencies:
       '@sinonjs/commons': 2.0.0
 
-  /@size-limit/esbuild@8.2.4(size-limit@8.2.4):
+  /@size-limit/esbuild@8.2.4(size-limit@10.0.0):
     resolution: {integrity: sha512-kPgNfpwUvBD98s5axlf1UciFg4Ki4AYSl/cOmSyyYBuzksHiwW7Myeu0w4mTxtV9nwBFbkrrNXqszE7b+OhFLA==}
     engines: {node: ^14.0.0 || ^16.0.0 || >=18.0.0}
     peerDependencies:
@@ -1809,27 +1809,27 @@ packages:
     dependencies:
       esbuild: 0.17.18
       nanoid: 3.3.6
-      size-limit: 8.2.4
+      size-limit: 10.0.0
     dev: true
 
-  /@size-limit/file@8.2.4(size-limit@8.2.4):
+  /@size-limit/file@8.2.4(size-limit@10.0.0):
     resolution: {integrity: sha512-xLuF97W7m7lxrRJvqXRlxO/4t7cpXtfxOnjml/t4aRVUCMXLdyvebRr9OM4jjoK8Fmiz8jomCbETUCI3jVhLzA==}
     engines: {node: ^14.0.0 || ^16.0.0 || >=18.0.0}
     peerDependencies:
       size-limit: 8.2.4
     dependencies:
       semver: 7.3.8
-      size-limit: 8.2.4
+      size-limit: 10.0.0
     dev: true
 
-  /@size-limit/preset-small-lib@8.2.4(size-limit@8.2.4):
+  /@size-limit/preset-small-lib@8.2.4(size-limit@10.0.0):
     resolution: {integrity: sha512-AL4384oBgMcDPlNblgWHreqFSSOui0J9NbgyHhegB1h8AgRyHbdVGC3yWLpEESYQXHYnKdbNrYeRE/TclsViog==}
     peerDependencies:
       size-limit: 8.2.4
     dependencies:
-      '@size-limit/esbuild': 8.2.4(size-limit@8.2.4)
-      '@size-limit/file': 8.2.4(size-limit@8.2.4)
-      size-limit: 8.2.4
+      '@size-limit/esbuild': 8.2.4(size-limit@10.0.0)
+      '@size-limit/file': 8.2.4(size-limit@10.0.0)
+      size-limit: 10.0.0
     dev: true
 
   /@szmarczak/http-timer@1.1.2:
@@ -3701,6 +3701,17 @@ packages:
       micromatch: 4.0.5
     dev: true
 
+  /fast-glob@3.3.1:
+    resolution: {integrity: sha512-kNFPyjhh5cKjrUltxs+wFx+ZkbRaxxmZ+X0ZU31SOsxCEtP9VPgtq2teZw1DebupL5GmDaNQ6yKMMVcM41iqDg==}
+    engines: {node: '>=8.6.0'}
+    dependencies:
+      '@nodelib/fs.stat': 2.0.5
+      '@nodelib/fs.walk': 1.2.8
+      glob-parent: 5.1.2
+      merge2: 1.4.1
+      micromatch: 4.0.5
+    dev: true
+
   /fast-json-stable-stringify@2.1.0:
     resolution: {integrity: sha512-lhd/wF+Lk98HZoTCtlVraHtfh5XYijIjalXck7saUtuanSDyLMxnHhSXEDJqHxD7msR8D0uCmqlkwjCV8xvwHw==}
 
@@ -4073,6 +4084,17 @@ packages:
     dependencies:
       dir-glob: 3.0.1
       fast-glob: 3.2.12
+      ignore: 5.2.4
+      merge2: 1.4.1
+      slash: 4.0.0
+    dev: true
+
+  /globby@13.2.2:
+    resolution: {integrity: sha512-Y1zNGV+pzQdh7H39l9zgB4PJqjRNqydvdYCDG4HFXM4XuvSaQQlEc91IU1yALL8gUTDomgBAfz3XJdmUS+oo0w==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+    dependencies:
+      dir-glob: 3.0.1
+      fast-glob: 3.3.1
       ignore: 5.2.4
       merge2: 1.4.1
       slash: 4.0.0
@@ -6676,14 +6698,14 @@ packages:
   /sisteransi@1.0.5:
     resolution: {integrity: sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==}
 
-  /size-limit@8.2.4:
-    resolution: {integrity: sha512-Un16nSreD1v2CYwSorattiJcHuAWqXvg4TsGgzpjnoByqQwsSfCIEQHuaD14HNStzredR8cdsO9oGH91ibypTA==}
-    engines: {node: ^14.0.0 || ^16.0.0 || >=18.0.0}
+  /size-limit@10.0.0:
+    resolution: {integrity: sha512-5ixq1nywYs55oA94Rt8v+HULc9bWZURg/KpPqtAEtZePsUxZOBrm9LfDBFLFsocBarsDXM1e+x5j/YWLwjAMtA==}
+    engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
     dependencies:
       bytes-iec: 3.1.1
       chokidar: 3.5.3
-      globby: 11.1.0
+      globby: 13.2.2
       lilconfig: 2.1.0
       nanospinner: 1.1.0
       picocolors: 1.0.0
