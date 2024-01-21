@@ -9,7 +9,7 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "tslib": "^2.5.0"
+    "tslib": "^2.6.2"
   },
   "devDependencies": {
     "@repobuddy/jest": "workspace:^",
