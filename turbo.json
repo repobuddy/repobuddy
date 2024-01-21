@@ -6,13 +6,16 @@
         "^build"
       ],
       "inputs": [
-        "*.ts",
+        "src/**/*.ts",
+        "ts/**/*.ts",
         "package.json",
-        "tsconfig*json"
+        "tsconfig.json",
+        "tsconfig.*.json"
       ],
       "outputs": [
-        "cjs",
-        "esm",
+        "cjs/**",
+        "esm/**",
+        "tslib/**",
         "*.tsbuildinfo"
       ]
     },

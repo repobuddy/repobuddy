@@ -9,7 +9,7 @@ import {
 export const tsEsm = {
   extensionsToTreatAsEsm: knownExtensionsToTreatAsEsm.ts,
   moduleNameMapper: knownModuleNameMappers.tsEsm,
-  ...defineTransform(knownTransforms.tsJestEsm())
+  ...defineTransform(knownTransforms.swc())
 } satisfies Config
 
 export const tsCjs = {
