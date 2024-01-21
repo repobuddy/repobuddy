@@ -9,6 +9,9 @@
 			"recommended": true,
 			"correctness": {
 				"noUnusedVariables": "error"
+			},
+			"suspicious": {
+				"noAssignInExpressions": "off"
 			}
 		}
 	},
