@@ -1,7 +1,9 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
-    "target": "ES2020",
+    // NodeJS +16.x support all (but one, which no NodeJS support) features in ES2022
+    "target": "ES2022",
+    // Emit ECMAScript-standard-compliant class fields.
     "useDefineForClassFields": true
   }
 }
