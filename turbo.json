@@ -6,11 +6,10 @@
         "^build"
       ],
       "inputs": [
-        "src/**/*.ts",
-        "ts/**/*.ts",
+        "src/**",
+        "ts/**",
         "package.json",
-        "tsconfig.json",
-        "tsconfig.*.json"
+        "tsconfig.*"
       ],
       "outputs": [
         "cjs/**",
@@ -31,6 +30,15 @@
       "dependsOn": [
         "@repobuddy/jest#build",
         "build"
+      ],
+      "inputs": [
+        "src/**",
+        "ts/**",
+        "package.json",
+        "tsconfig.*"
+      ],
+      "outputs": [
+        "coverage/**"
       ]
     },
     "depcheck": {
@@ -44,6 +52,11 @@
     "lint": {
       "dependsOn": [
         "^build"
+      ],
+      "inputs": [
+        "src/**",
+        "ts/**",
+        "package.json"
       ]
     },
     "size": {
@@ -55,11 +68,22 @@
       "dependsOn": [
         "@repobuddy/jest#build",
         "build"
+      ],
+      "inputs": [
+        "src/**",
+        "ts/**",
+        "package.json",
+        "tsconfig.*"
       ]
     },
     "test:list": {
       "dependsOn": [
         "build"
+      ],
+      "inputs": [
+        "src/**",
+        "ts/**",
+        "package.json"
       ]
     }
   }
