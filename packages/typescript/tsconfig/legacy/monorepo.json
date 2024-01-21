@@ -8,7 +8,6 @@
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "module": "Node16",
-    "moduleResolution": "node16",
     "newLine": "lf",
     "noPropertyAccessFromIndexSignature": true,
     "noUncheckedIndexedAccess": true,
