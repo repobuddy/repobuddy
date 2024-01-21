@@ -343,7 +343,7 @@
     "!**/*.{spec,unit,test,accept,integrate,system,perf,stress}.*"
   ],
   "scripts": {
-    "build": "run-p build:cjs build:esm build:tslib",
+    "build": "run-p build:cjs build:esm",
     "build:esm": "tsc --project tsconfig.esm.json",
     "build:cjs": "swc ts -d cjs && ncp package.cjs.json cjs/package.json",
     "clean": "rimraf cjs coverage esm tslib --glob *.tsbuildinfo",
