@@ -1,5 +1,16 @@
 # @unional/jest-presets
 
+## 3.4.1
+
+### Patch Changes
+
+- 8ae6e78: Build cjs version of `@repobuddy/jest` using `swc`.
+
+  TypeScript 5.2 no longer support dual release.
+  It can only be used to build ESM code.
+
+- 1ee0828: Update `type-plus`
+
 ## 3.4.0
 
 ### Minor Changes
