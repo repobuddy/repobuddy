@@ -1,5 +1,8 @@
 {
 	"recommendations": [
-		"dbaeumer.vscode-eslint"
+		"dbaeumer.vscode-eslint",
+		"editorconfig.editorconfig",
+		"github.vscode-pull-request-github",
+		"unional.vscode-sort-package-json",
 	]
 }
