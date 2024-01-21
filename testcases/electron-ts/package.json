@@ -12,7 +12,6 @@
     "@jest/globals": "^29.5.0",
     "@kayahr/jest-electron-runner": "^29",
     "@repobuddy/jest": "workspace:^",
-    "@types/node": "^18.11.18",
     "cross-env": "^7.0.3",
     "jest": "^29.7.0",
     "jest-esm-transformer-2": "^1.0.0",
