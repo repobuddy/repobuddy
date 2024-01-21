@@ -1,0 +1,10 @@
+flags:
+  biome:
+    paths:
+      - packages/biome
+  jest:
+    paths:
+      - packages/jest
+  typescript:
+    paths:
+      - packages/typescript
