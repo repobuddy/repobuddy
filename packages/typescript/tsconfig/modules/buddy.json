@@ -1,8 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "./node16.json",
   "compilerOptions": {
-    "module": "Node16",
-    "moduleResolution": "node16",
     "resolveJsonModule": true,
     // disabled due to `ts-jest` issue.
     // "verbatimModuleSyntax": true
