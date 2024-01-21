@@ -362,7 +362,7 @@
     "read-pkg-up": "^7.0.1",
     "resolve.imports": "^2.0.0",
     "satisfier": "^5.4.2",
-    "type-plus": "^7.0.0"
+    "type-plus": "^7.6.0"
   },
   "devDependencies": {
     "@jest/expect": "^29.5.0",
