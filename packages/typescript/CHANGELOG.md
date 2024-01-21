@@ -1,5 +1,14 @@
 # @repobuddy/typescript
 
+## 1.3.0
+
+### Minor Changes
+
+- bac4ed4: Infer `moduleResolution` when possible.
+
+  `module: Node16` infers `moduleResolution: Node16`.
+  Relying on infer [fixes an issue with `ts-jest`](https://github.com/kulshekhar/ts-jest/issues/4198#issuecomment-1863407516).
+
 ## 1.2.1
 
 ### Patch Changes
