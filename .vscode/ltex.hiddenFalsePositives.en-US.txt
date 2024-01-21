@@ -1,0 +1,4 @@
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\Q[NPM version]npm-ts-url [NPM downloads]npm-ts-url [Codecov]codecov-ts-url\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\Q[GitHub NodeJS]github-action-url [Visual Studio Code]vscode-url\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\Q[NPM version]npm-jest-url [NPM downloads]npm-jest-url [Codecov]codecov-jest-url\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\Q[NPM version]npm-biome-url [NPM downloads]npm-biome-url [Codecov]codecov-biome-url\\E$"}
