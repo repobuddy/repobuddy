@@ -5,6 +5,4 @@ on:
 
 jobs:
   code:
-    uses: repobuddy/.github/.github/workflows/pnpm-verify.yml@main
-    with:
-      os: '["ubuntu-latest", "windows-latest"]'
+    uses: repobuddy/.github/.github/workflows/pnpm-verify-turbo-canary.yml@main
