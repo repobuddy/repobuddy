@@ -26,11 +26,11 @@
 [@repobuddy/jest]: ./packages/jest/README.md
 [@repobuddy/typescript]: ./packages/typescript/README.md
 [biome]: https://biomejs.dev/
-[codecov-biome-image]: https://codecov.io/gh/repobuddy/biome/branch/main/graph/badge.svg
+[codecov-biome-image]: https://codecov.io/gh/repobuddy/repobuddy/badge.svg?flag=biome
 [codecov-biome-url]: https://codecov.io/gh/repobuddy/biome
-[codecov-jest-image]: https://codecov.io/gh/repobuddy/jest/branch/main/graph/badge.svg
+[codecov-jest-image]: https://codecov.io/gh/repobuddy/repobuddy/badge.svg?flag=jest
 [codecov-jest-url]: https://codecov.io/gh/repobuddy/jest
-[codecov-ts-image]: https://codecov.io/gh/repobuddy/typescript/branch/main/graph/badge.svg
+[codecov-ts-image]: https://codecov.io/gh/repobuddy/repobuddy/badge.svg?flag=typescript
 [codecov-ts-url]: https://codecov.io/gh/repobuddy/typescript
 [downloads-biome-image]: https://img.shields.io/npm/dm/@repobuddy/biome.svg?style=flat
 [downloads-jest-image]: https://img.shields.io/npm/dm/@repobuddy/jest.svg?style=flat
