@@ -1,5 +1,8 @@
 # @repobuddy/biome
 
+[![NPM version][npm-image]][npm-url]
+[![NPM downloads][downloads-image]][downloads-url]
+
 Repo buddy for [biome].
 
 ## Install
@@ -27,3 +30,7 @@ Currently, [biome]'s extend mechanism only support relative path:
 ```
 
 [biome]: https://biomejs.dev
+[downloads-image]: https://img.shields.io/npm/dm/@repobuddy/biome.svg?style=flat
+[downloads-url]: https://npmjs.org/package/@repobuddy/biome
+[npm-image]: https://img.shields.io/npm/v/@repobuddy/biome.svg?style=flat
+[npm-url]: https://npmjs.org/package/@repobuddy/biome
