@@ -27,11 +27,11 @@
 [@repobuddy/typescript]: ./packages/typescript/README.md
 [biome]: https://biomejs.dev/
 [codecov-biome-image]: https://codecov.io/gh/repobuddy/repobuddy/badge.svg?flag=biome
-[codecov-biome-url]: https://codecov.io/gh/repobuddy/biome
+[codecov-biome-url]: https://codecov.io/gh/repobuddy/repobuddy
 [codecov-jest-image]: https://codecov.io/gh/repobuddy/repobuddy/badge.svg?flag=jest
-[codecov-jest-url]: https://codecov.io/gh/repobuddy/jest
+[codecov-jest-url]: https://codecov.io/gh/repobuddy/repobuddy
 [codecov-ts-image]: https://codecov.io/gh/repobuddy/repobuddy/badge.svg?flag=typescript
-[codecov-ts-url]: https://codecov.io/gh/repobuddy/typescript
+[codecov-ts-url]: https://codecov.io/gh/repobuddy/repobuddy
 [downloads-biome-image]: https://img.shields.io/npm/dm/@repobuddy/biome.svg?style=flat
 [downloads-jest-image]: https://img.shields.io/npm/dm/@repobuddy/jest.svg?style=flat
 [downloads-ts-image]: https://img.shields.io/npm/dm/@repobuddy/typescript.svg?style=flat
