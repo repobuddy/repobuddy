@@ -367,7 +367,7 @@
     "@jest/expect": "^29.5.0",
     "@jest/globals": "^29.5.0",
     "@kayahr/jest-electron-runner": "^29.11.0",
-    "@swc/cli": "^0.2.0",
+    "@swc/cli": "^0.3.0",
     "@swc/core": "^1.3.105",
     "@swc/jest": "^0.2.31",
     "assertron": "^11.0.3",
