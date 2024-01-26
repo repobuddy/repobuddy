@@ -1,8 +1,8 @@
 {
-  "$schema": "https://json.schemastore.org/tsconfig",
-  "compilerOptions": {
-    // only use this for ES* and CommonJS.
-    // it should not be used with Node16 or NodeNext.
-    "esModuleInterop": true
-  }
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"compilerOptions": {
+		// only use this for ES* and CommonJS.
+		// it should not be used with Node16 or NodeNext.
+		"esModuleInterop": true
+	}
 }

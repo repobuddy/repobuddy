@@ -1,9 +1,9 @@
 {
-  "extends": [
-    "./tsconfig.json",
-    "@repobuddy/typescript/tsconfig/modules/buddy-commonjs.json"
-  ],
-  "compilerOptions": {
-    "outDir": "cjs"
-  }
+	"extends": [
+		"./tsconfig.json",
+		"@repobuddy/typescript/tsconfig/modules/buddy-commonjs.json"
+	],
+	"compilerOptions": {
+		"outDir": "cjs"
+	}
 }

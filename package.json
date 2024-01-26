@@ -7,6 +7,8 @@
     "coverage": "turbo run coverage",
     "cs": "changeset",
     "depcheck": "turbo run depcheck",
+    "check": "biome check .",
+    "format": "biome format . --write",
     "jest": "pnpm --filter @repobuddy/jest",
     "js-cjs": "pnpm --filter js-cjs",
     "js-esm": "pnpm --filter js-esm",
@@ -28,6 +30,7 @@
     "version": "changeset version"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.5.2",
     "@changesets/cli": "^2.26.0",
     "@repobuddy/typescript": "workspace:^",
     "@types/node": "^18.19.8",

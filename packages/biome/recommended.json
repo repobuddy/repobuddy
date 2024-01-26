@@ -38,7 +38,9 @@
 	"overrides": [
 		{
 			"include": [
-				"\\.vscode[/\/].*json",
+				"frontmatter\\.json",
+				"\\.frontmatter[\\/]config[\\/]*\\.json",
+				"\\.vscode[//].*json",
 				"tsconfig.*json"
 			],
 			"json": {

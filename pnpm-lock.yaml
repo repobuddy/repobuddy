@@ -8,6 +8,9 @@ importers:
 
   .:
     devDependencies:
+      '@biomejs/biome':
+        specifier: 1.5.2
+        version: 1.5.2
       '@changesets/cli':
         specifier: ^2.26.0
         version: 2.26.0

@@ -1,6 +1,6 @@
 {
-  "$schema": "https://json.schemastore.org/tsconfig",
-  "compilerOptions": {
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"compilerOptions": {
     "module": "NodeNext",
     // This is inferred for `module: NodeNext`
     // "moduleResolution": "NodeNext"

@@ -1,4 +1,4 @@
 export const knownExtensionsToTreatAsEsm = {
-  js: ['.jsx'],
-  ts: ['.ts', '.mts', '.tsx']
+	js: ['.jsx'],
+	ts: ['.ts', '.mts', '.tsx']
 }

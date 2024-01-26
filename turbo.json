@@ -1,90 +1,42 @@
 {
-  "$schema": "https://turborepo.org/schema.json",
-  "pipeline": {
-    "build": {
-      "dependsOn": [
-        "^build"
-      ],
-      "inputs": [
-        "src/**",
-        "ts/**",
-        "package.json",
-        "tsconfig.*"
-      ],
-      "outputs": [
-        "cjs/**",
-        "esm/**",
-        "tslib/**",
-        "*.tsbuildinfo"
-      ]
-    },
-    "build:doc": {
-      "dependsOn": [
-        "^build"
-      ]
-    },
-    "clean": {
-      "cache": false
-    },
-    "coverage": {
-      "dependsOn": [
-        "@repobuddy/jest#build",
-        "build"
-      ],
-      "inputs": [
-        "src/**",
-        "ts/**",
-        "package.json",
-        "tsconfig.*"
-      ],
-      "outputs": [
-        "coverage/**"
-      ]
-    },
-    "depcheck": {
-      "dependsOn": [
-        "build"
-      ]
-    },
-    "dev": {
-      "cache": false
-    },
-    "lint": {
-      "dependsOn": [
-        "^build"
-      ],
-      "inputs": [
-        "src/**",
-        "ts/**",
-        "package.json"
-      ]
-    },
-    "size": {
-      "dependsOn": [
-        "build"
-      ]
-    },
-    "test": {
-      "dependsOn": [
-        "@repobuddy/jest#build",
-        "build"
-      ],
-      "inputs": [
-        "src/**",
-        "ts/**",
-        "package.json",
-        "tsconfig.*"
-      ]
-    },
-    "test:list": {
-      "dependsOn": [
-        "build"
-      ],
-      "inputs": [
-        "src/**",
-        "ts/**",
-        "package.json"
-      ]
-    }
-  }
+	"$schema": "https://turborepo.org/schema.json",
+	"pipeline": {
+		"build": {
+			"dependsOn": ["^build"],
+			"inputs": ["src/**", "ts/**", "package.json", "tsconfig.*"],
+			"outputs": ["cjs/**", "esm/**", "tslib/**", "*.tsbuildinfo"]
+		},
+		"build:doc": {
+			"dependsOn": ["^build"]
+		},
+		"clean": {
+			"cache": false
+		},
+		"coverage": {
+			"dependsOn": ["@repobuddy/jest#build", "build"],
+			"inputs": ["src/**", "ts/**", "package.json", "tsconfig.*"],
+			"outputs": ["coverage/**"]
+		},
+		"depcheck": {
+			"dependsOn": ["build"]
+		},
+		"dev": {
+			"cache": false
+		},
+		"lint": {
+			"dependsOn": ["^build"],
+			"inputs": ["src/**", "ts/**", "package.json"]
+		},
+		"size": {
+			"dependsOn": ["build"]
+		},
+		"test": {
+			"dependsOn": ["@repobuddy/jest#build", "build"],
+			"inputs": ["src/**", "ts/**", "package.json", "tsconfig.*"]
+		},
+		"test:list": {
+			"dependsOn": ["build"],
+			"inputs": ["src/**", "ts/**", "package.json"]
+		}
+	}
 }

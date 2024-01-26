@@ -1,7 +1,7 @@
 {
-  "$schema": "https://json.schemastore.org/tsconfig",
-  "compilerOptions": {
-    // Emit design-type metadata for decorated declarations in source files.
-    "emitDecoratorMetadata": true
-  }
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"compilerOptions": {
+		// Emit design-type metadata for decorated declarations in source files.
+		"emitDecoratorMetadata": true
+	}
 }

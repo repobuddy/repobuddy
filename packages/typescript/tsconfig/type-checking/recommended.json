@@ -1,7 +1,7 @@
 {
-  "$schema": "https://json.schemastore.org/tsconfig",
-  "compilerOptions": {
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"compilerOptions": {
 		"exactOptionalPropertyTypes": true,
-    "strict": true
-  }
+		"strict": true
+	}
 }
