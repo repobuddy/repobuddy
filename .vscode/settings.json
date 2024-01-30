@@ -4,7 +4,7 @@
 		"editor.maxTokenizationLineLength": 2500
 	},
 	"[json]": {
-		"editor.defaultFormatter": "biomejs.biome",
+		"editor.defaultFormatter": "vscode.json-language-features",
 		"editor.quickSuggestions": {
 			"strings": true
 		},
