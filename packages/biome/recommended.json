@@ -1,54 +1,63 @@
 {
-	"$schema": "https://biomejs.dev/schemas/1.5.2/schema.json",
-	"organizeImports": {
-		"enabled": false
-	},
-	"linter": {
-		"enabled": true,
-		"rules": {
-			"recommended": true,
-			"correctness": {
-				"noUnusedVariables": "error"
-			},
-			"suspicious": {
-				"noAssignInExpressions": "off",
-				"noExplicitAny": "off"
-			}
-		}
-	},
-	"formatter": {
-		"enabled": true,
-		"lineEnding": "lf",
-		"lineWidth": 120
-	},
-	"javascript": {
-		"formatter": {
-			"indentStyle": "tab",
-			"quoteStyle": "single",
-			"semicolons": "asNeeded",
-			"trailingComma": "none"
-		}
-	},
-	"json": {
-		"parser": {
-			"allowComments": false,
-			"allowTrailingCommas": false
-		}
-	},
-	"overrides": [
-		{
-			"include": [
-				"frontmatter\\.json",
-				"\\.frontmatter[\\/]config[\\/]*\\.json",
-				"\\.vscode[//].*json",
-				"tsconfig.*json"
-			],
-			"json": {
-				"parser": {
-					"allowComments": true,
-					"allowTrailingCommas": true
-				}
-			}
-		}
-	]
+  "$schema": "https://biomejs.dev/schemas/1.5.2/schema.json",
+  "organizeImports": {
+    "enabled": false
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "correctness": {
+        "noUnusedVariables": "error",
+        "useExhaustiveDependencies": "off"
+      },
+      "performance": {
+        "noAccumulatingSpread": "warn"
+      },
+      "suspicious": {
+        "noAssignInExpressions": "off",
+        "noExplicitAny": "off"
+      },
+      "style": {
+        "noCommaOperator": "off",
+        "noNonNullAssertion": "off",
+        "noParameterAssign": "off"
+      }
+    }
+  },
+  "formatter": {
+    "enabled": true,
+    "lineEnding": "lf",
+    "lineWidth": 120
+  },
+  "javascript": {
+    "formatter": {
+      "indentStyle": "tab",
+      "quoteStyle": "single",
+      "semicolons": "asNeeded",
+      "trailingComma": "none"
+    }
+  },
+  "json": {
+    "parser": {
+      "allowComments": false,
+      "allowTrailingCommas": false
+    }
+  },
+  "overrides": [
+    {
+      "include": [
+        "frontmatter\\.json",
+        "\\.frontmatter[\\/]config[\\/]*\\.json",
+        "\\.vscode[//].*json",
+        "tsconfig.*json"
+      ],
+      "json": {
+        "parser": {
+          "allowComments": true,
+          "allowTrailingCommas": true
+        }
+      }
+    }
+  ]
 }
