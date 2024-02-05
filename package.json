@@ -1,6 +1,7 @@
 {
   "private": true,
   "scripts": {
+    "biome": "pnpm --filter ./packages/biome",
     "buddy": "pnpm --filter ./packages/buddy",
     "build": "turbo run build",
     "clean": "turbo run clean",
