@@ -2,4 +2,5 @@
 '@repobuddy/biome': patch
 ---
 
-Set lineending and width for all files
+Set line ending and width for all files.
+Turn off `useLiteralKeys` as it conflicts with TS.
