@@ -4,6 +4,8 @@
 		"../typescript/tsconfig/modules/buddy-commonjs"
 	],
 	"compilerOptions": {
+		"declaration": true,
+		"emitDeclarationOnly": true,
 		"outDir": "cjs"
 	}
 }
