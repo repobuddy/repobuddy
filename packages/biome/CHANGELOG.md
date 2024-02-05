@@ -1,5 +1,12 @@
 # @repobuddy/biome
 
+## 1.0.3
+
+### Patch Changes
+
+- b6560a8: Set line ending and width for all files.
+  Turn off `useLiteralKeys` as it conflicts with TS.
+
 ## 1.0.2
 
 ### Patch Changes

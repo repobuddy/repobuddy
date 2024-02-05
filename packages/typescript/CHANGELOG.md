@@ -1,5 +1,11 @@
 # @repobuddy/typescript
 
+## 2.0.0
+
+### Major Changes
+
+- b1cdec8: Disable `cjs` with `node16` to support TS 5.2.
+
 ## 1.3.0
 
 ### Minor Changes

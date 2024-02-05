@@ -1,5 +1,11 @@
 # @unional/jest-presets
 
+## 3.4.2
+
+### Patch Changes
+
+- ee6d14f: Fix import type for CJS consumption.
+
 ## 3.4.1
 
 ### Patch Changes
