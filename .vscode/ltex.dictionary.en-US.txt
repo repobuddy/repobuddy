@@ -2,3 +2,5 @@ monorepo
 tsconfig
 @repobuddy
 Codecov
+npm-url
+downloads-url
