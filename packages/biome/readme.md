@@ -3,7 +3,7 @@
 [![NPM version][npm-image]][npm-url]
 [![NPM downloads][downloads-image]][downloads-url]
 
-Repo buddy for [biome].
+Repository buddy for [biome].
 
 ## Install
 
