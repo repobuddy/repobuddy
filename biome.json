@@ -3,6 +3,6 @@
 	"extends": ["./packages/biome/recommended.json"],
 	"files": {
 		"ignore": ["cjs", "coverage", "esm", "target"],
-		"include": ["ts/**/*", "**/*.json"]
+		"include": ["src", "ts/**/*", "**/*.json"]
 	}
 }

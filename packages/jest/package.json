@@ -113,7 +113,7 @@
         "types": "./cjs/presets/js-esm-watch/jest-preset.d.ts",
         "default": "./cjs/presets/js-esm-watch/jest-preset.js"
       }
-   },
+    },
     "./presets/js-esm-watch/jest-preset": {
       "import": {
         "types": "./esm/presets/js-esm-watch/jest-preset.d.ts",
@@ -123,7 +123,7 @@
         "types": "./cjs/presets/js-esm-watch/jest-preset.d.ts",
         "default": "./cjs/presets/js-esm-watch/jest-preset.js"
       }
-   },
+    },
     "./presets/electron-ts": {
       "import": {
         "types": "./esm/presets/electron-ts/jest-preset.d.ts",
@@ -213,7 +213,7 @@
         "types": "./cjs/presets/electron-ts-esm/jest-preset.d.ts",
         "default": "./cjs/presets/electron-ts-esm/jest-preset.js"
       }
-   },
+    },
     "./presets/electron-ts-esm/jest-preset": {
       "import": {
         "types": "./esm/presets/electron-ts-esm/jest-preset.d.ts",
@@ -223,7 +223,7 @@
         "types": "./cjs/presets/electron-ts-esm/jest-preset.d.ts",
         "default": "./cjs/presets/electron-ts-esm/jest-preset.js"
       }
-   },
+    },
     "./presets/electron-ts-esm-watch": {
       "import": {
         "types": "./esm/presets/electron-ts-esm-watch/jest-preset.d.ts",
@@ -353,7 +353,7 @@
         "types": "./cjs/presets/electron-renderer-ts-esm-watch/jest-preset.d.ts",
         "default": "./cjs/presets/electron-renderer-ts-esm-watch/jest-preset.js"
       }
-   },
+    },
     "./presets/electron-renderer-ts-esm-watch/jest-preset": {
       "import": {
         "types": "./esm/presets/electron-renderer-ts-esm-watch/jest-preset.d.ts",
@@ -363,7 +363,7 @@
         "types": "./cjs/presets/electron-renderer-ts-esm-watch/jest-preset.d.ts",
         "default": "./cjs/presets/electron-renderer-ts-esm-watch/jest-preset.js"
       }
-   },
+    },
     "./presets/jsdom-ts": {
       "import": {
         "types": "./esm/presets/jsdom-ts/jest-preset.d.ts",
@@ -393,7 +393,7 @@
         "types": "./cjs/presets/jsdom-ts-watch/jest-preset.d.ts",
         "default": "./cjs/presets/jsdom-ts-watch/jest-preset.js"
       }
-   },
+    },
     "./presets/jsdom-ts-watch/jest-preset": {
       "import": {
         "types": "./esm/presets/jsdom-ts-watch/jest-preset.d.ts",
@@ -403,7 +403,7 @@
         "types": "./cjs/presets/jsdom-ts-watch/jest-preset.d.ts",
         "default": "./cjs/presets/jsdom-ts-watch/jest-preset.js"
       }
-   },
+    },
     "./presets/jsdom-ts-cjs": {
       "import": {
         "types": "./esm/presets/jsdom-ts-cjs/jest-preset.d.ts",
@@ -453,7 +453,7 @@
         "types": "./cjs/presets/jsdom-ts-esm/jest-preset.d.ts",
         "default": "./cjs/presets/jsdom-ts-esm/jest-preset.js"
       }
-   },
+    },
     "./presets/jsdom-ts-esm/jest-preset": {
       "import": {
         "types": "./esm/presets/jsdom-ts-esm/jest-preset.d.ts",
@@ -463,7 +463,7 @@
         "types": "./cjs/presets/jsdom-ts-esm/jest-preset.d.ts",
         "default": "./cjs/presets/jsdom-ts-esm/jest-preset.js"
       }
-   },
+    },
     "./presets/jsdom-ts-esm-watch": {
       "import": {
         "types": "./esm/presets/jsdom-ts-esm-watch/jest-preset.d.ts",
@@ -493,7 +493,7 @@
         "types": "./cjs/presets/ts/jest-preset.d.ts",
         "default": "./cjs/presets/ts/jest-preset.js"
       }
-   },
+    },
     "./presets/ts/jest-preset": {
       "import": {
         "types": "./esm/presets/ts/jest-preset.d.ts",
@@ -503,7 +503,7 @@
         "types": "./cjs/presets/ts/jest-preset.d.ts",
         "default": "./cjs/presets/ts/jest-preset.js"
       }
-   },
+    },
     "./presets/ts-watch": {
       "import": {
         "types": "./esm/presets/ts-watch/jest-preset.d.ts",
@@ -513,7 +513,7 @@
         "types": "./cjs/presets/ts-watch/jest-preset.d.ts",
         "default": "./cjs/presets/ts-watch/jest-preset.js"
       }
-   },
+    },
     "./presets/ts-watch/jest-preset": {
       "import": {
         "types": "./esm/presets/ts-watch/jest-preset.d.ts",
@@ -523,7 +523,7 @@
         "types": "./cjs/presets/ts-watch/jest-preset.d.ts",
         "default": "./cjs/presets/ts-watch/jest-preset.js"
       }
-   },
+    },
     "./presets/ts-cjs": {
       "import": {
         "types": "./esm/presets/ts-cjs/jest-preset.d.ts",
@@ -533,7 +533,7 @@
         "types": "./cjs/presets/ts-cjs/jest-preset.d.ts",
         "default": "./cjs/presets/ts-cjs/jest-preset.js"
       }
-   },
+    },
     "./presets/ts-cjs/jest-preset": {
       "import": {
         "types": "./esm/presets/ts-cjs/jest-preset.d.ts",
@@ -543,7 +543,7 @@
         "types": "./cjs/presets/ts-cjs/jest-preset.d.ts",
         "default": "./cjs/presets/ts-cjs/jest-preset.js"
       }
-   },
+    },
     "./presets/ts-cjs-watch": {
       "import": {
         "types": "./esm/presets/ts-cjs-watch/jest-preset.d.ts",
@@ -573,7 +573,7 @@
         "types": "./cjs/presets/ts-esm/jest-preset.d.ts",
         "default": "./cjs/presets/ts-esm/jest-preset.js"
       }
-  },
+    },
     "./presets/ts-esm/jest-preset": {
       "import": {
         "types": "./esm/presets/ts-esm/jest-preset.d.ts",
@@ -583,7 +583,7 @@
         "types": "./cjs/presets/ts-esm/jest-preset.d.ts",
         "default": "./cjs/presets/ts-esm/jest-preset.js"
       }
-  },
+    },
     "./presets/ts-esm-watch": {
       "import": {
         "types": "./esm/presets/ts-esm-watch/jest-preset.d.ts",
@@ -613,7 +613,7 @@
         "types": "./cjs/presets/watch/jest-preset.d.ts",
         "default": "./cjs/presets/watch/jest-preset.js"
       }
-   },
+    },
     "./presets/watch/jest-preset": {
       "import": {
         "types": "./esm/presets/watch/jest-preset.d.ts",
@@ -623,7 +623,7 @@
         "types": "./cjs/presets/watch/jest-preset.d.ts",
         "default": "./cjs/presets/watch/jest-preset.js"
       }
-   },
+    },
     "./package.json": "./package.json",
     "./resolver": {
       "import": {
@@ -675,6 +675,7 @@
     "@swc/cli": "^0.2.0",
     "@swc/core": "^1.3.105",
     "@swc/jest": "^0.2.31",
+    "@types/jest": "^29.5.1",
     "assertron": "^11.0.3",
     "chalk": "^5.2.0",
     "cross-env": "^7.0.3",
