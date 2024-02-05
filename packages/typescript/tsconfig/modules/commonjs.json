@@ -2,6 +2,7 @@
 	"$schema": "https://json.schemastore.org/tsconfig",
 	"compilerOptions": {
 		"module": "CommonJS",
-		"moduleResolution": "Node16"
+		// this is no longer possible starting from TypeScript 5.2
+		// "moduleResolution": "Node16"
 	}
 }

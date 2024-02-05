@@ -3,7 +3,6 @@
 	"compilerOptions": {
 		"esModuleInterop": true,
 		"module": "CommonJS",
-		"moduleResolution": "Node16",
 		"resolveJsonModule": true,
 		"verbatimModuleSyntax": false // reset to false for config composition
 	}
