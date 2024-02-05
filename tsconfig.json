@@ -1,0 +1,17 @@
+{
+	"files": [],
+	"references": [
+		{
+			"path": "./packages/biome"
+		},
+		{
+			"path": "./packages/buddy"
+		},
+		{
+			"path": "./packages/jest"
+		},
+		{
+			"path": "./packages/typescript"
+		}
+	]
+}
