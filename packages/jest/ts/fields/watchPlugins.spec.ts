@@ -2,7 +2,7 @@ import { describe, expect, it } from '@jest/globals'
 import { defineWatchPlugins, knownWatchPlugins } from './watchPlugins.js'
 
 describe(`${defineWatchPlugins.name}()`, () => {
-	it(`defaults to use: suspend, toggle-config, and typeahead`, () => {
+	it('defaults to use: suspend, toggle-config, and typeahead', () => {
 		expect(defineWatchPlugins()).toEqual({
 			watchPlugins: [
 				'jest-watch-suspend',

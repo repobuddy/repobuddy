@@ -35,5 +35,10 @@
   },
   "files": [
     "recommended.json"
-  ]
+  ],
+  "devDependencies": {
+    "@repobuddy/typescript": "workspace:*",
+    "@types/react": "^18.2.52",
+    "react": "^18.2.0"
+  }
 }

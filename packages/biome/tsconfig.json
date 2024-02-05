@@ -1,0 +1,6 @@
+{
+	"extends": "../typescript/tsconfig/monorepo",
+	"compilerOptions": {
+		"rootDir": "src"
+	}
+}

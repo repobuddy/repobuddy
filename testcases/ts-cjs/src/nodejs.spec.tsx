@@ -1,1 +1,1 @@
-it(`${__filename} executed`, () => { })
+it(`${__filename} executed`, () => {})

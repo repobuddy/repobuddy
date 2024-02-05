@@ -1,8 +1,5 @@
 {
-	"extends": [
-		"./tsconfig.base.json",
-		"../typescript/tsconfig/modules/buddy-commonjs"
-	],
+	"extends": ["./tsconfig.base.json", "../typescript/tsconfig/modules/buddy-commonjs"],
 	"compilerOptions": {
 		"outDir": "cjs"
 	}

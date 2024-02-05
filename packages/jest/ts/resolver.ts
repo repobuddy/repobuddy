@@ -18,9 +18,8 @@ export function sync(path: string, options: ResolverOptions) {
 		if (mapped) {
 			if (Array.isArray(mapped)) {
 				return mapped.map((p) => options.defaultResolver(join(dirname(result!.path), p), options))
-			} else {
-				return options.defaultResolver(join(dirname(result!.path), mapped), options)
 			}
+			return options.defaultResolver(join(dirname(result!.path), mapped), options)
 		}
 	}
 }

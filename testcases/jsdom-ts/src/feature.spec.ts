@@ -1,3 +1,3 @@
 import { it } from '@jest/globals'
 
-it(`hello world`, () => {})
+it('hello world', () => {})

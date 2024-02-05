@@ -2,7 +2,8 @@
   "extends": "@repobuddy/typescript/tsconfig/monorepo.json",
   "compilerOptions": {
     "outDir": "esm",
-    "rootDir": "src"
+    "rootDir": "src",
+    "jsx": "react"
   },
   "include": [
     "src"
