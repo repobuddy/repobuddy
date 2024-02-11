@@ -29,7 +29,8 @@
     "ts-esm": "pnpm --filter ts-esm",
     "two-chalk": "pnpm --filter two-chalk",
     "verify": "turbo run build lint coverage depcheck size",
-    "version": "changeset version"
+    "version": "changeset version",
+    "web": "pnpm --filter ./website"
   },
   "devDependencies": {
     "@biomejs/biome": "1.5.3",

@@ -60,6 +60,7 @@
 	"typescript.tsdk": "node_modules/typescript/lib",
 	"cSpell.words": [
 		"astro",
+		"astrojs",
 		"biomejs",
 		"clibuilder",
 		"dbaeumer",
