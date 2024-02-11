@@ -1,4 +1,13 @@
 {
+	"extensions": {
+		"recommendations": [
+			"dbaeumer.vscode-eslint",
+			"editorconfig.editorconfig",
+			"github.vscode-pull-request-github",
+			"neo-ltex.ltex",
+			"unional.vscode-sort-package-json",
+		]
+	},
 	"folders": [
 		{
 			"path": "."
@@ -9,8 +18,8 @@
 	],
 	"settings": {
 		"files.associations": {
-			"**/frontmatter.json": "jsonc",
 			"**/.frontmatter/config/*.json": "jsonc",
+			"**/frontmatter.json": "jsonc",
 			"**/tsconfig/**/*.json": "jsonc"
 		},
 		"material-icon-theme.files.associations": {
