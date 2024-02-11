@@ -4,7 +4,7 @@
 [![NPM downloads][downloads-image]][npm-url]
 [![Codecov][codecov-image]][codecov-url]
 
-[@repobuddy/jest] provides tools and utilities to manage your [jest] usage so you don't have to.
+[@repobuddy/jest] provides tools and utilities to manage your [jest] usage, so you don't have to.
 
 Turn your config from this:
 
