@@ -23,6 +23,7 @@
 
 > Provides tools and utilities to take care of [TypeScript] stuffs, so you don't have to.
 
+[@repobuddy/biome]: ./packages/biome/README.md
 [@repobuddy/jest]: ./packages/jest/README.md
 [@repobuddy/typescript]: ./packages/typescript/README.md
 [biome]: https://biomejs.dev/
