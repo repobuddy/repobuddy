@@ -12,7 +12,8 @@
 				"useExhaustiveDependencies": "off"
 			},
 			"complexity": {
-				"useLiteralKeys": "off"
+				"useLiteralKeys": "off",
+				"noForEach": "warn"
 			},
 			"suspicious": {
 				"noAssignInExpressions": "off",
