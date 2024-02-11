@@ -17,7 +17,7 @@ pnpm add -D @repobuddy/biome
 
 ## Usage
 
-Currently, [biome]'s extend mechanism only support relative path:
+Using [@repobuddy/biome] provided recommended config:
 
 ```jsonc
 // biome.json
@@ -29,6 +29,13 @@ Currently, [biome]'s extend mechanism only support relative path:
 
 ```
 
+Note that currently, [biome]'s extend mechanism only support relative path.
+
+The recommended config is customized for people or teams that are proficient.
+
+i.e., you know what you are doing. The tools try to help but get out of your way.
+
+[@repobuddy/biome]: https://www.npmjs.com/package/@repobuddy/biome
 [biome]: https://biomejs.dev
 [downloads-image]: https://img.shields.io/npm/dm/@repobuddy/biome.svg?style=flat
 [downloads-url]: https://npmjs.org/package/@repobuddy/biome

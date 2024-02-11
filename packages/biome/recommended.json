@@ -1,31 +1,5 @@
 {
 	"$schema": "https://biomejs.dev/schemas/1.5.2/schema.json",
-	"organizeImports": {
-		"enabled": false
-	},
-	"linter": {
-		"enabled": true,
-		"rules": {
-			"recommended": true,
-			"correctness": {
-				"noUnusedVariables": "error",
-				"useExhaustiveDependencies": "off"
-			},
-			"complexity": {
-				"useLiteralKeys": "off",
-				"noForEach": "warn"
-			},
-			"suspicious": {
-				"noAssignInExpressions": "off",
-				"noExplicitAny": "off"
-			},
-			"style": {
-				"noCommaOperator": "off",
-				"noNonNullAssertion": "off",
-				"noParameterAssign": "off"
-			}
-		}
-	},
 	"formatter": {
 		"enabled": true,
 		"lineEnding": "lf",
@@ -44,6 +18,32 @@
 			"allowComments": false,
 			"allowTrailingCommas": false
 		}
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true,
+			"complexity": {
+				"noForEach": "off",
+				"useLiteralKeys": "off"
+			},
+			"correctness": {
+				"noUnusedVariables": "error",
+				"useExhaustiveDependencies": "off"
+			},
+			"style": {
+				"noCommaOperator": "off",
+				"noNonNullAssertion": "off",
+				"noParameterAssign": "off"
+			},
+			"suspicious": {
+				"noAssignInExpressions": "off",
+				"noExplicitAny": "off"
+			}
+		}
+	},
+	"organizeImports": {
+		"enabled": false
 	},
 	"overrides": [
 		{
