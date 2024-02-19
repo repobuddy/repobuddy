@@ -1,5 +1,11 @@
 # @repobuddy/biome
 
+## 1.0.4
+
+### Patch Changes
+
+- 470d8c3: Change `noForEach` from `error` to `off`.
+
 ## 1.0.3
 
 ### Patch Changes
