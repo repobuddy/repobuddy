@@ -8,10 +8,10 @@ jobs:
     uses: repobuddy/.github/.github/workflows/pnpm-verify.yml@main
     with:
       codecov-flags: biome,jest,typescript
-      os-version: '[18, 20]'
+      os: '[18, 20]'
   release:
     uses: repobuddy/.github/.github/workflows/pnpm-release-changeset.yml@main
     needs: code
     secrets: inherit
     with:
-      os-version: '[18, 20]'
+      os: '[18, 20]'
