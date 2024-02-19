@@ -7,4 +7,4 @@ jobs:
   code:
     uses: repobuddy/.github/.github/workflows/pnpm-verify.yml@main
     with:
-      os: '[18, 20]'
+      node-version: '[18, 20]'
