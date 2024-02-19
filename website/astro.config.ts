@@ -34,5 +34,6 @@ export default defineConfig({
 				baseUrl: 'https://github.com/repobuddy/repobuddy/edit/main/website/'
 			}
 		})
-	]
+	],
+	site: 'https://repobuddy.github.io/repobuddy'
 })
