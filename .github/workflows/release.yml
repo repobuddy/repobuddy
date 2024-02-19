@@ -13,5 +13,3 @@ jobs:
     uses: repobuddy/.github/.github/workflows/pnpm-release-changeset.yml@main
     needs: code
     secrets: inherit
-    with:
-      os: '[18, 20]'
