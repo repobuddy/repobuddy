@@ -1,0 +1,14 @@
+{
+	"$schema": "https://biomejs.dev/schemas/1.5.2/schema.json",
+	"extends": ["./recommended.json"],
+	"linter": {
+		"rules": {
+			"correctness": {
+				"noInnerDeclarations": "warn"
+			},
+			"style": {
+				"noVar": "off"
+			}
+		}
+	}
+}

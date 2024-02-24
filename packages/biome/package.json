@@ -1,44 +1,34 @@
 {
-  "name": "@repobuddy/biome",
-  "version": "1.0.4",
-  "description": "Your biome buddy",
-  "keywords": [
-    "repobuddy",
-    "biome",
-    "linter",
-    "formatter",
-    "eslint",
-    "prettier",
-    "presets"
-  ],
-  "homepage": "https://github.com/repobuddy/repobuddy",
-  "bugs": {
-    "url": "https://github.com/repobuddy/repobuddy/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/repobuddy/repobuddy.git",
-    "directory": "packages/biome"
-  },
-  "license": "MIT",
-  "author": {
-    "name": "Homa Wong (unional)",
-    "email": "homawong@gmail.com",
-    "url": "https://github.com/unional"
-  },
-  "sideEffects": false,
-  "type": "module",
-  "exports": {
-    ".": {
-      "default": "./recommended.json"
-    }
-  },
-  "files": [
-    "recommended.json"
-  ],
-  "devDependencies": {
-    "@repobuddy/typescript": "workspace:*",
-    "@types/react": "^18.2.52",
-    "react": "^18.2.0"
-  }
+	"name": "@repobuddy/biome",
+	"version": "1.0.4",
+	"description": "Your biome buddy",
+	"keywords": ["repobuddy", "biome", "linter", "formatter", "eslint", "prettier", "presets"],
+	"homepage": "https://github.com/repobuddy/repobuddy",
+	"bugs": {
+		"url": "https://github.com/repobuddy/repobuddy/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/repobuddy/repobuddy.git",
+		"directory": "packages/biome"
+	},
+	"license": "MIT",
+	"author": {
+		"name": "Homa Wong (unional)",
+		"email": "homawong@gmail.com",
+		"url": "https://github.com/unional"
+	},
+	"sideEffects": false,
+	"type": "module",
+	"exports": {
+		".": {
+			"default": "./recommended.json"
+		}
+	},
+	"files": ["performant.json", "recommended.json"],
+	"devDependencies": {
+		"@repobuddy/typescript": "workspace:*",
+		"@types/react": "^18.2.52",
+		"react": "^18.2.0"
+	}
 }
