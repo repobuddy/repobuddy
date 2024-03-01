@@ -686,8 +686,8 @@ importers:
         specifier: ^0.5.2
         version: 0.5.2(typescript@5.3.3)
       '@astrojs/starlight':
-        specifier: ^0.20.0
-        version: 0.20.0(astro@4.3.5)
+        specifier: ^0.21.0
+        version: 0.21.0(astro@4.3.5)
       astro:
         specifier: ^4.3.4
         version: 4.3.5(@types/node@18.19.8)(typescript@5.3.3)
@@ -830,8 +830,8 @@ packages:
       zod: 3.22.4
     dev: false
 
-  /@astrojs/starlight@0.20.0(astro@4.3.5):
-    resolution: {integrity: sha512-8uxLMXjol1HD0xF6hTvLBmj4rRJrujpd+l7UwfG5fS76leC+i+bf//9Q5bIAvpqTqX+aCB46bYzpP61yHapCdw==}
+  /@astrojs/starlight@0.21.0(astro@4.3.5):
+    resolution: {integrity: sha512-mUUPFLs/UwXy0DK+hR1yNvAK50yc6JqEGyWMFmqOJeoPXm7CEOtXAoJtDGe8PLzTTbiJCG3bxh86eKPp5fUTkg==}
     peerDependencies:
       astro: ^4.2.7
     dependencies:
@@ -843,7 +843,9 @@ packages:
       astro: 4.3.5(@types/node@18.19.8)(typescript@5.3.3)
       astro-expressive-code: 0.33.4(astro@4.3.5)
       bcp-47: 2.1.0
+      hast-util-from-html: 2.0.1
       hast-util-select: 6.0.2
+      hast-util-to-string: 3.0.0
       hastscript: 8.0.0
       mdast-util-directive: 3.0.0
       mdast-util-to-markdown: 2.1.0
@@ -3841,7 +3843,7 @@ packages:
       '@vue/shared': 3.2.47
       estree-walker: 2.0.2
       magic-string: 0.25.9
-      postcss: 8.4.23
+      postcss: 8.4.35
       source-map: 0.6.1
     dev: true
 
@@ -8998,17 +9000,10 @@ packages:
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
     dev: true
 
-  /nanoid@3.3.6:
-    resolution: {integrity: sha512-BGcqMMJuToF7i1rt+2PWSNVnWIkGCU78jBG3RxO/bZlnZPK2Cmi2QaffxGO/2RvWi9sL+FAiRiXMgsyxQ1DIDA==}
-    engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
-    hasBin: true
-    dev: true
-
   /nanoid@3.3.7:
     resolution: {integrity: sha512-eSRppjcPIatRIMC1U6UngP8XFcz8MQWGQdt1MTBQ7NaAmvXDfvNxbvWV3x2y6CdEUciCSsDHDQZbhYaB8QEo2g==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
-    dev: false
 
   /nanoid@5.0.4:
     resolution: {integrity: sha512-vAjmBf13gsmhXSgBrtIclinISzFFy22WwCYoyilZlsrRXNIHSwgFQ1bEdjRwMT3aoadeIF6HMuDRlOxzfXV8ig==}
@@ -9762,15 +9757,6 @@ packages:
       util-deprecate: 1.0.2
     dev: false
 
-  /postcss@8.4.23:
-    resolution: {integrity: sha512-bQ3qMcpF6A/YjR55xtoTr0jGOlnPOKAIMdOWiv0EIT6HVPEaJiJB4NLljSbiHoC2RX7DN5Uvjtpbg1NPdwv1oA==}
-    engines: {node: ^10 || ^12 || >=14}
-    dependencies:
-      nanoid: 3.3.6
-      picocolors: 1.0.0
-      source-map-js: 1.0.2
-    dev: true
-
   /postcss@8.4.35:
     resolution: {integrity: sha512-u5U8qYpBCpN13BsiEB0CbR1Hhh4Gc0zLFuedrHJKMctHCHAGrMdG0PRM/KErzAL3CU6/eckEtmHNB3x6e3c0vA==}
     engines: {node: ^10 || ^12 || >=14}
@@ -9778,7 +9764,6 @@ packages:
       nanoid: 3.3.7
       picocolors: 1.0.0
       source-map-js: 1.0.2
-    dev: false
 
   /prebuild-install@7.1.1:
     resolution: {integrity: sha512-jAXscXWMcCK8GgCoHOfIr0ODh5ai8mj63L2nWrjuAgXE6tDyYGnx4/8o/rCgU+B4JSyZBKbeZqzhtwtC3ovxjw==}
