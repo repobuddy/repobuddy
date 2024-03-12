@@ -33,7 +33,7 @@
 		"web": "pnpm --filter ./website"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "1.6.0",
+		"@biomejs/biome": "1.6.1",
 		"@changesets/cli": "^2.26.0",
 		"@repobuddy/typescript": "workspace:^",
 		"@types/node": "^18.19.8",
