@@ -1,5 +1,16 @@
 # @repobuddy/biome
 
+## 1.1.0
+
+### Minor Changes
+
+- 68c8a72: Add `performant.json`.
+  It is for low-level library author to write performant code.
+
+### Patch Changes
+
+- 1eb8d02: Fix `.vscode/*` linting.
+
 ## 1.0.4
 
 ### Patch Changes
