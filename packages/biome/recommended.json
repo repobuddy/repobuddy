@@ -47,12 +47,7 @@
 	},
 	"overrides": [
 		{
-			"include": [
-				"frontmatter\\.json",
-				"\\.frontmatter[\\/]config[\\/]*\\.json",
-				"\\.vscode[//].*json",
-				"tsconfig.*json"
-			],
+			"include": ["frontmatter.json", ".frontmatter/config/*.json", ".vscode/*.json", "tsconfig*.json"],
 			"json": {
 				"parser": {
 					"allowComments": true,
