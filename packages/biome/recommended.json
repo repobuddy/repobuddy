@@ -2,12 +2,12 @@
 	"$schema": "https://biomejs.dev/schemas/1.5.2/schema.json",
 	"formatter": {
 		"enabled": true,
+		"indentStyle": "tab",
 		"lineEnding": "lf",
 		"lineWidth": 120
 	},
 	"javascript": {
 		"formatter": {
-			"indentStyle": "tab",
 			"quoteStyle": "single",
 			"semicolons": "asNeeded",
 			"trailingComma": "none"
