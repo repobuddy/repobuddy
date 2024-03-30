@@ -4,6 +4,7 @@
 		"biome": "pnpm --filter ./packages/biome",
 		"buddy": "pnpm --filter ./packages/buddy",
 		"build": "turbo run build",
+		"build:doc": "pnpm build",
 		"clean": "turbo run clean",
 		"coverage": "turbo run coverage",
 		"cs": "changeset",
