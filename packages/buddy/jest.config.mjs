@@ -1,4 +1,4 @@
 /** @type {import('jest').Config} */
 export default {
-  preset: '<rootDir>/../jest/presets/ts-watch',
+  preset: '@repobuddy/jest/presets/ts-watch',
 }

@@ -1,9 +1,9 @@
 import { expect, it } from '@jest/globals'
-import { jsCjsPreset, jsEsmPreset, tsCjsPreset, tsEsmPreset } from './index.js'
+import { presets } from './index.js'
 
 it('exports presets', () => {
-	expect(jsCjsPreset).toBeDefined()
-	expect(jsEsmPreset).toBeDefined()
-	expect(tsCjsPreset).toBeDefined()
-	expect(tsEsmPreset).toBeDefined()
+	expect(presets.jsCjs).toBeDefined()
+	expect(presets.jsEsm).toBeDefined()
+	expect(presets.tsCjs).toBeDefined()
+	expect(presets.tsEsm).toBeDefined()
 })

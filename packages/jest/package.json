@@ -37,209 +37,10 @@
 			},
 			"require": {
 				"types": "./cjs/matchers/index.d.ts",
-				"default": "./cjs/matchers/index.js"
+				"default": "./matchers/index.js"
 			}
 		},
-		"./presets/js-cjs": {
-			"import": {
-				"types": "./esm/presets/js-cjs/jest-preset.d.ts",
-				"default": "./esm/presets/js-cjs/jest-preset.js"
-			},
-			"require": {
-				"types": "./cjs/presets/js-cjs/jest-preset.d.ts",
-				"default": "./cjs/presets/js-cjs/jest-preset.js"
-			}
-		},
-		"./presets/js-cjs/jest-preset": {
-			"import": {
-				"types": "./esm/presets/js-cjs/jest-preset.d.ts",
-				"default": "./esm/presets/js-cjs/jest-preset.js"
-			},
-			"require": {
-				"types": "./cjs/presets/js-cjs/jest-preset.d.ts",
-				"default": "./cjs/presets/js-cjs/jest-preset.js"
-			}
-		},
-		"./presets/js-cjs-watch": {
-			"import": {
-				"types": "./esm/presets/js-cjs-watch/jest-preset.d.ts",
-				"default": "./esm/presets/js-cjs-watch/jest-preset.js"
-			},
-			"require": {
-				"types": "./cjs/presets/js-cjs-watch/jest-preset.d.ts",
-				"default": "./cjs/presets/js-cjs-watch/jest-preset.js"
-			}
-		},
-		"./presets/js-cjs-watch/jest-preset": {
-			"import": {
-				"types": "./esm/presets/js-cjs-watch/jest-preset.d.ts",
-				"default": "./esm/presets/js-cjs-watch/jest-preset.js"
-			},
-			"require": {
-				"types": "./cjs/presets/js-cjs-watch/jest-preset.d.ts",
-				"default": "./cjs/presets/js-cjs-watch/jest-preset.js"
-			}
-		},
-		"./presets/js-esm": {
-			"import": {
-				"types": "./esm/presets/js-esm/jest-preset.d.ts",
-				"default": "./esm/presets/js-esm/jest-preset.js"
-			},
-			"require": {
-				"types": "./cjs/presets/js-esm/jest-preset.d.ts",
-				"default": "./cjs/presets/js-esm/jest-preset.js"
-			}
-		},
-		"./presets/js-esm/jest-preset": {
-			"import": {
-				"types": "./esm/presets/js-esm/jest-preset.d.ts",
-				"default": "./esm/presets/js-esm/jest-preset.js"
-			},
-			"require": {
-				"types": "./cjs/presets/js-esm/jest-preset.d.ts",
-				"default": "./cjs/presets/js-esm/jest-preset.js"
-			}
-		},
-		"./presets/js-esm-watch": {
-			"import": {
-				"types": "./esm/presets/js-esm-watch/jest-preset.d.ts",
-				"default": "./esm/presets/js-esm-watch/jest-preset.js"
-			},
-			"require": {
-				"types": "./cjs/presets/js-esm-watch/jest-preset.d.ts",
-				"default": "./cjs/presets/js-esm-watch/jest-preset.js"
-			}
-		},
-		"./presets/js-esm-watch/jest-preset": {
-			"import": {
-				"types": "./esm/presets/js-esm-watch/jest-preset.d.ts",
-				"default": "./esm/presets/js-esm-watch/jest-preset.js"
-			},
-			"require": {
-				"types": "./cjs/presets/js-esm-watch/jest-preset.d.ts",
-				"default": "./cjs/presets/js-esm-watch/jest-preset.js"
-			}
-		},
-		"./presets/electron-ts": {
-			"import": {
-				"types": "./esm/presets/electron-ts/jest-preset.d.ts",
-				"default": "./esm/presets/electron-ts/jest-preset.js"
-			},
-			"require": {
-				"types": "./cjs/presets/electron-ts/jest-preset.d.ts",
-				"default": "./cjs/presets/electron-ts/jest-preset.js"
-			}
-		},
-		"./presets/electron-ts/jest-preset": {
-			"import": {
-				"types": "./esm/presets/electron-ts/jest-preset.d.ts",
-				"default": "./esm/presets/electron-ts/jest-preset.js"
-			},
-			"require": {
-				"types": "./cjs/presets/electron-ts/jest-preset.d.ts",
-				"default": "./cjs/presets/electron-ts/jest-preset.js"
-			}
-		},
-		"./presets/electron-ts-watch": {
-			"import": {
-				"types": "./esm/presets/electron-ts-watch/jest-preset.d.ts",
-				"default": "./esm/presets/electron-ts-watch/jest-preset.js"
-			},
-			"require": {
-				"types": "./cjs/presets/electron-ts-watch/jest-preset.d.ts",
-				"default": "./cjs/presets/electron-ts-watch/jest-preset.js"
-			}
-		},
-		"./presets/electron-ts-watch/jest-preset": {
-			"import": {
-				"types": "./esm/presets/electron-ts-watch/jest-preset.d.ts",
-				"default": "./esm/presets/electron-ts-watch/jest-preset.js"
-			},
-			"require": {
-				"types": "./cjs/presets/electron-ts-watch/jest-preset.d.ts",
-				"default": "./cjs/presets/electron-ts-watch/jest-preset.js"
-			}
-		},
-		"./presets/electron-ts-cjs": {
-			"import": {
-				"types": "./esm/presets/electron-ts-cjs/jest-preset.d.ts",
-				"default": "./esm/presets/electron-ts-cjs/jest-preset.js"
-			},
-			"require": {
-				"types": "./cjs/presets/electron-ts-cjs/jest-preset.d.ts",
-				"default": "./cjs/presets/electron-ts-cjs/jest-preset.js"
-			}
-		},
-		"./presets/electron-ts-cjs/jest-preset": {
-			"import": {
-				"types": "./esm/presets/electron-ts-cjs/jest-preset.d.ts",
-				"default": "./esm/presets/electron-ts-cjs/jest-preset.js"
-			},
-			"require": {
-				"types": "./cjs/presets/electron-ts-cjs/jest-preset.d.ts",
-				"default": "./cjs/presets/electron-ts-cjs/jest-preset.js"
-			}
-		},
-		"./presets/electron-ts-cjs-watch": {
-			"import": {
-				"types": "./esm/presets/electron-ts-cjs-watch/jest-preset.d.ts",
-				"default": "./esm/presets/electron-ts-cjs-watch/jest-preset.js"
-			},
-			"require": {
-				"types": "./cjs/presets/electron-ts-cjs-watch/jest-preset.d.ts",
-				"default": "./cjs/presets/electron-ts-cjs-watch/jest-preset.js"
-			}
-		},
-		"./presets/electron-ts-cjs-watch/jest-preset": {
-			"import": {
-				"types": "./esm/presets/electron-ts-cjs-watch/jest-preset.d.ts",
-				"default": "./esm/presets/electron-ts-cjs-watch/jest-preset.js"
-			},
-			"require": {
-				"types": "./cjs/presets/electron-ts-cjs-watch/jest-preset.d.ts",
-				"default": "./cjs/presets/electron-ts-cjs-watch/jest-preset.js"
-			}
-		},
-		"./presets/electron-ts-esm": {
-			"import": {
-				"types": "./esm/presets/electron-ts-esm/jest-preset.d.ts",
-				"default": "./esm/presets/electron-ts-esm/jest-preset.js"
-			},
-			"require": {
-				"types": "./cjs/presets/electron-ts-esm/jest-preset.d.ts",
-				"default": "./cjs/presets/electron-ts-esm/jest-preset.js"
-			}
-		},
-		"./presets/electron-ts-esm/jest-preset": {
-			"import": {
-				"types": "./esm/presets/electron-ts-esm/jest-preset.d.ts",
-				"default": "./esm/presets/electron-ts-esm/jest-preset.js"
-			},
-			"require": {
-				"types": "./cjs/presets/electron-ts-esm/jest-preset.d.ts",
-				"default": "./cjs/presets/electron-ts-esm/jest-preset.js"
-			}
-		},
-		"./presets/electron-ts-esm-watch": {
-			"import": {
-				"types": "./esm/presets/electron-ts-esm-watch/jest-preset.d.ts",
-				"default": "./esm/presets/electron-ts-esm-watch/jest-preset.js"
-			},
-			"require": {
-				"types": "./cjs/presets/electron-ts-esm-watch/jest-preset.d.ts",
-				"default": "./cjs/presets/electron-ts-esm-watch/jest-preset.js"
-			}
-		},
-		"./presets/electron-ts-esm-watch/jest-preset": {
-			"import": {
-				"types": "./esm/presets/electron-ts-esm-watch/jest-preset.d.ts",
-				"default": "./esm/presets/electron-ts-esm-watch/jest-preset.js"
-			},
-			"require": {
-				"types": "./cjs/presets/electron-ts-esm-watch/jest-preset.d.ts",
-				"default": "./cjs/presets/electron-ts-esm-watch/jest-preset.js"
-			}
-		},
+		"./package.json": "./package.json",
 		"./presets/electron-renderer-ts": {
 			"import": {
 				"types": "./esm/presets/electron-renderer-ts/jest-preset.d.ts",
@@ -247,37 +48,7 @@
 			},
 			"require": {
 				"types": "./cjs/presets/electron-renderer-ts/jest-preset.d.ts",
-				"default": "./cjs/presets/electron-renderer-ts/jest-preset.js"
-			}
-		},
-		"./presets/electron-renderer-ts/jest-preset": {
-			"import": {
-				"types": "./esm/presets/electron-renderer-ts/jest-preset.d.ts",
-				"default": "./esm/presets/electron-renderer-ts/jest-preset.js"
-			},
-			"require": {
-				"types": "./cjs/presets/electron-renderer-ts/jest-preset.d.ts",
-				"default": "./cjs/presets/electron-renderer-ts/jest-preset.js"
-			}
-		},
-		"./presets/electron-renderer-ts-watch": {
-			"import": {
-				"types": "./esm/presets/electron-renderer-ts-watch/jest-preset.d.ts",
-				"default": "./esm/presets/electron-renderer-ts-watch/jest-preset.js"
-			},
-			"require": {
-				"types": "./cjs/presets/electron-renderer-ts-watch/jest-preset.d.ts",
-				"default": "./cjs/presets/electron-renderer-ts-watch/jest-preset.js"
-			}
-		},
-		"./presets/electron-renderer-ts-watch/jest-preset": {
-			"import": {
-				"types": "./esm/presets/electron-renderer-ts-watch/jest-preset.d.ts",
-				"default": "./esm/presets/electron-renderer-ts-watch/jest-preset.js"
-			},
-			"require": {
-				"types": "./cjs/presets/electron-renderer-ts-watch/jest-preset.d.ts",
-				"default": "./cjs/presets/electron-renderer-ts-watch/jest-preset.js"
+				"default": "./presets/electron-renderer-ts/jest-preset.js"
 			}
 		},
 		"./presets/electron-renderer-ts-cjs": {
@@ -287,17 +58,7 @@
 			},
 			"require": {
 				"types": "./cjs/presets/electron-renderer-ts-cjs/jest-preset.d.ts",
-				"default": "./cjs/presets/electron-renderer-ts-cjs/jest-preset.js"
-			}
-		},
-		"./presets/electron-renderer-ts-cjs/jest-preset": {
-			"import": {
-				"types": "./esm/presets/electron-renderer-ts-cjs/jest-preset.d.ts",
-				"default": "./esm/presets/electron-renderer-ts-cjs/jest-preset.js"
-			},
-			"require": {
-				"types": "./cjs/presets/electron-renderer-ts-cjs/jest-preset.d.ts",
-				"default": "./cjs/presets/electron-renderer-ts-cjs/jest-preset.js"
+				"default": "./presets/electron-renderer-ts-cjs/jest-preset.js"
 			}
 		},
 		"./presets/electron-renderer-ts-cjs-watch": {
@@ -307,7 +68,7 @@
 			},
 			"require": {
 				"types": "./cjs/presets/electron-renderer-ts-cjs-watch/jest-preset.d.ts",
-				"default": "./cjs/presets/electron-renderer-ts-cjs-watch/jest-preset.js"
+				"default": "./presets/electron-renderer-ts-cjs-watch/jest-preset.js"
 			}
 		},
 		"./presets/electron-renderer-ts-cjs-watch/jest-preset": {
@@ -317,7 +78,17 @@
 			},
 			"require": {
 				"types": "./cjs/presets/electron-renderer-ts-cjs-watch/jest-preset.d.ts",
-				"default": "./cjs/presets/electron-renderer-ts-cjs-watch/jest-preset.js"
+				"default": "./presets/electron-renderer-ts-cjs-watch/jest-preset.js"
+			}
+		},
+		"./presets/electron-renderer-ts-cjs/jest-preset": {
+			"import": {
+				"types": "./esm/presets/electron-renderer-ts-cjs/jest-preset.d.ts",
+				"default": "./esm/presets/electron-renderer-ts-cjs/jest-preset.js"
+			},
+			"require": {
+				"types": "./cjs/presets/electron-renderer-ts-cjs/jest-preset.d.ts",
+				"default": "./presets/electron-renderer-ts-cjs/jest-preset.js"
 			}
 		},
 		"./presets/electron-renderer-ts-esm": {
@@ -327,17 +98,7 @@
 			},
 			"require": {
 				"types": "./cjs/presets/electron-renderer-ts-esm/jest-preset.d.ts",
-				"default": "./cjs/presets/electron-renderer-ts-esm/jest-preset.js"
-			}
-		},
-		"./presets/electron-renderer-ts-esm/jest-preset": {
-			"import": {
-				"types": "./esm/presets/electron-renderer-ts-esm/jest-preset.d.ts",
-				"default": "./esm/presets/electron-renderer-ts-esm/jest-preset.js"
-			},
-			"require": {
-				"types": "./cjs/presets/electron-renderer-ts-esm/jest-preset.d.ts",
-				"default": "./cjs/presets/electron-renderer-ts-esm/jest-preset.js"
+				"default": "./presets/electron-renderer-ts-esm/jest-preset.js"
 			}
 		},
 		"./presets/electron-renderer-ts-esm-watch": {
@@ -347,7 +108,7 @@
 			},
 			"require": {
 				"types": "./cjs/presets/electron-renderer-ts-esm-watch/jest-preset.d.ts",
-				"default": "./cjs/presets/electron-renderer-ts-esm-watch/jest-preset.js"
+				"default": "./presets/electron-renderer-ts-esm-watch/jest-preset.js"
 			}
 		},
 		"./presets/electron-renderer-ts-esm-watch/jest-preset": {
@@ -357,7 +118,247 @@
 			},
 			"require": {
 				"types": "./cjs/presets/electron-renderer-ts-esm-watch/jest-preset.d.ts",
-				"default": "./cjs/presets/electron-renderer-ts-esm-watch/jest-preset.js"
+				"default": "./presets/electron-renderer-ts-esm-watch/jest-preset.js"
+			}
+		},
+		"./presets/electron-renderer-ts-esm/jest-preset": {
+			"import": {
+				"types": "./esm/presets/electron-renderer-ts-esm/jest-preset.d.ts",
+				"default": "./esm/presets/electron-renderer-ts-esm/jest-preset.js"
+			},
+			"require": {
+				"types": "./cjs/presets/electron-renderer-ts-esm/jest-preset.d.ts",
+				"default": "./presets/electron-renderer-ts-esm/jest-preset.js"
+			}
+		},
+		"./presets/electron-renderer-ts-watch": {
+			"import": {
+				"types": "./esm/presets/electron-renderer-ts-watch/jest-preset.d.ts",
+				"default": "./esm/presets/electron-renderer-ts-watch/jest-preset.js"
+			},
+			"require": {
+				"types": "./cjs/presets/electron-renderer-ts-watch/jest-preset.d.ts",
+				"default": "./presets/electron-renderer-ts-watch/jest-preset.js"
+			}
+		},
+		"./presets/electron-renderer-ts-watch/jest-preset": {
+			"import": {
+				"types": "./esm/presets/electron-renderer-ts-watch/jest-preset.d.ts",
+				"default": "./esm/presets/electron-renderer-ts-watch/jest-preset.js"
+			},
+			"require": {
+				"types": "./cjs/presets/electron-renderer-ts-watch/jest-preset.d.ts",
+				"default": "./presets/electron-renderer-ts-watch/jest-preset.js"
+			}
+		},
+		"./presets/electron-renderer-ts/jest-preset": {
+			"import": {
+				"types": "./esm/presets/electron-renderer-ts/jest-preset.d.ts",
+				"default": "./esm/presets/electron-renderer-ts/jest-preset.js"
+			},
+			"require": {
+				"types": "./cjs/presets/electron-renderer-ts/jest-preset.d.ts",
+				"default": "./presets/electron-renderer-ts/jest-preset.js"
+			}
+		},
+		"./presets/electron-ts": {
+			"import": {
+				"types": "./esm/presets/electron-ts/jest-preset.d.ts",
+				"default": "./esm/presets/electron-ts/jest-preset.js"
+			},
+			"require": {
+				"types": "./cjs/presets/electron-ts/jest-preset.d.ts",
+				"default": "./presets/electron-ts/jest-preset.js"
+			}
+		},
+		"./presets/electron-ts-cjs": {
+			"import": {
+				"types": "./esm/presets/electron-ts-cjs/jest-preset.d.ts",
+				"default": "./esm/presets/electron-ts-cjs/jest-preset.js"
+			},
+			"require": {
+				"types": "./cjs/presets/electron-ts-cjs/jest-preset.d.ts",
+				"default": "./presets/electron-ts-cjs/jest-preset.js"
+			}
+		},
+		"./presets/electron-ts-cjs-watch": {
+			"import": {
+				"types": "./esm/presets/electron-ts-cjs-watch/jest-preset.d.ts",
+				"default": "./esm/presets/electron-ts-cjs-watch/jest-preset.js"
+			},
+			"require": {
+				"types": "./cjs/presets/electron-ts-cjs-watch/jest-preset.d.ts",
+				"default": "./presets/electron-ts-cjs-watch/jest-preset.js"
+			}
+		},
+		"./presets/electron-ts-cjs-watch/jest-preset": {
+			"import": {
+				"types": "./esm/presets/electron-ts-cjs-watch/jest-preset.d.ts",
+				"default": "./esm/presets/electron-ts-cjs-watch/jest-preset.js"
+			},
+			"require": {
+				"types": "./cjs/presets/electron-ts-cjs-watch/jest-preset.d.ts",
+				"default": "./presets/electron-ts-cjs-watch/jest-preset.js"
+			}
+		},
+		"./presets/electron-ts-cjs/jest-preset": {
+			"import": {
+				"types": "./esm/presets/electron-ts-cjs/jest-preset.d.ts",
+				"default": "./esm/presets/electron-ts-cjs/jest-preset.js"
+			},
+			"require": {
+				"types": "./cjs/presets/electron-ts-cjs/jest-preset.d.ts",
+				"default": "./presets/electron-ts-cjs/jest-preset.js"
+			}
+		},
+		"./presets/electron-ts-esm": {
+			"import": {
+				"types": "./esm/presets/electron-ts-esm/jest-preset.d.ts",
+				"default": "./esm/presets/electron-ts-esm/jest-preset.js"
+			},
+			"require": {
+				"types": "./cjs/presets/electron-ts-esm/jest-preset.d.ts",
+				"default": "./presets/electron-ts-esm/jest-preset.js"
+			}
+		},
+		"./presets/electron-ts-esm-watch": {
+			"import": {
+				"types": "./esm/presets/electron-ts-esm-watch/jest-preset.d.ts",
+				"default": "./esm/presets/electron-ts-esm-watch/jest-preset.js"
+			},
+			"require": {
+				"types": "./cjs/presets/electron-ts-esm-watch/jest-preset.d.ts",
+				"default": "./presets/electron-ts-esm-watch/jest-preset.js"
+			}
+		},
+		"./presets/electron-ts-esm-watch/jest-preset": {
+			"import": {
+				"types": "./esm/presets/electron-ts-esm-watch/jest-preset.d.ts",
+				"default": "./esm/presets/electron-ts-esm-watch/jest-preset.js"
+			},
+			"require": {
+				"types": "./cjs/presets/electron-ts-esm-watch/jest-preset.d.ts",
+				"default": "./presets/electron-ts-esm-watch/jest-preset.js"
+			}
+		},
+		"./presets/electron-ts-esm/jest-preset": {
+			"import": {
+				"types": "./esm/presets/electron-ts-esm/jest-preset.d.ts",
+				"default": "./esm/presets/electron-ts-esm/jest-preset.js"
+			},
+			"require": {
+				"types": "./cjs/presets/electron-ts-esm/jest-preset.d.ts",
+				"default": "./presets/electron-ts-esm/jest-preset.js"
+			}
+		},
+		"./presets/electron-ts-watch": {
+			"import": {
+				"types": "./esm/presets/electron-ts-watch/jest-preset.d.ts",
+				"default": "./esm/presets/electron-ts-watch/jest-preset.js"
+			},
+			"require": {
+				"types": "./cjs/presets/electron-ts-watch/jest-preset.d.ts",
+				"default": "./presets/electron-ts-watch/jest-preset.js"
+			}
+		},
+		"./presets/electron-ts-watch/jest-preset": {
+			"import": {
+				"types": "./esm/presets/electron-ts-watch/jest-preset.d.ts",
+				"default": "./esm/presets/electron-ts-watch/jest-preset.js"
+			},
+			"require": {
+				"types": "./cjs/presets/electron-ts-watch/jest-preset.d.ts",
+				"default": "./presets/electron-ts-watch/jest-preset.js"
+			}
+		},
+		"./presets/electron-ts/jest-preset": {
+			"import": {
+				"types": "./esm/presets/electron-ts/jest-preset.d.ts",
+				"default": "./esm/presets/electron-ts/jest-preset.js"
+			},
+			"require": {
+				"types": "./cjs/presets/electron-ts/jest-preset.d.ts",
+				"default": "./presets/electron-ts/jest-preset.js"
+			}
+		},
+		"./presets/js-cjs": {
+			"import": {
+				"types": "./esm/presets/js-cjs/jest-preset.d.ts",
+				"default": "./esm/presets/js-cjs/jest-preset.js"
+			},
+			"require": {
+				"types": "./cjs/presets/js-cjs/jest-preset.d.ts",
+				"default": "./presets/js-cjs/jest-preset.js"
+			}
+		},
+		"./presets/js-cjs-watch": {
+			"import": {
+				"types": "./esm/presets/js-cjs-watch/jest-preset.d.ts",
+				"default": "./esm/presets/js-cjs-watch/jest-preset.js"
+			},
+			"require": {
+				"types": "./cjs/presets/js-cjs-watch/jest-preset.d.ts",
+				"default": "./presets/js-cjs-watch/jest-preset.js"
+			}
+		},
+		"./presets/js-cjs-watch/jest-preset": {
+			"import": {
+				"types": "./esm/presets/js-cjs-watch/jest-preset.d.ts",
+				"default": "./esm/presets/js-cjs-watch/jest-preset.js"
+			},
+			"require": {
+				"types": "./cjs/presets/js-cjs-watch/jest-preset.d.ts",
+				"default": "./presets/js-cjs-watch/jest-preset.js"
+			}
+		},
+		"./presets/js-cjs/jest-preset": {
+			"import": {
+				"types": "./esm/presets/js-cjs/jest-preset.d.ts",
+				"default": "./esm/presets/js-cjs/jest-preset.js"
+			},
+			"require": {
+				"types": "./cjs/presets/js-cjs/jest-preset.d.ts",
+				"default": "./presets/js-cjs/jest-preset.js"
+			}
+		},
+		"./presets/js-esm": {
+			"import": {
+				"types": "./esm/presets/js-esm/jest-preset.d.ts",
+				"default": "./esm/presets/js-esm/jest-preset.js"
+			},
+			"require": {
+				"types": "./cjs/presets/js-esm/jest-preset.d.ts",
+				"default": "./presets/js-esm/jest-preset.js"
+			}
+		},
+		"./presets/js-esm-watch": {
+			"import": {
+				"types": "./esm/presets/js-esm-watch/jest-preset.d.ts",
+				"default": "./esm/presets/js-esm-watch/jest-preset.js"
+			},
+			"require": {
+				"types": "./cjs/presets/js-esm-watch/jest-preset.d.ts",
+				"default": "./presets/js-esm-watch/jest-preset.js"
+			}
+		},
+		"./presets/js-esm-watch/jest-preset": {
+			"import": {
+				"types": "./esm/presets/js-esm-watch/jest-preset.d.ts",
+				"default": "./esm/presets/js-esm-watch/jest-preset.js"
+			},
+			"require": {
+				"types": "./cjs/presets/js-esm-watch/jest-preset.d.ts",
+				"default": "./presets/js-esm-watch/jest-preset.js"
+			}
+		},
+		"./presets/js-esm/jest-preset": {
+			"import": {
+				"types": "./esm/presets/js-esm/jest-preset.d.ts",
+				"default": "./esm/presets/js-esm/jest-preset.js"
+			},
+			"require": {
+				"types": "./cjs/presets/js-esm/jest-preset.d.ts",
+				"default": "./presets/js-esm/jest-preset.js"
 			}
 		},
 		"./presets/jsdom-ts": {
@@ -367,7 +368,7 @@
 			},
 			"require": {
 				"types": "./cjs/presets/jsdom-ts/jest-preset.d.ts",
-				"default": "./cjs/presets/jsdom-ts/jest-preset.js"
+				"default": "./presets/jsdom-ts/jest-preset.js"
 			}
 		},
 		"./presets/jsdom-ts/jest-preset": {
@@ -377,27 +378,7 @@
 			},
 			"require": {
 				"types": "./cjs/presets/jsdom-ts/jest-preset.d.ts",
-				"default": "./cjs/presets/jsdom-ts/jest-preset.js"
-			}
-		},
-		"./presets/jsdom-ts-watch": {
-			"import": {
-				"types": "./esm/presets/jsdom-ts-watch/jest-preset.d.ts",
-				"default": "./esm/presets/jsdom-ts-watch/jest-preset.js"
-			},
-			"require": {
-				"types": "./cjs/presets/jsdom-ts-watch/jest-preset.d.ts",
-				"default": "./cjs/presets/jsdom-ts-watch/jest-preset.js"
-			}
-		},
-		"./presets/jsdom-ts-watch/jest-preset": {
-			"import": {
-				"types": "./esm/presets/jsdom-ts-watch/jest-preset.d.ts",
-				"default": "./esm/presets/jsdom-ts-watch/jest-preset.js"
-			},
-			"require": {
-				"types": "./cjs/presets/jsdom-ts-watch/jest-preset.d.ts",
-				"default": "./cjs/presets/jsdom-ts-watch/jest-preset.js"
+				"default": "./presets/jsdom-ts/jest-preset.js"
 			}
 		},
 		"./presets/jsdom-ts-cjs": {
@@ -407,7 +388,7 @@
 			},
 			"require": {
 				"types": "./cjs/presets/jsdom-ts-cjs/jest-preset.d.ts",
-				"default": "./cjs/presets/jsdom-ts-cjs/jest-preset.js"
+				"default": "./presets/jsdom-ts-cjs/jest-preset.js"
 			}
 		},
 		"./presets/jsdom-ts-cjs/jest-preset": {
@@ -417,7 +398,7 @@
 			},
 			"require": {
 				"types": "./cjs/presets/jsdom-ts-cjs/jest-preset.d.ts",
-				"default": "./cjs/presets/jsdom-ts-cjs/jest-preset.js"
+				"default": "./presets/jsdom-ts-cjs/jest-preset.js"
 			}
 		},
 		"./presets/jsdom-ts-cjs-watch": {
@@ -427,7 +408,7 @@
 			},
 			"require": {
 				"types": "./cjs/presets/jsdom-ts-cjs-watch/jest-preset.d.ts",
-				"default": "./cjs/presets/jsdom-ts-cjs-watch/jest-preset.js"
+				"default": "./presets/jsdom-ts-cjs-watch/jest-preset.js"
 			}
 		},
 		"./presets/jsdom-ts-cjs-watch/jest-preset": {
@@ -437,9 +418,10 @@
 			},
 			"require": {
 				"types": "./cjs/presets/jsdom-ts-cjs-watch/jest-preset.d.ts",
-				"default": "./cjs/presets/jsdom-ts-cjs-watch/jest-preset.js"
+				"default": "./presets/jsdom-ts-cjs-watch/jest-preset.js"
 			}
 		},
+
 		"./presets/jsdom-ts-esm": {
 			"import": {
 				"types": "./esm/presets/jsdom-ts-esm/jest-preset.d.ts",
@@ -447,7 +429,7 @@
 			},
 			"require": {
 				"types": "./cjs/presets/jsdom-ts-esm/jest-preset.d.ts",
-				"default": "./cjs/presets/jsdom-ts-esm/jest-preset.js"
+				"default": "./presets/jsdom-ts-esm/jest-preset.js"
 			}
 		},
 		"./presets/jsdom-ts-esm/jest-preset": {
@@ -457,7 +439,7 @@
 			},
 			"require": {
 				"types": "./cjs/presets/jsdom-ts-esm/jest-preset.d.ts",
-				"default": "./cjs/presets/jsdom-ts-esm/jest-preset.js"
+				"default": "./presets/jsdom-ts-esm/jest-preset.js"
 			}
 		},
 		"./presets/jsdom-ts-esm-watch": {
@@ -467,7 +449,7 @@
 			},
 			"require": {
 				"types": "./cjs/presets/jsdom-ts-esm-watch/jest-preset.d.ts",
-				"default": "./cjs/presets/jsdom-ts-esm-watch/jest-preset.js"
+				"default": "./presets/jsdom-ts-esm-watch/jest-preset.js"
 			}
 		},
 		"./presets/jsdom-ts-esm-watch/jest-preset": {
@@ -477,9 +459,31 @@
 			},
 			"require": {
 				"types": "./cjs/presets/jsdom-ts-esm-watch/jest-preset.d.ts",
-				"default": "./cjs/presets/jsdom-ts-esm-watch/jest-preset.js"
+				"default": "./presets/jsdom-ts-esm-watch/jest-preset.js"
 			}
 		},
+
+		"./presets/jsdom-ts-watch": {
+			"import": {
+				"types": "./esm/presets/jsdom-ts-watch/jest-preset.d.ts",
+				"default": "./esm/presets/jsdom-ts-watch/jest-preset.js"
+			},
+			"require": {
+				"types": "./cjs/presets/jsdom-ts-watch/jest-preset.d.ts",
+				"default": "./presets/jsdom-ts-watch/jest-preset.js"
+			}
+		},
+		"./presets/jsdom-ts-watch/jest-preset": {
+			"import": {
+				"types": "./esm/presets/jsdom-ts-watch/jest-preset.d.ts",
+				"default": "./esm/presets/jsdom-ts-watch/jest-preset.js"
+			},
+			"require": {
+				"types": "./cjs/presets/jsdom-ts-watch/jest-preset.d.ts",
+				"default": "./presets/jsdom-ts-watch/jest-preset.js"
+			}
+		},
+
 		"./presets/ts": {
 			"import": {
 				"types": "./esm/presets/ts/jest-preset.d.ts",
@@ -487,7 +491,7 @@
 			},
 			"require": {
 				"types": "./cjs/presets/ts/jest-preset.d.ts",
-				"default": "./cjs/presets/ts/jest-preset.js"
+				"default": "./presets/ts/jest-preset.js"
 			}
 		},
 		"./presets/ts/jest-preset": {
@@ -497,27 +501,7 @@
 			},
 			"require": {
 				"types": "./cjs/presets/ts/jest-preset.d.ts",
-				"default": "./cjs/presets/ts/jest-preset.js"
-			}
-		},
-		"./presets/ts-watch": {
-			"import": {
-				"types": "./esm/presets/ts-watch/jest-preset.d.ts",
-				"default": "./esm/presets/ts-watch/jest-preset.js"
-			},
-			"require": {
-				"types": "./cjs/presets/ts-watch/jest-preset.d.ts",
-				"default": "./cjs/presets/ts-watch/jest-preset.js"
-			}
-		},
-		"./presets/ts-watch/jest-preset": {
-			"import": {
-				"types": "./esm/presets/ts-watch/jest-preset.d.ts",
-				"default": "./esm/presets/ts-watch/jest-preset.js"
-			},
-			"require": {
-				"types": "./cjs/presets/ts-watch/jest-preset.d.ts",
-				"default": "./cjs/presets/ts-watch/jest-preset.js"
+				"default": "./presets/ts/jest-preset.js"
 			}
 		},
 		"./presets/ts-cjs": {
@@ -527,7 +511,7 @@
 			},
 			"require": {
 				"types": "./cjs/presets/ts-cjs/jest-preset.d.ts",
-				"default": "./cjs/presets/ts-cjs/jest-preset.js"
+				"default": "./presets/ts-cjs/jest-preset.js"
 			}
 		},
 		"./presets/ts-cjs/jest-preset": {
@@ -537,7 +521,7 @@
 			},
 			"require": {
 				"types": "./cjs/presets/ts-cjs/jest-preset.d.ts",
-				"default": "./cjs/presets/ts-cjs/jest-preset.js"
+				"default": "./presets/ts-cjs/jest-preset.js"
 			}
 		},
 		"./presets/ts-cjs-watch": {
@@ -547,7 +531,7 @@
 			},
 			"require": {
 				"types": "./cjs/presets/ts-cjs-watch/jest-preset.d.ts",
-				"default": "./cjs/presets/ts-cjs-watch/jest-preset.js"
+				"default": "./presets/ts-cjs-watch/jest-preset.js"
 			}
 		},
 		"./presets/ts-cjs-watch/jest-preset": {
@@ -557,9 +541,10 @@
 			},
 			"require": {
 				"types": "./cjs/presets/ts-cjs-watch/jest-preset.d.ts",
-				"default": "./cjs/presets/ts-cjs-watch/jest-preset.js"
+				"default": "./presets/ts-cjs-watch/jest-preset.js"
 			}
 		},
+
 		"./presets/ts-esm": {
 			"import": {
 				"types": "./esm/presets/ts-esm/jest-preset.d.ts",
@@ -567,7 +552,7 @@
 			},
 			"require": {
 				"types": "./cjs/presets/ts-esm/jest-preset.d.ts",
-				"default": "./cjs/presets/ts-esm/jest-preset.js"
+				"default": "./presets/ts-esm/jest-preset.js"
 			}
 		},
 		"./presets/ts-esm/jest-preset": {
@@ -577,7 +562,7 @@
 			},
 			"require": {
 				"types": "./cjs/presets/ts-esm/jest-preset.d.ts",
-				"default": "./cjs/presets/ts-esm/jest-preset.js"
+				"default": "./presets/ts-esm/jest-preset.js"
 			}
 		},
 		"./presets/ts-esm-watch": {
@@ -587,7 +572,7 @@
 			},
 			"require": {
 				"types": "./cjs/presets/ts-esm-watch/jest-preset.d.ts",
-				"default": "./cjs/presets/ts-esm-watch/jest-preset.js"
+				"default": "./presets/ts-esm-watch/jest-preset.js"
 			}
 		},
 		"./presets/ts-esm-watch/jest-preset": {
@@ -597,9 +582,30 @@
 			},
 			"require": {
 				"types": "./cjs/presets/ts-esm-watch/jest-preset.d.ts",
-				"default": "./cjs/presets/ts-esm-watch/jest-preset.js"
+				"default": "./presets/ts-esm-watch/jest-preset.js"
 			}
 		},
+		"./presets/ts-watch": {
+			"import": {
+				"types": "./esm/presets/ts-watch/jest-preset.d.ts",
+				"default": "./esm/presets/ts-watch/jest-preset.js"
+			},
+			"require": {
+				"types": "./cjs/presets/ts-watch/jest-preset.d.ts",
+				"default": "./presets/ts-watch/jest-preset.js"
+			}
+		},
+		"./presets/ts-watch/jest-preset": {
+			"import": {
+				"types": "./esm/presets/ts-watch/jest-preset.d.ts",
+				"default": "./esm/presets/ts-watch/jest-preset.js"
+			},
+			"require": {
+				"types": "./cjs/presets/ts-watch/jest-preset.d.ts",
+				"default": "./presets/ts-watch/jest-preset.js"
+			}
+		},
+
 		"./presets/watch": {
 			"import": {
 				"types": "./esm/presets/watch/jest-preset.d.ts",
@@ -607,7 +613,7 @@
 			},
 			"require": {
 				"types": "./cjs/presets/watch/jest-preset.d.ts",
-				"default": "./cjs/presets/watch/jest-preset.js"
+				"default": "./presets/watch/jest-preset.js"
 			}
 		},
 		"./presets/watch/jest-preset": {
@@ -617,18 +623,7 @@
 			},
 			"require": {
 				"types": "./cjs/presets/watch/jest-preset.d.ts",
-				"default": "./cjs/presets/watch/jest-preset.js"
-			}
-		},
-		"./package.json": "./package.json",
-		"./resolver": {
-			"import": {
-				"types": "./esm/resolver.d.ts",
-				"default": "./esm/resolver.js"
-			},
-			"require": {
-				"types": "./cjs/resolver.d.ts",
-				"default": "./cjs/resolver.js"
+				"default": "./presets/watch/jest-preset.js"
 			}
 		}
 	},
@@ -645,11 +640,11 @@
 	],
 	"scripts": {
 		"build": "run-p build:cjs build:esm",
-		"build:cjs": "run-s build:swc build:cjs:ts build:cjs:cpy",
+		"build:cjs": "run-s build:esbuild build:cjs:ts build:cjs:cpy",
 		"build:cjs:cpy": "ncp package.cjs.json cjs/package.json",
 		"build:cjs:ts": "tsc --project tsconfig.cjs.json",
+		"build:esbuild": " esbuild ts/index.ts --bundle --platform=node --outfile=./cjs/index.js",
 		"build:esm": "tsc --project tsconfig.esm.json",
-		"build:swc": "swc ts -d cjs",
 		"clean": "rimraf cjs coverage esm tslib --glob *.tsbuildinfo",
 		"coverage": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_OPTIONS=--experimental-import-meta-resolve NODE_NO_WARNINGS=1 jest --coverage",
 		"depcheck": "depcheck",

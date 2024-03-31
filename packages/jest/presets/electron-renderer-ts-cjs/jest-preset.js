@@ -1,2 +1,1 @@
-const preset = require('../../cjs/presets/electron-renderer-ts-cjs/jest-preset.js')
-module.exports = preset
+module.exports = require('../../cjs/index.js').presets.electronRendererTsCjs

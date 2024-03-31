@@ -1,1 +1,1 @@
-export { default } from '../../esm/presets/ts-esm/jest-preset.js'
+module.exports = require('../../cjs/index.js').presets.tsEsm
