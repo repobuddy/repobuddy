@@ -1,5 +1,14 @@
 # @repobuddy/biome
 
+## 1.2.1
+
+### Patch Changes
+
+- Override settings for `package.json` to make sure it expands arrays into multiple lines.
+
+  Tools like `changesets` and `semantic-release` keeps that format.
+  This change prevents unnecessary changes to the `package.json` file.
+
 ## 1.2.0
 
 ### Minor Changes

@@ -54,6 +54,12 @@
 					"allowTrailingCommas": true
 				}
 			}
+		},
+		{
+			"include": ["package.json"],
+			"formatter": {
+				"lineWidth": 20
+			}
 		}
 	]
 }
