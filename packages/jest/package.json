@@ -1,8 +1,12 @@
 {
 	"name": "@repobuddy/jest",
-	"version": "3.4.2",
+	"version": "4.0.0",
 	"description": "Your jest buddy",
-	"keywords": ["jest", "presets", "config"],
+	"keywords": [
+		"jest",
+		"presets",
+		"config"
+	],
 	"homepage": "https://github.com/repobuddy/repobuddy",
 	"bugs": {
 		"url": "https://github.com/repobuddy/repobuddy/issues"
@@ -421,7 +425,6 @@
 				"default": "./presets/jsdom-ts-cjs-watch/jest-preset.js"
 			}
 		},
-
 		"./presets/jsdom-ts-esm": {
 			"import": {
 				"types": "./esm/presets/jsdom-ts-esm/jest-preset.d.ts",
@@ -462,7 +465,6 @@
 				"default": "./presets/jsdom-ts-esm-watch/jest-preset.js"
 			}
 		},
-
 		"./presets/jsdom-ts-watch": {
 			"import": {
 				"types": "./esm/presets/jsdom-ts-watch/jest-preset.d.ts",
@@ -483,7 +485,6 @@
 				"default": "./presets/jsdom-ts-watch/jest-preset.js"
 			}
 		},
-
 		"./presets/ts": {
 			"import": {
 				"types": "./esm/presets/ts/jest-preset.d.ts",
@@ -544,7 +545,6 @@
 				"default": "./presets/ts-cjs-watch/jest-preset.js"
 			}
 		},
-
 		"./presets/ts-esm": {
 			"import": {
 				"types": "./esm/presets/ts-esm/jest-preset.d.ts",
@@ -605,7 +605,6 @@
 				"default": "./presets/ts-watch/jest-preset.js"
 			}
 		},
-
 		"./presets/watch": {
 			"import": {
 				"types": "./esm/presets/watch/jest-preset.d.ts",
