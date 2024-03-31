@@ -21,7 +21,7 @@ export function toSatisfies(this: any, actual: unknown, expectation: Expectation
 			pass
 				? `${this.utils.matcherHint('.not.toSatisfies', 'received', '')}\n\nreceived ${this.utils.printReceived(
 						actual
-				  )}`
+					)}`
 				: `${this.utils.matcherHint('.toSatisfies', 'received', '')}\n\n${formatDiffs(diff)}`
 	}
 }

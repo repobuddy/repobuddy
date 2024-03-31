@@ -1,21 +1,21 @@
 {
-  "name": "examples-biome",
-  "version": "1.0.0",
-  "private": true,
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "check": "biome check ."
-  },
-  "keywords": [],
-  "author": {
-    "name": "Homa Wong (unional)",
-    "email": "homawong@gmail.com",
-    "url": "https://github.com/unional"
-  },
-  "license": "MIT",
-  "devDependencies": {
-    "@biomejs/biome": "1.5.2",
-    "@repobuddy/biome": "workspace:^"
-  }
+	"name": "examples-biome",
+	"version": "1.0.0",
+	"private": true,
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"check": "biome check ."
+	},
+	"keywords": [],
+	"author": {
+		"name": "Homa Wong (unional)",
+		"email": "homawong@gmail.com",
+		"url": "https://github.com/unional"
+	},
+	"license": "MIT",
+	"devDependencies": {
+		"@biomejs/biome": "1.5.2",
+		"@repobuddy/biome": "workspace:^"
+	}
 }

@@ -1,9 +1,7 @@
 {
-  "extends": "./tsconfig.base",
-  "compilerOptions": {
-    "noEmit": true
-  },
-  "include": [
-    "./*.ts"
-  ],
+	"extends": "./tsconfig.base",
+	"compilerOptions": {
+		"noEmit": true
+	},
+	"include": ["./*.ts"]
 }
