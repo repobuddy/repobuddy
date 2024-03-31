@@ -2,7 +2,13 @@
 	"name": "repobuddy",
 	"version": "1.0.2",
 	"description": "Your Repobuddy CLI",
-	"keywords": ["cli", "repository", "tools", "jest", "typescript"],
+	"keywords": [
+		"cli",
+		"repository",
+		"tools",
+		"jest",
+		"typescript"
+	],
 	"homepage": "https://github.com/repobuddy/repobuddy",
 	"bugs": {
 		"url": "https://github.com/repobuddy/repobuddy/issues"

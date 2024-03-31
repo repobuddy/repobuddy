@@ -1,5 +1,13 @@
 # @repobuddy/biome
 
+## 1.2.0
+
+### Minor Changes
+
+- 411e772: Set `.swcrc` to support `jsonc`.
+- 0a1a0db: Use tab by default for all files.
+  Accessibility on Markdown also matters.
+
 ## 1.1.0
 
 ### Minor Changes

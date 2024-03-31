@@ -1,5 +1,15 @@
 # @unional/jest-presets
 
+## 4.0.0
+
+### Major Changes
+
+- 03bfa10: Organize exports to better support CJS.
+
+  The exports are now grouped under namespace objects: `configs`, `fields`, `matchers`, `presets`, and `resolver`.
+
+  Exports of electron related presets are added.
+
 ## 3.4.2
 
 ### Patch Changes
