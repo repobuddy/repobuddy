@@ -1,22 +1,22 @@
 {
-  "name": "build-ts",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "clean": "rimraf cjs esm tslib --glob *.tsbuildinfo",
-    "nuke": "run-s clean && rimraf node_modules",
-    "test": "run-p test:*",
-    "test:cjs": "buddy ts build cjs",
-    "test:tslib": "buddy ts build tslib"
-  },
-  "dependencies": {
-    "tslib": "^2.6.2"
-  },
-  "devDependencies": {
-    "@repobuddy/typescript": "workspace:^",
-    "npm-run-all2": "^6.0.0",
-    "repobuddy": "workspace:^",
-    "rimraf": "^5.0.0",
-    "typescript": "^5.3.3"
-  }
+	"name": "build-ts",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"clean": "rimraf cjs esm tslib --glob *.tsbuildinfo",
+		"nuke": "run-s clean && rimraf node_modules",
+		"test": "run-p test:*",
+		"test:cjs": "buddy ts build cjs",
+		"test:tslib": "buddy ts build tslib"
+	},
+	"dependencies": {
+		"tslib": "^2.6.2"
+	},
+	"devDependencies": {
+		"@repobuddy/typescript": "workspace:^",
+		"npm-run-all2": "^6.0.0",
+		"repobuddy": "workspace:^",
+		"rimraf": "^5.0.0",
+		"typescript": "^5.3.3"
+	}
 }

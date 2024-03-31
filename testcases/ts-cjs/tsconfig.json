@@ -1,16 +1,14 @@
 {
-  "extends": "@repobuddy/typescript/tsconfig/monorepo.json",
-  "compilerOptions": {
-    "outDir": "esm",
-    "rootDir": "src",
-    "jsx": "react"
-  },
-  "include": [
-    "src"
-  ],
-  "references": [
-    {
-      "path": "../../packages/jest"
-    }
-  ]
+	"extends": "@repobuddy/typescript/tsconfig/monorepo.json",
+	"compilerOptions": {
+		"outDir": "esm",
+		"rootDir": "src",
+		"jsx": "react"
+	},
+	"include": ["src"],
+	"references": [
+		{
+			"path": "../../packages/jest"
+		}
+	]
 }
