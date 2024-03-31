@@ -4,3 +4,9 @@ tsconfig
 Codecov
 npm-url
 downloads-url
+codecov-url
+subpath
+jest-watch-typeahead
+jsdom
+electronRenderer
+transpile

@@ -3,5 +3,10 @@
 	"compilerOptions": {
 		"rootDir": "ts"
 	},
+	"references": [
+		{
+			"path": "../jest/tsconfig.base.json"
+		}
+	],
 	"include": ["ts", "types"]
 }

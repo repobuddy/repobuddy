@@ -1,1 +1,1 @@
-export { default } from '../../esm/presets/electron-renderer-ts-esm/jest-preset.js'
+module.exports = require('../../cjs/index.js').presets.electronRendererTsEsm

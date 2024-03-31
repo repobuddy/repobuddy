@@ -1,2 +1,1 @@
-const presets = require('../cjs/matchers/index.js')
-module.exports = presets
+module.exports = require('../cjs/index.js').matchers

@@ -75,8 +75,8 @@ rush add -p @repobuddy/jest --dev
 
 [@repobuddy/jest] comes with many presets:
 
-- `@repobuddy/jest/presets/ts`: auto detect if your project is CJS or ESM
-- `@repobuddy/jest/presets/ts-watch`: auto detect if your project is CJS or ESM
+- `@repobuddy/jest/presets/ts`: auto-detect if your project is CJS or ESM
+- `@repobuddy/jest/presets/ts-watch`: auto-detect if your project is CJS or ESM
 - `@repobuddy/jest/presets/ts-cjs`
 - `@repobuddy/jest/presets/ts-cjs-watch`
 - `@repobuddy/jest/presets/ts-esm`
@@ -85,33 +85,33 @@ rush add -p @repobuddy/jest --dev
 - `@repobuddy/jest/presets/js-cjs-watch`
 - `@repobuddy/jest/presets/js-esm`
 - `@repobuddy/jest/presets/js-esm-watch`
-- `@repobuddy/jest/presets/jsdom-ts`: auto detect if your project is CJS or ESM
-- `@repobuddy/jest/presets/jsdom-ts-watch`: auto detect if your project is CJS or ESM
+- `@repobuddy/jest/presets/jsdom-ts`: auto-detect if your project is CJS or ESM
+- `@repobuddy/jest/presets/jsdom-ts-watch`: auto-detect if your project is CJS or ESM
 - `@repobuddy/jest/presets/jsdom-ts-cjs`
 - `@repobuddy/jest/presets/jsdom-ts-cjs-watch`
 - `@repobuddy/jest/presets/jsdom-ts-esm`
 - `@repobuddy/jest/presets/jsdom-ts-esm-watch`
-- `@repobuddy/jest/presets/electron-ts`: auto detect if your project is CJS or ESM
-- `@repobuddy/jest/presets/electron-ts-watch`: auto detect if your project is CJS or ESM
+- `@repobuddy/jest/presets/electron-ts`: auto-detect if your project is CJS or ESM
+- `@repobuddy/jest/presets/electron-ts-watch`: auto-detect if your project is CJS or ESM
 - `@repobuddy/jest/presets/electron-ts-cjs`
 - `@repobuddy/jest/presets/electron-ts-cjs-watch`
 - `@repobuddy/jest/presets/electron-ts-esm`
 - `@repobuddy/jest/presets/electron-ts-esm-watch`
-- `@repobuddy/jest/presets/electron-renderer-ts`: auto detect if your project is CJS or ESM
-- `@repobuddy/jest/presets/electron-renderer-ts-watch`: auto detect if your project is CJS or ESM
+- `@repobuddy/jest/presets/electron-renderer-ts`: auto-detect if your project is CJS or ESM
+- `@repobuddy/jest/presets/electron-renderer-ts-watch`: auto-detect if your project is CJS or ESM
 - `@repobuddy/jest/presets/electron-renderer-ts-cjs`
 - `@repobuddy/jest/presets/electron-renderer-ts-cjs-watch`
 - `@repobuddy/jest/presets/electron-renderer-ts-esm`
 - `@repobuddy/jest/presets/electron-renderer-ts-esm-watch`
-- `@repobuddy/jest/presets/watch`: watch mode presets for multi-environment config
+- `@repobuddy/jest/presets/watch`: watch mode presets for multienvironment config
 
 If you do not have any specific configs,
 these presets should work without additional configuration.
 
 Here are some highlights:
 
-- all of the presets will automatically detects your source folder (in either `src`, `source`, `ts`, or `js`).
-- support platform specific tests:
+- All presets will automatically detect your source folder (in either `src`, `source`, `ts`, or `js`).
+- Support platform specific tests:
   - `feature.spec.node.ts`
   - `feature.spec.node16.ts`
   - `feature.spec.jsdom.ts`
@@ -201,7 +201,7 @@ They can be `known` configurations, which you can use to build your configuratio
 
 ## Matchers
 
-There are also matchers which you can use to extends the `expect()` function:
+There are also matchers which you can use to extend the `expect()` function:
 
 - [toSatisfies](./ts/matchers/toSatisfies.ts): Similar functionality provided by [assertron] and [satisfier]
 
@@ -283,12 +283,12 @@ While you may want the type checking benefits,
 in my experience it is ok to break the types when you are in the middle of your code,
 e.g. when you are doing TDD.
 
-I would recommend to use the build process and IDE to help you catching any type errors,
+I would recommend using the build process and IDE to help you to catch any type errors,
 while allowing the type to break while writing code and tests.
 
-The tighter feelback loop makes it much easier to work with.
+The tighter feedback loop makes it much easier to work with.
 
-This also avoid getting the bad habbit of marking things `any` along the way,
+This also avoid getting the bad habit of marking things `any` along the way,
 just to silents the type checker.
 
 Writing the correct type is not an easy task,
@@ -296,7 +296,7 @@ and it is better to leave at the refactoring stage IMO.
 
 ### `transformIgnorePatterns`
 
-[jest] could not understands ESM code.
+[jest] could not understand ESM code.
 And by default, the code under `node_modules` are not transformed.
 
 To work with packages that are distributed as ESM,
@@ -308,7 +308,7 @@ For example, it doesn't work with monorepo using [pnpm].
 
 Therefore, for simplicity, [@repobuddy/jest] uses [jest-esm-transformer-2] to handle that and keep [transformIgnorePatterns] empty.
 
-### about the `exports` field
+### About the `exports` field
 
 You may wonder why there are:
 
@@ -330,7 +330,7 @@ You may wonder why there are:
 and `/packages/jest/presets/ts` files.
 
 The `.../ts` export is needed to export the code and type correctly in TypeScript/JavaScript.
-The `.../ts/jest-preset` export is need by `jest` to work correctly in linux environment.
+The `.../ts/jest-preset` export is need by `jest` to work correctly in Linux environment,
 and the `/packages/jest/presets/ts` is needed to work in Windows environment (or CJS).
 
 🤦

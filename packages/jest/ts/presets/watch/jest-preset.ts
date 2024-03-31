@@ -1,4 +1,4 @@
-import { defineWatchPlugins } from '../../index.js'
+import { defineWatchPlugins } from '../../fields/index.js'
 
 const tsWatchPreset = defineWatchPlugins()
 

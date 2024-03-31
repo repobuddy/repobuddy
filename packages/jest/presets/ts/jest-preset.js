@@ -1,2 +1,1 @@
-const preset = require('../../cjs/presets/ts/jest-preset.js')
-module.exports = preset
+module.exports = require('../../cjs/index.js').presets.ts
