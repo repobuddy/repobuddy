@@ -1,5 +1,11 @@
 # @repobuddy/biome
 
+## 1.3.0
+
+### Minor Changes
+
+- 352d379: Add `performant` config
+
 ## 1.2.1
 
 ### Patch Changes
