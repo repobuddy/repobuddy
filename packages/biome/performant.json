@@ -1,14 +1,67 @@
 {
 	"$schema": "https://biomejs.dev/schemas/1.5.2/schema.json",
-	"extends": ["./recommended.json"],
+	"formatter": {
+		"enabled": true,
+		"indentStyle": "tab",
+		"lineEnding": "lf",
+		"lineWidth": 120
+	},
+	"javascript": {
+		"formatter": {
+			"quoteStyle": "single",
+			"semicolons": "asNeeded",
+			"trailingComma": "none"
+		}
+	},
+	"json": {
+		"parser": {
+			"allowComments": false,
+			"allowTrailingCommas": false
+		}
+	},
 	"linter": {
+		"enabled": true,
 		"rules": {
+			"recommended": true,
+			"complexity": {
+				"noForEach": "off",
+				"useLiteralKeys": "off"
+			},
 			"correctness": {
-				"noInnerDeclarations": "warn"
+				"noInnerDeclarations": "warn",
+				"noUnusedVariables": "error",
+				"useExhaustiveDependencies": "off"
 			},
 			"style": {
+				"noCommaOperator": "off",
+				"noNonNullAssertion": "off",
+				"noParameterAssign": "off",
 				"noVar": "off"
+			},
+			"suspicious": {
+				"noAssignInExpressions": "off",
+				"noExplicitAny": "off"
 			}
 		}
-	}
+	},
+	"organizeImports": {
+		"enabled": false
+	},
+	"overrides": [
+		{
+			"include": ["frontmatter.json", ".frontmatter/config/*.json", ".vscode/*.json", ".swcrc", "tsconfig*.json"],
+			"json": {
+				"parser": {
+					"allowComments": true,
+					"allowTrailingCommas": true
+				}
+			}
+		},
+		{
+			"include": ["package.json"],
+			"formatter": {
+				"lineWidth": 20
+			}
+		}
+	]
 }

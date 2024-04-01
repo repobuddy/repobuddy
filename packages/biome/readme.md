@@ -22,18 +22,29 @@ Using [@repobuddy/biome] provided recommended config:
 ```jsonc
 // biome.json
 {
-  "extends": [
-    "./node_modules/@repobuddy/biome/recommended.json"
-  ]
+  "extends": ["@repobuddy/biome"],
+  // ...
 }
-
 ```
-
-Note that currently, [biome]'s extend mechanism only support relative path.
 
 The recommended config is customized for people or teams that are proficient.
 
 i.e., you know what you are doing. The tools try to help but get out of your way.
+
+### `performant.json`
+
+If performance is a top priority for your project,
+some typical linting rules will hold you back.
+
+This `performant` will have those rules disabled for you.
+
+```jsonc
+// biome.json
+{
+  "extends": ["@repobuddy/biome/performant"],
+  // ...
+}
+```
 
 [@repobuddy/biome]: https://www.npmjs.com/package/@repobuddy/biome
 [biome]: https://biomejs.dev

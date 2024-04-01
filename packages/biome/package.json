@@ -29,14 +29,17 @@
 	"sideEffects": false,
 	"type": "module",
 	"exports": {
-		".": {
-			"default": "./recommended.json"
-		}
+		".": "./recommended.json",
+		"./recommended": "./recommended.json",
+		"./performant": "./performant.json"
 	},
 	"files": [
 		"performant.json",
 		"recommended.json"
 	],
+	"scripts": {
+		"publish:jsr": "pnpm dlx jsr publish"
+	},
 	"devDependencies": {
 		"@repobuddy/typescript": "workspace:*",
 		"@types/react": "^18.2.52",
