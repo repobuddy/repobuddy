@@ -39,8 +39,8 @@ importers:
         specifier: ^7.2.0
         version: 7.2.0(@typescript-eslint/eslint-plugin@7.0.2)(eslint-config-prettier@9.1.0)(eslint@8.56.0)(typescript@5.4.3)
       eslint-plugin-yml:
-        specifier: ~1.13.0
-        version: 1.13.0(eslint@8.56.0)
+        specifier: ~1.14.0
+        version: 1.14.0(eslint@8.56.0)
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.11.30)
@@ -4915,6 +4915,7 @@ packages:
 
   /buffer@5.7.1:
     resolution: {integrity: sha512-EHcyIPBQ4BSGlvjB16k5KgAJ27CIsHY/2JBmCRReo48y9rQ3MaUzWX3KVlBa4U7MyX02HdVj0K7C3WaB3ju7FQ==}
+    requiresBuild: true
     dependencies:
       base64-js: 1.5.1
       ieee754: 1.2.1
@@ -6037,8 +6038,8 @@ packages:
       - typescript
     dev: true
 
-  /eslint-plugin-yml@1.13.0(eslint@8.56.0):
-    resolution: {integrity: sha512-B87P32E8ugeeUnFxZvPsn72TyeZauA5ZXe6XmWDf0CKwN+9iLaepi6matyvikMWZf1ZeH9xdKggxQvQzLXlfzw==}
+  /eslint-plugin-yml@1.14.0(eslint@8.56.0):
+    resolution: {integrity: sha512-ESUpgYPOcAYQO9czugcX5OqRvn/ydDVwGCPXY4YjPqc09rHaUVUA6IE6HLQys4rXk/S+qx3EwTd1wHCwam/OWQ==}
     engines: {node: ^14.17.0 || >=16.0.0}
     peerDependencies:
       eslint: '>=6.0.0'
@@ -8196,7 +8197,7 @@ packages:
       jest-util: 29.7.0
       natural-compare: 1.4.0
       pretty-format: 29.7.0
-      semver: 7.5.4
+      semver: 7.6.0
     transitivePeerDependencies:
       - supports-color
     dev: true
