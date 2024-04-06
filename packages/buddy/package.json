@@ -31,6 +31,12 @@
 	"exports": {
 		"./package.json": "./package.json"
 	},
+	"files": [
+		"esm",
+		"template",
+		"ts",
+		"!**/*.{spec,test,unit,accept,integrate,system,perf,stress}.*"
+	],
 	"scripts": {
 		"build": "run-p build:esm",
 		"build:esm": "tsc --project tsconfig.esm.json",
