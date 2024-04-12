@@ -1,5 +1,15 @@
 # @repobuddy/biome
 
+## 1.4.0
+
+### Minor Changes
+
+- a54ae1c: Remove `trailingComma: none` recommendation.
+
+  Following "least friction" rule,
+  using the default `trailingComma: all` is better than `trailingComma: none`.
+  It is easier to edit and cleaner git history.
+
 ## 1.3.0
 
 ### Minor Changes

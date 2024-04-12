@@ -1,5 +1,12 @@
 # repobuddy
 
+## 1.1.0
+
+### Minor Changes
+
+- 3e394fb: Add `templates/.editorconfig`.
+  Remove extra files in the distribution.
+
 ## 1.0.2
 
 ### Patch Changes
