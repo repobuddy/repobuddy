@@ -2,7 +2,7 @@
 	"extends": "../typescript/tsconfig/monorepo",
 	"compilerOptions": {
 		"outDir": "esm",
-		"rootDir": "src"
+		"rootDir": "tests"
 	},
-	"include": ["src"]
+	"include": ["tests"]
 }

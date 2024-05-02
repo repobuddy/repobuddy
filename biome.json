@@ -1,8 +1,54 @@
 {
-	"$schema": "https://biomejs.dev/schemas/1.5.2/schema.json",
-	"extends": ["./packages/biome/recommended.json"],
+	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+	"extends": ["@repobuddy/biome/recommended"],
 	"files": {
 		"ignore": ["cjs", "coverage", "esm", "target"],
-		"include": ["src", "ts/**/*", "**/*.json", ".swcrc"]
-	}
+		"include": ["src", "tests", "ts/**/*", "**/*.json", ".swcrc"]
+	},
+	"overrides": [
+		{
+			"include": ["tests/performant"],
+			"formatter": {
+				"enabled": true,
+				"indentStyle": "tab",
+				"lineEnding": "lf",
+				"lineWidth": 120
+			},
+			"javascript": {
+				"formatter": {
+					"quoteStyle": "single",
+					"semicolons": "asNeeded",
+					"trailingComma": "none"
+				}
+			},
+			"linter": {
+				"enabled": true,
+				"rules": {
+					"recommended": true,
+					"complexity": {
+						"noForEach": "off",
+						"useLiteralKeys": "off"
+					},
+					"correctness": {
+						"noInnerDeclarations": "warn",
+						"noUnusedVariables": "error",
+						"useExhaustiveDependencies": "off"
+					},
+					"style": {
+						"noCommaOperator": "off",
+						"noNonNullAssertion": "off",
+						"noParameterAssign": "off",
+						"noVar": "off"
+					},
+					"suspicious": {
+						"noAssignInExpressions": "off",
+						"noExplicitAny": "off"
+					}
+				}
+			},
+			"organizeImports": {
+				"enabled": false
+			}
+		}
+	]
 }
