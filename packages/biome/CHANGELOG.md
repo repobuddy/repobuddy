@@ -1,5 +1,14 @@
 # @repobuddy/biome
 
+## 1.5.0
+
+### Minor Changes
+
+- 60f3b39: Turn off `useTemplate`.
+
+  It's a style preference that works in some cases,
+  but will negatively impact performance.
+
 ## 1.4.0
 
 ### Minor Changes
