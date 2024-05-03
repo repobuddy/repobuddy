@@ -36,7 +36,8 @@
 				"noCommaOperator": "off",
 				"noNonNullAssertion": "off",
 				"noParameterAssign": "off",
-				"noVar": "off"
+				"noVar": "off",
+				"useTemplate": "off"
 			},
 			"suspicious": {
 				"noAssignInExpressions": "off",

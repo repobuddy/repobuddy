@@ -33,7 +33,8 @@
 			"style": {
 				"noCommaOperator": "off",
 				"noNonNullAssertion": "off",
-				"noParameterAssign": "off"
+				"noParameterAssign": "off",
+				"useTemplate": "off"
 			},
 			"suspicious": {
 				"noAssignInExpressions": "off",
