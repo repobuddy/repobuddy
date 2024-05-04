@@ -29,13 +29,13 @@
 	"sideEffects": false,
 	"type": "module",
 	"exports": {
-		".": "./recommended.json",
-		"./recommended": "./recommended.json",
-		"./performant": "./performant.json"
+		".": "./recommended.jsonc",
+		"./recommended": "./recommended.jsonc",
+		"./performant": "./performant.jsonc"
 	},
 	"files": [
-		"performant.json",
-		"recommended.json"
+		"performant.jsonc",
+		"recommended.jsonc"
 	],
 	"scripts": {
 		"publish:jsr": "pnpm dlx jsr publish"

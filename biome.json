@@ -3,7 +3,7 @@
 	"extends": ["@repobuddy/biome/recommended"],
 	"files": {
 		"ignore": ["cjs", "coverage", "esm", "target", "tests/performant"],
-		"include": ["src", "tests", "ts/**/*", "**/*.json", ".swcrc"]
+		"include": ["src", "tests", "ts/**/*", "**/*.json", "**/*.jsonc", ".swcrc"]
 	},
 	"overrides": [
 		{
@@ -49,6 +49,12 @@
 			},
 			"organizeImports": {
 				"enabled": false
+			}
+		},
+		{
+			"include": ["package.json"],
+			"formatter": {
+				"lineWidth": 20
 			}
 		}
 	]

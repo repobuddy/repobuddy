@@ -9,7 +9,8 @@
 	"javascript": {
 		"formatter": {
 			"quoteStyle": "single",
-			"semicolons": "asNeeded"
+			"semicolons": "asNeeded",
+			"trailingComma": "none"
 		}
 	},
 	"json": {
@@ -27,6 +28,7 @@
 				"useLiteralKeys": "off"
 			},
 			"correctness": {
+				"noInnerDeclarations": "warn",
 				"noUnusedVariables": "error",
 				"useExhaustiveDependencies": "off"
 			},
@@ -34,6 +36,8 @@
 				"noCommaOperator": "off",
 				"noNonNullAssertion": "off",
 				"noParameterAssign": "off",
+				"noVar": "off",
+				// using template has performance impact, compare to string concatenation.
 				"useTemplate": "off"
 			},
 			"suspicious": {

@@ -9,11 +9,12 @@
 	"javascript": {
 		"formatter": {
 			"quoteStyle": "single",
-			"semicolons": "asNeeded",
-			"trailingComma": "none"
+			"semicolons": "asNeeded"
 		}
 	},
 	"json": {
+		// `biome` treat `json` as `jsonc` by default.
+		// That causes false positives and should be avoided.
 		"parser": {
 			"allowComments": false,
 			"allowTrailingCommas": false
@@ -24,23 +25,34 @@
 		"rules": {
 			"recommended": true,
 			"complexity": {
+				// There are advantages of using other constructs,
+				// but they should not be reasons to avoid `.forEach()`.
 				"noForEach": "off",
+				// This conflicts with TypeScript when accessing index types.
 				"useLiteralKeys": "off"
 			},
 			"correctness": {
-				"noInnerDeclarations": "warn",
 				"noUnusedVariables": "error",
 				"useExhaustiveDependencies": "off"
 			},
 			"style": {
 				"noCommaOperator": "off",
 				"noNonNullAssertion": "off",
+				// unless you uses them as out params, which you shouldn't,
+				// it is ok to assign the parameters.
+				// With TypeScript, you will need to assign to a new variable if the type changes,
+				// so you will not assign the parameter and run into this anyway.
 				"noParameterAssign": "off",
-				"noVar": "off",
+				// using template has performance impact, compare to string concatenation.
+				// for more complex cases, using template does produce more readable code.
+				// But for simple case like `count + ' counts'` ->	`${count} counts`,
+				// it is a subjective style choice.
 				"useTemplate": "off"
 			},
 			"suspicious": {
 				"noAssignInExpressions": "off",
+				// Type operates at a higher dimension than value.
+				// This means there are many cases you will need to use `any` to bypass the type inferred in the value.
 				"noExplicitAny": "off"
 			}
 		}
