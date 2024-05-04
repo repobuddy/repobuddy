@@ -1,5 +1,11 @@
 # @repobuddy/biome
 
+## 1.5.1
+
+### Patch Changes
+
+- c77fa32: Use `jsonc` and provide some reasoning about the rule choices.
+
 ## 1.5.0
 
 ### Minor Changes
