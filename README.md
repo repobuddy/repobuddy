@@ -23,9 +23,9 @@
 
 > Provides tools and utilities to take care of [TypeScript] stuffs, so you don't have to.
 
-[@repobuddy/biome]: ./packages/biome/README.md
-[@repobuddy/jest]: ./packages/jest/README.md
-[@repobuddy/typescript]: ./packages/typescript/README.md
+[@repobuddy/biome]: ./packages/biome/readme.md
+[@repobuddy/jest]: ./packages/jest/readme.md
+[@repobuddy/typescript]: ./packages/typescript/readme.md
 [biome]: https://biomejs.dev/
 [codecov-biome-image]: https://codecov.io/gh/repobuddy/repobuddy/badge.svg?flag=biome
 [codecov-biome-url]: https://codecov.io/gh/repobuddy/repobuddy
