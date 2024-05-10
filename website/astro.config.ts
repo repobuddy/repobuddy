@@ -9,8 +9,8 @@ export default defineConfig({
 			favicon: '/img/logo.svg',
 			logo: {
 				light: './src/assets/logo.svg',
-				dark: './src/assets/logo.svg',
-				replacesTitle: true
+				dark: './src/assets/logo.svg'
+				// replacesTitle: true
 			},
 			social: {
 				discord: 'https://discord.gg/5amXyarNHR',
