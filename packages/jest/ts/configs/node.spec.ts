@@ -4,7 +4,7 @@ import { every } from 'satisfier'
 import { configNode } from './index.js'
 
 describe(`${configNode.name}()`, () => {
-	it('defaults with spec|test|unit|accept|integrate|system identifiers', () => {
-		a.satisfies(configNode().testRegex, every(/\(spec|test|unit|accept|integrate|system\)/))
+	it('defaults with spec|test|unit|accept|integrate|learning|system|perf|stress identifiers', () => {
+		a.satisfies(configNode().testRegex, every(/\(spec|test|unit|accept|integrate|learning|system|perf|stress\)/))
 	})
 })

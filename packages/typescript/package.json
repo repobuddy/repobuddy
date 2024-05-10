@@ -2,7 +2,11 @@
 	"name": "@repobuddy/typescript",
 	"version": "2.0.0",
 	"description": "Your TypeScript buddy",
-	"keywords": ["repobuddy", "tsconfig", "typescript"],
+	"keywords": [
+		"repobuddy",
+		"tsconfig",
+		"typescript"
+	],
 	"homepage": "https://github.com/repobuddy/repobuddy",
 	"bugs": {
 		"url": "https://github.com/repobuddy/repobuddy/issues"
@@ -31,7 +35,13 @@
 		"./tsconfig/*.json": "./tsconfig/*.json",
 		"./tsconfig/*": "./tsconfig/*.json"
 	},
-	"files": ["esm", "nodejs", "ts", "tsconfig", "!**/*.{spec,unit,test,accept,integrate,system,pref,stress}.*"],
+	"files": [
+		"esm",
+		"nodejs",
+		"ts",
+		"tsconfig",
+		"!**/*.{spec,unit,test,accept,integrate,learning,system,pref,stress}.*"
+	],
 	"scripts": {
 		"build": "run-p build:esm",
 		"build:esm": "tsc",

@@ -635,7 +635,7 @@
 		"presets",
 		"ts",
 		"config.mjs",
-		"!**/*.{spec,unit,test,accept,integrate,system,perf,stress}.*"
+		"!**/*.{spec,unit,test,accept,integrate,learning,system,perf,stress}.*"
 	],
 	"scripts": {
 		"build": "run-p build:cjs build:esm",
