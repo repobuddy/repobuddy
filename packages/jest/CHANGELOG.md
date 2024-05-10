@@ -1,5 +1,11 @@
 # @unional/jest-presets
 
+## 4.1.0
+
+### Minor Changes
+
+- 5863926: Add `*.learning.ts|js...` support
+
 ## 4.0.0
 
 ### Major Changes
