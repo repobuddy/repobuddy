@@ -1,8 +1,8 @@
 import { command, z } from 'clibuilder'
 import { dirname } from 'dirname-filename-esm'
 import { execa } from 'execa'
-import { copyFile } from 'fs/promises'
-import { join } from 'path'
+import { copyFile } from 'node:fs/promises'
+import { join } from 'node:path'
 
 export const build = command({
 	name: 'build',
@@ -10,8 +10,8 @@ export const build = command({
 		{
 			name: 'type',
 			description: 'type of build: cjs, esm, or tslib',
-			type: z.union([z.literal('cjs'), z.literal('tslib'), z.literal('esm')])
-		}
+			type: z.union([z.literal('cjs'), z.literal('tslib'), z.literal('esm')]),
+		},
 	],
 	async run({ type }) {
 		this.ui.info(`building ${type}...`)
@@ -20,9 +20,9 @@ export const build = command({
 			this.ui.info('copying package.json...')
 			await copyFile(
 				join(dirname(import.meta), '../nodejs/package.cjs.json'),
-				join(process.cwd(), `./${type}/package.json`)
+				join(process.cwd(), `./${type}/package.json`),
 			)
 		}
 		this.ui.info(`build ${type} done`)
-	}
+	},
 })
