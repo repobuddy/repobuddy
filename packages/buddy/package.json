@@ -49,7 +49,7 @@
 		"verify": "npm-run-all -p build -p test depcheck size"
 	},
 	"dependencies": {
-		"clibuilder": "^8.0.15"
+		"clibuilder": "^9.0.0"
 	},
 	"devDependencies": {
 		"@repobuddy/jest": "workspace:*",
