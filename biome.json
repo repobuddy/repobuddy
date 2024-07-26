@@ -2,7 +2,7 @@
 	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
 	"extends": ["@repobuddy/biome/recommended"],
 	"files": {
-		"ignore": ["cjs", "coverage", "esm", "target", "tests/performant"],
+		"ignore": ["node_modules", "cjs", "coverage", "esm", "target", "tests/performant"],
 		"include": ["src", "tests", "ts/**/*", "**/*.json", "**/*.jsonc", ".swcrc"]
 	},
 	"overrides": [
@@ -18,7 +18,7 @@
 				"formatter": {
 					"quoteStyle": "single",
 					"semicolons": "asNeeded",
-					"trailingComma": "none"
+					"trailingCommas": "none"
 				}
 			},
 			"linter": {
