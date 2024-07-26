@@ -88,8 +88,8 @@ importers:
         version: 8.0.15
     devDependencies:
       '@jest/globals':
-        specifier: ^29.5.0
-        version: 29.5.0
+        specifier: ^29.7.0
+        version: 29.7.0
       '@repobuddy/jest':
         specifier: workspace:*
         version: link:../jest
@@ -134,17 +134,17 @@ importers:
         version: 7.6.0
     devDependencies:
       '@jest/expect':
-        specifier: ^29.5.0
-        version: 29.5.0
+        specifier: ^29.7.0
+        version: 29.7.0
       '@jest/globals':
-        specifier: ^29.5.0
-        version: 29.5.0
+        specifier: ^29.7.0
+        version: 29.7.0
       '@kayahr/jest-electron-runner':
         specifier: ^29.12.0
         version: 29.12.0(@types/node@20.11.30)
       '@types/jest':
-        specifier: ^29.5.1
-        version: 29.5.1
+        specifier: ^29.5.12
+        version: 29.5.12
       assertron:
         specifier: ^11.0.3
         version: 11.0.3
@@ -219,8 +219,8 @@ importers:
         specifier: ~11.1.0
         version: 11.1.0(size-limit@11.1.0)
       '@types/jest':
-        specifier: ^29.5.1
-        version: 29.5.1
+        specifier: ^29.5.12
+        version: 29.5.12
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -283,8 +283,8 @@ importers:
   testcases/electron-renderer-ts:
     devDependencies:
       '@jest/globals':
-        specifier: ^29.5.0
-        version: 29.5.0
+        specifier: ^29.7.0
+        version: 29.7.0
       '@kayahr/jest-electron-runner':
         specifier: ^29.12.0
         version: 29.12.0(@types/node@20.11.30)
@@ -325,8 +325,8 @@ importers:
   testcases/electron-ts:
     devDependencies:
       '@jest/globals':
-        specifier: ^29.5.0
-        version: 29.5.0
+        specifier: ^29.7.0
+        version: 29.7.0
       '@kayahr/jest-electron-runner':
         specifier: ^29.12.0
         version: 29.12.0(@types/node@20.11.30)
@@ -367,8 +367,8 @@ importers:
   testcases/js-cjs:
     devDependencies:
       '@jest/globals':
-        specifier: ^29.5.0
-        version: 29.5.0
+        specifier: ^29.7.0
+        version: 29.7.0
       '@repobuddy/jest':
         specifier: workspace:^
         version: link:../../packages/jest
@@ -397,8 +397,8 @@ importers:
   testcases/js-esm:
     devDependencies:
       '@jest/globals':
-        specifier: ^29.5.0
-        version: 29.5.0
+        specifier: ^29.7.0
+        version: 29.7.0
       '@repobuddy/jest':
         specifier: workspace:^
         version: link:../../packages/jest
@@ -433,8 +433,8 @@ importers:
   testcases/jsdom-ts:
     devDependencies:
       '@jest/globals':
-        specifier: ^29.5.0
-        version: 29.5.0
+        specifier: ^29.7.0
+        version: 29.7.0
       '@repobuddy/jest':
         specifier: workspace:^
         version: link:../../packages/jest
@@ -485,8 +485,8 @@ importers:
         specifier: workspace:^
         version: link:../../packages/typescript
       '@types/jest':
-        specifier: ^29.5.1
-        version: 29.5.1
+        specifier: ^29.5.12
+        version: 29.5.12
       assertron:
         specifier: ^11.0.3
         version: 11.0.3
@@ -533,8 +533,8 @@ importers:
   testcases/ts-esm:
     devDependencies:
       '@jest/globals':
-        specifier: ^29.5.0
-        version: 29.5.0
+        specifier: ^29.7.0
+        version: 29.7.0
       '@repobuddy/jest':
         specifier: workspace:^
         version: link:../../packages/jest
@@ -593,8 +593,8 @@ importers:
   testcases/two-chalk:
     devDependencies:
       '@jest/globals':
-        specifier: ^29.5.0
-        version: 29.5.0
+        specifier: ^29.7.0
+        version: 29.7.0
       '@repobuddy/jest':
         specifier: workspace:^
         version: link:../../packages/jest
@@ -647,8 +647,8 @@ importers:
   testcases/with-t:
     devDependencies:
       '@jest/globals':
-        specifier: ^29.5.0
-        version: 29.5.0
+        specifier: ^29.7.0
+        version: 29.7.0
       '@repobuddy/jest':
         specifier: workspace:^
         version: link:../../packages/jest
@@ -1960,40 +1960,20 @@ packages:
     resolution: {integrity: sha512-4QqS3LY5PBmTRHj9sAg1HLoPzqAI0uOX6wI/TRqHIcOxlFidy6YEmCQJk6FSZjNLGCeubDMfmkWL+qaLKhSGQA==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
 
-  '@jest/environment@29.5.0':
-    resolution: {integrity: sha512-5FXw2+wD29YU1d4I2htpRX7jYnAyTRjP2CsXQdo9SAM8g3ifxWPSV0HnClSn71xwctr0U3oZIIH+dtbfmnbXVQ==}
-    engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
-
   '@jest/environment@29.7.0':
     resolution: {integrity: sha512-aQIfHDq33ExsN4jP1NWGXhxgQ/wixs60gDiKO+XVMd8Mn0NWPWgc34ZQDTb2jKaUWQ7MuwoitXAsN2XVXNMpAw==}
-    engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
-
-  '@jest/expect-utils@29.5.0':
-    resolution: {integrity: sha512-fmKzsidoXQT2KwnrwE0SQq3uj8Z763vzR8LnLBwC2qYWEFpjX8daRsk6rHUM1QvNlEW/UJXNXm59ztmJJWs2Mg==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
 
   '@jest/expect-utils@29.7.0':
     resolution: {integrity: sha512-GlsNBWiFQFCVi9QVSx7f5AgMeLxe9YCCs5PuP2O2LdjDAA8Jh9eX7lA1Jq/xdXw3Wb3hyvlFNfZIfcRetSzYcA==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
 
-  '@jest/expect@29.5.0':
-    resolution: {integrity: sha512-PueDR2HGihN3ciUNGr4uelropW7rqUfTiOn+8u0leg/42UhblPxHkfoh0Ruu3I9Y1962P3u2DY4+h7GVTSVU6g==}
-    engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
-
   '@jest/expect@29.7.0':
     resolution: {integrity: sha512-8uMeAMycttpva3P1lBHB8VciS9V0XAr3GymPpipdyQXbBcuhkLQOSe8E/p92RyAdToS6ZD1tFkX+CkhoECE0dQ==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
 
-  '@jest/fake-timers@29.5.0':
-    resolution: {integrity: sha512-9ARvuAAQcBwDAqOnglWq2zwNIRUDtk/SCkp/ToGEhFv5r86K21l+VEs0qNTaXtyiY0lEePl3kylijSYJQqdbDg==}
-    engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
-
   '@jest/fake-timers@29.7.0':
     resolution: {integrity: sha512-q4DH1Ha4TTFPdxLsqDXK1d3+ioSL7yL5oCMJZgDYm6i+6CygW5E5xVr/D1HdsGxjt1ZWSfUAs9OxSB/BNelWrQ==}
-    engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
-
-  '@jest/globals@29.5.0':
-    resolution: {integrity: sha512-S02y0qMWGihdzNbUiqSAiKSpSozSuHX5UYc7QbnHP+D9Lyw8DgGGCinrN9uSuHPeKgSSzvPom2q1nAtBvUsvPQ==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
 
   '@jest/globals@29.7.0':
@@ -2008,10 +1988,6 @@ packages:
     peerDependenciesMeta:
       node-notifier:
         optional: true
-
-  '@jest/schemas@29.4.3':
-    resolution: {integrity: sha512-VLYKXQmtmuEz6IxJsrZwzG9NvtkQsWNnWMsKxqWNu3+CnfzJQhp0WDDKWLVV9hLKr0l3SLLFRqcYHjhtyuDVxg==}
-    engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
 
   '@jest/schemas@29.6.3':
     resolution: {integrity: sha512-mo5j5X+jIZmJQveBKeS/clAueipV7KgiX1vMgCxam1RNYiqE1w62n0/tJJnHtjW8ZHcQco5gY85jA3mi0L+nSA==}
@@ -2031,10 +2007,6 @@ packages:
 
   '@jest/transform@29.7.0':
     resolution: {integrity: sha512-ok/BTPFzFKVMwO5eOHRrvnBVHdRy9IrsrW1GpMaQ9MCnilNLXQKmAX8s1YXDFaai9xJpac2ySzV0YeRRECr2Vw==}
-    engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
-
-  '@jest/types@29.5.0':
-    resolution: {integrity: sha512-qbu7kN6czmVRc3xWFQcAN03RAUamgppVUdXrvl1Wr3jlNF93o9mJbGcDWrwGB6ht44u7efB1qCFgVQmca24Uog==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
 
   '@jest/types@29.6.3':
@@ -2229,9 +2201,6 @@ packages:
   '@shikijs/core@1.11.2':
     resolution: {integrity: sha512-9IBY31lvOo2uhrZjqRt2wTqfqfrXJnddnIx0PFL5E8a5RQUNOhkx+PD11PogZtyrIHlL4aTYDVlb+eyryzy+pQ==}
 
-  '@sinclair/typebox@0.25.24':
-    resolution: {integrity: sha512-XJfwUVUKDHF5ugKwIcxEgc9k8b7HbznCp6eUfWgu710hMPNIO4aw4/zB5RogDQz8nd6gyCDpU9O/m6qYEWY6yQ==}
-
   '@sinclair/typebox@0.27.8':
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
 
@@ -2413,23 +2382,17 @@ packages:
   '@types/is-ci@3.0.0':
     resolution: {integrity: sha512-Q0Op0hdWbYd1iahB+IFNQcWXFq4O0Q5MwQP7uN0souuQ4rPg1vEYcnIOfr1gY+M+6rc8FGoRaBO1mOOvL29sEQ==}
 
-  '@types/istanbul-lib-coverage@2.0.4':
-    resolution: {integrity: sha512-z/QT1XN4K4KYuslS23k62yDIDLwLFkzxOuMplDtObz0+y7VqJCaO2o+SPwHCvLFZh7xazvvoor2tA/hPz9ee7g==}
-
   '@types/istanbul-lib-coverage@2.0.6':
     resolution: {integrity: sha512-2QF/t/auWm0lsy8XtKVPG19v3sSOQlJe/YHZgfjb/KBBHOGSV+J2q/S671rcq9uTBrLAXmZpqJiaQbMT+zNU1w==}
 
   '@types/istanbul-lib-report@3.0.3':
     resolution: {integrity: sha512-NQn7AHQnk/RSLOxrBbGyJM/aVQ+pjj5HCgasFxc0K/KhoATfQ/47AyUl15I2yBUpihjmas+a+VJBOqecrFH+uA==}
 
-  '@types/istanbul-reports@3.0.1':
-    resolution: {integrity: sha512-c3mAZEuK0lvBp8tmuL74XRKn1+y2dcwOUpH7x4WrF6gk1GIgiluDRgMYQtw2OFcBvAJWlt6ASU3tSqxp0Uu0Aw==}
-
   '@types/istanbul-reports@3.0.4':
     resolution: {integrity: sha512-pk2B1NWalF9toCRu6gjBzR69syFjP4Od8WRAX+0mmf9lAjCRicLOWc+ZrxZHx/0XRjotgkF9t6iaMJ+aXcOdZQ==}
 
-  '@types/jest@29.5.1':
-    resolution: {integrity: sha512-tEuVcHrpaixS36w7hpsfLBLpjtMRJUE09/MHXn923LOVojDwyC14cWcfc0rDs0VEfUyYmt/+iX1kxxp+gZMcaQ==}
+  '@types/jest@29.5.12':
+    resolution: {integrity: sha512-eDC8bTvT/QhYdxJAulQikueigY5AsdBRH2yDKW3yveW7svY3+DzN84/2NUgkw10RTiJbWqZrTtoGVdYlvFJdLw==}
 
   '@types/jsdom@20.0.1':
     resolution: {integrity: sha512-d0r18sZPmMQr1eG35u12FZfhIXNrnsPU/g5wvRKCUf/tOGilKKwYMYGqh33BNR6ba+2gkHw1EUiHoN3mn7E5IQ==}
@@ -2517,9 +2480,6 @@ packages:
 
   '@types/yargs-parser@21.0.3':
     resolution: {integrity: sha512-I4q9QU9MQv4oEOz4tAHJtNz1cwuLxn2F3xcc2iV5WdqLPpUnj30aUuxt1mAxYTG+oe8CZMV/+6rU4S4gRDzqtQ==}
-
-  '@types/yargs@17.0.24':
-    resolution: {integrity: sha512-6i0aC7jV6QzQB8ne1joVZ0eSFIstHsCrobmOtghM11yGlH0j43FKL2UhWdELkyps0zuf7qVTUVCCR+tgSlyLLw==}
 
   '@types/yargs@17.0.32':
     resolution: {integrity: sha512-xQ67Yc/laOG5uMfX/093MRlGGCIBzZMarVa+gfNKJxWAIgykYpVGkBdbqEzGDDfCrVUj6Hiff4mTZ5BA6TmAog==}
@@ -3678,10 +3638,6 @@ packages:
   expand-tilde@2.0.2:
     resolution: {integrity: sha512-A5EmesHW6rfnZ9ysHQjPdJRni0SRar0tjtG5MNtm9n5TUvsYU8oozprtRD4AqHxcZWWlVuAmQo2nWKfN9oyjTw==}
     engines: {node: '>=0.10.0'}
-
-  expect@29.5.0:
-    resolution: {integrity: sha512-yM7xqUrCO2JdpFo4XpM82t+PJBFybdqoQuJLDGeDX2ij8NZzqRHyu3Hp188/JX7SWqud+7t4MUdvcgGBICMHZg==}
-    engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
 
   expect@29.7.0:
     resolution: {integrity: sha512-2Zks0hf1VLFYI1kbh0I5jP3KHHyCHpkfyHBzsSXRFgl/Bg9mWYfMW8oD+PdMPlEwy5HNsR9JutYy6pMeOh61nw==}
@@ -8372,13 +8328,6 @@ snapshots:
     dependencies:
       '@jest/types': 29.6.3
 
-  '@jest/environment@29.5.0':
-    dependencies:
-      '@jest/fake-timers': 29.5.0
-      '@jest/types': 29.5.0
-      '@types/node': 20.11.30
-      jest-mock: 29.7.0
-
   '@jest/environment@29.7.0':
     dependencies:
       '@jest/fake-timers': 29.7.0
@@ -8386,20 +8335,9 @@ snapshots:
       '@types/node': 20.11.30
       jest-mock: 29.7.0
 
-  '@jest/expect-utils@29.5.0':
-    dependencies:
-      jest-get-type: 29.6.3
-
   '@jest/expect-utils@29.7.0':
     dependencies:
       jest-get-type: 29.6.3
-
-  '@jest/expect@29.5.0':
-    dependencies:
-      expect: 29.5.0
-      jest-snapshot: 29.7.0
-    transitivePeerDependencies:
-      - supports-color
 
   '@jest/expect@29.7.0':
     dependencies:
@@ -8407,15 +8345,6 @@ snapshots:
       jest-snapshot: 29.7.0
     transitivePeerDependencies:
       - supports-color
-
-  '@jest/fake-timers@29.5.0':
-    dependencies:
-      '@jest/types': 29.5.0
-      '@sinonjs/fake-timers': 10.3.0
-      '@types/node': 20.11.30
-      jest-message-util: 29.7.0
-      jest-mock: 29.7.0
-      jest-util: 29.7.0
 
   '@jest/fake-timers@29.7.0':
     dependencies:
@@ -8425,15 +8354,6 @@ snapshots:
       jest-message-util: 29.7.0
       jest-mock: 29.7.0
       jest-util: 29.7.0
-
-  '@jest/globals@29.5.0':
-    dependencies:
-      '@jest/environment': 29.5.0
-      '@jest/expect': 29.5.0
-      '@jest/types': 29.5.0
-      jest-mock: 29.7.0
-    transitivePeerDependencies:
-      - supports-color
 
   '@jest/globals@29.7.0':
     dependencies:
@@ -8472,10 +8392,6 @@ snapshots:
       v8-to-istanbul: 9.2.0
     transitivePeerDependencies:
       - supports-color
-
-  '@jest/schemas@29.4.3':
-    dependencies:
-      '@sinclair/typebox': 0.25.24
 
   '@jest/schemas@29.6.3':
     dependencies:
@@ -8520,15 +8436,6 @@ snapshots:
       write-file-atomic: 4.0.2
     transitivePeerDependencies:
       - supports-color
-
-  '@jest/types@29.5.0':
-    dependencies:
-      '@jest/schemas': 29.4.3
-      '@types/istanbul-lib-coverage': 2.0.4
-      '@types/istanbul-reports': 3.0.1
-      '@types/node': 20.11.30
-      '@types/yargs': 17.0.24
-      chalk: 4.1.2
 
   '@jest/types@29.6.3':
     dependencies:
@@ -8742,8 +8649,6 @@ snapshots:
     dependencies:
       '@types/hast': 3.0.4
 
-  '@sinclair/typebox@0.25.24': {}
-
   '@sinclair/typebox@0.27.8': {}
 
   '@sindresorhus/is@4.6.0': {}
@@ -8910,23 +8815,17 @@ snapshots:
     dependencies:
       ci-info: 3.8.0
 
-  '@types/istanbul-lib-coverage@2.0.4': {}
-
   '@types/istanbul-lib-coverage@2.0.6': {}
 
   '@types/istanbul-lib-report@3.0.3':
     dependencies:
       '@types/istanbul-lib-coverage': 2.0.6
 
-  '@types/istanbul-reports@3.0.1':
-    dependencies:
-      '@types/istanbul-lib-report': 3.0.3
-
   '@types/istanbul-reports@3.0.4':
     dependencies:
       '@types/istanbul-lib-report': 3.0.3
 
-  '@types/jest@29.5.1':
+  '@types/jest@29.5.12':
     dependencies:
       expect: 29.7.0
       pretty-format: 29.7.0
@@ -9015,10 +8914,6 @@ snapshots:
   '@types/unist@3.0.2': {}
 
   '@types/yargs-parser@21.0.3': {}
-
-  '@types/yargs@17.0.24':
-    dependencies:
-      '@types/yargs-parser': 21.0.3
 
   '@types/yargs@17.0.32':
     dependencies:
@@ -10653,14 +10548,6 @@ snapshots:
   expand-tilde@2.0.2:
     dependencies:
       homedir-polyfill: 1.0.3
-
-  expect@29.5.0:
-    dependencies:
-      '@jest/expect-utils': 29.5.0
-      jest-get-type: 29.6.3
-      jest-matcher-utils: 29.7.0
-      jest-message-util: 29.7.0
-      jest-util: 29.7.0
 
   expect@29.7.0:
     dependencies:
