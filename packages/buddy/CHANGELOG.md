@@ -1,5 +1,11 @@
 # repobuddy
 
+## 1.2.0
+
+### Minor Changes
+
+- 030b32d: Update `clibuilder` to 9.0
+
 ## 1.1.0
 
 ### Minor Changes

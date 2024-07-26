@@ -1,5 +1,12 @@
 # @repobuddy/typescript
 
+## 2.1.0
+
+### Minor Changes
+
+- 030b32d: Update `clibuilder` to 9.0
+- 0905670: Add `copy-cjs-package-json` (alias: `cpj`) command.
+
 ## 2.0.0
 
 ### Major Changes
