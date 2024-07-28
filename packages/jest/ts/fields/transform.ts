@@ -33,9 +33,9 @@ export const knownTransforms = {
 		return {
 			...this.tsJest({
 				isolatedModules: true,
-				...options
+				...options,
 			}),
-			...this.esmPackages()
+			...this.esmPackages(),
 		}
 	},
 	/**
@@ -47,28 +47,24 @@ export const knownTransforms = {
 		return this.tsJest({
 			isolatedModules: true,
 			useESM: true,
-			diagnostics: {
-				// https://github.com/kulshekhar/ts-jest/issues/3820
-				ignoreCodes: [151001]
-			},
-			...options
+			...options,
 		})
 	},
 	tsJest(options: Transform.TsJestOptions) {
 		return {
-			'^.+\\.(ts|tsx|cts|mts)$': optionize('ts-jest', options) satisfies Transform.TransformerConfig
+			'^.+\\.(ts|tsx|cts|mts)$': optionize('ts-jest', options) satisfies Transform.TransformerConfig,
 		}
 	},
 	swc(options?: Record<string, unknown>) {
 		return {
-			'^.+\\.(js|jsx|cjs|mjs|ts|tsx|cts|mts)$': optionize('@swc/jest', options) satisfies Transform.TransformerConfig
+			'^.+\\.(js|jsx|cjs|mjs|ts|tsx|cts|mts)$': optionize('@swc/jest', options) satisfies Transform.TransformerConfig,
 		}
 	},
 	esmPackages() {
 		return {
-			'\\.m?jsx?$': 'jest-esm-transformer-2' satisfies Transform.TransformerConfig
+			'\\.m?jsx?$': 'jest-esm-transformer-2' satisfies Transform.TransformerConfig,
 		}
-	}
+	},
 }
 
 export function defineTransform(transform: Transform) {
