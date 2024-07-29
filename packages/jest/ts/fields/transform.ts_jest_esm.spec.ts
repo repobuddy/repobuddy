@@ -9,14 +9,8 @@ it('provides default transform options for ESM', () => {
 			{
 				isolatedModules: true,
 				useESM: true,
-				diagnostics: {
-					// https://github.com/kulshekhar/ts-jest/issues/3820
-					// this seems to be fixed in 29.0.3
-					// but keeping it here until we add the ability to detect jest version.
-					ignoreCodes: [151001]
-				}
-			}
-		]
+			},
+		],
 	})
 })
 
@@ -28,11 +22,11 @@ it('retains the ESM config when providing options for other fields', () => {
 					path: '@formatjs/ts-transformer/ts-jest-integration',
 					options: {
 						overrideIdFn: '[sha512:contenthash:base64:6]',
-						ast: true
-					}
-				}
-			]
-		}
+						ast: true,
+					},
+				},
+			],
+		},
 	})
 
 	expect(transform).toEqual({
@@ -41,24 +35,18 @@ it('retains the ESM config when providing options for other fields', () => {
 			{
 				isolatedModules: true,
 				useESM: true,
-				diagnostics: {
-					// https://github.com/kulshekhar/ts-jest/issues/3820
-					// this seems to be fixed in 29.0.3
-					// but keeping it here until we add the ability to detect jest version.
-					ignoreCodes: [151001]
-				},
 				astTransformers: {
 					before: [
 						{
 							path: '@formatjs/ts-transformer/ts-jest-integration',
 							options: {
 								overrideIdFn: '[sha512:contenthash:base64:6]',
-								ast: true
-							}
-						}
-					]
-				}
-			}
-		]
+								ast: true,
+							},
+						},
+					],
+				},
+			},
+		],
 	})
 })

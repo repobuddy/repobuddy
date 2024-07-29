@@ -1,0 +1,10 @@
+{
+	"extends": "./tsconfig.esm.json",
+	"references": [
+		{ "path": "./tsconfig.proj.cjs.json" },
+		{ "path": "./tsconfig.proj.esm.json" },
+		{
+			"path": "../../packages/jest"
+		}
+	]
+}

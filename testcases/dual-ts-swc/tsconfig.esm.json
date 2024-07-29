@@ -1,0 +1,14 @@
+{
+	"extends": "@repobuddy/typescript/tsconfig/monorepo.json",
+	"compilerOptions": {
+		"outDir": "esm",
+		"rootDir": "src",
+		"verbatimModuleSyntax": true
+	},
+	"include": ["src"],
+	"references": [
+		{
+			"path": "../../packages/jest"
+		}
+	]
+}

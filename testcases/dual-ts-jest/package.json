@@ -1,0 +1,41 @@
+{
+	"name": "dual-ts-jest",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"clean": "rimraf cjs esm tslib --glob *.tsbuildinfo",
+		"coverage:skip": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_NO_WARNINGS=1 jest --coverage",
+		"test:skip": " cross-env NODE_OPTIONS=--experimental-vm-modules jest",
+		"test:jest": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_NO_WARNINGS=1 jest --config jest.config.cjs",
+		"test:jest:bundle": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_NO_WARNINGS=1 jest --config jest.config.bundle.cjs",
+		"test:list": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_NO_WARNINGS=1 jest --list-tests",
+		"test:vitest": "vitest run",
+		"test:watch": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_NO_WARNINGS=1 jest --watch"
+	},
+	"dependencies": {
+		"chalk": "^5.2.0",
+		"strip-ansi": "^7.0.1",
+		"type-plus": "8.0.0-beta.3",
+		"uuid": "^10.0.0"
+	},
+	"devDependencies": {
+		"@jest/globals": "^29.7.0",
+		"@repobuddy/jest": "workspace:^",
+		"@repobuddy/typescript": "workspace:^",
+		"@types/jest": "^29.5.12",
+		"@types/uuid": "^10.0.0",
+		"assertron": "^11.0.3",
+		"cross-env": "^7.0.3",
+		"dirname-filename-esm": "^1.1.1",
+		"jest": "^29.7.0",
+		"jest-extended": "^4.0.2",
+		"jest-watch-suspend": "^1.1.2",
+		"jest-watch-toggle-config-2": "^2.1.0",
+		"jest-watch-typeahead": "^2.2.2",
+		"npm-run-all2": "^6.0.0",
+		"rimraf": "^6.0.0",
+		"ts-jest": "29.2.3",
+		"typescript": "^5.3.3",
+		"vitest": "^2.0.4"
+	}
+}

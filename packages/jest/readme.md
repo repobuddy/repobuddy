@@ -71,6 +71,23 @@ pnpm add -D @repobuddy/jest
 rush add -p @repobuddy/jest --dev
 ```
 
+## Upgrading to `ts-jest` 29.2
+
+If you are using `ts-jest` 29.2 or above,
+you may run into the `Cannot use import statement outside a module` error.
+For example:
+
+```sh
+/home/unional/code/repobuddy/repobuddy/packages/jest/ts/presets/ts-watch/jest-preset.spec.ts:1
+({"Object.<anonymous>":function(module,exports,require,__dirname,__filename,jest){import { describe, expect, it } from '@jest/globals';
+                                                                                  ^^^^^^
+
+SyntaxError: Cannot use import statement outside a module
+```
+
+This is because `ts-jest` 29.2 adds support for `module: Node16/NodeNext`.
+
+
 ## Presets
 
 [@repobuddy/jest] comes with many presets:

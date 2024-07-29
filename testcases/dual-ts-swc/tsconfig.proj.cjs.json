@@ -1,0 +1,15 @@
+// This is used for files in the project that are used by tools that are run as CommonJS.
+{
+	"compilerOptions": {
+		"composite": true,
+		// enabling esModuleInterop is typically the way to go.
+		"esModuleInterop": true,
+		"module": "CommonJS",
+		// since it is used by tools only,
+		// it is fine to enable json support for simplicity.
+		"resolveJsonModule": true,
+		"strict": true,
+		// CommonJS does not support verbatim module syntax.
+		"verbatimModuleSyntax": false
+	}
+}

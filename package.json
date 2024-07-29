@@ -31,6 +31,7 @@
 		"plop": "plop",
 		"release": "pnpm build && changeset publish",
 		"size": "turbo run size",
+		"dtj": "pnpm --filter dual-ts-jest",
 		"test": "turbo run test",
 		"test:list": "turbo run test:list",
 		"test:watch": "jest --watch",
