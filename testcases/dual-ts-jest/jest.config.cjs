@@ -1,15 +1,16 @@
-const { fields } = require('@repobuddy/jest')
+// const { fields } = require('@repobuddy/jest')
+const { createDefaultEsmPreset } = require('ts-jest')
 
 /** @type {import('jest').Config} */
 module.exports = {
 	// preset: '@repobuddy/jest/presets/ts',
 	detectOpenHandles: true,
-	transform: {
-		...fields.knownTransforms.tsJestEsm({
-			tsconfig: 'tsconfig.esm.json',
-		}),
-		...fields.knownTransforms.esmPackages(),
-	},
+	// transform: {
+	// 	...fields.knownTransforms.tsJestEsm({
+	// 		// tsconfig: 'tsconfig.esm.json',
+	// 	}),
+	// 	// ...fields.knownTransforms.esmPackages(),
+	// },
 	testPathIgnorePatterns: ['/node_modules/'],
 	testRegex: [
 		'\\.(spec|test|unit|accept|integrate|learning|system|perf|stress)(\\.node)?\\.(js|jsx|cjs|mjs|ts|tsx|cts|mts)$',
@@ -21,7 +22,12 @@ module.exports = {
 		'\\.(spec|test|unit|accept|integrate|learning|system|perf|stress)\\.node19\\.(js|jtx|cjs|mjs|ts|tsx|cts|mts)$',
 		'\\.(spec|test|unit|accept|integrate|learning|system|perf|stress)\\.node20\\.(js|jtx|cjs|mjs|ts|tsx|cts|mts)$',
 	],
-	moduleFileExtensions: ['js', 'mjs', 'cjs', 'jsx', 'ts', 'tsx', 'json', 'node'],
-	moduleNameMapper: { '^(\\.{1,2}/.*)\\.js$': '$1' },
-	extensionsToTreatAsEsm: ['.ts', '.mts', '.tsx'],
+	// moduleFileExtensions: ['js', 'mjs', 'cjs', 'jsx', 'ts', 'tsx', 'json', 'node'],
+	// moduleNameMapper: { '^(\\.{1,2}/.*)\\.js$': '$1' },
+	// extensionsToTreatAsEsm: ['.ts', '.mts', '.tsx'],
+	...createDefaultEsmPreset({
+		tsconfig: 'tsconfig.esm.json',
+		useESM: true,
+		isolatedModules: true,
+	}),
 }
