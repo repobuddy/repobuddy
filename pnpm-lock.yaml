@@ -289,8 +289,8 @@ importers:
         specifier: ^7.0.1
         version: 7.1.0
       type-plus:
-        specifier: 8.0.0-beta.3
-        version: 8.0.0-beta.3
+        specifier: 8.0.0-beta.4
+        version: 8.0.0-beta.4
       uuid:
         specifier: ^10.0.0
         version: 10.0.0
@@ -359,8 +359,8 @@ importers:
         specifier: ^7.0.1
         version: 7.1.0
       type-plus:
-        specifier: 8.0.0-beta.3
-        version: 8.0.0-beta.3
+        specifier: 8.0.0-beta.4
+        version: 8.0.0-beta.4
       uuid:
         specifier: ^10.0.0
         version: 10.0.0
@@ -6620,8 +6620,8 @@ packages:
   type-plus@7.6.2:
     resolution: {integrity: sha512-qUlXv9Y0/W56pg38m275IMD3WA03QbVoqNY16S3kmwtuA4gOT2iheyUdOp8NWrmXWpf7om98hzr7AZD/eW2jLA==}
 
-  type-plus@8.0.0-beta.3:
-    resolution: {integrity: sha512-Zld5p9VYYg9zf4RGP2h/re2IT2VCEBTYhQeMDxwqyjP41K3gbHqmGlRFgPwBfRz5Elfq0kf6cYrcSX/ie+SFkg==}
+  type-plus@8.0.0-beta.4:
+    resolution: {integrity: sha512-vGTFtS9ivHb9Jeqg2FbHkfe60hyeghyj7b72YpAGQr4D1RxpapwIEdLzW5MzmSFQPl3931PnudLTbNeOEwae2Q==}
 
   typed-array-length@1.0.4:
     resolution: {integrity: sha512-KjZypGq+I/H7HI5HlOoGHkWUUGq+Q0TPhQurLbyrVrvnKTBgzLhIJ7j6J/XTQOi0d1RjyZ0wdas8bKs2p0x3Ng==}
@@ -14579,7 +14579,7 @@ snapshots:
       tersify: 3.12.1
       unpartial: 1.0.5
 
-  type-plus@8.0.0-beta.3:
+  type-plus@8.0.0-beta.4:
     dependencies:
       tersify: 3.12.1
       unpartial: 1.0.5
