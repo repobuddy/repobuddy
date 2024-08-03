@@ -12,14 +12,6 @@
 			"semicolons": "asNeeded"
 		}
 	},
-	"json": {
-		// `biome` treat `json` as `jsonc` by default.
-		// That causes false positives and should be avoided.
-		"parser": {
-			"allowComments": false,
-			"allowTrailingCommas": false
-		}
-	},
 	"linter": {
 		"enabled": true,
 		"rules": {
@@ -61,22 +53,6 @@
 		"enabled": false
 	},
 	"overrides": [
-		{
-			"include": [
-				"**/*.jsonc",
-				"frontmatter.json",
-				".frontmatter/config/*.json",
-				".vscode/*.json",
-				".swcrc",
-				"tsconfig*.json"
-			],
-			"json": {
-				"parser": {
-					"allowComments": true,
-					"allowTrailingCommas": true
-				}
-			}
-		},
 		{
 			"include": ["package.json"],
 			"formatter": {

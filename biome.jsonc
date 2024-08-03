@@ -56,22 +56,6 @@
 			"formatter": {
 				"lineWidth": 20
 			}
-		},
-		{
-			"include": [
-				"**/*.jsonc",
-				"frontmatter.json",
-				".frontmatter/config/*.json",
-				".vscode/*.json",
-				".swcrc",
-				"tsconfig*.json"
-			],
-			"json": {
-				"parser": {
-					"allowComments": true,
-					"allowTrailingCommas": true
-				}
-			}
 		}
 	]
 }
