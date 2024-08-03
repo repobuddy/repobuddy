@@ -1,77 +1,11 @@
 {
 	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
-	"extends": ["./packages/biome/recommended.jsonc"],
-	"files": {
-		"ignore": ["node_modules", "cjs", "coverage", "esm", "target", "tests/performant"],
-		"include": ["src", "tests", "**/*.cjs", "**/*.mjs", "ts/**/*", ".swcrc"]
-	},
-	"overrides": [
-		{
-			"include": ["tests/performant"],
-			"formatter": {
-				"enabled": true,
-				"indentStyle": "tab",
-				"lineEnding": "lf",
-				"lineWidth": 120
-			},
-			"javascript": {
-				"formatter": {
-					"quoteStyle": "single",
-					"semicolons": "asNeeded",
-					"trailingCommas": "none"
-				}
-			},
-			"linter": {
-				"enabled": true,
-				"rules": {
-					"recommended": true,
-					"complexity": {
-						"noForEach": "off",
-						"useLiteralKeys": "off"
-					},
-					"correctness": {
-						"noInnerDeclarations": "warn",
-						"noUnusedVariables": "error",
-						"useExhaustiveDependencies": "off"
-					},
-					"style": {
-						"noCommaOperator": "off",
-						"noNonNullAssertion": "off",
-						"noParameterAssign": "off",
-						"noVar": "off",
-						"useTemplate": "off"
-					},
-					"suspicious": {
-						"noAssignInExpressions": "off",
-						"noExplicitAny": "off"
-					}
-				}
-			},
-			"organizeImports": {
-				"enabled": false
-			}
-		},
-		{
-			"include": ["package.json"],
-			"formatter": {
-				"lineWidth": 20
-			}
-		},
-		{
-			"include": [
-				"**/*.jsonc",
-				"frontmatter.json",
-				".frontmatter/config/*.json",
-				".vscode/*.json",
-				".swcrc",
-				"tsconfig*.json"
-			],
-			"json": {
-				"parser": {
-					"allowComments": true,
-					"allowTrailingCommas": true
-				}
-			}
+	"json": {
+		// `biome` treat `json` as `jsonc` by default.
+		// That causes false positives and should be avoided.
+		"parser": {
+			"allowComments": false,
+			"allowTrailingCommas": false
 		}
-	]
+	}
 }
