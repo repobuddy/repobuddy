@@ -1,5 +1,5 @@
 {
-	"$schema": "https://biomejs.dev/schemas/1.7.2/schema.json",
+	"$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
 	"formatter": {
 		"enabled": true,
 		"indentStyle": "tab",
@@ -62,7 +62,14 @@
 	},
 	"overrides": [
 		{
-			"include": ["frontmatter.json", ".frontmatter/config/*.json", ".vscode/*.json", ".swcrc", "tsconfig*.json"],
+			"include": [
+				"**/*.jsonc",
+				"frontmatter.json",
+				".frontmatter/config/*.json",
+				".vscode/*.json",
+				".swcrc",
+				"tsconfig*.json"
+			],
 			"json": {
 				"parser": {
 					"allowComments": true,
