@@ -1,8 +1,8 @@
-# repobuddy
+# Repobuddy
 
-[repobuddy] is a CLI tools to manage your repository.
+[`repobuddy`] is a CLI tool to manage your repository.
 
-It is a plugin-based CLI tool based on [clibuilder](https://www.npmjs.com/package/clibuilder).
+It is a plugin-based CLI tool based on [`clibuilder`].
 
 ## Install
 
@@ -24,4 +24,7 @@ each plugin will provide additional commands to the CLI.
 
 ### Available plugins
 
-- [@repobuddy/typescript](./packages/typescript/README.md)
+- [@repobuddy/typescript](./packages/typescript/readme.md)
+
+[`clibuilder`]: https://www.npmjs.com/package/clibuilder
+[`repobuddy`]: https://github.com/repobuddy/repobuddy/tree/main/packages/buddy
