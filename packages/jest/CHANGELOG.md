@@ -1,5 +1,12 @@
 # @unional/jest-presets
 
+## 4.1.1
+
+### Patch Changes
+
+- af6eb18: Remove ignore code 151001 as the issue is fixed in `ts-jest` `29.0.3` on Oct 2022.
+- 60d0fa9: add `toSatisfies()` to `jest` global.
+
 ## 4.1.0
 
 ### Minor Changes
