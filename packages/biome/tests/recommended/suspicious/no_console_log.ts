@@ -1,0 +1,5 @@
+console.info('info')
+console.warn('warn')
+console.error('error')
+console.assert(true)
+console.table(['foo', 'bar'])
