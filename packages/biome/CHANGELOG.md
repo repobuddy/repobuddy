@@ -1,5 +1,11 @@
 # @repobuddy/biome
 
+## 1.7.0
+
+### Minor Changes
+
+- 10416f0: Enable `noConsoleLog` rule.
+
 ## 1.6.0
 
 ### Minor Changes
