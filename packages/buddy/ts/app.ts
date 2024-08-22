@@ -8,5 +8,5 @@ export const app = cli({
 	name: 'repobuddy',
 	version: pkg.version,
 	description: 'Your repo buddy',
-	config: true
+	config: true,
 })

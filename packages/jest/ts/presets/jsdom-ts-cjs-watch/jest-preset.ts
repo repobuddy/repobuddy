@@ -6,7 +6,7 @@ const jsdomTsCjsWatchPreset = {
 	...tsCjs,
 	...configSource(),
 	...jsdom,
-	...defineWatchPlugins()
+	...defineWatchPlugins(),
 } satisfies Config
 
 export default jsdomTsCjsWatchPreset

@@ -4,7 +4,7 @@ import { configSource, node, tsCjs } from '../../configs/index.js'
 const tsCjsPreset = {
 	...tsCjs,
 	...configSource(),
-	...node
+	...node,
 } satisfies Config
 
 export default tsCjsPreset

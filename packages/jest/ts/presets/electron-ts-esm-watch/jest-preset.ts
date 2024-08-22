@@ -6,7 +6,7 @@ const preset = {
 	...tsEsm,
 	...configSource(),
 	...electron,
-	...defineWatchPlugins()
+	...defineWatchPlugins(),
 } satisfies Config
 
 export default preset

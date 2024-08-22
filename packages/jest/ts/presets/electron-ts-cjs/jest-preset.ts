@@ -4,7 +4,7 @@ import { configSource, electron, tsCjs } from '../../configs/index.js'
 const preset = {
 	...tsCjs,
 	...configSource(),
-	...electron
+	...electron,
 } satisfies Config
 
 export default preset

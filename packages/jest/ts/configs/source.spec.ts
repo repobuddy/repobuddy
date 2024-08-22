@@ -7,16 +7,16 @@ describe(`${configSource.name}()`, () => {
 		expect(configSource('source')).toEqual({
 			collectCoverageFrom: [
 				'<rootDir>/source/**/*.{js,jsx,cjs,mjs,ts,tsx,cts,mts}',
-				'!<rootDir>/source/**/*.stories.*'
+				'!<rootDir>/source/**/*.stories.*',
 			],
-			roots: ['<rootDir>/source']
+			roots: ['<rootDir>/source'],
 		})
 	})
 
 	it('detects source directory', () => {
 		expect(configSource()).toEqual({
 			collectCoverageFrom: ['<rootDir>/ts/**/*.{js,jsx,cjs,mjs,ts,tsx,cts,mts}', '!<rootDir>/ts/**/*.stories.*'],
-			roots: ['<rootDir>/ts']
+			roots: ['<rootDir>/ts'],
 		})
 	})
 
@@ -24,7 +24,7 @@ describe(`${configSource.name}()`, () => {
 		ctx.existsSync = jest.fn(ctx.existsSync).mockReturnValue(false)
 		expect(configSource()).toEqual({
 			collectCoverageFrom: ['<rootDir>/src/**/*.{js,jsx,cjs,mjs,ts,tsx,cts,mts}', '!<rootDir>/src/**/*.stories.*'],
-			roots: ['<rootDir>/src']
+			roots: ['<rootDir>/src'],
 		})
 	})
 })

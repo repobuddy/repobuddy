@@ -29,7 +29,7 @@ export const knownWatchPlugins = {
 	},
 	toggleConfig(options?: WatchPlugins.ToggleConfig) {
 		return optionize('jest-watch-toggle-config-2', options)
-	}
+	},
 }
 
 export function defineWatchPlugins(config: WatchPlugins = watchPlugins) {
@@ -41,5 +41,5 @@ export const watchPlugins: WatchPlugins = [
 	knownWatchPlugins.toggleConfig({ setting: 'collectCoverage' }),
 	knownWatchPlugins.toggleConfig({ setting: 'verbose' }),
 	knownWatchPlugins.typeaheadFilename(),
-	knownWatchPlugins.typeaheadTestname()
+	knownWatchPlugins.typeaheadTestname(),
 ]

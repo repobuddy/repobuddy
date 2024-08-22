@@ -13,7 +13,7 @@ export function sync(path: string, options: ResolverOptions) {
 		// which is not correct as it will take `default` over `node`.
 		const conditions = options.conditions ? options.conditions.filter((c) => c !== 'default') : []
 		const mapped = resolve({ content: result.packageJson['imports'], base: options.basedir, path: result.path }, path, {
-			conditions
+			conditions,
 		})
 		if (mapped) {
 			if (Array.isArray(mapped)) {

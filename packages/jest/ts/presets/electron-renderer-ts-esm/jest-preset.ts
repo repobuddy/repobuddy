@@ -4,7 +4,7 @@ import { configSource, electronRenderer, tsEsm } from '../../configs/index.js'
 const preset = {
 	...tsEsm,
 	...configSource(),
-	...electronRenderer
+	...electronRenderer,
 } satisfies Config
 
 export default preset

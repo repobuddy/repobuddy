@@ -7,7 +7,7 @@ describe(`${defineModuleNameMappers.name}()`, () => {
 		expect(r).toEqual({
 			'^(\\.{1,2}/.*)\\.js$': '$1',
 			'\\.module\\.css$': 'identity-obj-proxy',
-			'.+\\.(css|styl|less|sass|scss)$': 'identity-obj-proxy'
+			'.+\\.(css|styl|less|sass|scss)$': 'identity-obj-proxy',
 		})
 	})
 })

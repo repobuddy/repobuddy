@@ -6,7 +6,7 @@ const jsEsmPreset = {
 	...jsEsm,
 	...configSource(),
 	...node,
-	...defineWatchPlugins()
+	...defineWatchPlugins(),
 } satisfies Config
 
 export default jsEsmPreset

@@ -57,6 +57,20 @@
 	},
 	"overrides": [
 		{
+			"include": [
+				"frontmatter.json",
+				".frontmatter/config/*.json",
+				".vscode/*.json",
+				"tsconfig*.json"
+			],
+			"json": {
+				"parser": {
+					"allowComments": true,
+					"allowTrailingCommas": true
+				}
+			}
+		},
+		{
 			"include": ["package.json"],
 			"formatter": {
 				"lineWidth": 20

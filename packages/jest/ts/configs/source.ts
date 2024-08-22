@@ -13,8 +13,8 @@ export function configSource(...dirs: string[]) {
 	return {
 		collectCoverageFrom: dirs.flatMap((dir) => [
 			`<rootDir>/${dir}/**/*.{js,jsx,cjs,mjs,ts,tsx,cts,mts}`,
-			`!<rootDir>/${dir}/**/*.stories.*`
+			`!<rootDir>/${dir}/**/*.stories.*`,
 		]),
-		roots: dirs.map((dir) => `<rootDir>/${dir}`)
+		roots: dirs.map((dir) => `<rootDir>/${dir}`),
 	} satisfies Config
 }

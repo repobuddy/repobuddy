@@ -6,7 +6,7 @@ const jsCjsPreset = {
 	...jsCjs,
 	...configSource(),
 	...node,
-	...defineWatchPlugins()
+	...defineWatchPlugins(),
 } satisfies Config
 
 export default jsCjsPreset

@@ -3,9 +3,9 @@ import { defineTransform, knownExtensionsToTreatAsEsm, knownTransforms } from '.
 
 export const jsCjs = {
 	...defineTransform(knownTransforms.esmPackages()),
-	transformIgnorePatterns: []
+	transformIgnorePatterns: [],
 } satisfies Config
 
 export const jsEsm = {
-	extensionsToTreatAsEsm: knownExtensionsToTreatAsEsm.js
+	extensionsToTreatAsEsm: knownExtensionsToTreatAsEsm.js,
 } satisfies Config

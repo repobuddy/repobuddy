@@ -7,10 +7,10 @@ it('provides default transform options for CJS', () => {
 		'^.+\\.(ts|tsx|cts|mts)$': [
 			'ts-jest',
 			{
-				isolatedModules: true
-			}
+				isolatedModules: true,
+			},
 		],
-		'\\.m?jsx?$': 'jest-esm-transformer-2'
+		'\\.m?jsx?$': 'jest-esm-transformer-2',
 	})
 })
 
@@ -22,11 +22,11 @@ it('retains the CJS config when providing options for other fields', () => {
 					path: '@formatjs/ts-transformer/ts-jest-integration',
 					options: {
 						overrideIdFn: '[sha512:contenthash:base64:6]',
-						ast: true
-					}
-				}
-			]
-		}
+						ast: true,
+					},
+				},
+			],
+		},
 	})
 
 	expect(transform).toEqual({
@@ -40,13 +40,13 @@ it('retains the CJS config when providing options for other fields', () => {
 							path: '@formatjs/ts-transformer/ts-jest-integration',
 							options: {
 								overrideIdFn: '[sha512:contenthash:base64:6]',
-								ast: true
-							}
-						}
-					]
-				}
-			}
+								ast: true,
+							},
+						},
+					],
+				},
+			},
 		],
-		'\\.m?jsx?$': 'jest-esm-transformer-2'
+		'\\.m?jsx?$': 'jest-esm-transformer-2',
 	})
 })

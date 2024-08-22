@@ -4,7 +4,7 @@ import { configSource, node, tsEsm } from '../../configs/index.js'
 const tsEsmPreset = {
 	...tsEsm,
 	...configSource(),
-	...node
+	...node,
 } satisfies Config
 
 export default tsEsmPreset
