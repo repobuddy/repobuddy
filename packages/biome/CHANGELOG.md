@@ -1,5 +1,11 @@
 # @repobuddy/biome
 
+## 1.7.1
+
+### Patch Changes
+
+- ef06b2b: Adding json override back to handle some extra files.
+
 ## 1.7.0
 
 ### Minor Changes
