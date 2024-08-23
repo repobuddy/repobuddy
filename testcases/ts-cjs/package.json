@@ -27,7 +27,7 @@
 		"repobuddy": "workspace:^",
 		"rimraf": "^6.0.0",
 		"strip-ansi": "^7.0.1",
-		"ts-jest": "29.2.4",
+		"ts-jest": "29.2.5",
 		"typescript": "^5.3.3"
 	}
 }
