@@ -87,7 +87,6 @@ SyntaxError: Cannot use import statement outside a module
 
 This is because `ts-jest` 29.2 adds support for `module: Node16/NodeNext`.
 
-
 ## Presets
 
 [@repobuddy/jest] comes with many presets:
@@ -133,7 +132,8 @@ Here are some highlights:
   - `feature.spec.node16.ts`
   - `feature.spec.jsdom.ts`
   - `feature.spec.electron.ts`
-- uses [@repobuddy/jest/resolver] that handles [subpath imports][subpath-imports] correctly.
+  - The platform specifiers are placed after the test specifier (e.g. `spec`) to alloy more freedom in naming the feature.
+- Uses [@repobuddy/jest/resolver] that handles [subpath imports][subpath-imports] correctly.
 - `cjs` uses [jest-esm-transformer-2] to transforms ESM dependencies.
 - `ts` uses [ts-jest] with `isolatedModule: true`.
 - `watch` uses these plugins by default:
