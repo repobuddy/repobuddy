@@ -14,7 +14,7 @@
 	},
 	"devDependencies": {
 		"@repobuddy/typescript": "workspace:^",
-		"npm-run-all2": "^6.0.0",
+		"npm-run-all2": "^7.0.0",
 		"repobuddy": "workspace:^",
 		"rimraf": "^6.0.0",
 		"typescript": "^5.3.3"
