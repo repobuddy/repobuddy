@@ -42,8 +42,8 @@ importers:
         specifier: ^7.2.0
         version: 7.2.0(@typescript-eslint/eslint-plugin@8.0.0(@typescript-eslint/parser@8.0.0(eslint@8.56.0)(typescript@5.4.3))(eslint@8.56.0)(typescript@5.4.3))(eslint-config-prettier@9.1.0(eslint@8.56.0))(eslint@8.56.0)(typescript@5.4.3)
       eslint-plugin-yml:
-        specifier: ~1.14.0
-        version: 1.14.0(eslint@8.56.0)
+        specifier: ~1.15.0
+        version: 1.15.0(eslint@8.56.0)
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.11.30)
@@ -3792,8 +3792,8 @@ packages:
       eslint-config-prettier:
         optional: true
 
-  eslint-plugin-yml@1.14.0:
-    resolution: {integrity: sha512-ESUpgYPOcAYQO9czugcX5OqRvn/ydDVwGCPXY4YjPqc09rHaUVUA6IE6HLQys4rXk/S+qx3EwTd1wHCwam/OWQ==}
+  eslint-plugin-yml@1.15.0:
+    resolution: {integrity: sha512-leC8APYVOsKyWUlvRwVhewytK5wS70BfMqIaUplFstRfzCoVp0YoEroV4cUEvQrBj93tQ3M9LcjO/ewr6D4kjA==}
     engines: {node: ^14.17.0 || >=16.0.0}
     peerDependencies:
       eslint: '>=6.0.0'
@@ -9450,7 +9450,7 @@ snapshots:
     dependencies:
       '@typescript-eslint/types': 8.0.0
       '@typescript-eslint/visitor-keys': 8.0.0
-      debug: 4.3.5
+      debug: 4.3.7
       globby: 11.1.0
       is-glob: 4.0.3
       minimatch: 9.0.5
@@ -10799,9 +10799,9 @@ snapshots:
       - supports-color
       - typescript
 
-  eslint-plugin-yml@1.14.0(eslint@8.56.0):
+  eslint-plugin-yml@1.15.0(eslint@8.56.0):
     dependencies:
-      debug: 4.3.4
+      debug: 4.3.7
       eslint: 8.56.0
       eslint-compat-utils: 0.5.0(eslint@8.56.0)
       lodash: 4.17.21
