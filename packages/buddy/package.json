@@ -26,6 +26,7 @@
 	"sideEffects": false,
 	"type": "module",
 	"bin": {
+		"bd": "./esm/bin.js",
 		"buddy": "./esm/bin.js"
 	},
 	"exports": {
