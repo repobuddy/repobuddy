@@ -50,6 +50,9 @@ importers:
       plop:
         specifier: ^4.0.0
         version: 4.0.1
+      repobuddy:
+        specifier: workspace:^
+        version: link:packages/buddy
       rimraf:
         specifier: ^6.0.0
         version: 6.0.0
@@ -145,7 +148,7 @@ importers:
         version: 29.7.0
       '@kayahr/jest-electron-runner':
         specifier: ^29.12.0
-        version: 29.12.0(@types/node@20.14.12)
+        version: 29.12.0(@types/node@20.11.30)
       '@types/jest':
         specifier: ^29.5.12
         version: 29.5.12
@@ -169,22 +172,22 @@ importers:
         version: 3.0.0
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.14.12)
+        version: 29.7.0(@types/node@20.11.30)
       jest-esm-transformer-2:
         specifier: ^1.0.0
         version: 1.0.0
       jest-extended:
         specifier: ^4.0.2
-        version: 4.0.2(jest@29.7.0(@types/node@20.14.12))
+        version: 4.0.2(jest@29.7.0(@types/node@20.11.30))
       jest-watch-suspend:
         specifier: ^1.1.2
-        version: 1.1.2(jest@29.7.0(@types/node@20.14.12))
+        version: 1.1.2(jest@29.7.0(@types/node@20.11.30))
       jest-watch-toggle-config-2:
         specifier: ^2.1.0
-        version: 2.1.0(jest@29.7.0(@types/node@20.14.12))
+        version: 2.1.0(jest@29.7.0(@types/node@20.11.30))
       jest-watch-typeahead:
         specifier: ^2.2.2
-        version: 2.2.2(jest@29.7.0(@types/node@20.14.12))
+        version: 2.2.2(jest@29.7.0(@types/node@20.11.30))
       ncp:
         specifier: ^2.0.0
         version: 2.0.0
@@ -199,7 +202,7 @@ importers:
         version: 7.0.1
       ts-jest:
         specifier: 29.2.5
-        version: 29.2.5(@babel/core@7.21.4)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.21.4))(esbuild@0.24.0)(jest@29.7.0(@types/node@20.14.12))(typescript@5.3.3)
+        version: 29.2.5(@babel/core@7.21.4)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.21.4))(esbuild@0.24.0)(jest@29.7.0(@types/node@20.11.30))(typescript@5.3.3)
       tslib:
         specifier: ^2.6.2
         version: 2.6.2
@@ -233,19 +236,19 @@ importers:
         version: 1.4.3
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.14.12)
+        version: 29.7.0(@types/node@20.11.30)
       jest-validate:
         specifier: ^29.7.0
         version: 29.7.0
       jest-watch-suspend:
         specifier: ^1.1.2
-        version: 1.1.2(jest@29.7.0(@types/node@20.14.12))
+        version: 1.1.2(jest@29.7.0(@types/node@20.11.30))
       jest-watch-toggle-config-2:
         specifier: ^2.1.0
-        version: 2.1.0(jest@29.7.0(@types/node@20.14.12))
+        version: 2.1.0(jest@29.7.0(@types/node@20.11.30))
       jest-watch-typeahead:
         specifier: ^2.2.2
-        version: 2.2.2(jest@29.7.0(@types/node@20.14.12))
+        version: 2.2.2(jest@29.7.0(@types/node@20.11.30))
       npm-run-all2:
         specifier: ^7.0.0
         version: 7.0.0
@@ -257,7 +260,7 @@ importers:
         version: 11.1.0
       ts-jest:
         specifier: 29.2.5
-        version: 29.2.5(@babel/core@7.25.8)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.25.8))(jest@29.7.0(@types/node@20.14.12))(typescript@5.3.3)
+        version: 29.2.5(@babel/core@7.25.8)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.25.8))(jest@29.7.0(@types/node@20.11.30))(typescript@5.3.3)
       typescript:
         specifier: ^5.3.3
         version: 5.3.3
@@ -431,7 +434,7 @@ importers:
         version: 29.7.0
       '@kayahr/jest-electron-runner':
         specifier: ^29.12.0
-        version: 29.12.0(@types/node@20.14.12)
+        version: 29.12.0(@types/node@20.11.30)
       '@repobuddy/jest':
         specifier: workspace:^
         version: link:../../packages/jest
@@ -440,19 +443,19 @@ importers:
         version: 7.0.3
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.14.12)
+        version: 29.7.0(@types/node@20.11.30)
       jest-esm-transformer-2:
         specifier: ^1.0.0
         version: 1.0.0
       jest-watch-suspend:
         specifier: ^1.1.2
-        version: 1.1.2(jest@29.7.0(@types/node@20.14.12))
+        version: 1.1.2(jest@29.7.0(@types/node@20.11.30))
       jest-watch-toggle-config-2:
         specifier: ^2.1.0
-        version: 2.1.0(jest@29.7.0(@types/node@20.14.12))
+        version: 2.1.0(jest@29.7.0(@types/node@20.11.30))
       jest-watch-typeahead:
         specifier: ^2.2.2
-        version: 2.2.2(jest@29.7.0(@types/node@20.14.12))
+        version: 2.2.2(jest@29.7.0(@types/node@20.11.30))
       npm-run-all2:
         specifier: ^7.0.0
         version: 7.0.0
@@ -461,7 +464,7 @@ importers:
         version: 6.0.0
       ts-jest:
         specifier: 29.2.5
-        version: 29.2.5(@babel/core@7.25.8)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.25.8))(jest@29.7.0(@types/node@20.14.12))(typescript@5.3.3)
+        version: 29.2.5(@babel/core@7.25.8)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.25.8))(jest@29.7.0(@types/node@20.11.30))(typescript@5.3.3)
       typescript:
         specifier: ^5.3.3
         version: 5.3.3
@@ -473,7 +476,7 @@ importers:
         version: 29.7.0
       '@kayahr/jest-electron-runner':
         specifier: ^29.12.0
-        version: 29.12.0(@types/node@20.14.12)
+        version: 29.12.0(@types/node@20.11.30)
       '@repobuddy/jest':
         specifier: workspace:^
         version: link:../../packages/jest
@@ -482,19 +485,19 @@ importers:
         version: 7.0.3
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.14.12)
+        version: 29.7.0(@types/node@20.11.30)
       jest-esm-transformer-2:
         specifier: ^1.0.0
         version: 1.0.0
       jest-watch-suspend:
         specifier: ^1.1.2
-        version: 1.1.2(jest@29.7.0(@types/node@20.14.12))
+        version: 1.1.2(jest@29.7.0(@types/node@20.11.30))
       jest-watch-toggle-config-2:
         specifier: ^2.1.0
-        version: 2.1.0(jest@29.7.0(@types/node@20.14.12))
+        version: 2.1.0(jest@29.7.0(@types/node@20.11.30))
       jest-watch-typeahead:
         specifier: ^2.2.2
-        version: 2.2.2(jest@29.7.0(@types/node@20.14.12))
+        version: 2.2.2(jest@29.7.0(@types/node@20.11.30))
       npm-run-all2:
         specifier: ^7.0.0
         version: 7.0.0
@@ -503,7 +506,7 @@ importers:
         version: 6.0.0
       ts-jest:
         specifier: 29.2.5
-        version: 29.2.5(@babel/core@7.25.8)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.25.8))(jest@29.7.0(@types/node@20.14.12))(typescript@5.3.3)
+        version: 29.2.5(@babel/core@7.25.8)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.25.8))(jest@29.7.0(@types/node@20.11.30))(typescript@5.3.3)
       typescript:
         specifier: ^5.3.3
         version: 5.3.3
@@ -521,16 +524,16 @@ importers:
         version: 5.2.0
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.14.12)
+        version: 29.7.0(@types/node@20.11.30)
       jest-watch-suspend:
         specifier: ^1.1.2
-        version: 1.1.2(jest@29.7.0(@types/node@20.14.12))
+        version: 1.1.2(jest@29.7.0(@types/node@20.11.30))
       jest-watch-toggle-config-2:
         specifier: ^2.1.0
-        version: 2.1.0(jest@29.7.0(@types/node@20.14.12))
+        version: 2.1.0(jest@29.7.0(@types/node@20.11.30))
       jest-watch-typeahead:
         specifier: ^2.2.2
-        version: 2.2.2(jest@29.7.0(@types/node@20.14.12))
+        version: 2.2.2(jest@29.7.0(@types/node@20.11.30))
       npm-run-all2:
         specifier: ^7.0.0
         version: 7.0.0
@@ -554,16 +557,16 @@ importers:
         version: 1.1.1
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.14.12)
+        version: 29.7.0(@types/node@20.11.30)
       jest-watch-suspend:
         specifier: ^1.1.2
-        version: 1.1.2(jest@29.7.0(@types/node@20.14.12))
+        version: 1.1.2(jest@29.7.0(@types/node@20.11.30))
       jest-watch-toggle-config-2:
         specifier: ^2.1.0
-        version: 2.1.0(jest@29.7.0(@types/node@20.14.12))
+        version: 2.1.0(jest@29.7.0(@types/node@20.11.30))
       jest-watch-typeahead:
         specifier: ^2.2.2
-        version: 2.2.2(jest@29.7.0(@types/node@20.14.12))
+        version: 2.2.2(jest@29.7.0(@types/node@20.11.30))
       npm-run-all2:
         specifier: ^7.0.0
         version: 7.0.0
@@ -587,7 +590,7 @@ importers:
         version: 7.0.3
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.14.12)
+        version: 29.7.0(@types/node@20.11.30)
       jest-environment-jsdom:
         specifier: ^29.7.0
         version: 29.7.0
@@ -596,13 +599,13 @@ importers:
         version: 1.0.0
       jest-watch-suspend:
         specifier: ^1.1.2
-        version: 1.1.2(jest@29.7.0(@types/node@20.14.12))
+        version: 1.1.2(jest@29.7.0(@types/node@20.11.30))
       jest-watch-toggle-config-2:
         specifier: ^2.1.0
-        version: 2.1.0(jest@29.7.0(@types/node@20.14.12))
+        version: 2.1.0(jest@29.7.0(@types/node@20.11.30))
       jest-watch-typeahead:
         specifier: ^2.2.2
-        version: 2.2.2(jest@29.7.0(@types/node@20.14.12))
+        version: 2.2.2(jest@29.7.0(@types/node@20.11.30))
       npm-run-all2:
         specifier: ^7.0.0
         version: 7.0.0
@@ -611,7 +614,7 @@ importers:
         version: 6.0.0
       ts-jest:
         specifier: 29.2.5
-        version: 29.2.5(@babel/core@7.25.8)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.25.8))(jest@29.7.0(@types/node@20.14.12))(typescript@5.3.3)
+        version: 29.2.5(@babel/core@7.25.8)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.25.8))(jest@29.7.0(@types/node@20.11.30))(typescript@5.3.3)
       typescript:
         specifier: ^5.3.3
         version: 5.3.3
@@ -642,19 +645,19 @@ importers:
         version: 7.0.3
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.14.12)
+        version: 29.7.0(@types/node@20.11.30)
       jest-extended:
         specifier: ^4.0.2
-        version: 4.0.2(jest@29.7.0(@types/node@20.14.12))
+        version: 4.0.2(jest@29.7.0(@types/node@20.11.30))
       jest-watch-suspend:
         specifier: ^1.1.2
-        version: 1.1.2(jest@29.7.0(@types/node@20.14.12))
+        version: 1.1.2(jest@29.7.0(@types/node@20.11.30))
       jest-watch-toggle-config-2:
         specifier: ^2.1.0
-        version: 2.1.0(jest@29.7.0(@types/node@20.14.12))
+        version: 2.1.0(jest@29.7.0(@types/node@20.11.30))
       jest-watch-typeahead:
         specifier: ^2.2.2
-        version: 2.2.2(jest@29.7.0(@types/node@20.14.12))
+        version: 2.2.2(jest@29.7.0(@types/node@20.11.30))
       npm-run-all2:
         specifier: ^7.0.0
         version: 7.0.0
@@ -669,7 +672,7 @@ importers:
         version: 7.0.1
       ts-jest:
         specifier: 29.2.5
-        version: 29.2.5(@babel/core@7.25.8)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.25.8))(jest@29.7.0(@types/node@20.14.12))(typescript@5.3.3)
+        version: 29.2.5(@babel/core@7.25.8)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.25.8))(jest@29.7.0(@types/node@20.11.30))(typescript@5.3.3)
       typescript:
         specifier: ^5.3.3
         version: 5.3.3
@@ -759,19 +762,19 @@ importers:
         version: 1.1.1
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.14.12)
+        version: 29.7.0(@types/node@20.11.30)
       jest-esm-transformer-2:
         specifier: ^1.0.0
         version: 1.0.0
       jest-watch-suspend:
         specifier: ^1.1.2
-        version: 1.1.2(jest@29.7.0(@types/node@20.14.12))
+        version: 1.1.2(jest@29.7.0(@types/node@20.11.30))
       jest-watch-toggle-config-2:
         specifier: ^2.1.0
-        version: 2.1.0(jest@29.7.0(@types/node@20.14.12))
+        version: 2.1.0(jest@29.7.0(@types/node@20.11.30))
       jest-watch-typeahead:
         specifier: ^2.2.2
-        version: 2.2.2(jest@29.7.0(@types/node@20.14.12))
+        version: 2.2.2(jest@29.7.0(@types/node@20.11.30))
       npm-run-all2:
         specifier: ^7.0.0
         version: 7.0.0
@@ -783,7 +786,7 @@ importers:
         version: 7.0.1
       ts-jest:
         specifier: 29.2.5
-        version: 29.2.5(@babel/core@7.25.8)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.25.8))(jest@29.7.0(@types/node@20.14.12))(typescript@5.3.3)
+        version: 29.2.5(@babel/core@7.25.8)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.25.8))(jest@29.7.0(@types/node@20.11.30))(typescript@5.3.3)
       typescript:
         specifier: ^5.3.3
         version: 5.3.3
@@ -801,19 +804,19 @@ importers:
         version: 7.0.3
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.14.12)
+        version: 29.7.0(@types/node@20.11.30)
       jest-esm-transformer-2:
         specifier: ^1.0.0
         version: 1.0.0
       jest-watch-suspend:
         specifier: ^1.1.2
-        version: 1.1.2(jest@29.7.0(@types/node@20.14.12))
+        version: 1.1.2(jest@29.7.0(@types/node@20.11.30))
       jest-watch-toggle-config-2:
         specifier: ^2.1.0
-        version: 2.1.0(jest@29.7.0(@types/node@20.14.12))
+        version: 2.1.0(jest@29.7.0(@types/node@20.11.30))
       jest-watch-typeahead:
         specifier: ^2.2.2
-        version: 2.2.2(jest@29.7.0(@types/node@20.14.12))
+        version: 2.2.2(jest@29.7.0(@types/node@20.11.30))
       npm-run-all2:
         specifier: ^7.0.0
         version: 7.0.0
@@ -822,7 +825,7 @@ importers:
         version: 6.0.0
       ts-jest:
         specifier: 29.2.5
-        version: 29.2.5(@babel/core@7.25.8)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.25.8))(jest@29.7.0(@types/node@20.14.12))(typescript@5.3.3)
+        version: 29.2.5(@babel/core@7.25.8)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.25.8))(jest@29.7.0(@types/node@20.11.30))(typescript@5.3.3)
       typescript:
         specifier: ^5.3.3
         version: 5.3.3
@@ -8801,13 +8804,13 @@ snapshots:
     dependencies:
       type-plus: 5.6.0
 
-  '@kayahr/jest-electron-runner@29.12.0(@types/node@20.14.12)':
+  '@kayahr/jest-electron-runner@29.12.0(@types/node@20.11.30)':
     dependencies:
       '@electron/remote': 2.1.2(electron@29.1.5)
       '@jest/console': 29.7.0
       '@jest/transform': 29.7.0
       electron: 29.1.5
-      jest: 29.7.0(@types/node@20.14.12)
+      jest: 29.7.0(@types/node@20.11.30)
       jest-docblock: 29.7.0
       jest-haste-map: 29.7.0
       jest-jasmine2: 29.7.0
@@ -12167,6 +12170,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  jest-extended@4.0.2(jest@29.7.0(@types/node@20.11.30)):
+    dependencies:
+      jest-diff: 29.7.0
+      jest-get-type: 29.6.3
+    optionalDependencies:
+      jest: 29.7.0(@types/node@20.11.30)
+
   jest-extended@4.0.2(jest@29.7.0(@types/node@20.14.12)):
     dependencies:
       jest-diff: 29.7.0
@@ -12365,16 +12375,38 @@ snapshots:
       leven: 3.1.0
       pretty-format: 29.7.0
 
+  jest-watch-suspend@1.1.2(jest@29.7.0(@types/node@20.11.30)):
+    dependencies:
+      chalk: 2.4.2
+      jest: 29.7.0(@types/node@20.11.30)
+      unpartial: 0.6.4
+
   jest-watch-suspend@1.1.2(jest@29.7.0(@types/node@20.14.12)):
     dependencies:
       chalk: 2.4.2
       jest: 29.7.0(@types/node@20.14.12)
       unpartial: 0.6.4
 
+  jest-watch-toggle-config-2@2.1.0(jest@29.7.0(@types/node@20.11.30)):
+    dependencies:
+      chalk: 4.1.2
+      jest: 29.7.0(@types/node@20.11.30)
+
   jest-watch-toggle-config-2@2.1.0(jest@29.7.0(@types/node@20.14.12)):
     dependencies:
       chalk: 4.1.2
       jest: 29.7.0(@types/node@20.14.12)
+
+  jest-watch-typeahead@2.2.2(jest@29.7.0(@types/node@20.11.30)):
+    dependencies:
+      ansi-escapes: 6.2.0
+      chalk: 5.3.0
+      jest: 29.7.0(@types/node@20.11.30)
+      jest-regex-util: 29.6.3
+      jest-watcher: 29.7.0
+      slash: 5.1.0
+      string-length: 5.0.1
+      strip-ansi: 7.1.0
 
   jest-watch-typeahead@2.2.2(jest@29.7.0(@types/node@20.14.12)):
     dependencies:
@@ -14670,12 +14702,12 @@ snapshots:
     dependencies:
       typescript: 5.4.3
 
-  ts-jest@29.2.5(@babel/core@7.21.4)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.21.4))(esbuild@0.24.0)(jest@29.7.0(@types/node@20.14.12))(typescript@5.3.3):
+  ts-jest@29.2.5(@babel/core@7.21.4)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.21.4))(esbuild@0.24.0)(jest@29.7.0(@types/node@20.11.30))(typescript@5.3.3):
     dependencies:
       bs-logger: 0.2.6
       ejs: 3.1.10
       fast-json-stable-stringify: 2.1.0
-      jest: 29.7.0(@types/node@20.14.12)
+      jest: 29.7.0(@types/node@20.11.30)
       jest-util: 29.7.0
       json5: 2.2.3
       lodash.memoize: 4.1.2
@@ -14689,6 +14721,25 @@ snapshots:
       '@jest/types': 29.6.3
       babel-jest: 29.7.0(@babel/core@7.21.4)
       esbuild: 0.24.0
+
+  ts-jest@29.2.5(@babel/core@7.25.8)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.25.8))(jest@29.7.0(@types/node@20.11.30))(typescript@5.3.3):
+    dependencies:
+      bs-logger: 0.2.6
+      ejs: 3.1.10
+      fast-json-stable-stringify: 2.1.0
+      jest: 29.7.0(@types/node@20.11.30)
+      jest-util: 29.7.0
+      json5: 2.2.3
+      lodash.memoize: 4.1.2
+      make-error: 1.3.6
+      semver: 7.6.3
+      typescript: 5.3.3
+      yargs-parser: 21.1.1
+    optionalDependencies:
+      '@babel/core': 7.25.8
+      '@jest/transform': 29.7.0
+      '@jest/types': 29.6.3
+      babel-jest: 29.7.0(@babel/core@7.25.8)
 
   ts-jest@29.2.5(@babel/core@7.25.8)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.25.8))(jest@29.7.0(@types/node@20.14.12))(typescript@5.3.3):
     dependencies:

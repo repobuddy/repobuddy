@@ -2,8 +2,19 @@
 	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
 	"extends": ["./packages/biome/recommended.jsonc"],
 	"files": {
-		"ignore": ["node_modules", "cjs", "coverage", "esm", "target", "tests/performant", "*.error.ts"],
-		"include": ["src", "tests", "**/*.cjs", "**/*.mjs", "ts/**/*", ".swcrc", ".markdownlint-cli2.jsonc"]
+		"ignore": [
+			".astro",
+			".turbo",
+			"node_modules",
+			"cjs",
+			"coverage",
+			"dist",
+			"esm",
+			"target",
+			".vscode/*.txt",
+			"tests/performant",
+			"*.error.ts"
+		]
 	},
 	"overrides": [
 		{
@@ -49,21 +60,6 @@
 			},
 			"organizeImports": {
 				"enabled": false
-			}
-		},
-		{
-			"include": ["frontmatter.json", ".frontmatter/config/*.json", ".vscode/*.json", "tsconfig*.json"],
-			"json": {
-				"parser": {
-					"allowComments": true,
-					"allowTrailingCommas": true
-				}
-			}
-		},
-		{
-			"include": ["package.json"],
-			"formatter": {
-				"lineWidth": 20
 			}
 		}
 	]

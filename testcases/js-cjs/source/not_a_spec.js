@@ -1,1 +1,1 @@
-console.log('this is not a spec file')
+console.error('this is not a spec file')

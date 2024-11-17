@@ -53,16 +53,13 @@
 		}
 	},
 	"organizeImports": {
+		// This is disabled until this issue is resolved:
+		// https://github.com/biomejs/biome-vscode/issues/356
 		"enabled": false
 	},
 	"overrides": [
 		{
-			"include": [
-				"frontmatter.json",
-				".frontmatter/config/*.json",
-				".vscode/*.json",
-				"tsconfig*.json"
-			],
+			"include": ["frontmatter.json", ".frontmatter/config/*.json", ".vscode/*.json", "tsconfig*.json"],
 			"json": {
 				"parser": {
 					"allowComments": true,
