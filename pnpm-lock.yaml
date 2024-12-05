@@ -836,8 +836,8 @@ importers:
         specifier: ^0.9.0
         version: 0.9.0(typescript@5.4.3)
       '@astrojs/starlight':
-        specifier: ^0.28.0
-        version: 0.28.0(astro@4.16.1(@types/node@20.14.12)(rollup@4.24.0)(sass@1.77.8)(typescript@5.4.3))
+        specifier: ^0.29.0
+        version: 0.29.0(astro@4.16.1(@types/node@20.14.12)(rollup@4.24.0)(sass@1.77.8)(typescript@5.4.3))
       astro:
         specifier: ^4.12.2
         version: 4.16.1(@types/node@20.14.12)(rollup@4.24.0)(sass@1.77.8)(typescript@5.4.3)
@@ -905,8 +905,8 @@ packages:
   '@astrojs/sitemap@3.1.6':
     resolution: {integrity: sha512-1Qp2NvAzVImqA6y+LubKi1DVhve/hXXgFvB0szxiipzh7BvtuKe4oJJ9dXSqaubaTkt4nMa6dv6RCCAYeB6xaQ==}
 
-  '@astrojs/starlight@0.28.0':
-    resolution: {integrity: sha512-xCgXmG7ryi2IzzMULyPzjjQX587YgnyrRqBqCICfetrpNr3W85AtcRUoLIZi6T1TwKwhyUXkcf8Botf26a1GkQ==}
+  '@astrojs/starlight@0.29.0':
+    resolution: {integrity: sha512-0HRr7LiI0XJUA5n0Mj5LPSLZtw80ttkL6eh824y6t/DCcvJzC6e+HRQZ0hIolU8jsEMc7Qs07mMQIvPTpX9KMg==}
     peerDependencies:
       astro: ^4.14.0
 
@@ -1885,17 +1885,17 @@ packages:
     resolution: {integrity: sha512-gMsVel9D7f2HLkBma9VbtzZRehRogVRfbr++f06nL2vnCGCNlzOD+/MUov/F4p8myyAHspEhVobgjpX64q5m6A==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
-  '@expressive-code/core@0.35.6':
-    resolution: {integrity: sha512-xGqCkmfkgT7lr/rvmfnYdDSeTdCSp1otAHgoFS6wNEeO7wGDPpxdosVqYiIcQ8CfWUABh/pGqWG90q+MV3824A==}
+  '@expressive-code/core@0.38.3':
+    resolution: {integrity: sha512-s0/OtdRpBONwcn23O8nVwDNQqpBGKscysejkeBkwlIeHRLZWgiTVrusT5Idrdz1d8cW5wRk9iGsAIQmwDPXgJg==}
 
-  '@expressive-code/plugin-frames@0.35.6':
-    resolution: {integrity: sha512-CqjSWjDJ3wabMJZfL9ZAzH5UAGKg7KWsf1TBzr4xvUbZvWoBtLA/TboBML0U1Ls8h/4TRCIvR4VEb8dv5+QG3w==}
+  '@expressive-code/plugin-frames@0.38.3':
+    resolution: {integrity: sha512-qL2oC6FplmHNQfZ8ZkTR64/wKo9x0c8uP2WDftR/ydwN/yhe1ed7ZWYb8r3dezxsls+tDokCnN4zYR594jbpvg==}
 
-  '@expressive-code/plugin-shiki@0.35.6':
-    resolution: {integrity: sha512-xm+hzi9BsmhkDUGuyAWIydOAWer7Cs9cj8FM0t4HXaQ+qCubprT6wJZSKUxuvFJIUsIOqk1xXFaJzGJGnWtKMg==}
+  '@expressive-code/plugin-shiki@0.38.3':
+    resolution: {integrity: sha512-kqHnglZeesqG3UKrb6e9Fq5W36AZ05Y9tCREmSN2lw8LVTqENIeCIkLDdWtQ5VoHlKqwUEQFTVlRehdwoY7Gmw==}
 
-  '@expressive-code/plugin-text-markers@0.35.6':
-    resolution: {integrity: sha512-/k9eWVZSCs+uEKHR++22Uu6eIbHWEciVHbIuD8frT8DlqTtHYaaiwHPncO6KFWnGDz5i/gL7oyl6XmOi/E6GVg==}
+  '@expressive-code/plugin-text-markers@0.38.3':
+    resolution: {integrity: sha512-dPK3+BVGTbTmGQGU3Fkj3jZ3OltWUAlxetMHI6limUGCWBCucZiwoZeFM/WmqQa71GyKRzhBT+iEov6kkz2xVA==}
 
   '@humanwhocodes/config-array@0.11.14':
     resolution: {integrity: sha512-3T8LkOmg45BV5FICb15QQMsyUSWrQ8AygVfC7ZG32zOalnqrilm018ZVCw0eapXux8FtA33q8PSRSstjee3jSg==}
@@ -2385,14 +2385,26 @@ packages:
   '@shikijs/core@1.22.0':
     resolution: {integrity: sha512-S8sMe4q71TJAW+qG93s5VaiihujRK6rqDFqBnxqvga/3LvqHEnxqBIOPkt//IdXVtHkQWKu4nOQNk0uBGicU7Q==}
 
+  '@shikijs/core@1.22.2':
+    resolution: {integrity: sha512-bvIQcd8BEeR1yFvOYv6HDiyta2FFVePbzeowf5pPS1avczrPK+cjmaxxh0nx5QzbON7+Sv0sQfQVciO7bN72sg==}
+
   '@shikijs/engine-javascript@1.22.0':
     resolution: {integrity: sha512-AeEtF4Gcck2dwBqCFUKYfsCq0s+eEbCEbkUuFou53NZ0sTGnJnJ/05KHQFZxpii5HMXbocV9URYVowOP2wH5kw==}
+
+  '@shikijs/engine-javascript@1.22.2':
+    resolution: {integrity: sha512-iOvql09ql6m+3d1vtvP8fLCVCK7BQD1pJFmHIECsujB0V32BJ0Ab6hxk1ewVSMFA58FI0pR2Had9BKZdyQrxTw==}
 
   '@shikijs/engine-oniguruma@1.22.0':
     resolution: {integrity: sha512-5iBVjhu/DYs1HB0BKsRRFipRrD7rqjxlWTj4F2Pf+nQSPqc3kcyqFFeZXnBMzDf0HdqaFVvhDRAGiYNvyLP+Mw==}
 
+  '@shikijs/engine-oniguruma@1.22.2':
+    resolution: {integrity: sha512-GIZPAGzQOy56mGvWMoZRPggn0dTlBf1gutV5TdceLCZlFNqWmuc7u+CzD0Gd9vQUTgLbrt0KLzz6FNprqYAxlA==}
+
   '@shikijs/types@1.22.0':
     resolution: {integrity: sha512-Fw/Nr7FGFhlQqHfxzZY8Cwtwk5E9nKDUgeLjZgt3UuhcM3yJR9xj3ZGNravZZok8XmEZMiYkSMTPlPkULB8nww==}
+
+  '@shikijs/types@1.22.2':
+    resolution: {integrity: sha512-NCWDa6LGZqTuzjsGfXOBWfjS/fDIbDdmVDug+7ykVe1IKT4c1gakrvlfFYp5NhAXH/lyqLM8wsAPo5wNy73Feg==}
 
   '@shikijs/vscode-textmate@9.3.0':
     resolution: {integrity: sha512-jn7/7ky30idSkd/O5yDBfAnVt+JJpepofP/POZ1iMOxK59cOfqIgg/Dj0eFsjOTMw+4ycJN0uhZH/Eb0bs/EUA==}
@@ -2670,9 +2682,6 @@ packages:
 
   '@types/unist@2.0.11':
     resolution: {integrity: sha512-CmBKiL6NNo/OqgmMn95Fk9Whlp2mtvIv+KNpQKN2F4SjvrEesubTRWGYSg+BnWZOnlCaSTU1sMpsBOzgbYhnsA==}
-
-  '@types/unist@3.0.2':
-    resolution: {integrity: sha512-dqId9J8K/vGi5Zr7oo212BGii5m3q5Hxlkwy3WpYuKPklmBEvsbMYYyLxAQpSffdLl/gdW0XUpKWFvYmyoWCoQ==}
 
   '@types/unist@3.0.3':
     resolution: {integrity: sha512-ko/gIFJRv177XgZsZcBwnqJN5x/Gien8qNOn0D5bQU/zAzVf9Zt3BlcUiLqhV9y4ARk0GbT3tnUiPNgnTXzc/Q==}
@@ -3020,10 +3029,10 @@ packages:
     resolution: {integrity: sha512-ISvCdHdlTDlH5IpxQJIex7BWBywFWgjJSVdwst+/iQCoEYnyOaQ95+X1JGshuBjGp6nxKUy1jMgE3zPqN7fQdg==}
     hasBin: true
 
-  astro-expressive-code@0.35.6:
-    resolution: {integrity: sha512-1U4KrvFuodaCV3z4I1bIR16SdhQlPkolGsYTtiANxPZUVv/KitGSCTjzksrkPonn1XuwVqvnwmUUVzTLWngnBA==}
+  astro-expressive-code@0.38.3:
+    resolution: {integrity: sha512-Tvdc7RV0G92BbtyEOsfJtXU35w41CkM94fOAzxbQP67Wj5jArfserJ321FO4XA7WG9QMV0GIBmQq77NBIRDzpQ==}
     peerDependencies:
-      astro: ^4.0.0-beta || ^3.3.0
+      astro: ^4.0.0-beta || ^5.0.0-beta || ^3.3.0
 
   astro@4.16.1:
     resolution: {integrity: sha512-ZeZd+L147HHgHmvoSkve7KM3EutV+hY0mOCa4PwARHEFAAh+omo4MUNoTWsFkfq7ozTgR0PCXQwslrZduoWHNg==}
@@ -3898,8 +3907,8 @@ packages:
     resolution: {integrity: sha512-2Zks0hf1VLFYI1kbh0I5jP3KHHyCHpkfyHBzsSXRFgl/Bg9mWYfMW8oD+PdMPlEwy5HNsR9JutYy6pMeOh61nw==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
 
-  expressive-code@0.35.6:
-    resolution: {integrity: sha512-+mx+TPTbMqgo0mL92Xh9QgjW0kSQIsEivMgEcOnaqKqL7qCw8Vkqc5Rg/di7ZYw4aMUSr74VTc+w8GQWu05j1g==}
+  expressive-code@0.38.3:
+    resolution: {integrity: sha512-COM04AiUotHCKJgWdn7NtW2lqu8OW8owAidMpkXt1qxrZ9Q2iC7+tok/1qIn2ocGnczvr9paIySgGnEwFeEQ8Q==}
 
   extend-shallow@2.0.1:
     resolution: {integrity: sha512-zCnTtlxNoAiDc3gqY2aYAWFx7XWWiasuF2K8Me5WbN8otHKTUKBwjPtNpRs/rbUZm7KxWAaNj7P1a/p52GbVug==}
@@ -4235,9 +4244,6 @@ packages:
   hast-util-embedded@3.0.0:
     resolution: {integrity: sha512-naH8sld4Pe2ep03qqULEtvYr7EjrLK2QHY8KJR6RJkTUjPGObe1vnx585uzem2hGra+s1q08DZZpfgDVYRbaXA==}
 
-  hast-util-from-html@2.0.1:
-    resolution: {integrity: sha512-RXQBLMl9kjKVNkJTIO6bZyb2n+cUH8LFaSSzo82jiLT6Tfc+Pt7VQCS+/h3YwG4jaNE2TA2sdJisGWR+aJrp0g==}
-
   hast-util-from-html@2.0.3:
     resolution: {integrity: sha512-CUSRHXyKjzHov8yKsQjGOElXy/3EKpyX56ELnkHH34vDVw1N1XSQ1ZcAvTyAPtGqLTuKP/uxM+aLkSPqF/EtMw==}
 
@@ -4259,9 +4265,6 @@ packages:
   hast-util-phrasing@3.0.1:
     resolution: {integrity: sha512-6h60VfI3uBQUxHqTyMymMZnEbNl1XmEGtOxxKYL7stY2o601COo62AWAYBQR9lZbYXYSBoxag8UpPRXK+9fqSQ==}
 
-  hast-util-raw@9.0.2:
-    resolution: {integrity: sha512-PldBy71wO9Uq1kyaMch9AHIghtQvIwxBUkv823pKmkTM3oV1JxtsTNYdevMxvUHqcnOAuO65JKU2+0NOxc2ksA==}
-
   hast-util-raw@9.0.4:
     resolution: {integrity: sha512-LHE65TD2YiNsHD3YuXcKPHXPLuYh/gjp12mOfU8jxSrm1f/yJpsb0F/KKljS6U9LJoP0Ux+tCe8iJ2AsPzTdgA==}
 
@@ -4270,9 +4273,6 @@ packages:
 
   hast-util-to-estree@3.1.0:
     resolution: {integrity: sha512-lfX5g6hqVh9kjS/B9E2gSkvHH4SZNiQFiqWS0x9fENzEl+8W12RqdRxX6d/Cwxi30tPQs3bIO+aolQJNp1bIyw==}
-
-  hast-util-to-html@9.0.1:
-    resolution: {integrity: sha512-hZOofyZANbyWo+9RP75xIDV/gq+OUKx+T46IlwERnKmfpwp81XBFbT9mi26ws+SJchA4RVUQwIBJpqEOBhMzEQ==}
 
   hast-util-to-html@9.0.3:
     resolution: {integrity: sha512-M17uBDzMJ9RPCqLMO92gNNUDuBSq10a25SDBI08iCCxmorf4Yy6sYHK57n9WAbRAAaU+DuR4W6GN9K4DFZesYg==}
@@ -5142,9 +5142,6 @@ packages:
   mdast-util-find-and-replace@3.0.1:
     resolution: {integrity: sha512-SG21kZHGC3XRTSUhtofZkBzZTJNM5ecCi0SK2IMKmSXR8vO3peL+kb1O0z7Zl83jKtutG4k5Wv/W7V3/YHvzPA==}
 
-  mdast-util-from-markdown@2.0.0:
-    resolution: {integrity: sha512-n7MTOr/z+8NAX/wmhhDji8O3bRvPTV/U0oTCaZJkjhPSKTPhS3xufVhKGF8s1pJ7Ox4QgoIU7KHseh09S+9rTA==}
-
   mdast-util-from-markdown@2.0.1:
     resolution: {integrity: sha512-aJEUyzZ6TzlsX2s5B4Of7lN7EQtAxvtradMMglCQDyaTFgse6CmtmdJ15ElnVRlCg1vpNyVtbem0PWzlNieZsA==}
 
@@ -5181,9 +5178,6 @@ packages:
   mdast-util-phrasing@4.1.0:
     resolution: {integrity: sha512-TqICwyvJJpBwvGAMZjj4J2n0X8QWp21b9l0o7eXyVJ25YNWYbJDVIyD1bZXE6WtV6RmKJVYmQAKWa0zWOABz2w==}
 
-  mdast-util-to-hast@13.0.2:
-    resolution: {integrity: sha512-U5I+500EOOw9e3ZrclN3Is3fRpw8c19SMyNZlZ2IS+7vLsNzb2Om11VpIVOR+/0137GhZsFEF6YiKD5+0Hr2Og==}
-
   mdast-util-to-hast@13.2.0:
     resolution: {integrity: sha512-QGYKEuUsYT9ykKBCMOEDLsU5JRObWQusAolFMeko/tYPufNkRffBAQjIE+99jbA87xv6FgmjLtwjh9wBWajwAA==}
 
@@ -5207,9 +5201,6 @@ packages:
   merge2@1.4.1:
     resolution: {integrity: sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==}
     engines: {node: '>= 8'}
-
-  micromark-core-commonmark@2.0.0:
-    resolution: {integrity: sha512-jThOz/pVmAYUtkroV3D5c1osFXAMv9e0ypGDOIZuCeAe91/sD6BoE2Sjzt30yuXtwOYUmySOhMas/PVyh02itA==}
 
   micromark-core-commonmark@2.0.1:
     resolution: {integrity: sha512-CUQyKr1e///ZODyD1U3xit6zXwy1a8q2a1S1HKtIlmgvurrEpaw/Y9y6KSIbF8P59cn/NjzHyO+Q2fAyYLQrAA==}
@@ -5306,9 +5297,6 @@ packages:
 
   micromark-util-sanitize-uri@2.0.0:
     resolution: {integrity: sha512-WhYv5UEcZrbAtlsnPuChHUAsu/iBPOVaEVsntLBIdpibO0ddy8OzavZz3iL2xVvBZOpolujSliP65Kq0/7KIYw==}
-
-  micromark-util-subtokenize@2.0.0:
-    resolution: {integrity: sha512-vc93L1t+gpR3p8jxeVdaYlbV2jTYteDje19rNSS/H5dlhxUYll5Fy6vJ2cDwP8RnsXi818yGty1ayP55y3W6fg==}
 
   micromark-util-subtokenize@2.0.1:
     resolution: {integrity: sha512-jZNtiFl/1aY73yS3UGQkutD0UbhTt68qnRpw2Pifmz5wV9h8gOVsN70v+Lq/f1rKaU/W8pxRe8y8Q9FX1AOe1Q==}
@@ -5889,9 +5877,6 @@ packages:
     resolution: {integrity: sha512-NxNv/kLguCA7p3jE8oL2aEBsrJWgAakBpgmgK6lpPWV+WuOmY6r2/zbAVnP+T8bQlA0nzHXSJSJW0Hq7ylaD2Q==}
     engines: {node: '>= 6'}
 
-  property-information@6.4.1:
-    resolution: {integrity: sha512-OHYtXfu5aI2sS2LWFSN5rgJjrQ4pCy8i1jubJLe2QvMF8JJ++HXTUIVWFLfXJoaOfvYYjk2SN8J2wFUWIGXT4w==}
-
   property-information@6.5.0:
     resolution: {integrity: sha512-PgTgs/BlvHxOu8QuEN7wi5A0OmXaBcHpmCSTehcs6Uuu9IkDIEo13Hy7n898RHfrQ49vKCoGeWZSaAK01nwVig==}
 
@@ -5986,8 +5971,8 @@ packages:
     resolution: {integrity: sha512-0SutC3pNudRKgquxGoRGIz946MZVHqbNfPjBdxeOhBrdgDKlRoXmYLQN9xRbrR09ZXWeGAdPuif7egofn6v5LA==}
     engines: {node: '>= 0.4'}
 
-  rehype-expressive-code@0.35.6:
-    resolution: {integrity: sha512-pPdE+pRcRw01kxMOwHQjuRxgwlblZt5+wAc3w2aPGgmcnn57wYjn07iKO7zaznDxYVxMYVvYlnL+R3vWFQS4Gw==}
+  rehype-expressive-code@0.38.3:
+    resolution: {integrity: sha512-RYSSDkMBikoTbycZPkcWp6ELneANT4eTpND1DSRJ6nI2eVFUwTBDCvE2vO6jOOTaavwnPiydi4i/87NRyjpdOA==}
 
   rehype-format@5.0.0:
     resolution: {integrity: sha512-kM4II8krCHmUhxrlvzFSptvaWh280Fr7UGNJU5DCMuvmAwGCNmGfi9CvFAQK6JDjsNoRMWQStglK3zKJH685Wg==}
@@ -5995,23 +5980,14 @@ packages:
   rehype-minify-whitespace@6.0.0:
     resolution: {integrity: sha512-i9It4YHR0Sf3GsnlR5jFUKXRr9oayvEk9GKQUkwZv6hs70OH9q3OCZrq9PpLvIGKt3W+JxBOxCidNVpH/6rWdA==}
 
-  rehype-parse@9.0.0:
-    resolution: {integrity: sha512-WG7nfvmWWkCR++KEkZevZb/uw41E8TsH4DsY9UxsTbIXCVGbAs4S+r8FrQ+OtH5EEQAs+5UxKC42VinkmpA1Yw==}
-
   rehype-parse@9.0.1:
     resolution: {integrity: sha512-ksCzCD0Fgfh7trPDxr2rSylbwq9iYDkSn8TCDmEJ49ljEUBxDVCzCHv7QNzZOfODanX4+bWQ4WZqLCRWYLfhag==}
 
   rehype-raw@7.0.0:
     resolution: {integrity: sha512-/aE8hCfKlQeA8LmyeyQvQF3eBiLRGNlfBJEvWH7ivp9sBqs7TNqBL5X3v157rM4IFETqDnIOO+z5M/biZbo9Ww==}
 
-  rehype-stringify@10.0.0:
-    resolution: {integrity: sha512-1TX1i048LooI9QoecrXy7nGFFbFSufxVRAfc6Y9YMRAi56l+oB0zP51mLSV312uRuvVLPV1opSlJmslozR1XHQ==}
-
   rehype-stringify@10.0.1:
     resolution: {integrity: sha512-k9ecfXHmIPuFVI61B9DeLPN0qFHfawM6RsuX48hoqlaKSF61RskNjSm1lI8PhBEM0MRdLxVVm4WmTqJQccH9mA==}
-
-  rehype@13.0.1:
-    resolution: {integrity: sha512-AcSLS2mItY+0fYu9xKxOu1LhUZeBZZBx8//5HKzF+0XP+eP8+6a5MXn2+DW2kfXR6Dtp1FEXMVrjyKAcvcU8vg==}
 
   rehype@13.0.2:
     resolution: {integrity: sha512-j31mdaRFrwFRUIlxGeuPXXKWQxet52RBQRvCmzl5eCefn/KGbomK5GMHNMsOJf55fgo3qw5tST5neDuarDYR2A==}
@@ -6274,6 +6250,9 @@ packages:
   shiki@1.22.0:
     resolution: {integrity: sha512-/t5LlhNs+UOKQCYBtl5ZsH/Vclz73GIqT2yQsCBygr8L/ppTdmpL4w3kPLoZJbMKVWtoG77Ue1feOjZfDxvMkw==}
 
+  shiki@1.22.2:
+    resolution: {integrity: sha512-3IZau0NdGKXhH2bBlUk4w1IHNxPh6A5B2sUpyY+8utLu2j/h1QpFkAaUA1bAMxOWWGtTWcAh531vnS4NJKS/lA==}
+
   side-channel@1.0.4:
     resolution: {integrity: sha512-q5XPytqFEIKHkGdiMIrY10mvLRvnQh42/+GoBlFW3b2LXLE2xxJpZFdm94we0BaoV3RwJyGqg5wS7epxTv0Zvw==}
 
@@ -6451,9 +6430,6 @@ packages:
 
   string_decoder@1.3.0:
     resolution: {integrity: sha512-hkRX8U1WjJFd8LsDJ2yQ/wWWxaopEsABU1XfkM8A+j0+85JAGppt16cr1Whg6KIbb4okU6Mql6BOj+uup/wKeA==}
-
-  stringify-entities@4.0.3:
-    resolution: {integrity: sha512-BP9nNHMhhfcMbiuQKCqMjhDP5yBCAxsPu4pHFFzJ6Alo9dZgY4VLDPutXqIjpRiMoKdp7Av85Gr73Q5uH9k7+g==}
 
   stringify-entities@4.0.4:
     resolution: {integrity: sha512-IwfBptatlO+QCJUo19AqvrPNqlVMpW9YEL2LIVY+Rpv2qsjCGxaDLNRgeGsQWJhfItebuJhsGSLjaBbNSQ+ieg==}
@@ -6932,9 +6908,6 @@ packages:
   vfile-message@4.0.2:
     resolution: {integrity: sha512-jRDZ1IMLttGj41KcZvlrYAaI3CfqpLpfpf+Mfig13viT6NKvRzWZ+lXz0Y5D60w6uJIBAOGq9mSHf0gktF0duw==}
 
-  vfile@6.0.2:
-    resolution: {integrity: sha512-zND7NlS8rJYb/sPqkb13ZvbbUoExdbi4w3SfRrMq6R3FvnLQmmfpajJNITuuYm6AZ5uao9vy4BAos3EXBPf2rg==}
-
   vfile@6.0.3:
     resolution: {integrity: sha512-KzIbH/9tXat2u30jf+smMwFCsno4wHVdNmzFyL+T/L3UGqqk6JKfVqOFOZEpZSHADH1k40ab6NUIXZq422ov3Q==}
 
@@ -7388,7 +7361,7 @@ snapshots:
     dependencies:
       '@astrojs/prism': 3.1.0
       github-slugger: 2.0.0
-      hast-util-from-html: 2.0.1
+      hast-util-from-html: 2.0.3
       hast-util-to-text: 4.0.2
       import-meta-resolve: 4.1.0
       mdast-util-definitions: 6.0.0
@@ -7403,7 +7376,7 @@ snapshots:
       unist-util-remove-position: 5.0.0
       unist-util-visit: 5.0.0
       unist-util-visit-parents: 6.0.1
-      vfile: 6.0.2
+      vfile: 6.0.3
     transitivePeerDependencies:
       - supports-color
 
@@ -7440,14 +7413,14 @@ snapshots:
       estree-util-visit: 2.0.0
       github-slugger: 2.0.0
       gray-matter: 4.0.3
-      hast-util-to-html: 9.0.1
+      hast-util-to-html: 9.0.3
       kleur: 4.1.5
       rehype-raw: 7.0.0
       remark-gfm: 4.0.0
       remark-smartypants: 3.0.2
       source-map: 0.7.4
       unist-util-visit: 5.0.0
-      vfile: 6.0.2
+      vfile: 6.0.3
     transitivePeerDependencies:
       - supports-color
 
@@ -7461,7 +7434,7 @@ snapshots:
       stream-replace-string: 2.0.0
       zod: 3.23.8
 
-  '@astrojs/starlight@0.28.0(astro@4.16.1(@types/node@20.14.12)(rollup@4.24.0)(sass@1.77.8)(typescript@5.4.3))':
+  '@astrojs/starlight@0.29.0(astro@4.16.1(@types/node@20.14.12)(rollup@4.24.0)(sass@1.77.8)(typescript@5.4.3))':
     dependencies:
       '@astrojs/mdx': 3.1.3(astro@4.16.1(@types/node@20.14.12)(rollup@4.24.0)(sass@1.77.8)(typescript@5.4.3))
       '@astrojs/sitemap': 3.1.6
@@ -7469,23 +7442,24 @@ snapshots:
       '@types/hast': 3.0.4
       '@types/mdast': 4.0.4
       astro: 4.16.1(@types/node@20.14.12)(rollup@4.24.0)(sass@1.77.8)(typescript@5.4.3)
-      astro-expressive-code: 0.35.6(astro@4.16.1(@types/node@20.14.12)(rollup@4.24.0)(sass@1.77.8)(typescript@5.4.3))
+      astro-expressive-code: 0.38.3(astro@4.16.1(@types/node@20.14.12)(rollup@4.24.0)(sass@1.77.8)(typescript@5.4.3))
       bcp-47: 2.1.0
-      hast-util-from-html: 2.0.1
+      hast-util-from-html: 2.0.3
       hast-util-select: 6.0.2
       hast-util-to-string: 3.0.0
       hastscript: 9.0.0
       i18next: 23.15.1
+      js-yaml: 4.1.0
       mdast-util-directive: 3.0.0
       mdast-util-to-markdown: 2.1.0
       mdast-util-to-string: 4.0.0
       pagefind: 1.0.4
-      rehype: 13.0.1
+      rehype: 13.0.2
       rehype-format: 5.0.0
       remark-directive: 3.0.0
       unified: 11.0.5
       unist-util-visit: 5.0.0
-      vfile: 6.0.2
+      vfile: 6.0.3
     transitivePeerDependencies:
       - supports-color
 
@@ -8463,7 +8437,7 @@ snapshots:
 
   '@eslint/js@8.56.0': {}
 
-  '@expressive-code/core@0.35.6':
+  '@expressive-code/core@0.38.3':
     dependencies:
       '@ctrl/tinycolor': 4.1.0
       hast-util-select: 6.0.2
@@ -8475,18 +8449,18 @@ snapshots:
       unist-util-visit: 5.0.0
       unist-util-visit-parents: 6.0.1
 
-  '@expressive-code/plugin-frames@0.35.6':
+  '@expressive-code/plugin-frames@0.38.3':
     dependencies:
-      '@expressive-code/core': 0.35.6
+      '@expressive-code/core': 0.38.3
 
-  '@expressive-code/plugin-shiki@0.35.6':
+  '@expressive-code/plugin-shiki@0.38.3':
     dependencies:
-      '@expressive-code/core': 0.35.6
-      shiki: 1.22.0
+      '@expressive-code/core': 0.38.3
+      shiki: 1.22.2
 
-  '@expressive-code/plugin-text-markers@0.35.6':
+  '@expressive-code/plugin-text-markers@0.38.3':
     dependencies:
-      '@expressive-code/core': 0.35.6
+      '@expressive-code/core': 0.38.3
 
   '@humanwhocodes/config-array@0.11.14':
     dependencies:
@@ -8833,7 +8807,7 @@ snapshots:
 
   '@manypkg/find-root@1.1.0':
     dependencies:
-      '@babel/runtime': 7.21.0
+      '@babel/runtime': 7.25.6
       '@types/node': 12.20.55
       find-up: 4.1.0
       fs-extra: 8.1.0
@@ -8871,7 +8845,7 @@ snapshots:
       unist-util-position-from-estree: 2.0.0
       unist-util-stringify-position: 4.0.0
       unist-util-visit: 5.0.0
-      vfile: 6.0.2
+      vfile: 6.0.3
     transitivePeerDependencies:
       - supports-color
 
@@ -9026,9 +9000,24 @@ snapshots:
       '@types/hast': 3.0.4
       hast-util-to-html: 9.0.3
 
+  '@shikijs/core@1.22.2':
+    dependencies:
+      '@shikijs/engine-javascript': 1.22.2
+      '@shikijs/engine-oniguruma': 1.22.2
+      '@shikijs/types': 1.22.2
+      '@shikijs/vscode-textmate': 9.3.0
+      '@types/hast': 3.0.4
+      hast-util-to-html: 9.0.3
+
   '@shikijs/engine-javascript@1.22.0':
     dependencies:
       '@shikijs/types': 1.22.0
+      '@shikijs/vscode-textmate': 9.3.0
+      oniguruma-to-js: 0.4.3
+
+  '@shikijs/engine-javascript@1.22.2':
+    dependencies:
+      '@shikijs/types': 1.22.2
       '@shikijs/vscode-textmate': 9.3.0
       oniguruma-to-js: 0.4.3
 
@@ -9037,7 +9026,17 @@ snapshots:
       '@shikijs/types': 1.22.0
       '@shikijs/vscode-textmate': 9.3.0
 
+  '@shikijs/engine-oniguruma@1.22.2':
+    dependencies:
+      '@shikijs/types': 1.22.2
+      '@shikijs/vscode-textmate': 9.3.0
+
   '@shikijs/types@1.22.0':
+    dependencies:
+      '@shikijs/vscode-textmate': 9.3.0
+      '@types/hast': 3.0.4
+
+  '@shikijs/types@1.22.2':
     dependencies:
       '@shikijs/vscode-textmate': 9.3.0
       '@types/hast': 3.0.4
@@ -9199,7 +9198,7 @@ snapshots:
 
   '@types/hast@3.0.4':
     dependencies:
-      '@types/unist': 3.0.2
+      '@types/unist': 3.0.3
 
   '@types/http-cache-semantics@4.0.4': {}
 
@@ -9246,7 +9245,7 @@ snapshots:
 
   '@types/mdast@4.0.4':
     dependencies:
-      '@types/unist': 3.0.2
+      '@types/unist': 3.0.3
 
   '@types/mdx@2.0.11': {}
 
@@ -9305,8 +9304,6 @@ snapshots:
   '@types/tough-cookie@4.0.2': {}
 
   '@types/unist@2.0.11': {}
-
-  '@types/unist@3.0.2': {}
 
   '@types/unist@3.0.3': {}
 
@@ -9764,10 +9761,10 @@ snapshots:
 
   astring@1.8.6: {}
 
-  astro-expressive-code@0.35.6(astro@4.16.1(@types/node@20.14.12)(rollup@4.24.0)(sass@1.77.8)(typescript@5.4.3)):
+  astro-expressive-code@0.38.3(astro@4.16.1(@types/node@20.14.12)(rollup@4.24.0)(sass@1.77.8)(typescript@5.4.3)):
     dependencies:
       astro: 4.16.1(@types/node@20.14.12)(rollup@4.24.0)(sass@1.77.8)(typescript@5.4.3)
-      rehype-expressive-code: 0.35.6
+      rehype-expressive-code: 0.38.3
 
   astro@4.16.1(@types/node@20.14.12)(rollup@4.24.0)(sass@1.77.8)(typescript@5.4.3):
     dependencies:
@@ -10980,12 +10977,12 @@ snapshots:
       jest-message-util: 29.7.0
       jest-util: 29.7.0
 
-  expressive-code@0.35.6:
+  expressive-code@0.38.3:
     dependencies:
-      '@expressive-code/core': 0.35.6
-      '@expressive-code/plugin-frames': 0.35.6
-      '@expressive-code/plugin-shiki': 0.35.6
-      '@expressive-code/plugin-text-markers': 0.35.6
+      '@expressive-code/core': 0.38.3
+      '@expressive-code/plugin-frames': 0.38.3
+      '@expressive-code/plugin-shiki': 0.38.3
+      '@expressive-code/plugin-text-markers': 0.38.3
 
   extend-shallow@2.0.1:
     dependencies:
@@ -11374,15 +11371,6 @@ snapshots:
       '@types/hast': 3.0.4
       hast-util-is-element: 3.0.0
 
-  hast-util-from-html@2.0.1:
-    dependencies:
-      '@types/hast': 3.0.4
-      devlop: 1.1.0
-      hast-util-from-parse5: 8.0.1
-      parse5: 7.1.2
-      vfile: 6.0.2
-      vfile-message: 4.0.2
-
   hast-util-from-html@2.0.3:
     dependencies:
       '@types/hast': 3.0.4
@@ -11398,8 +11386,8 @@ snapshots:
       '@types/unist': 3.0.3
       devlop: 1.1.0
       hastscript: 8.0.0
-      property-information: 6.4.1
-      vfile: 6.0.2
+      property-information: 6.5.0
+      vfile: 6.0.3
       vfile-location: 5.0.2
       web-namespaces: 2.0.1
 
@@ -11427,22 +11415,6 @@ snapshots:
       hast-util-is-body-ok-link: 3.0.0
       hast-util-is-element: 3.0.0
 
-  hast-util-raw@9.0.2:
-    dependencies:
-      '@types/hast': 3.0.4
-      '@types/unist': 3.0.3
-      '@ungap/structured-clone': 1.2.0
-      hast-util-from-parse5: 8.0.1
-      hast-util-to-parse5: 8.0.0
-      html-void-elements: 3.0.0
-      mdast-util-to-hast: 13.0.2
-      parse5: 7.2.0
-      unist-util-position: 5.0.0
-      unist-util-visit: 5.0.0
-      vfile: 6.0.2
-      web-namespaces: 2.0.1
-      zwitch: 2.0.4
-
   hast-util-raw@9.0.4:
     dependencies:
       '@types/hast': 3.0.4
@@ -11462,7 +11434,7 @@ snapshots:
   hast-util-select@6.0.2:
     dependencies:
       '@types/hast': 3.0.4
-      '@types/unist': 3.0.2
+      '@types/unist': 3.0.3
       bcp-47-match: 2.0.3
       comma-separated-tokens: 2.0.3
       css-selector-parser: 3.0.4
@@ -11473,7 +11445,7 @@ snapshots:
       hast-util-whitespace: 3.0.0
       not: 0.1.0
       nth-check: 2.1.1
-      property-information: 6.4.1
+      property-information: 6.5.0
       space-separated-tokens: 2.0.2
       unist-util-visit: 5.0.0
       zwitch: 2.0.4
@@ -11491,28 +11463,13 @@ snapshots:
       mdast-util-mdx-expression: 2.0.0
       mdast-util-mdx-jsx: 3.1.0
       mdast-util-mdxjs-esm: 2.0.1
-      property-information: 6.4.1
+      property-information: 6.5.0
       space-separated-tokens: 2.0.2
       style-to-object: 0.4.4
       unist-util-position: 5.0.0
       zwitch: 2.0.4
     transitivePeerDependencies:
       - supports-color
-
-  hast-util-to-html@9.0.1:
-    dependencies:
-      '@types/hast': 3.0.4
-      '@types/unist': 3.0.3
-      ccount: 2.0.1
-      comma-separated-tokens: 2.0.3
-      hast-util-raw: 9.0.2
-      hast-util-whitespace: 3.0.0
-      html-void-elements: 3.0.0
-      mdast-util-to-hast: 13.0.2
-      property-information: 6.4.1
-      space-separated-tokens: 2.0.2
-      stringify-entities: 4.0.3
-      zwitch: 2.0.4
 
   hast-util-to-html@9.0.3:
     dependencies:
@@ -11540,7 +11497,7 @@ snapshots:
       mdast-util-mdx-expression: 2.0.0
       mdast-util-mdx-jsx: 3.1.0
       mdast-util-mdxjs-esm: 2.0.1
-      property-information: 6.4.1
+      property-information: 6.5.0
       space-separated-tokens: 2.0.2
       style-to-object: 1.0.5
       unist-util-position: 5.0.0
@@ -11578,7 +11535,7 @@ snapshots:
       '@types/hast': 3.0.4
       comma-separated-tokens: 2.0.3
       hast-util-parse-selector: 4.0.0
-      property-information: 6.4.1
+      property-information: 6.5.0
       space-separated-tokens: 2.0.2
 
   hastscript@9.0.0:
@@ -11586,7 +11543,7 @@ snapshots:
       '@types/hast': 3.0.4
       comma-separated-tokens: 2.0.3
       hast-util-parse-selector: 4.0.0
-      property-information: 6.4.1
+      property-information: 6.5.0
       space-separated-tokens: 2.0.2
 
   header-case@2.0.4:
@@ -12662,12 +12619,12 @@ snapshots:
   mdast-util-directive@3.0.0:
     dependencies:
       '@types/mdast': 4.0.4
-      '@types/unist': 3.0.2
+      '@types/unist': 3.0.3
       devlop: 1.1.0
-      mdast-util-from-markdown: 2.0.0
+      mdast-util-from-markdown: 2.0.1
       mdast-util-to-markdown: 2.1.0
       parse-entities: 4.0.1
-      stringify-entities: 4.0.3
+      stringify-entities: 4.0.4
       unist-util-visit-parents: 6.0.1
     transitivePeerDependencies:
       - supports-color
@@ -12678,23 +12635,6 @@ snapshots:
       escape-string-regexp: 5.0.0
       unist-util-is: 6.0.0
       unist-util-visit-parents: 6.0.1
-
-  mdast-util-from-markdown@2.0.0:
-    dependencies:
-      '@types/mdast': 4.0.4
-      '@types/unist': 3.0.2
-      decode-named-character-reference: 1.0.2
-      devlop: 1.1.0
-      mdast-util-to-string: 4.0.0
-      micromark: 4.0.0
-      micromark-util-decode-numeric-character-reference: 2.0.1
-      micromark-util-decode-string: 2.0.0
-      micromark-util-normalize-identifier: 2.0.0
-      micromark-util-symbol: 2.0.0
-      micromark-util-types: 2.0.0
-      unist-util-stringify-position: 4.0.0
-    transitivePeerDependencies:
-      - supports-color
 
   mdast-util-from-markdown@2.0.1:
     dependencies:
@@ -12825,17 +12765,6 @@ snapshots:
       '@types/mdast': 4.0.4
       unist-util-is: 6.0.0
 
-  mdast-util-to-hast@13.0.2:
-    dependencies:
-      '@types/hast': 3.0.4
-      '@types/mdast': 4.0.4
-      '@ungap/structured-clone': 1.2.0
-      devlop: 1.1.0
-      micromark-util-sanitize-uri: 2.0.0
-      trim-lines: 3.0.1
-      unist-util-position: 5.0.0
-      unist-util-visit: 5.0.0
-
   mdast-util-to-hast@13.2.0:
     dependencies:
       '@types/hast': 3.0.4
@@ -12851,7 +12780,7 @@ snapshots:
   mdast-util-to-markdown@2.1.0:
     dependencies:
       '@types/mdast': 4.0.4
-      '@types/unist': 3.0.2
+      '@types/unist': 3.0.3
       longest-streak: 3.1.0
       mdast-util-phrasing: 4.1.0
       mdast-util-to-string: 4.0.0
@@ -12882,25 +12811,6 @@ snapshots:
   merge-stream@2.0.0: {}
 
   merge2@1.4.1: {}
-
-  micromark-core-commonmark@2.0.0:
-    dependencies:
-      decode-named-character-reference: 1.0.2
-      devlop: 1.1.0
-      micromark-factory-destination: 2.0.0
-      micromark-factory-label: 2.0.0
-      micromark-factory-space: 2.0.0
-      micromark-factory-title: 2.0.0
-      micromark-factory-whitespace: 2.0.0
-      micromark-util-character: 2.1.0
-      micromark-util-chunked: 2.0.0
-      micromark-util-classify-character: 2.0.0
-      micromark-util-html-tag-name: 2.0.0
-      micromark-util-normalize-identifier: 2.0.0
-      micromark-util-resolve-all: 2.0.0
-      micromark-util-subtokenize: 2.0.0
-      micromark-util-symbol: 2.0.0
-      micromark-util-types: 2.0.0
 
   micromark-core-commonmark@2.0.1:
     dependencies:
@@ -13143,13 +13053,6 @@ snapshots:
       micromark-util-encode: 2.0.0
       micromark-util-symbol: 2.0.0
 
-  micromark-util-subtokenize@2.0.0:
-    dependencies:
-      devlop: 1.1.0
-      micromark-util-chunked: 2.0.0
-      micromark-util-symbol: 2.0.0
-      micromark-util-types: 2.0.0
-
   micromark-util-subtokenize@2.0.1:
     dependencies:
       devlop: 1.1.0
@@ -13167,7 +13070,7 @@ snapshots:
       debug: 4.3.7
       decode-named-character-reference: 1.0.2
       devlop: 1.1.0
-      micromark-core-commonmark: 2.0.0
+      micromark-core-commonmark: 2.0.1
       micromark-factory-space: 2.0.0
       micromark-util-character: 2.1.0
       micromark-util-chunked: 2.0.0
@@ -13177,7 +13080,7 @@ snapshots:
       micromark-util-normalize-identifier: 2.0.0
       micromark-util-resolve-all: 2.0.0
       micromark-util-sanitize-uri: 2.0.0
-      micromark-util-subtokenize: 2.0.0
+      micromark-util-subtokenize: 2.0.1
       micromark-util-symbol: 2.0.0
       micromark-util-types: 2.0.0
     transitivePeerDependencies:
@@ -13766,8 +13669,6 @@ snapshots:
       kleur: 3.0.3
       sisteransi: 1.0.5
 
-  property-information@6.4.1: {}
-
   property-information@6.5.0: {}
 
   pseudomap@1.0.2: {}
@@ -13873,9 +13774,9 @@ snapshots:
       define-properties: 1.2.0
       functions-have-names: 1.2.3
 
-  rehype-expressive-code@0.35.6:
+  rehype-expressive-code@0.38.3:
     dependencies:
-      expressive-code: 0.35.6
+      expressive-code: 0.38.3
 
   rehype-format@5.0.0:
     dependencies:
@@ -13896,12 +13797,6 @@ snapshots:
       hast-util-whitespace: 3.0.0
       unist-util-is: 6.0.0
 
-  rehype-parse@9.0.0:
-    dependencies:
-      '@types/hast': 3.0.4
-      hast-util-from-html: 2.0.1
-      unified: 11.0.5
-
   rehype-parse@9.0.1:
     dependencies:
       '@types/hast': 3.0.4
@@ -13914,23 +13809,10 @@ snapshots:
       hast-util-raw: 9.0.4
       vfile: 6.0.3
 
-  rehype-stringify@10.0.0:
-    dependencies:
-      '@types/hast': 3.0.4
-      hast-util-to-html: 9.0.1
-      unified: 11.0.5
-
   rehype-stringify@10.0.1:
     dependencies:
       '@types/hast': 3.0.4
       hast-util-to-html: 9.0.3
-      unified: 11.0.5
-
-  rehype@13.0.1:
-    dependencies:
-      '@types/hast': 3.0.4
-      rehype-parse: 9.0.0
-      rehype-stringify: 10.0.0
       unified: 11.0.5
 
   rehype@13.0.2:
@@ -14293,6 +14175,15 @@ snapshots:
       '@shikijs/vscode-textmate': 9.3.0
       '@types/hast': 3.0.4
 
+  shiki@1.22.2:
+    dependencies:
+      '@shikijs/core': 1.22.2
+      '@shikijs/engine-javascript': 1.22.2
+      '@shikijs/engine-oniguruma': 1.22.2
+      '@shikijs/types': 1.22.2
+      '@shikijs/vscode-textmate': 9.3.0
+      '@types/hast': 3.0.4
+
   side-channel@1.0.4:
     dependencies:
       call-bind: 1.0.2
@@ -14501,11 +14392,6 @@ snapshots:
   string_decoder@1.3.0:
     dependencies:
       safe-buffer: 5.2.1
-
-  stringify-entities@4.0.3:
-    dependencies:
-      character-entities-html4: 2.1.0
-      character-entities-legacy: 3.0.0
 
   stringify-entities@4.0.4:
     dependencies:
@@ -14856,13 +14742,13 @@ snapshots:
 
   unified@11.0.5:
     dependencies:
-      '@types/unist': 3.0.2
+      '@types/unist': 3.0.3
       bail: 2.0.2
       devlop: 1.1.0
       extend: 3.0.2
       is-plain-obj: 4.1.0
       trough: 2.2.0
-      vfile: 6.0.2
+      vfile: 6.0.3
 
   unist-util-find-after@5.0.0:
     dependencies:
@@ -14893,7 +14779,7 @@ snapshots:
 
   unist-util-stringify-position@4.0.0:
     dependencies:
-      '@types/unist': 3.0.2
+      '@types/unist': 3.0.3
 
   unist-util-visit-children@3.0.0:
     dependencies:
@@ -14973,18 +14859,12 @@ snapshots:
   vfile-location@5.0.2:
     dependencies:
       '@types/unist': 3.0.3
-      vfile: 6.0.2
+      vfile: 6.0.3
 
   vfile-message@4.0.2:
     dependencies:
       '@types/unist': 3.0.3
       unist-util-stringify-position: 4.0.0
-
-  vfile@6.0.2:
-    dependencies:
-      '@types/unist': 3.0.2
-      unist-util-stringify-position: 4.0.0
-      vfile-message: 4.0.2
 
   vfile@6.0.3:
     dependencies:
