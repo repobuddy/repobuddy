@@ -21,8 +21,8 @@ importers:
         specifier: workspace:^
         version: link:packages/typescript
       '@types/node':
-        specifier: ^20.0.0
-        version: 20.11.30
+        specifier: ^22.0.0
+        version: 22.10.7
       '@typescript-eslint/eslint-plugin':
         specifier: ^8.0.0
         version: 8.0.0(@typescript-eslint/parser@8.0.0(eslint@8.56.0)(typescript@5.4.3))(eslint@8.56.0)(typescript@5.4.3)
@@ -46,7 +46,7 @@ importers:
         version: 1.16.0(eslint@8.56.0)
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.11.30)
+        version: 29.7.0(@types/node@22.10.7)
       plop:
         specifier: ^4.0.0
         version: 4.0.1
@@ -108,7 +108,7 @@ importers:
         version: 1.4.3
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.11.30)
+        version: 29.7.0(@types/node@22.10.7)
       npm-run-all2:
         specifier: ^7.0.0
         version: 7.0.0
@@ -148,7 +148,7 @@ importers:
         version: 29.7.0
       '@kayahr/jest-electron-runner':
         specifier: ^29.12.0
-        version: 29.12.0(@types/node@20.14.12)
+        version: 29.12.0(@types/node@22.10.7)
       '@types/jest':
         specifier: ^29.5.12
         version: 29.5.12
@@ -172,22 +172,22 @@ importers:
         version: 3.0.0
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.14.12)
+        version: 29.7.0(@types/node@22.10.7)
       jest-esm-transformer-2:
         specifier: ^1.0.0
         version: 1.0.0
       jest-extended:
         specifier: ^4.0.2
-        version: 4.0.2(jest@29.7.0(@types/node@20.14.12))
+        version: 4.0.2(jest@29.7.0(@types/node@22.10.7))
       jest-watch-suspend:
         specifier: ^1.1.2
-        version: 1.1.2(jest@29.7.0(@types/node@20.14.12))
+        version: 1.1.2(jest@29.7.0(@types/node@22.10.7))
       jest-watch-toggle-config-2:
         specifier: ^2.1.0
-        version: 2.1.0(jest@29.7.0(@types/node@20.14.12))
+        version: 2.1.0(jest@29.7.0(@types/node@22.10.7))
       jest-watch-typeahead:
         specifier: ^2.2.2
-        version: 2.2.2(jest@29.7.0(@types/node@20.14.12))
+        version: 2.2.2(jest@29.7.0(@types/node@22.10.7))
       ncp:
         specifier: ^2.0.0
         version: 2.0.0
@@ -202,7 +202,7 @@ importers:
         version: 7.0.1
       ts-jest:
         specifier: 29.2.5
-        version: 29.2.5(@babel/core@7.21.4)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.21.4))(esbuild@0.24.0)(jest@29.7.0(@types/node@20.14.12))(typescript@5.3.3)
+        version: 29.2.5(@babel/core@7.21.4)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.21.4))(esbuild@0.24.0)(jest@29.7.0(@types/node@22.10.7))(typescript@5.3.3)
       tslib:
         specifier: ^2.6.2
         version: 2.6.2
@@ -236,19 +236,19 @@ importers:
         version: 1.4.3
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.14.12)
+        version: 29.7.0(@types/node@22.10.7)
       jest-validate:
         specifier: ^29.7.0
         version: 29.7.0
       jest-watch-suspend:
         specifier: ^1.1.2
-        version: 1.1.2(jest@29.7.0(@types/node@20.14.12))
+        version: 1.1.2(jest@29.7.0(@types/node@22.10.7))
       jest-watch-toggle-config-2:
         specifier: ^2.1.0
-        version: 2.1.0(jest@29.7.0(@types/node@20.14.12))
+        version: 2.1.0(jest@29.7.0(@types/node@22.10.7))
       jest-watch-typeahead:
         specifier: ^2.2.2
-        version: 2.2.2(jest@29.7.0(@types/node@20.14.12))
+        version: 2.2.2(jest@29.7.0(@types/node@22.10.7))
       npm-run-all2:
         specifier: ^7.0.0
         version: 7.0.0
@@ -260,7 +260,7 @@ importers:
         version: 11.1.0
       ts-jest:
         specifier: 29.2.5
-        version: 29.2.5(@babel/core@7.26.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(jest@29.7.0(@types/node@20.14.12))(typescript@5.3.3)
+        version: 29.2.5(@babel/core@7.26.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(jest@29.7.0(@types/node@22.10.7))(typescript@5.3.3)
       typescript:
         specifier: ^5.3.3
         version: 5.3.3
@@ -328,19 +328,19 @@ importers:
         version: 1.1.1
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.14.12)
+        version: 29.7.0(@types/node@22.10.7)
       jest-extended:
         specifier: ^4.0.2
-        version: 4.0.2(jest@29.7.0(@types/node@20.14.12))
+        version: 4.0.2(jest@29.7.0(@types/node@22.10.7))
       jest-watch-suspend:
         specifier: ^1.1.2
-        version: 1.1.2(jest@29.7.0(@types/node@20.14.12))
+        version: 1.1.2(jest@29.7.0(@types/node@22.10.7))
       jest-watch-toggle-config-2:
         specifier: ^2.1.0
-        version: 2.1.0(jest@29.7.0(@types/node@20.14.12))
+        version: 2.1.0(jest@29.7.0(@types/node@22.10.7))
       jest-watch-typeahead:
         specifier: ^2.2.2
-        version: 2.2.2(jest@29.7.0(@types/node@20.14.12))
+        version: 2.2.2(jest@29.7.0(@types/node@22.10.7))
       npm-run-all2:
         specifier: ^7.0.0
         version: 7.0.0
@@ -349,13 +349,13 @@ importers:
         version: 6.0.0
       ts-jest:
         specifier: 29.2.5
-        version: 29.2.5(@babel/core@7.26.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(jest@29.7.0(@types/node@20.14.12))(typescript@5.4.3)
+        version: 29.2.5(@babel/core@7.26.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(jest@29.7.0(@types/node@22.10.7))(typescript@5.4.3)
       typescript:
         specifier: ^5.3.3
         version: 5.4.3
       vitest:
         specifier: ^3.0.0
-        version: 3.0.0(@types/node@20.14.12)(jsdom@20.0.3)(sass@1.77.8)
+        version: 3.0.0(@types/node@22.10.7)(jsdom@20.0.3)(sass@1.77.8)
 
   testcases/dual-ts-swc:
     dependencies:
@@ -398,19 +398,19 @@ importers:
         version: 1.1.1
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.14.12)
+        version: 29.7.0(@types/node@22.10.7)
       jest-extended:
         specifier: ^4.0.2
-        version: 4.0.2(jest@29.7.0(@types/node@20.14.12))
+        version: 4.0.2(jest@29.7.0(@types/node@22.10.7))
       jest-watch-suspend:
         specifier: ^1.1.2
-        version: 1.1.2(jest@29.7.0(@types/node@20.14.12))
+        version: 1.1.2(jest@29.7.0(@types/node@22.10.7))
       jest-watch-toggle-config-2:
         specifier: ^2.1.0
-        version: 2.1.0(jest@29.7.0(@types/node@20.14.12))
+        version: 2.1.0(jest@29.7.0(@types/node@22.10.7))
       jest-watch-typeahead:
         specifier: ^2.2.2
-        version: 2.2.2(jest@29.7.0(@types/node@20.14.12))
+        version: 2.2.2(jest@29.7.0(@types/node@22.10.7))
       npm-run-all2:
         specifier: ^7.0.0
         version: 7.0.0
@@ -419,13 +419,13 @@ importers:
         version: 6.0.0
       ts-jest:
         specifier: 29.2.5
-        version: 29.2.5(@babel/core@7.26.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(jest@29.7.0(@types/node@20.14.12))(typescript@5.4.3)
+        version: 29.2.5(@babel/core@7.26.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(jest@29.7.0(@types/node@22.10.7))(typescript@5.4.3)
       typescript:
         specifier: ^5.3.3
         version: 5.4.3
       vitest:
         specifier: ^3.0.0
-        version: 3.0.0(@types/node@20.14.12)(jsdom@20.0.3)(sass@1.77.8)
+        version: 3.0.0(@types/node@22.10.7)(jsdom@20.0.3)(sass@1.77.8)
 
   testcases/electron-renderer-ts:
     devDependencies:
@@ -434,7 +434,7 @@ importers:
         version: 29.7.0
       '@kayahr/jest-electron-runner':
         specifier: ^29.12.0
-        version: 29.12.0(@types/node@20.14.12)
+        version: 29.12.0(@types/node@22.10.7)
       '@repobuddy/jest':
         specifier: workspace:^
         version: link:../../packages/jest
@@ -443,19 +443,19 @@ importers:
         version: 7.0.3
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.14.12)
+        version: 29.7.0(@types/node@22.10.7)
       jest-esm-transformer-2:
         specifier: ^1.0.0
         version: 1.0.0
       jest-watch-suspend:
         specifier: ^1.1.2
-        version: 1.1.2(jest@29.7.0(@types/node@20.14.12))
+        version: 1.1.2(jest@29.7.0(@types/node@22.10.7))
       jest-watch-toggle-config-2:
         specifier: ^2.1.0
-        version: 2.1.0(jest@29.7.0(@types/node@20.14.12))
+        version: 2.1.0(jest@29.7.0(@types/node@22.10.7))
       jest-watch-typeahead:
         specifier: ^2.2.2
-        version: 2.2.2(jest@29.7.0(@types/node@20.14.12))
+        version: 2.2.2(jest@29.7.0(@types/node@22.10.7))
       npm-run-all2:
         specifier: ^7.0.0
         version: 7.0.0
@@ -464,7 +464,7 @@ importers:
         version: 6.0.0
       ts-jest:
         specifier: 29.2.5
-        version: 29.2.5(@babel/core@7.26.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(jest@29.7.0(@types/node@20.14.12))(typescript@5.3.3)
+        version: 29.2.5(@babel/core@7.26.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(jest@29.7.0(@types/node@22.10.7))(typescript@5.3.3)
       typescript:
         specifier: ^5.3.3
         version: 5.3.3
@@ -476,7 +476,7 @@ importers:
         version: 29.7.0
       '@kayahr/jest-electron-runner':
         specifier: ^29.12.0
-        version: 29.12.0(@types/node@20.14.12)
+        version: 29.12.0(@types/node@22.10.7)
       '@repobuddy/jest':
         specifier: workspace:^
         version: link:../../packages/jest
@@ -485,19 +485,19 @@ importers:
         version: 7.0.3
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.14.12)
+        version: 29.7.0(@types/node@22.10.7)
       jest-esm-transformer-2:
         specifier: ^1.0.0
         version: 1.0.0
       jest-watch-suspend:
         specifier: ^1.1.2
-        version: 1.1.2(jest@29.7.0(@types/node@20.14.12))
+        version: 1.1.2(jest@29.7.0(@types/node@22.10.7))
       jest-watch-toggle-config-2:
         specifier: ^2.1.0
-        version: 2.1.0(jest@29.7.0(@types/node@20.14.12))
+        version: 2.1.0(jest@29.7.0(@types/node@22.10.7))
       jest-watch-typeahead:
         specifier: ^2.2.2
-        version: 2.2.2(jest@29.7.0(@types/node@20.14.12))
+        version: 2.2.2(jest@29.7.0(@types/node@22.10.7))
       npm-run-all2:
         specifier: ^7.0.0
         version: 7.0.0
@@ -506,7 +506,7 @@ importers:
         version: 6.0.0
       ts-jest:
         specifier: 29.2.5
-        version: 29.2.5(@babel/core@7.26.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(jest@29.7.0(@types/node@20.14.12))(typescript@5.3.3)
+        version: 29.2.5(@babel/core@7.26.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(jest@29.7.0(@types/node@22.10.7))(typescript@5.3.3)
       typescript:
         specifier: ^5.3.3
         version: 5.3.3
@@ -524,16 +524,16 @@ importers:
         version: 5.2.0
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.14.12)
+        version: 29.7.0(@types/node@22.10.7)
       jest-watch-suspend:
         specifier: ^1.1.2
-        version: 1.1.2(jest@29.7.0(@types/node@20.14.12))
+        version: 1.1.2(jest@29.7.0(@types/node@22.10.7))
       jest-watch-toggle-config-2:
         specifier: ^2.1.0
-        version: 2.1.0(jest@29.7.0(@types/node@20.14.12))
+        version: 2.1.0(jest@29.7.0(@types/node@22.10.7))
       jest-watch-typeahead:
         specifier: ^2.2.2
-        version: 2.2.2(jest@29.7.0(@types/node@20.14.12))
+        version: 2.2.2(jest@29.7.0(@types/node@22.10.7))
       npm-run-all2:
         specifier: ^7.0.0
         version: 7.0.0
@@ -557,16 +557,16 @@ importers:
         version: 1.1.1
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.14.12)
+        version: 29.7.0(@types/node@22.10.7)
       jest-watch-suspend:
         specifier: ^1.1.2
-        version: 1.1.2(jest@29.7.0(@types/node@20.14.12))
+        version: 1.1.2(jest@29.7.0(@types/node@22.10.7))
       jest-watch-toggle-config-2:
         specifier: ^2.1.0
-        version: 2.1.0(jest@29.7.0(@types/node@20.14.12))
+        version: 2.1.0(jest@29.7.0(@types/node@22.10.7))
       jest-watch-typeahead:
         specifier: ^2.2.2
-        version: 2.2.2(jest@29.7.0(@types/node@20.14.12))
+        version: 2.2.2(jest@29.7.0(@types/node@22.10.7))
       npm-run-all2:
         specifier: ^7.0.0
         version: 7.0.0
@@ -590,7 +590,7 @@ importers:
         version: 7.0.3
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.14.12)
+        version: 29.7.0(@types/node@22.10.7)
       jest-environment-jsdom:
         specifier: ^29.7.0
         version: 29.7.0
@@ -599,13 +599,13 @@ importers:
         version: 1.0.0
       jest-watch-suspend:
         specifier: ^1.1.2
-        version: 1.1.2(jest@29.7.0(@types/node@20.14.12))
+        version: 1.1.2(jest@29.7.0(@types/node@22.10.7))
       jest-watch-toggle-config-2:
         specifier: ^2.1.0
-        version: 2.1.0(jest@29.7.0(@types/node@20.14.12))
+        version: 2.1.0(jest@29.7.0(@types/node@22.10.7))
       jest-watch-typeahead:
         specifier: ^2.2.2
-        version: 2.2.2(jest@29.7.0(@types/node@20.14.12))
+        version: 2.2.2(jest@29.7.0(@types/node@22.10.7))
       npm-run-all2:
         specifier: ^7.0.0
         version: 7.0.0
@@ -614,7 +614,7 @@ importers:
         version: 6.0.0
       ts-jest:
         specifier: 29.2.5
-        version: 29.2.5(@babel/core@7.26.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(jest@29.7.0(@types/node@20.14.12))(typescript@5.3.3)
+        version: 29.2.5(@babel/core@7.26.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(jest@29.7.0(@types/node@22.10.7))(typescript@5.3.3)
       typescript:
         specifier: ^5.3.3
         version: 5.3.3
@@ -645,19 +645,19 @@ importers:
         version: 7.0.3
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.14.12)
+        version: 29.7.0(@types/node@22.10.7)
       jest-extended:
         specifier: ^4.0.2
-        version: 4.0.2(jest@29.7.0(@types/node@20.14.12))
+        version: 4.0.2(jest@29.7.0(@types/node@22.10.7))
       jest-watch-suspend:
         specifier: ^1.1.2
-        version: 1.1.2(jest@29.7.0(@types/node@20.14.12))
+        version: 1.1.2(jest@29.7.0(@types/node@22.10.7))
       jest-watch-toggle-config-2:
         specifier: ^2.1.0
-        version: 2.1.0(jest@29.7.0(@types/node@20.14.12))
+        version: 2.1.0(jest@29.7.0(@types/node@22.10.7))
       jest-watch-typeahead:
         specifier: ^2.2.2
-        version: 2.2.2(jest@29.7.0(@types/node@20.14.12))
+        version: 2.2.2(jest@29.7.0(@types/node@22.10.7))
       npm-run-all2:
         specifier: ^7.0.0
         version: 7.0.0
@@ -672,7 +672,7 @@ importers:
         version: 7.0.1
       ts-jest:
         specifier: 29.2.5
-        version: 29.2.5(@babel/core@7.26.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(jest@29.7.0(@types/node@20.14.12))(typescript@5.3.3)
+        version: 29.2.5(@babel/core@7.26.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(jest@29.7.0(@types/node@22.10.7))(typescript@5.3.3)
       typescript:
         specifier: ^5.3.3
         version: 5.3.3
@@ -705,19 +705,19 @@ importers:
         version: 1.1.1
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.14.12)
+        version: 29.7.0(@types/node@22.10.7)
       jest-esm-transformer-2:
         specifier: ^1.0.0
         version: 1.0.0
       jest-watch-suspend:
         specifier: ^1.1.2
-        version: 1.1.2(jest@29.7.0(@types/node@20.14.12))
+        version: 1.1.2(jest@29.7.0(@types/node@22.10.7))
       jest-watch-toggle-config-2:
         specifier: ^2.1.0
-        version: 2.1.0(jest@29.7.0(@types/node@20.14.12))
+        version: 2.1.0(jest@29.7.0(@types/node@22.10.7))
       jest-watch-typeahead:
         specifier: ^2.2.2
-        version: 2.2.2(jest@29.7.0(@types/node@20.14.12))
+        version: 2.2.2(jest@29.7.0(@types/node@22.10.7))
       npm-run-all2:
         specifier: ^7.0.0
         version: 7.0.0
@@ -729,13 +729,13 @@ importers:
         version: 7.0.1
       ts-jest:
         specifier: 29.2.5
-        version: 29.2.5(@babel/core@7.26.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(jest@29.7.0(@types/node@20.14.12))(typescript@5.3.3)
+        version: 29.2.5(@babel/core@7.26.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(jest@29.7.0(@types/node@22.10.7))(typescript@5.3.3)
       typescript:
         specifier: ^5.3.3
         version: 5.3.3
       uni-require:
         specifier: ^1.0.0
-        version: 1.0.0(@types/node@20.14.12)
+        version: 1.0.0(@types/node@22.10.7)
 
   testcases/two-chalk:
     devDependencies:
@@ -762,19 +762,19 @@ importers:
         version: 1.1.1
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.14.12)
+        version: 29.7.0(@types/node@22.10.7)
       jest-esm-transformer-2:
         specifier: ^1.0.0
         version: 1.0.0
       jest-watch-suspend:
         specifier: ^1.1.2
-        version: 1.1.2(jest@29.7.0(@types/node@20.14.12))
+        version: 1.1.2(jest@29.7.0(@types/node@22.10.7))
       jest-watch-toggle-config-2:
         specifier: ^2.1.0
-        version: 2.1.0(jest@29.7.0(@types/node@20.14.12))
+        version: 2.1.0(jest@29.7.0(@types/node@22.10.7))
       jest-watch-typeahead:
         specifier: ^2.2.2
-        version: 2.2.2(jest@29.7.0(@types/node@20.14.12))
+        version: 2.2.2(jest@29.7.0(@types/node@22.10.7))
       npm-run-all2:
         specifier: ^7.0.0
         version: 7.0.0
@@ -786,7 +786,7 @@ importers:
         version: 7.0.1
       ts-jest:
         specifier: 29.2.5
-        version: 29.2.5(@babel/core@7.26.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(jest@29.7.0(@types/node@20.14.12))(typescript@5.3.3)
+        version: 29.2.5(@babel/core@7.26.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(jest@29.7.0(@types/node@22.10.7))(typescript@5.3.3)
       typescript:
         specifier: ^5.3.3
         version: 5.3.3
@@ -804,19 +804,19 @@ importers:
         version: 7.0.3
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.14.12)
+        version: 29.7.0(@types/node@22.10.7)
       jest-esm-transformer-2:
         specifier: ^1.0.0
         version: 1.0.0
       jest-watch-suspend:
         specifier: ^1.1.2
-        version: 1.1.2(jest@29.7.0(@types/node@20.14.12))
+        version: 1.1.2(jest@29.7.0(@types/node@22.10.7))
       jest-watch-toggle-config-2:
         specifier: ^2.1.0
-        version: 2.1.0(jest@29.7.0(@types/node@20.14.12))
+        version: 2.1.0(jest@29.7.0(@types/node@22.10.7))
       jest-watch-typeahead:
         specifier: ^2.2.2
-        version: 2.2.2(jest@29.7.0(@types/node@20.14.12))
+        version: 2.2.2(jest@29.7.0(@types/node@22.10.7))
       npm-run-all2:
         specifier: ^7.0.0
         version: 7.0.0
@@ -825,7 +825,7 @@ importers:
         version: 6.0.0
       ts-jest:
         specifier: 29.2.5
-        version: 29.2.5(@babel/core@7.26.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(jest@29.7.0(@types/node@20.14.12))(typescript@5.3.3)
+        version: 29.2.5(@babel/core@7.26.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(jest@29.7.0(@types/node@22.10.7))(typescript@5.3.3)
       typescript:
         specifier: ^5.3.3
         version: 5.3.3
@@ -837,10 +837,10 @@ importers:
         version: 0.9.0(typescript@5.4.3)
       '@astrojs/starlight':
         specifier: ^0.28.0
-        version: 0.28.0(astro@4.16.18(@types/node@20.14.12)(rollup@4.28.1)(sass@1.77.8)(typescript@5.4.3))
+        version: 0.28.0(astro@4.16.18(@types/node@22.10.7)(rollup@4.28.1)(sass@1.77.8)(typescript@5.4.3))
       astro:
         specifier: ^4.12.2
-        version: 4.16.18(@types/node@20.14.12)(rollup@4.28.1)(sass@1.77.8)(typescript@5.4.3)
+        version: 4.16.18(@types/node@22.10.7)(rollup@4.28.1)(sass@1.77.8)(typescript@5.4.3)
       sharp:
         specifier: ^0.33.4
         version: 0.33.4
@@ -2561,11 +2561,11 @@ packages:
   '@types/node@18.19.8':
     resolution: {integrity: sha512-g1pZtPhsvGVTwmeVoexWZLTQaOvXwoSq//pTL0DHeNzUDrFnir4fgETdhjhIxjVnN+hKOuh98+E1eMLnUXstFg==}
 
-  '@types/node@20.11.30':
-    resolution: {integrity: sha512-dHM6ZxwlmuZaRmUPfv1p+KrdD1Dci04FbdEm/9wEMouFqxYoFl5aMkt0VMAUtYRQDyYvD41WJLukhq/ha3YuTw==}
-
   '@types/node@20.14.12':
     resolution: {integrity: sha512-r7wNXakLeSsGT0H1AU863vS2wa5wBOK4bWMjZz2wj+8nBx+m5PeIn0k8AloSLpRuiwdRQZwarZqHE4FNArPuJQ==}
+
+  '@types/node@22.10.7':
+    resolution: {integrity: sha512-V09KvXxFiutGp6B7XkpaDXlNadZxrzajcY50EuoLIpQ6WWYCSvf19lVIazzfIzQvhUN2HjX12spLojTnhuKlGg==}
 
   '@types/normalize-package-data@2.4.1':
     resolution: {integrity: sha512-Gj7cI7z+98M282Tqmp2K5EIsoouUEzbBJhQQzDE3jSIRk6r9gsz0oUokqIUR4u1R3dMHo0pDHM7sNOHyhulypw==}
@@ -6834,6 +6834,9 @@ packages:
   undici-types@5.26.5:
     resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
 
+  undici-types@6.20.0:
+    resolution: {integrity: sha512-Ny6QZ2Nju20vw1SRHe3d9jVu6gJ+4e3+MMpqu7pqE5HT6WsTSlce++GQmK5UXS8mzV8DSYHrQH+Xrf2jVcuKNg==}
+
   uni-require@1.0.0:
     resolution: {integrity: sha512-XfvyajAyZxkQetWfbMMZuWch+fVR4WQN+mJLyaIVts8Y0o8b+Z6oIuNe96VBdXxjBwOqH/6BW/ExUp5NtmV45Q==}
     peerDependencies:
@@ -7428,12 +7431,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@astrojs/mdx@3.1.3(astro@4.16.18(@types/node@20.14.12)(rollup@4.28.1)(sass@1.77.8)(typescript@5.4.3))':
+  '@astrojs/mdx@3.1.3(astro@4.16.18(@types/node@22.10.7)(rollup@4.28.1)(sass@1.77.8)(typescript@5.4.3))':
     dependencies:
       '@astrojs/markdown-remark': 5.2.0
       '@mdx-js/mdx': 3.0.1
       acorn: 8.14.0
-      astro: 4.16.18(@types/node@20.14.12)(rollup@4.28.1)(sass@1.77.8)(typescript@5.4.3)
+      astro: 4.16.18(@types/node@22.10.7)(rollup@4.28.1)(sass@1.77.8)(typescript@5.4.3)
       es-module-lexer: 1.5.4
       estree-util-visit: 2.0.0
       github-slugger: 2.0.0
@@ -7459,15 +7462,15 @@ snapshots:
       stream-replace-string: 2.0.0
       zod: 3.24.1
 
-  '@astrojs/starlight@0.28.0(astro@4.16.18(@types/node@20.14.12)(rollup@4.28.1)(sass@1.77.8)(typescript@5.4.3))':
+  '@astrojs/starlight@0.28.0(astro@4.16.18(@types/node@22.10.7)(rollup@4.28.1)(sass@1.77.8)(typescript@5.4.3))':
     dependencies:
-      '@astrojs/mdx': 3.1.3(astro@4.16.18(@types/node@20.14.12)(rollup@4.28.1)(sass@1.77.8)(typescript@5.4.3))
+      '@astrojs/mdx': 3.1.3(astro@4.16.18(@types/node@22.10.7)(rollup@4.28.1)(sass@1.77.8)(typescript@5.4.3))
       '@astrojs/sitemap': 3.1.6
       '@pagefind/default-ui': 1.0.4
       '@types/hast': 3.0.4
       '@types/mdast': 4.0.4
-      astro: 4.16.18(@types/node@20.14.12)(rollup@4.28.1)(sass@1.77.8)(typescript@5.4.3)
-      astro-expressive-code: 0.35.6(astro@4.16.18(@types/node@20.14.12)(rollup@4.28.1)(sass@1.77.8)(typescript@5.4.3))
+      astro: 4.16.18(@types/node@22.10.7)(rollup@4.28.1)(sass@1.77.8)(typescript@5.4.3)
+      astro-expressive-code: 0.35.6(astro@4.16.18(@types/node@22.10.7)(rollup@4.28.1)(sass@1.77.8)(typescript@5.4.3))
       bcp-47: 2.1.0
       hast-util-from-html: 2.0.1
       hast-util-select: 6.0.2
@@ -8581,7 +8584,7 @@ snapshots:
   '@jest/console@29.7.0':
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 20.11.30
+      '@types/node': 22.10.7
       chalk: 4.1.2
       jest-message-util: 29.7.0
       jest-util: 29.7.0
@@ -8594,14 +8597,14 @@ snapshots:
       '@jest/test-result': 29.7.0
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 20.11.30
+      '@types/node': 22.10.7
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       ci-info: 3.9.0
       exit: 0.1.2
       graceful-fs: 4.2.11
       jest-changed-files: 29.7.0
-      jest-config: 29.7.0(@types/node@20.11.30)
+      jest-config: 29.7.0(@types/node@22.10.7)
       jest-haste-map: 29.7.0
       jest-message-util: 29.7.0
       jest-regex-util: 29.6.3
@@ -8630,7 +8633,7 @@ snapshots:
     dependencies:
       '@jest/fake-timers': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 20.11.30
+      '@types/node': 22.10.7
       jest-mock: 29.7.0
 
   '@jest/expect-utils@29.7.0':
@@ -8648,7 +8651,7 @@ snapshots:
     dependencies:
       '@jest/types': 29.6.3
       '@sinonjs/fake-timers': 10.3.0
-      '@types/node': 20.11.30
+      '@types/node': 22.10.7
       jest-message-util: 29.7.0
       jest-mock: 29.7.0
       jest-util: 29.7.0
@@ -8670,7 +8673,7 @@ snapshots:
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
       '@jridgewell/trace-mapping': 0.3.25
-      '@types/node': 20.11.30
+      '@types/node': 22.10.7
       chalk: 4.1.2
       collect-v8-coverage: 1.0.2
       exit: 0.1.2
@@ -8740,7 +8743,7 @@ snapshots:
       '@jest/schemas': 29.6.3
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
-      '@types/node': 20.11.30
+      '@types/node': 22.10.7
       '@types/yargs': 17.0.32
       chalk: 4.1.2
 
@@ -8788,13 +8791,13 @@ snapshots:
     dependencies:
       type-plus: 5.6.0
 
-  '@kayahr/jest-electron-runner@29.12.0(@types/node@20.14.12)':
+  '@kayahr/jest-electron-runner@29.12.0(@types/node@22.10.7)':
     dependencies:
       '@electron/remote': 2.1.2(electron@29.1.5)
       '@jest/console': 29.7.0
       '@jest/transform': 29.7.0
       electron: 29.1.5
-      jest: 29.7.0(@types/node@20.14.12)
+      jest: 29.7.0(@types/node@22.10.7)
       jest-docblock: 29.7.0
       jest-haste-map: 29.7.0
       jest-jasmine2: 29.7.0
@@ -9123,7 +9126,7 @@ snapshots:
     dependencies:
       '@types/http-cache-semantics': 4.0.4
       '@types/keyv': 3.1.4
-      '@types/node': 20.14.12
+      '@types/node': 22.10.7
       '@types/responselike': 1.0.0
 
   '@types/cookie@0.6.0': {}
@@ -9144,7 +9147,7 @@ snapshots:
 
   '@types/graceful-fs@4.1.9':
     dependencies:
-      '@types/node': 20.11.30
+      '@types/node': 22.10.7
 
   '@types/hast@3.0.4':
     dependencies:
@@ -9178,7 +9181,7 @@ snapshots:
 
   '@types/jsdom@20.0.1':
     dependencies:
-      '@types/node': 20.11.30
+      '@types/node': 22.10.7
       '@types/tough-cookie': 4.0.2
       parse5: 7.1.2
 
@@ -9186,12 +9189,12 @@ snapshots:
 
   '@types/keyv@3.1.4':
     dependencies:
-      '@types/node': 20.14.12
+      '@types/node': 22.10.7
 
   '@types/liftoff@4.0.3':
     dependencies:
       '@types/fined': 1.1.3
-      '@types/node': 20.11.30
+      '@types/node': 22.10.7
 
   '@types/mdast@4.0.4':
     dependencies:
@@ -9217,13 +9220,13 @@ snapshots:
     dependencies:
       undici-types: 5.26.5
 
-  '@types/node@20.11.30':
-    dependencies:
-      undici-types: 5.26.5
-
   '@types/node@20.14.12':
     dependencies:
       undici-types: 5.26.5
+
+  '@types/node@22.10.7':
+    dependencies:
+      undici-types: 6.20.0
 
   '@types/normalize-package-data@2.4.1': {}
 
@@ -9235,11 +9238,11 @@ snapshots:
 
   '@types/responselike@1.0.0':
     dependencies:
-      '@types/node': 20.14.12
+      '@types/node': 22.10.7
 
   '@types/sax@1.2.7':
     dependencies:
-      '@types/node': 20.14.12
+      '@types/node': 22.10.7
 
   '@types/semver@6.2.3': {}
 
@@ -9249,7 +9252,7 @@ snapshots:
 
   '@types/through@0.0.30':
     dependencies:
-      '@types/node': 20.14.12
+      '@types/node': 22.10.7
 
   '@types/tough-cookie@4.0.2': {}
 
@@ -9269,7 +9272,7 @@ snapshots:
 
   '@types/yauzl@2.10.3':
     dependencies:
-      '@types/node': 20.11.30
+      '@types/node': 22.10.7
     optional: true
 
   '@typescript-eslint/eslint-plugin@8.0.0(@typescript-eslint/parser@8.0.0(eslint@8.56.0)(typescript@5.4.3))(eslint@8.56.0)(typescript@5.4.3)':
@@ -9474,13 +9477,13 @@ snapshots:
       chai: 5.1.2
       tinyrainbow: 2.0.0
 
-  '@vitest/mocker@3.0.0(vite@5.4.11(@types/node@20.14.12)(sass@1.77.8))':
+  '@vitest/mocker@3.0.0(vite@5.4.11(@types/node@22.10.7)(sass@1.77.8))':
     dependencies:
       '@vitest/spy': 3.0.0
       estree-walker: 3.0.3
       magic-string: 0.30.17
     optionalDependencies:
-      vite: 5.4.11(@types/node@20.14.12)(sass@1.77.8)
+      vite: 5.4.11(@types/node@22.10.7)(sass@1.77.8)
 
   '@vitest/pretty-format@3.0.0':
     dependencies:
@@ -9722,12 +9725,12 @@ snapshots:
 
   astring@1.8.6: {}
 
-  astro-expressive-code@0.35.6(astro@4.16.18(@types/node@20.14.12)(rollup@4.28.1)(sass@1.77.8)(typescript@5.4.3)):
+  astro-expressive-code@0.35.6(astro@4.16.18(@types/node@22.10.7)(rollup@4.28.1)(sass@1.77.8)(typescript@5.4.3)):
     dependencies:
-      astro: 4.16.18(@types/node@20.14.12)(rollup@4.28.1)(sass@1.77.8)(typescript@5.4.3)
+      astro: 4.16.18(@types/node@22.10.7)(rollup@4.28.1)(sass@1.77.8)(typescript@5.4.3)
       rehype-expressive-code: 0.35.6
 
-  astro@4.16.18(@types/node@20.14.12)(rollup@4.28.1)(sass@1.77.8)(typescript@5.4.3):
+  astro@4.16.18(@types/node@22.10.7)(rollup@4.28.1)(sass@1.77.8)(typescript@5.4.3):
     dependencies:
       '@astrojs/compiler': 2.10.3
       '@astrojs/internal-helpers': 0.4.1
@@ -9783,8 +9786,8 @@ snapshots:
       tsconfck: 3.1.4(typescript@5.4.3)
       unist-util-visit: 5.0.0
       vfile: 6.0.3
-      vite: 5.4.11(@types/node@20.14.12)(sass@1.77.8)
-      vitefu: 1.0.4(vite@5.4.11(@types/node@20.14.12)(sass@1.77.8))
+      vite: 5.4.11(@types/node@22.10.7)(sass@1.77.8)
+      vitefu: 1.0.4(vite@5.4.11(@types/node@22.10.7)(sass@1.77.8))
       which-pm: 3.0.0
       xxhash-wasm: 1.1.0
       yargs-parser: 21.1.1
@@ -10284,28 +10287,13 @@ snapshots:
       nested-error-stacks: 2.1.1
       p-event: 5.0.1
 
-  create-jest@29.7.0(@types/node@20.11.30):
+  create-jest@29.7.0(@types/node@22.10.7):
     dependencies:
       '@jest/types': 29.6.3
       chalk: 4.1.2
       exit: 0.1.2
       graceful-fs: 4.2.11
-      jest-config: 29.7.0(@types/node@20.11.30)
-      jest-util: 29.7.0
-      prompts: 2.4.2
-    transitivePeerDependencies:
-      - '@types/node'
-      - babel-plugin-macros
-      - supports-color
-      - ts-node
-
-  create-jest@29.7.0(@types/node@20.14.12):
-    dependencies:
-      '@jest/types': 29.6.3
-      chalk: 4.1.2
-      exit: 0.1.2
-      graceful-fs: 4.2.11
-      jest-config: 29.7.0(@types/node@20.14.12)
+      jest-config: 29.7.0(@types/node@22.10.7)
       jest-util: 29.7.0
       prompts: 2.4.2
     transitivePeerDependencies:
@@ -10536,7 +10524,7 @@ snapshots:
   electron@29.1.5:
     dependencies:
       '@electron/get': 2.0.3
-      '@types/node': 20.11.30
+      '@types/node': 20.14.12
       extract-zip: 2.0.1
     transitivePeerDependencies:
       - supports-color
@@ -11953,7 +11941,7 @@ snapshots:
       '@jest/expect': 29.7.0
       '@jest/test-result': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 20.11.30
+      '@types/node': 22.10.7
       chalk: 4.1.2
       co: 4.6.0
       dedent: 1.5.1
@@ -11973,16 +11961,16 @@ snapshots:
       - babel-plugin-macros
       - supports-color
 
-  jest-cli@29.7.0(@types/node@20.11.30):
+  jest-cli@29.7.0(@types/node@22.10.7):
     dependencies:
       '@jest/core': 29.7.0
       '@jest/test-result': 29.7.0
       '@jest/types': 29.6.3
       chalk: 4.1.2
-      create-jest: 29.7.0(@types/node@20.11.30)
+      create-jest: 29.7.0(@types/node@22.10.7)
       exit: 0.1.2
       import-local: 3.1.0
-      jest-config: 29.7.0(@types/node@20.11.30)
+      jest-config: 29.7.0(@types/node@22.10.7)
       jest-util: 29.7.0
       jest-validate: 29.7.0
       yargs: 17.7.2
@@ -11992,26 +11980,7 @@ snapshots:
       - supports-color
       - ts-node
 
-  jest-cli@29.7.0(@types/node@20.14.12):
-    dependencies:
-      '@jest/core': 29.7.0
-      '@jest/test-result': 29.7.0
-      '@jest/types': 29.6.3
-      chalk: 4.1.2
-      create-jest: 29.7.0(@types/node@20.14.12)
-      exit: 0.1.2
-      import-local: 3.1.0
-      jest-config: 29.7.0(@types/node@20.14.12)
-      jest-util: 29.7.0
-      jest-validate: 29.7.0
-      yargs: 17.7.2
-    transitivePeerDependencies:
-      - '@types/node'
-      - babel-plugin-macros
-      - supports-color
-      - ts-node
-
-  jest-config@29.7.0(@types/node@20.11.30):
+  jest-config@29.7.0(@types/node@22.10.7):
     dependencies:
       '@babel/core': 7.26.0
       '@jest/test-sequencer': 29.7.0
@@ -12036,37 +12005,7 @@ snapshots:
       slash: 3.0.0
       strip-json-comments: 3.1.1
     optionalDependencies:
-      '@types/node': 20.11.30
-    transitivePeerDependencies:
-      - babel-plugin-macros
-      - supports-color
-
-  jest-config@29.7.0(@types/node@20.14.12):
-    dependencies:
-      '@babel/core': 7.26.0
-      '@jest/test-sequencer': 29.7.0
-      '@jest/types': 29.6.3
-      babel-jest: 29.7.0(@babel/core@7.26.0)
-      chalk: 4.1.2
-      ci-info: 3.9.0
-      deepmerge: 4.3.1
-      glob: 7.2.3
-      graceful-fs: 4.2.11
-      jest-circus: 29.7.0
-      jest-environment-node: 29.7.0
-      jest-get-type: 29.6.3
-      jest-regex-util: 29.6.3
-      jest-resolve: 29.7.0
-      jest-runner: 29.7.0
-      jest-util: 29.7.0
-      jest-validate: 29.7.0
-      micromatch: 4.0.8
-      parse-json: 5.2.0
-      pretty-format: 29.7.0
-      slash: 3.0.0
-      strip-json-comments: 3.1.1
-    optionalDependencies:
-      '@types/node': 20.14.12
+      '@types/node': 22.10.7
     transitivePeerDependencies:
       - babel-plugin-macros
       - supports-color
@@ -12110,7 +12049,7 @@ snapshots:
       '@jest/environment': 29.7.0
       '@jest/fake-timers': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 20.11.30
+      '@types/node': 22.10.7
       jest-mock: 29.7.0
       jest-util: 29.7.0
 
@@ -12121,12 +12060,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  jest-extended@4.0.2(jest@29.7.0(@types/node@20.14.12)):
+  jest-extended@4.0.2(jest@29.7.0(@types/node@22.10.7)):
     dependencies:
       jest-diff: 29.7.0
       jest-get-type: 29.6.3
     optionalDependencies:
-      jest: 29.7.0(@types/node@20.14.12)
+      jest: 29.7.0(@types/node@22.10.7)
 
   jest-get-type@29.6.3: {}
 
@@ -12134,7 +12073,7 @@ snapshots:
     dependencies:
       '@jest/types': 29.6.3
       '@types/graceful-fs': 4.1.9
-      '@types/node': 20.11.30
+      '@types/node': 22.10.7
       anymatch: 3.1.3
       fb-watchman: 2.0.2
       graceful-fs: 4.2.11
@@ -12153,7 +12092,7 @@ snapshots:
       '@jest/source-map': 29.6.3
       '@jest/test-result': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 20.11.30
+      '@types/node': 22.10.7
       chalk: 4.1.2
       co: 4.6.0
       is-generator-fn: 2.1.0
@@ -12195,7 +12134,7 @@ snapshots:
   jest-mock@29.7.0:
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 20.11.30
+      '@types/node': 22.10.7
       jest-util: 29.7.0
 
   jest-pnp-resolver@1.2.3(jest-resolve@29.7.0):
@@ -12230,7 +12169,7 @@ snapshots:
       '@jest/test-result': 29.7.0
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 20.11.30
+      '@types/node': 22.10.7
       chalk: 4.1.2
       emittery: 0.13.1
       graceful-fs: 4.2.11
@@ -12258,7 +12197,7 @@ snapshots:
       '@jest/test-result': 29.7.0
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 20.11.30
+      '@types/node': 22.10.7
       chalk: 4.1.2
       cjs-module-lexer: 1.2.3
       collect-v8-coverage: 1.0.2
@@ -12304,7 +12243,7 @@ snapshots:
   jest-util@29.7.0:
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 20.11.30
+      '@types/node': 22.10.7
       chalk: 4.1.2
       ci-info: 3.9.0
       graceful-fs: 4.2.11
@@ -12319,22 +12258,22 @@ snapshots:
       leven: 3.1.0
       pretty-format: 29.7.0
 
-  jest-watch-suspend@1.1.2(jest@29.7.0(@types/node@20.14.12)):
+  jest-watch-suspend@1.1.2(jest@29.7.0(@types/node@22.10.7)):
     dependencies:
       chalk: 2.4.2
-      jest: 29.7.0(@types/node@20.14.12)
+      jest: 29.7.0(@types/node@22.10.7)
       unpartial: 0.6.4
 
-  jest-watch-toggle-config-2@2.1.0(jest@29.7.0(@types/node@20.14.12)):
+  jest-watch-toggle-config-2@2.1.0(jest@29.7.0(@types/node@22.10.7)):
     dependencies:
       chalk: 4.1.2
-      jest: 29.7.0(@types/node@20.14.12)
+      jest: 29.7.0(@types/node@22.10.7)
 
-  jest-watch-typeahead@2.2.2(jest@29.7.0(@types/node@20.14.12)):
+  jest-watch-typeahead@2.2.2(jest@29.7.0(@types/node@22.10.7)):
     dependencies:
       ansi-escapes: 6.2.0
       chalk: 5.3.0
-      jest: 29.7.0(@types/node@20.14.12)
+      jest: 29.7.0(@types/node@22.10.7)
       jest-regex-util: 29.6.3
       jest-watcher: 29.7.0
       slash: 5.1.0
@@ -12345,7 +12284,7 @@ snapshots:
     dependencies:
       '@jest/test-result': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 20.11.30
+      '@types/node': 22.10.7
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       emittery: 0.13.1
@@ -12354,29 +12293,17 @@ snapshots:
 
   jest-worker@29.7.0:
     dependencies:
-      '@types/node': 20.11.30
+      '@types/node': 22.10.7
       jest-util: 29.7.0
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
-  jest@29.7.0(@types/node@20.11.30):
+  jest@29.7.0(@types/node@22.10.7):
     dependencies:
       '@jest/core': 29.7.0
       '@jest/types': 29.6.3
       import-local: 3.1.0
-      jest-cli: 29.7.0(@types/node@20.11.30)
-    transitivePeerDependencies:
-      - '@types/node'
-      - babel-plugin-macros
-      - supports-color
-      - ts-node
-
-  jest@29.7.0(@types/node@20.14.12):
-    dependencies:
-      '@jest/core': 29.7.0
-      '@jest/types': 29.6.3
-      import-local: 3.1.0
-      jest-cli: 29.7.0(@types/node@20.14.12)
+      jest-cli: 29.7.0(@types/node@22.10.7)
     transitivePeerDependencies:
       - '@types/node'
       - babel-plugin-macros
@@ -14728,12 +14655,12 @@ snapshots:
     dependencies:
       typescript: 5.4.3
 
-  ts-jest@29.2.5(@babel/core@7.21.4)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.21.4))(esbuild@0.24.0)(jest@29.7.0(@types/node@20.14.12))(typescript@5.3.3):
+  ts-jest@29.2.5(@babel/core@7.21.4)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.21.4))(esbuild@0.24.0)(jest@29.7.0(@types/node@22.10.7))(typescript@5.3.3):
     dependencies:
       bs-logger: 0.2.6
       ejs: 3.1.10
       fast-json-stable-stringify: 2.1.0
-      jest: 29.7.0(@types/node@20.14.12)
+      jest: 29.7.0(@types/node@22.10.7)
       jest-util: 29.7.0
       json5: 2.2.3
       lodash.memoize: 4.1.2
@@ -14748,12 +14675,12 @@ snapshots:
       babel-jest: 29.7.0(@babel/core@7.21.4)
       esbuild: 0.24.0
 
-  ts-jest@29.2.5(@babel/core@7.26.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(jest@29.7.0(@types/node@20.14.12))(typescript@5.3.3):
+  ts-jest@29.2.5(@babel/core@7.26.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(jest@29.7.0(@types/node@22.10.7))(typescript@5.3.3):
     dependencies:
       bs-logger: 0.2.6
       ejs: 3.1.10
       fast-json-stable-stringify: 2.1.0
-      jest: 29.7.0(@types/node@20.14.12)
+      jest: 29.7.0(@types/node@22.10.7)
       jest-util: 29.7.0
       json5: 2.2.3
       lodash.memoize: 4.1.2
@@ -14767,12 +14694,12 @@ snapshots:
       '@jest/types': 29.6.3
       babel-jest: 29.7.0(@babel/core@7.26.0)
 
-  ts-jest@29.2.5(@babel/core@7.26.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(jest@29.7.0(@types/node@20.14.12))(typescript@5.4.3):
+  ts-jest@29.2.5(@babel/core@7.26.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(jest@29.7.0(@types/node@22.10.7))(typescript@5.4.3):
     dependencies:
       bs-logger: 0.2.6
       ejs: 3.1.10
       fast-json-stable-stringify: 2.1.0
-      jest: 29.7.0(@types/node@20.14.12)
+      jest: 29.7.0(@types/node@22.10.7)
       jest-util: 29.7.0
       json5: 2.2.3
       lodash.memoize: 4.1.2
@@ -14917,9 +14844,11 @@ snapshots:
 
   undici-types@5.26.5: {}
 
-  uni-require@1.0.0(@types/node@20.14.12):
+  undici-types@6.20.0: {}
+
+  uni-require@1.0.0(@types/node@22.10.7):
     dependencies:
-      '@types/node': 20.14.12
+      '@types/node': 22.10.7
 
   unicorn-magic@0.1.0: {}
 
@@ -15065,13 +14994,13 @@ snapshots:
       '@types/unist': 3.0.3
       vfile-message: 4.0.2
 
-  vite-node@3.0.0(@types/node@20.14.12)(sass@1.77.8):
+  vite-node@3.0.0(@types/node@22.10.7)(sass@1.77.8):
     dependencies:
       cac: 6.7.14
       debug: 4.4.0
       es-module-lexer: 1.5.4
       pathe: 2.0.1
-      vite: 5.4.11(@types/node@20.14.12)(sass@1.77.8)
+      vite: 5.4.11(@types/node@22.10.7)(sass@1.77.8)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -15083,24 +15012,24 @@ snapshots:
       - supports-color
       - terser
 
-  vite@5.4.11(@types/node@20.14.12)(sass@1.77.8):
+  vite@5.4.11(@types/node@22.10.7)(sass@1.77.8):
     dependencies:
       esbuild: 0.21.5
       postcss: 8.4.49
       rollup: 4.28.1
     optionalDependencies:
-      '@types/node': 20.14.12
+      '@types/node': 22.10.7
       fsevents: 2.3.3
       sass: 1.77.8
 
-  vitefu@1.0.4(vite@5.4.11(@types/node@20.14.12)(sass@1.77.8)):
+  vitefu@1.0.4(vite@5.4.11(@types/node@22.10.7)(sass@1.77.8)):
     optionalDependencies:
-      vite: 5.4.11(@types/node@20.14.12)(sass@1.77.8)
+      vite: 5.4.11(@types/node@22.10.7)(sass@1.77.8)
 
-  vitest@3.0.0(@types/node@20.14.12)(jsdom@20.0.3)(sass@1.77.8):
+  vitest@3.0.0(@types/node@22.10.7)(jsdom@20.0.3)(sass@1.77.8):
     dependencies:
       '@vitest/expect': 3.0.0
-      '@vitest/mocker': 3.0.0(vite@5.4.11(@types/node@20.14.12)(sass@1.77.8))
+      '@vitest/mocker': 3.0.0(vite@5.4.11(@types/node@22.10.7)(sass@1.77.8))
       '@vitest/pretty-format': 3.0.0
       '@vitest/runner': 3.0.0
       '@vitest/snapshot': 3.0.0
@@ -15116,11 +15045,11 @@ snapshots:
       tinyexec: 0.3.2
       tinypool: 1.0.2
       tinyrainbow: 2.0.0
-      vite: 5.4.11(@types/node@20.14.12)(sass@1.77.8)
-      vite-node: 3.0.0(@types/node@20.14.12)(sass@1.77.8)
+      vite: 5.4.11(@types/node@22.10.7)(sass@1.77.8)
+      vite-node: 3.0.0(@types/node@22.10.7)(sass@1.77.8)
       why-is-node-running: 2.3.0
     optionalDependencies:
-      '@types/node': 20.14.12
+      '@types/node': 22.10.7
       jsdom: 20.0.3
     transitivePeerDependencies:
       - less
