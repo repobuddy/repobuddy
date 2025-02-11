@@ -1,5 +1,11 @@
 # repobuddy
 
+## 1.3.0
+
+### Minor Changes
+
+- bd113cc: Add `bd` as alias of `buddy`
+
 ## 1.2.0
 
 ### Minor Changes
