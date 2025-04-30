@@ -70,6 +70,7 @@
 		{
 			"include": ["package.json"],
 			"formatter": {
+				// The line width is set to a low value so that the format works well with other tools such as `sort-package-json`
 				"lineWidth": 20
 			}
 		}
