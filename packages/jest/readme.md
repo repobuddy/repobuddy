@@ -107,18 +107,6 @@ This is because `ts-jest` 29.2 adds support for `module: Node16/NodeNext`.
 - `@repobuddy/jest/presets/jsdom-ts-cjs-watch`
 - `@repobuddy/jest/presets/jsdom-ts-esm`
 - `@repobuddy/jest/presets/jsdom-ts-esm-watch`
-- `@repobuddy/jest/presets/electron-ts`: auto-detect if your project is CJS or ESM
-- `@repobuddy/jest/presets/electron-ts-watch`: auto-detect if your project is CJS or ESM
-- `@repobuddy/jest/presets/electron-ts-cjs`
-- `@repobuddy/jest/presets/electron-ts-cjs-watch`
-- `@repobuddy/jest/presets/electron-ts-esm`
-- `@repobuddy/jest/presets/electron-ts-esm-watch`
-- `@repobuddy/jest/presets/electron-renderer-ts`: auto-detect if your project is CJS or ESM
-- `@repobuddy/jest/presets/electron-renderer-ts-watch`: auto-detect if your project is CJS or ESM
-- `@repobuddy/jest/presets/electron-renderer-ts-cjs`
-- `@repobuddy/jest/presets/electron-renderer-ts-cjs-watch`
-- `@repobuddy/jest/presets/electron-renderer-ts-esm`
-- `@repobuddy/jest/presets/electron-renderer-ts-esm-watch`
 - `@repobuddy/jest/presets/watch`: watch mode presets for multienvironment config
 
 If you do not have any specific configs,
@@ -131,7 +119,6 @@ Here are some highlights:
   - `feature.spec.node.ts`
   - `feature.spec.node16.ts`
   - `feature.spec.jsdom.ts`
-  - `feature.spec.electron.ts`
   - The platform specifiers are placed after the test specifier (e.g. `spec`) to alloy more freedom in naming the feature.
 - Uses [@repobuddy/jest/resolver] that handles [subpath imports][subpath-imports] correctly.
 - `cjs` uses [jest-esm-transformer-2] to transforms ESM dependencies.
@@ -168,15 +155,8 @@ so you can compose and customize them exactly the way you like.
 
 ## Runners
 
-[@repobuddy/jest] supports running [jest] in [Node.js][nodejs], [jsdom], and [electron].
+[@repobuddy/jest] supports running [jest] in [Node.js][nodejs], and [jsdom].
 
-For [electron], you need to install the [electron runner](https://www.npmjs.com/package/@kayahr/jest-electron-runner):
-
-```sh
-npm install -D @kayahr/jest-electron-runner
-yarn add -D @kayahr/jest-electron-runner
-pnpm add -D @kayahr/jest-electron-runner
-```
 
 ## Configs
 
@@ -185,8 +165,6 @@ The configurations for specific use cases are exposed and available for you to c
 They can be predefined configs:
 
 - [node](./ts/configs/node.ts)
-- [electron](./ts/configs/electron.ts)
-- [electronRenderer](./ts/configs/electron.ts)
 - [jsdom](./ts/configs/jsdom.ts)
 - [jsCjs](./ts/configs/javascript.ts)
 - [jsEsm](./ts/configs/javascript.ts)
@@ -371,6 +349,5 @@ and the `/packages/jest/presets/ts` is needed to work in Windows environment (or
 [subpath-imports]: https://nodejs.org/api/packages.html#subpath-imports
 [transformIgnorePatterns]: https://jestjs.io/docs/configuration#transformignorepatterns-arraystring
 [ts-jest]: https://www.npmjs.com/package/ts-jest
-[electron]: https://www.electronjs.org/
 [jsdom]: https://github.com/jsdom/jsdom
 [nodejs]: https://nodejs.org/en/
