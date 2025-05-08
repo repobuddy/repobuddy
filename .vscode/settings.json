@@ -39,8 +39,6 @@
 		"*.accept.ts": "test-ts",
 		"*.integrate.js": "test-js",
 		"*.integrate.ts": "test-ts",
-		"*.spec.electron.js": "test-js",
-		"*.spec.electron.ts": "test-ts",
 		"*.spec.jsdom.js": "test-js",
 		"*.spec.jsdom.ts": "test-ts",
 		"*.spec.node.js": "test-js",
