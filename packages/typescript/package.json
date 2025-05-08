@@ -76,6 +76,6 @@
 		"rimraf": "~6.0.0",
 		"size-limit": "~11.2.0",
 		"ts-jest": "29.2.6",
-		"typescript": "^5.3.3"
+		"typescript": "^5.8.3"
 	}
 }

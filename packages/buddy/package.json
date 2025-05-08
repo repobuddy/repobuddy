@@ -60,6 +60,6 @@
 		"jest": "^29.7.0",
 		"npm-run-all2": "^8.0.0",
 		"rimraf": "^6.0.0",
-		"typescript": "^5.3.3"
+		"typescript": "^5.8.3"
 	}
 }
