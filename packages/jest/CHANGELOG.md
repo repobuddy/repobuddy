@@ -1,5 +1,13 @@
 # @unional/jest-presets
 
+## 5.0.0
+
+### Major Changes
+
+- 746b5f5: Drop electron support as the underlying package (`@kayahr/jest-electron-runner`) is not maintained anymore.
+
+  The electron tests cause the test to hang indefinitely with `turbo`.
+
 ## 4.1.1
 
 ### Patch Changes
