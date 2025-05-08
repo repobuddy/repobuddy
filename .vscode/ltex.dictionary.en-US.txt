@@ -2,7 +2,6 @@
 Codecov
 codecov-url
 downloads-url
-electronRenderer
 Homa
 jest-watch-typeahead
 jsdom
