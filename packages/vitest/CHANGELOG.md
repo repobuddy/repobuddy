@@ -1,5 +1,17 @@
 # @repobuddy/vitest
 
+## 1.2.1
+
+### Patch Changes
+
+- 6be6902: Downstream `isRunningInTest` to `@repobuddy/test`.
+
+  Remove merge config in node preset.
+  Vitest does it automatically.
+
+- Updated dependencies [6be6902]
+  - @repobuddy/test@1.0.0
+
 ## 1.2.0
 
 ### Minor Changes
