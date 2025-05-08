@@ -1,6 +1,8 @@
 {
 	"$schema": "https://turborepo.org/schema.json",
-	"pipeline": {
+	"tasks": {
+		"//#check": {},
+		"//#lint": {},
 		"build": {
 			"dependsOn": ["^build"],
 			"inputs": ["src/**", "ts/**", "package.json", "tsconfig.*"],
@@ -9,7 +11,6 @@
 		"build:doc": {
 			"dependsOn": ["^build"]
 		},
-		"//#check": {},
 		"clean": {
 			"cache": false
 		},
@@ -23,10 +24,6 @@
 		},
 		"dev": {
 			"cache": false
-		},
-		"lint": {
-			"dependsOn": ["^build"],
-			"inputs": ["src/**", "ts/**", "package.json"]
 		},
 		"size": {
 			"dependsOn": ["build"]
