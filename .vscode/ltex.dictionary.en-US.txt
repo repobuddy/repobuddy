@@ -13,3 +13,5 @@ subpath
 transpile
 tsconfig
 unional
+Vitest
+vitest
