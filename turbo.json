@@ -15,7 +15,7 @@
 			"cache": false
 		},
 		"coverage": {
-			"dependsOn": ["@repobuddy/jest#build", "build"],
+			"dependsOn": ["@repobuddy/jest#build", "@repobuddy/vitest#build", "build"],
 			"inputs": ["src/**", "ts/**", "package.json", "tsconfig.*"],
 			"outputs": ["coverage/**"]
 		},
@@ -29,7 +29,7 @@
 			"dependsOn": ["build"]
 		},
 		"test": {
-			"dependsOn": ["@repobuddy/jest#build", "build"],
+			"dependsOn": ["@repobuddy/jest#build", "@repobuddy/vitest#build", "build"],
 			"inputs": ["src/**", "ts/**", "package.json", "tsconfig.*"]
 		},
 		"test:list": {

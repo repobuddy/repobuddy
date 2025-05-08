@@ -3,7 +3,7 @@
 [![NPM version][npm-image]][npm-url]
 [![NPM downloads][downloads-image]][downloads-url]
 
-[@repobuddy/vitest] provides tools and utilities to take care of [Vitest] stuffs so you don't have to.
+[@repobuddy/vitest] provides tools and utilities to take care of [Vitest] stuffs, so you don't have to.
 
 ## Install
 
@@ -21,38 +21,38 @@ pnpm install -D @repobuddy/vitest
 rush add -p --dev @repobuddy/typescript
 ```
 
-## presets
+## Features
 
-[@repobuddy/vitest] provides a set of [tsconfigs] that you can use in your project.
+- Provides test presets for Node.js and browser environments
+  - `nodeTestPreset`: Configures Vitest for Node.js testing
+  - `browserTestPreset`: Configures Vitest for browser testing using Playwright
+- Includes common test configurations and defaults
+- Sets timezone to GMT and automatically restores mocks after tests
+- Provides better config defaults such as test file patterns and coverage configurations
+- Disables screenshot on failure in browser tests to avoid Storybook loading issues
 
-- `@repobuddy/vitest/tsconfig/monorepo`: for monorepo projects.
-- `@repobuddy/vitest/tsconfig/legacy/monorepo`: for monorepo projects using TypeScript < 5.0\
-  including `astro` project which uses `tsconfig-resolver` (<https://github.com/withastro/astro/issues/6918>).
+## Usage
 
-There are individual configs available for you to compose your own config.
-For more information, see [tsconfig](./tsconfig/readme.md).
+```ts
+// vitest.config.node.ts
+import { defineConfig } from 'vitest/config'
+import { nodeTestPreset } from '@repobuddy/vitest'
 
-## Notes
+export default defineConfig({
+  plugins: [nodeTestPreset({ includeGeneralTests: true })],
+})
 
-The `verbatimModuleSyntax` setting should be enabled for `Node16`.
-But it is disabled currently due to some issue with `ts-jest`:
 
-```sh
-error TS1286: ESM syntax is not allowed in a CommonJS module when 'verbatimModuleSyntax' is enabled.
+// vitest.config.browser.ts
+import { defineConfig } from 'vitest/config'
+import { browserTestPreset } from '@repobuddy/vitest'
+
+export default defineConfig({
+  plugins: [browserTestPreset()],
+})
 ```
 
-It seems like somehow it is treated as CommonJS while it is not (setting `useESM` to `true`).
-
-## buddy CLI
-
-- 🐤 `buddy ts build cjs` (in beta)
-- 🐤 `buddy ts build tslib` (in beta)
-- 🚧 `buddy ts init`
-- 🚧 `buddy ts up`
-
-[@repobuddy/typescript]: ./README.md
 [downloads-image]: https://img.shields.io/npm/dm/@repobuddy/typescript.svg?style=flat
 [downloads-url]: https://npmjs.org/package/@repobuddy/typescript
 [npm-image]: https://img.shields.io/npm/v/@repobuddy/typescript.svg?style=flat
 [npm-url]: https://npmjs.org/package/@repobuddy/typescript
-[typescript]: https://typescriptlang.org/

@@ -1,6 +1,12 @@
 {
 	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
 	"extends": ["./packages/biome/recommended.jsonc"],
+	"vcs": {
+		"enabled": true,
+		"clientKind": "git",
+		"useIgnoreFile": true,
+		"defaultBranch": "main"
+	},
 	"files": {
 		"ignore": [
 			".astro",
@@ -15,6 +21,11 @@
 			"tests/performant",
 			"*.error.ts"
 		]
+	},
+	"formatter": {
+		"enabled": true,
+		"indentStyle": "tab",
+		"lineEnding": "lf"
 	},
 	"overrides": [
 		{

@@ -1,11 +1,9 @@
 import { defineProject } from 'vitest/config'
+import { nodeTestPreset } from './src/config/node.ts'
 
 export default defineProject({
-	esbuild: { jsx: 'automatic' },
+	plugins: [nodeTestPreset({ includeGeneralTests: true })],
 	test: {
 		name: 'vitest:node',
-		environment: 'node',
-		include: ['src/**/*.{spec,test,unit,accept,integrate,system}.{js,mjs,cjs,ts,mts,cts}'],
-		exclude: ['src/test-setup'],
 	},
 })

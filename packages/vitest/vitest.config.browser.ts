@@ -1,15 +1,10 @@
 import { defineProject } from 'vitest/config'
+import { browserTestPreset } from './src/config/browser.ts'
 
 export default defineProject({
+	plugins: [browserTestPreset()],
 	esbuild: { jsx: 'automatic' },
 	test: {
 		name: 'vitest:browser',
-		browser: {
-			enabled: true,
-			headless: true,
-			instances: [{ browser: 'chromium', screenshotFailures: false }],
-			provider: 'playwright',
-		},
-		include: ['src/**/*.{spec,test,unit,accept,integrate,system}.{jsx,tsx}'],
 	},
 })
