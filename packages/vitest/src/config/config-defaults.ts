@@ -27,12 +27,21 @@ export const configDefaults = {
 	test: {
 		expect: {
 			poll: {
+				/**
+				 * `vitest` has a default timeout of 1000ms on calls to `expect`.
+				 *
+				 * Which is not enough for many tests on CI when running in browser mode.
+				 */
 				timeout: 5000,
 			},
 		},
 		server: {
 			deps: {
-				// this allows `vitest` to use CJS for packages without ESM.
+				/**
+				 * this allows `vitest` to use CJS for packages without ESM.
+				 *
+				 * @see https://vitest.dev/config/#server-deps-fallbackcjs
+				 */
 				fallbackCJS: true,
 			},
 		},

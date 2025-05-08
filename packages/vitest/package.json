@@ -30,6 +30,12 @@
 				"source": "./src/index.ts",
 				"default": "./esm/index.js"
 			}
+		},
+		"./config": {
+			"import": {
+				"types": "./esm/config/index.d.ts",
+				"default": "./esm/config/index.js"
+			}
 		}
 	},
 	"files": [
