@@ -1,1 +1,1 @@
-export * from './utils/is-running-in-test.ts'
+export * from '@repobuddy/test'

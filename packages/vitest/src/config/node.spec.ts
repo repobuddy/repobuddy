@@ -32,28 +32,11 @@ describe(`${nodeTestPreset.name}()`, () => {
 		expect(config.test?.environment).toBe('node')
 	})
 
-	it('should allow you to define name', () => {
-		const config = nodeTestPreset().config({
-			test: { name: 'my-node-project' },
-		})
-		expect(config.test?.name).toBe('my-node-project')
-	})
-
 	it('can include general test', () => {
 		const r = nodeTestPreset({ includeGeneralTests: true })
 		expect(r.config().test.include).toEqual(expect.arrayContaining(configDefaults.include.testGeneral))
 	})
 
-	it('can override include', () => {
-		const r = nodeTestPreset()
-		expect(
-			r.config({
-				test: {
-					include: ['x'],
-				},
-			}).test.include,
-		).toContain('x')
-	})
 	it('can override environment', () => {
 		const r = nodeTestPreset({ environment: 'jsdom' })
 		expect(r.config().test?.environment).toBe('jsdom')

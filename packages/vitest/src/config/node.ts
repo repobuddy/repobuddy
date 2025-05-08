@@ -1,6 +1,5 @@
 import type { ViteUserConfig } from 'vitest/config'
 import { configDefaults } from './config-defaults.ts'
-import { mergeConfig } from './merge-config.ts'
 import type { PresetOptions } from './types.ts'
 
 interface NodePresetOptions extends PresetOptions {
@@ -16,7 +15,7 @@ interface NodePresetOptions extends PresetOptions {
 export function nodeTestPreset(options?: NodePresetOptions | undefined) {
 	return {
 		name: '@repobuddy/vitest/node-preset',
-		config(userConfig?: ViteUserConfig | undefined) {
+		config(_userConfig?: ViteUserConfig | undefined): any {
 			// set timezone to GMT so that the test will generate the same result everywhere
 			process.env.TZ = process.env.TZ ?? 'GMT'
 			const include = [...configDefaults.include.testNode]
@@ -26,20 +25,17 @@ export function nodeTestPreset(options?: NodePresetOptions | undefined) {
 			if (options?.environment && ['jsdom', 'happy-dom'].includes(options?.environment)) {
 				include.push(...configDefaults.include.testBrowser)
 			}
-			return mergeConfig(
-				{
-					test: {
-						...configDefaults.test,
-						include,
-						environment: options?.environment ?? 'node',
-						coverage: {
-							include: configDefaults.include.source,
-							exclude: configDefaults.exclude.test,
-						},
+			return {
+				test: {
+					...configDefaults.test,
+					include,
+					environment: options?.environment ?? 'node',
+					coverage: {
+						include: configDefaults.include.source,
+						exclude: configDefaults.exclude.test,
 					},
 				},
-				userConfig,
-			)
+			}
 		},
 	}
 }

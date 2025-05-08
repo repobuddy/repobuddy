@@ -1,3 +1,4 @@
 {
-	"extends": "./tsconfig.esm"
+	"extends": "./tsconfig.esm",
+	"references": [{ "path": "../typescript/tsconfig.json" }, { "path": "../test/tsconfig.esm.json" }]
 }

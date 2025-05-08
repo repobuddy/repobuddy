@@ -8,5 +8,5 @@
 		"skipLibCheck": true
 	},
 	"include": ["src", "types"],
-	"references": [{ "path": "../typescript/tsconfig.json" }, { "path": "../test/tsconfig.esm.json" }]
+	"references": [{ "path": "../typescript/tsconfig.json" }]
 }

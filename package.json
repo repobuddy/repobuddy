@@ -30,6 +30,7 @@
 		"nuke:local": "rimraf node_modules",
 		"plop": "plop",
 		"release": "pnpm build && changeset publish",
+		"rt": "pnpm --filter @repobuddy/test",
 		"size": "turbo run size",
 		"dtj": "pnpm --filter dual-ts-jest",
 		"test": "turbo run test",

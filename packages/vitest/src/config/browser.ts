@@ -9,7 +9,7 @@ import type { PresetOptions } from './types.ts'
 export function browserTestPreset(options?: PresetOptions | undefined) {
 	return {
 		name: '@repobuddy/vitest/browser-preset',
-		config(userConfig?: ViteUserConfig | undefined) {
+		config(userConfig?: ViteUserConfig | undefined): any {
 			return {
 				test: {
 					...configDefaults.test,

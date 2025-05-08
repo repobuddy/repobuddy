@@ -1,10 +1,10 @@
 {
-	"name": "@repobuddy/vitest",
-	"version": "1.2.0",
-	"description": "Your repository buddy for Vitest",
+	"name": "@repobuddy/test",
+	"version": "0.0.0",
+	"description": "Your repository buddy for test",
 	"keywords": [
 		"repobuddy",
-		"vitest"
+		"test"
 	],
 	"homepage": "https://github.com/repobuddy/repobuddy",
 	"bugs": {
@@ -13,7 +13,7 @@
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/repobuddy/repobuddy.git",
-		"directory": "packages/vitest"
+		"directory": "packages/test"
 	},
 	"license": "MIT",
 	"author": {
@@ -29,18 +29,6 @@
 				"types": "./esm/index.d.ts",
 				"source": "./src/index.ts",
 				"default": "./esm/index.js"
-			}
-		},
-		"./config": {
-			"import": {
-				"types": "./esm/config/index.d.ts",
-				"default": "./esm/config/index.js"
-			}
-		},
-		"./setup/browser": {
-			"import": {
-				"types": "./esm/setup/browser.d.ts",
-				"default": "./esm/setup/browser.js"
 			}
 		}
 	},
@@ -61,9 +49,6 @@
 		"verify": "npm-run-all -p build lint coverage depcheck -p size",
 		"storybook": "storybook dev -p 6006",
 		"build-storybook": "storybook build"
-	},
-	"dependencies": {
-		"@repobuddy/test": "workspace:*"
 	},
 	"devDependencies": {
 		"@repobuddy/typescript": "workspace:*",

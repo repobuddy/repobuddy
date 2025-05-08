@@ -18,7 +18,7 @@ yarn add -D @repobuddy/vitest
 pnpm install -D @repobuddy/vitest
 
 #rush
-rush add -p --dev @repobuddy/typescript
+rush add -p --dev @repobuddy/vitest
 ```
 
 ## Features

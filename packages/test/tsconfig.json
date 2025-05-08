@@ -1,0 +1,4 @@
+{
+	"extends": "./tsconfig.esm",
+	"references": [{ "path": "../typescript/tsconfig.json" }]
+}
