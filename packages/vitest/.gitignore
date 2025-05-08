@@ -47,3 +47,4 @@ docs
 esm/
 tslib/
 *.tsbuildinfo
+*storybook.log
