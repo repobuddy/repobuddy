@@ -4,16 +4,52 @@ on:
     branches: [main]
 
 jobs:
-  code:
-    uses: repobuddy/.github/.github/workflows/pnpm-verify.yml@main
-    with:
-      codecov-flags: biome,jest,typescript
-      os: '["ubuntu-latest", "windows-latest"]'
-      node-version: '[18, 20]'
+  verify:
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+        node-version:
+          - 18
+          - 20
+          - 22
+    runs-on: ${{ matrix.os }}
+    env:
+      PLAYWRIGHT_PATH: ${{ matrix.os == 'windows-latest' && 'C:\\Users\\runneradmin\\AppData\\Local\\ms-playwright' || '~/.cache/ms-playwright' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: pnpm
+
+      - name: Cache Playwright Browsers
+        uses: actions/cache@v4
+        id: cache-playwright
+        with:
+          path: ${{ env.PLAYWRIGHT_PATH }}
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      - name: Install playwright browsers
+        if: steps.cache-playwright.outputs.cache-hit != 'true'
+        run: pnpx playwright install --with-deps chromium firefox
+
+      - name: Install Dependencies
+        run: pnpm install
+
+      - run: pnpm verify:ci
+
+
   release:
     uses: repobuddy/.github/.github/workflows/pnpm-release-changeset.yml@main
-    needs: code
+    needs: verify
     secrets: inherit
+
   docgen:
     uses: repobuddy/.github/.github/workflows/pnpm-docs.yml@main
     needs: release
