@@ -1,5 +1,11 @@
 # @repobuddy/vitest
 
+## 1.2.0
+
+### Minor Changes
+
+- a48f4c6: Add `isRunningInTest`.
+
 ## 1.1.0
 
 ### Minor Changes
