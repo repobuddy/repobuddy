@@ -1,5 +1,12 @@
 # @repobuddy/vitest
 
+## 1.1.0
+
+### Minor Changes
+
+- 99621a3: Use `@repobuddy/vitest/setup/browser` to set the timezone to GMT.
+  Auto `restoreAllMocks` after all tests.
+
 ## 1.0.0
 
 ### Major Changes
