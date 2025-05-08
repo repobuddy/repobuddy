@@ -87,6 +87,7 @@
 		"styl",
 		"swcrc",
 		"tsbuildinfo",
-		"tsconfigs"
+		"tsconfigs",
+		"vitest"
 	]
 }

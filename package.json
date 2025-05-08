@@ -40,6 +40,7 @@
 		"two-chalk": "pnpm --filter two-chalk",
 		"verify": "turbo run check lint build coverage depcheck size",
 		"version": "changeset version",
+		"vt": "pnpm --filter ./packages/vitest",
 		"web": "pnpm --filter ./website"
 	},
 	"devDependencies": {
@@ -48,7 +49,6 @@
 		"@repobuddy/biome": "workspace:^",
 		"@repobuddy/typescript": "workspace:^",
 		"@types/node": "^20.0.0",
-		"cross-env": "^7.0.3",
 		"eslint": "^9.26.0",
 		"eslint-plugin-yml": "~1.18.0",
 		"plop": "^4.0.0",
