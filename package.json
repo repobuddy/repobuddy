@@ -38,7 +38,8 @@
 		"ts-cjs": "pnpm --filter ts-cjs",
 		"ts-esm": "pnpm --filter ts-esm",
 		"two-chalk": "pnpm --filter two-chalk",
-		"verify": "turbo run check lint build coverage depcheck size",
+		"verify": "turbo run check lint coverage depcheck size",
+		"verify:ci": "turbo run check lint coverage depcheck size --concurrency=1",
 		"version": "changeset version",
 		"vt": "pnpm --filter ./packages/vitest",
 		"web": "pnpm --filter ./website"
