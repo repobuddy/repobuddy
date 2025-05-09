@@ -1,6 +1,7 @@
 import storybookTest from '@storybook/experimental-addon-test/vitest-plugin'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { storybookVis } from 'storybook-addon-vis/vitest-plugin'
 import { defineProject } from 'vitest/config'
 import { browserTestPreset } from './src/config/browser.ts'
 
@@ -11,6 +12,7 @@ export default defineProject({
 		storybookTest({
 			configDir: path.join(dirname, '.storybook'),
 		}),
+		storybookVis(),
 		browserTestPreset(),
 	],
 	optimizeDeps: {

@@ -10,16 +10,16 @@
 		"url": "https://github.com/repobuddy/repobuddy.git"
 	},
 	"scripts": {
-		"pb": "pnpm --filter ./packages/biome",
 		"buddy": "pnpm --filter ./packages/buddy",
 		"build": "turbo run build",
 		"build:doc": "pnpm build",
+		"check": "biome check .",
+		"check:fix": "biome check . --fix",
 		"clean": "turbo run clean",
 		"coverage": "turbo run coverage",
 		"cs": "changeset",
 		"depcheck": "turbo run depcheck",
-		"check": "biome check .",
-		"check:fix": "biome check . --fix",
+		"dtj": "pnpm --filter dual-ts-jest",
 		"format": "biome format . --write",
 		"jest": "pnpm --filter @repobuddy/jest",
 		"js-cjs": "pnpm --filter js-cjs",
@@ -28,11 +28,11 @@
 		"lint": "eslint .",
 		"nuke": "pnpm --no-bail --filter=* nuke && pnpm --no-bail nuke:local",
 		"nuke:local": "rimraf node_modules",
+		"pb": "pnpm --filter ./packages/biome",
 		"plop": "plop",
 		"release": "pnpm build && changeset publish",
 		"rt": "pnpm --filter @repobuddy/test",
 		"size": "turbo run size",
-		"dtj": "pnpm --filter dual-ts-jest",
 		"test": "turbo run test",
 		"test:list": "turbo run test:list",
 		"ts": "pnpm --filter ./packages/typescript",
@@ -44,6 +44,11 @@
 		"version": "changeset version",
 		"vt": "pnpm --filter ./packages/vitest",
 		"web": "pnpm --filter ./website"
+	},
+	"dependencies": {
+		"@types/react": "^19.1.3",
+		"pathe": "^2.0.3",
+		"playwright": "^1.52.0"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
@@ -60,9 +65,5 @@
 		"turbo": "^2.5.3",
 		"typescript": "^5.8.3"
 	},
-	"packageManager": "pnpm@10.10.0",
-	"dependencies": {
-		"@types/react": "^19.1.3",
-		"playwright": "^1.52.0"
-	}
+	"packageManager": "pnpm@10.10.0"
 }

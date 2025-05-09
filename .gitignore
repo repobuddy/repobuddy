@@ -55,3 +55,7 @@ node_modules
 
 # frontmatter
 .frontmatter
+
+# storybook-addon-vis
+**/__vis__/**/__results__
+**/__vis__/**/__diffs__
