@@ -1,5 +1,13 @@
 # @repobuddy/vitest
 
+## 1.2.2
+
+### Patch Changes
+
+- 0ba4eba: Move `headless` up under `browser`
+
+  Related to https://discord.com/channels/917386801235247114/1368386214335352922/1368386214335352922
+
 ## 1.2.1
 
 ### Patch Changes
