@@ -18,6 +18,7 @@ export function browserTestPreset(options?: PresetOptions | undefined) {
 						: configDefaults.include.testBrowser,
 					browser: {
 						enabled: true,
+						headless: true,
 						provider: 'playwright',
 						...(userConfig?.test?.browser?.instances
 							? undefined
@@ -26,7 +27,6 @@ export function browserTestPreset(options?: PresetOptions | undefined) {
 										{
 											name: (userConfig?.test?.name ? `${userConfig?.test?.name} (chromium)` : undefined) as string,
 											browser: 'chromium',
-											headless: true,
 											screenshotFailures: false,
 										},
 									],
