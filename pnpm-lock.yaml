@@ -166,8 +166,8 @@ importers:
         specifier: ^1.0.0
         version: 1.0.0
       jest-extended:
-        specifier: ^5.0.0
-        version: 5.0.0(jest@29.7.0(@types/node@22.15.15))
+        specifier: ^6.0.0
+        version: 6.0.0(jest@29.7.0(@types/node@22.15.15))(typescript@5.8.3)
       jest-watch-suspend:
         specifier: ^1.1.2
         version: 1.1.2(jest@29.7.0(@types/node@22.15.15))
@@ -446,8 +446,8 @@ importers:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@22.15.15)
       jest-extended:
-        specifier: ^5.0.0
-        version: 5.0.0(jest@29.7.0(@types/node@22.15.15))
+        specifier: ^6.0.0
+        version: 6.0.0(jest@29.7.0(@types/node@22.15.15))(typescript@5.8.3)
       jest-watch-suspend:
         specifier: ^1.1.2
         version: 1.1.2(jest@29.7.0(@types/node@22.15.15))
@@ -516,8 +516,8 @@ importers:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@22.15.15)
       jest-extended:
-        specifier: ^5.0.0
-        version: 5.0.0(jest@29.7.0(@types/node@22.15.15))
+        specifier: ^6.0.0
+        version: 6.0.0(jest@29.7.0(@types/node@22.15.15))(typescript@5.8.3)
       jest-watch-suspend:
         specifier: ^1.1.2
         version: 1.1.2(jest@29.7.0(@types/node@22.15.15))
@@ -679,8 +679,8 @@ importers:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@22.15.15)
       jest-extended:
-        specifier: ^5.0.0
-        version: 5.0.0(jest@29.7.0(@types/node@22.15.15))
+        specifier: ^6.0.0
+        version: 6.0.0(jest@29.7.0(@types/node@22.15.15))(typescript@5.8.3)
       jest-watch-suspend:
         specifier: ^1.1.2
         version: 1.1.2(jest@29.7.0(@types/node@22.15.15))
@@ -5052,11 +5052,12 @@ packages:
   jest-esm-transformer-2@1.0.0:
     resolution: {integrity: sha512-LOXf03JPR57zmwuHDmPrJtpWL9IKd800zY8mKHJsC+yDa3uXCJoW69sB+LbwUtS6Cd2ve7cInQpTF1KV3Ff5DQ==}
 
-  jest-extended@5.0.0:
-    resolution: {integrity: sha512-Vs31oRUA2KRR+JQ9I+uVcn/mfCeSdobeK/6BToX5l+yT6c570vMzAcYStVEFnQUIMaNzFuHlNDou5Dfp+SDB2g==}
+  jest-extended@6.0.0:
+    resolution: {integrity: sha512-SM249N/q33YQ9XE8E06qZSnFuuV4GQFx7WrrmIj4wQUAP43jAo6budLT482jdBhf8ASwUiEEfJNjej0UusYs5A==}
     engines: {node: ^18.12.0 || ^20.9.0 || ^22.11.0 || >=23.0.0}
     peerDependencies:
       jest: '>=27.2.5'
+      typescript: '>=5.0.0'
     peerDependenciesMeta:
       jest:
         optional: true
@@ -12734,9 +12735,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  jest-extended@5.0.0(jest@29.7.0(@types/node@22.15.15)):
+  jest-extended@6.0.0(jest@29.7.0(@types/node@22.15.15))(typescript@5.8.3):
     dependencies:
       jest-diff: 29.7.0
+      typescript: 5.8.3
     optionalDependencies:
       jest: 29.7.0(@types/node@22.15.15)
 
