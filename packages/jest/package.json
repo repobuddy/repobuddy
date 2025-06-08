@@ -434,7 +434,7 @@
 		"identity-obj-proxy": "^3.0.0",
 		"jest": "^29.7.0",
 		"jest-esm-transformer-2": "^1.0.0",
-		"jest-extended": "^5.0.0",
+		"jest-extended": "^6.0.0",
 		"jest-watch-suspend": "^1.1.2",
 		"jest-watch-toggle-config-2": "^2.1.0",
 		"jest-watch-typeahead": "^2.2.2",
