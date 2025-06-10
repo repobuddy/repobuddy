@@ -416,15 +416,15 @@
 		"w": "pnpm test:watch"
 	},
 	"dependencies": {
-		"jest-resolve": "^29.7.0",
+		"jest-resolve": "^30.0.0",
 		"read-pkg-up": "^7.0.1",
 		"resolve.imports": "^2.0.0",
 		"satisfier": "^5.4.2",
 		"type-plus": "^7.6.0"
 	},
 	"devDependencies": {
-		"@jest/expect": "^29.7.0",
-		"@jest/globals": "^29.7.0",
+		"@jest/expect": "^30.0.0",
+		"@jest/globals": "^30.0.0",
 		"@types/jest": "^29.5.12",
 		"assertron": "^11.0.3",
 		"chalk": "^5.2.0",
@@ -432,7 +432,7 @@
 		"depcheck": "^1.4.3",
 		"esbuild": "^0.25.0",
 		"identity-obj-proxy": "^3.0.0",
-		"jest": "^29.7.0",
+		"jest": "^30.0.0",
 		"jest-esm-transformer-2": "^1.0.0",
 		"jest-extended": "^6.0.0",
 		"jest-watch-suspend": "^1.1.2",

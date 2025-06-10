@@ -53,11 +53,11 @@
 		"clibuilder": "^9.0.0"
 	},
 	"devDependencies": {
-		"@jest/globals": "^29.7.0",
+		"@jest/globals": "^30.0.0",
 		"@repobuddy/jest": "workspace:*",
 		"cross-env": "^7.0.3",
 		"depcheck": "^1.4.3",
-		"jest": "^29.7.0",
+		"jest": "^30.0.0",
 		"npm-run-all2": "^8.0.0",
 		"rimraf": "^6.0.1",
 		"typescript": "^5.8.3"
