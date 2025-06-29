@@ -1,0 +1,46 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+# Commit Summary Instructions
+
+This rule ensures a commit message is generated when you summarize code changes.
+
+## When to Apply This Rule
+
+This rule should be applied in EVERY response involving code changes.
+
+## Commit Message Generation Process
+
+Follow [commit_message.mdc](mdc:.cursor/rules/guidelines/commit_message.mdc) to generate the commit message.
+
+## Response Format
+
+When generating a commit message, place the commit message within a text code block:
+
+```text
+[generated commit message]
+```
+
+## Examples
+
+For reference, see these specific examples:
+- **Component Creation**: [component_creation.md](mdc:.cursor/examples/commit_message/component_creation.md) - Shows feature addition with detailed body
+- **Bug Fix**: [bug_fix.md](mdc:.cursor/examples/commit_message/bug_fix.md) - Shows fix type with bullet points in body
+- **Documentation Update**: [doc_update.md](mdc:.cursor/examples/commit_message/doc_update.md) - Shows docs type with multiple changes
+
+## Enforcement
+
+**This rule is MANDATORY - no exceptions.** If you forget to apply this rule:
+
+1. The user may point out the oversight
+2. You must immediately generate the commit message
+3. Acknowledge the rule was missed and explain why it should have been applied
+
+## Integration with Existing Rules
+
+This rule works in conjunction with:
+- [commit_message.mdc](mdc:.cursor/rules/guidelines/commit_message.mdc) - For commit message format and conventions
+- [master.mdc](mdc:.cursor/rules/master.mdc) - For overall rule organization
+- [rule_usage.mdc](mdc:.cursor/rules/chat_behaviors/rule_usage.mdc) - For documenting rule application

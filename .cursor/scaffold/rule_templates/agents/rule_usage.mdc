@@ -1,0 +1,84 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+# Rule Usage Instructions
+
+This rule ensures that whenever I use any Cursor rules in my responses, I explicitly mention which rules were applied. This promotes transparency and helps users understand the reasoning behind my responses.
+
+## When to Apply This Rule
+
+This rule should be applied in EVERY response where I use any Cursor rules, including:
+- Code generation following specific guidelines
+- File organization following structure rules
+- Documentation following markdown guidelines
+- Commit message generation
+- Component development following React guidelines
+- Any other rule-based decision making
+
+## How to Apply This Rule
+
+1. **Identify Rule Usage**: At the end of each response, review what Cursor rules were applied
+2. **Create Summary Section**: Add a "Rules Applied" section before the final summary
+3. **List All Used Rules**: Mention each rule by name and briefly explain how it was used
+4. **Be Specific**: Don't just list rule names - explain the specific guidance followed
+
+## Response Format
+
+When rules are used, include this section before any final summary:
+
+```md
+## Rules Applied
+
+- **[Example Rule Name](mdc:.cursor/rules/guidelines/example_rule.mdc)**: Brief explanation of how this rule guided the response
+- **[Another Example Rule](mdc:.cursor/rules/workflows/example_workflow.mdc)**: Brief explanation of how this rule was applied
+```
+
+## Examples
+
+### Example 1: Component Creation
+
+```md
+## Rules Applied
+
+- **[React Component Guidelines](mdc:.cursor/rules/guidelines/react_component.mdc)**: Followed TypeScript patterns, proper component structure, and naming conventions
+- **[Naming Conventions](mdc:.cursor/rules/guidelines/naming.mdc)**: Used snake_case for file names as specified
+- **[Storybook Guidelines](mdc:.cursor/rules/guidelines/storybook_story.mdc)**: Created comprehensive stories with proper metadata and controls
+```
+
+### Example 2: Documentation Update
+
+```md
+## Rules Applied
+
+- **[Markdown Guidelines](mdc:.cursor/rules/guidelines/markdown.mdc)**: Applied proper heading hierarchy, link formatting, and accessibility standards
+- **[Repository Structure](mdc:.cursor/rules/project/repository_structure.mdc)**: Placed documentation in appropriate directories following project organization
+```
+
+### Example 3: Commit Message
+
+```md
+## Rules Applied
+
+- **[Commit Messages](mdc:.cursor/rules/guidelines/commit_message.mdc)**: Used conventional commits format with appropriate type and scope
+- **[Commit Summary](mdc:.cursor/rules/agents/commit_summary.mdc)**: Generated commit message at end of session with proper summary format
+```
+
+## Special Cases
+
+- **No Rules Used**: If no specific Cursor rules were applied, omit the "Rules Applied" section
+- **Multiple Related Rules**: Group related rules together with a single explanation
+- **Rule References**: Always use the proper `[Rule Name](mdc:.cursor/rules/category/rule_name.mdc)` format for links
+- **Brief Explanations**: Keep explanations concise but informative - one sentence per rule is usually sufficient
+
+## Integration with Other Rules
+
+This rule works in conjunction with all other Cursor rules and should be applied whenever any other rule is used. It ensures that users can understand the reasoning behind responses and can reference the specific guidelines that were followed.
+
+## Benefits
+
+- **Transparency**: Users understand what guidelines influenced the response
+- **Accountability**: Clear documentation of rule application
+- **Learning**: Users can reference specific rules for their own understanding
+- **Consistency**: Ensures all rule usage is documented consistently

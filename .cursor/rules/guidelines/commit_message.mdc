@@ -1,0 +1,91 @@
+---
+description: to generate commit message
+globs:
+alwaysApply: false
+---
+# Commit Message Guidelines
+
+Commit messages in this repository must follow the Conventional Commits specification.
+
+This rule should be used when generating commit messages.
+
+## CRITICAL: Staged Changes Take Absolute Priority
+
+**⚠️ IMPORTANT: You MUST follow this order exactly:**
+
+1. **ALWAYS check staged changes FIRST** with `git status --porcelain`
+2. **If staged changes exist**: Use `git diff --cached` to analyze the changes for commit message generation
+3. **NEVER look at unstaged changes** when there are staged changes
+4. **Only check unstaged changes** if there are NO staged changes
+
+**This is a strict requirement - staged changes completely override unstaged changes for commit message generation.**
+
+## Step-by-step Instructions
+
+1. **FIRST: Check for staged changes**:
+   - Use `git status --porcelain` to efficiently detect if staged changes exist
+   - **If there ARE staged changes**: Use `git diff --cached` to analyze the staged changes and ignore unstaged changes
+   - **If there are NO staged changes**: Then check unstaged changes with `git diff`
+
+2. **Write your commit message in the following format**:
+
+	```
+	<type>[optional scope]: <description>
+
+	[optional body]co
+
+	[optional footer(s)]
+	```
+
+3. **Choose the appropriate type**:
+   - `feat`: New features
+   - `fix`: Bug fixes
+   - `docs`: Documentation changes, including add or update stories
+   - `style`: Code style changes (formatting, missing semicolons, etc.)
+   - `refactor`: Code refactoring (no functional changes)
+   - `test`: Adding or updating tests
+   - `chore`: Build process, tooling, or configuration changes
+   - `perf`: Performance improvements
+
+4. **Add scope when helpful** (e.g., `chore(rules)`, `fix(auth)`, `docs(api)`)
+
+5. **Write a clear description** that explains the purpose, not just what changed
+
+6. **Add body for complex changes** with additional context or breaking change notes
+
+## Examples
+
+### Simple fix
+
+```text
+fix(component): resolve button hover state not working in dark mode
+```
+
+### Feature with body
+
+```text
+feat(api): add user authentication endpoint
+
+Implements JWT-based authentication for user login with proper error handling and validation.
+
+BREAKING CHANGE: The login endpoint now requires a password field.
+```
+
+### Configuration change
+
+```text
+chore: update TypeScript configuration for stricter type checking
+```
+
+## Special Cases
+
+- **Cursor rules only**: If changes are only in `.cursor/rules`, `.github`, or `.vscode` folders, always use `chore` type
+- **Cursor rules scope**: When changing cursor rules (files in `.cursor/rules`), use `chore(rules)` as the type and scope
+- **Breaking changes**: Include `BREAKING CHANGE:` in the body
+- **Configuration changes**: Use `chore` type for config files, build tools, etc.
+- **Multiple unrelated changes**: Consider splitting into multiple commits or use a general type like `chore`
+
+
+## Validation
+
+[Insert any validation steps of found]

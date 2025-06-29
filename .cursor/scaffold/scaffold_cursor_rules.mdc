@@ -1,0 +1,70 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Scaffold Cursor Rules - Step by Step Workflow
+
+This workflow will set up or migrate the Cursor rules to meet the lastest best practices.
+
+## Workflow Steps
+
+### Prerequiste Check
+
+If the folder `.cursor/backup` exist, terminate the whole workflow **IMMEDIATELY**.
+
+### Backup Existing Rules
+
+If the folder `.curser/rules` exist, move it to `.cursor/backup`.
+
+### Copy Example Files
+
+Copy the examples in `.cursor/scaffold/examples` to `.cursor/examples`.
+Skip file if it already exists.
+
+### Copy Basic Rules
+
+- Copy `.cursor/scaffold/rule_templates/master.mdc` to `.cursor/rules`
+- Copy all files under `.cursor/scaffold/rule_templates/agents` to `.cursor/rules/agents`
+
+### Adjust file name convention
+
+- Look for file and folder naming convention rule under the `.cursor/backup` folder.
+- If found, check and update the the rules in `.cursor/rules` to make them conform with the convention.
+  - This includes renaming the rules and updating their content.
+
+### Setup Markdown Guidelines
+
+- Check if there is a markdown guideline rule under `.cursor/backup`.
+- If there is, migrate it to `.cursor/rules` following the rule `.cursor/rules/agents/cursor_rules.mdc`.
+- It not, copy `.cursor/rules/scaffold/rule_templates/guidelines/markdown.mdc` to `.cursor/rules/guidelines`
+- Check if the repository uses any markdown related tools, add adjust the rule based on the config found.
+
+### Setup Commit Message Guidelines
+
+- Check if there is a commit message guideline rule under `.cursor/backup`.
+- If there is, migrate it to `.cursor/rules` following the rule `.cursor/rules/agents/cursor_rules.mdc`.
+- It not, copy `.cursor/rules/scaffold/rule_templates/guidelines/commit_message.mdc` to `.cursor/rules/guidelines`
+- Check if the repository uses any commit message related tools, add adjust the rule based on the config found.
+
+### Migrate Backed Up Rules
+
+For each rule in `.cursor/backup`:
+
+- Identify its category according to the rule `.cursor/rules/agents/cursor_rules.mdc`
+- If a similar rule already exist in `.cursor/rules` or its subfolder, skip this rule.
+- Copy the rule to the corresponding subfolder under `.cursor/rules` according to the category.
+- Update the copied rule according to the rule `.cursor/rules/agents/cursor_rules.mdc`.
+
+At the end, list the which rule you have migrated or skipped.
+Indicate where the rule is migrated to.
+
+### Update Rule References
+
+Follow the rule `.cursor/rules/agents/cursor_rules.mdc` to update the rule references in the `.cursor/rules` folder.
+
+### Describe next steps
+
+- Follow the rule `.cursor/rules/agents/commit_summary.mdc` to generate a commit message.
+- Remind me that the `.cursor/backup` contains the original rules.
+- Ask me that if the new rules looks good, and do I want you to delete that folder.

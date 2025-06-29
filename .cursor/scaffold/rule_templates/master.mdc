@@ -1,0 +1,22 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+# Cursor Rules Master Reference
+
+This file serves as the central reference for all Cursor rules in the repository.
+
+## Available Rules
+
+All rules should be located under folders `.cursor/rules`.
+They can be placed at the root of the repository (i.e. `<REPOSITORY_ROOT>/.cursor/rules`),
+or under the root of a project in a monorepo (e.g. `<REPOSITORY_ROOT>/packages/<PROJECT_ROOT>/.cursor/rules`).
+
+Other `*.mdc` files should not be treated as rule files unless referenced explicitly.
+
+[List of cursor rules organized into categories]
+
+## How to Use Rules
+
+[List of use cases and which rules to apply]

@@ -1,0 +1,42 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+# Cursor Rules Master Reference
+
+This file serves as the central reference for all Cursor rules in the repository.
+
+## Available Rules
+
+All rules should be located under folders `.cursor/rules`.
+They can be placed at the root of the repository (i.e. `<REPOSITORY_ROOT>/.cursor/rules`),
+or under the root of a project in a monorepo (e.g. `<REPOSITORY_ROOT>/packages/<PROJECT_ROOT>/.cursor/rules`).
+
+Other `*.mdc` files should not be treated as rule files unless referenced explicitly.
+
+### Agents
+
+Rules for AI agent behavior and management:
+
+- @agents/cursor_rules.mdc - Guidelines for cursor rules in this repository
+- @agents/commit_summary.mdc - Add a "Commit Message" section in agent response
+- @agents/rule_usage.mdc - Add a "Rules Applied" section in agent response
+
+### Guidelines
+
+Opinionated best practices on specific topics:
+
+- @guidelines/commit_message.mdc - Commit message formatting and conventions
+- @guidelines/markdown.mdc - Markdown formatting standards and best practices
+
+## How to Use Rules
+
+### For AI Agent Behavior
+- Use @agents/cursor_rules.mdc when managing or creating new cursor rules
+- Use @agents/commit_summary.mdc when generating commit messages
+- Use @agents/rule_usage.mdc to track which rules were applied
+
+### For Code Quality and Standards
+- Use @guidelines/commit_message.mdc when writing commit messages
+- Use @guidelines/markdown.mdc when writing or editing markdown files
