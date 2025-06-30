@@ -1,0 +1,114 @@
+---
+description: When creating or updating files and folder
+globs:
+alwaysApply: false
+---
+# Naming Guidelines
+
+This rule establishes consistent naming conventions for files and folders throughout the repository.
+
+## File Naming Rules
+
+### Primary Rule: Use snake_case for All Files
+- **All file names must use snake_case format**
+- Examples: `button.tsx`, `loading_button.tsx`, `copy_button.stories.tsx`
+- This applies to all file types: `.tsx`, `.ts`, `.js`, `.jsx`, `.css`, `.scss`, `.md`, `.mdx`, etc.
+
+### File Type Extensions
+- **React Components**: `.tsx` (TypeScript React)
+- **TypeScript Files**: `.ts` (utilities, types, etc.)
+- **JavaScript Files**: `.js` (JavaScript)
+- **CSS Files**: `.css` (stylesheets)
+- **Storybook Stories**: `.stories.tsx`
+- **Test Files**: `.test.tsx` or `.spec.ts`
+- **Documentation**: `.mdx` (for component docs), `.md` (for general docs)
+
+### Examples of Correct File Names
+
+```
+button.tsx
+loading_button.tsx
+copy_button.stories.tsx
+button.test.tsx
+validate_props.ts
+is_icon_only.ts
+index.ts
+types.ts
+tailwind.css
+changelog.mdx
+overview.mdx
+```
+
+## Folder Naming Rules
+
+### All Folders: snake_case
+- **All folders should use snake_case format**
+- This includes component folders, utility folders, and feature folders
+- Examples: `button/`, `loading_button/`, `tab_panel/`, `utils/`, `testing/`
+
+### Examples of Correct Folder Names
+```
+# Component folders (snake_case)
+button/
+loading_button/
+tab_panel/
+tree_select/
+type_ahead/
+
+# Utility/feature folders (snake_case)
+utils/
+testing/
+hooks/
+components/
+layouts/
+list_box/
+truncate_text/
+```
+
+## Special Cases and Exceptions
+
+### Website Application (`apps/website/`)
+- **Files and folders in the website application should use kebab-case format**
+- This applies to all files and folders under `apps/website/` including components, pages, utilities, and feature directories
+- Examples: `navigation-bar.tsx`, `hero-section.tsx`, `contact-form.tsx`, `user-profile/`, `blog-posts/`
+- This exception is specific to the website application and does not apply to other packages
+
+### Configuration Files
+- **Configuration files can be named in anyway** as per their ecosystem standards
+- Examples: `.markdownlint-cli2.jsonc`, `pnpm-workspace.yaml`, `commitlint.config.js`
+
+### Build Output Directories
+- **Build output directories are ignored from naming conventions**
+- These directories use their standard names as required by build tools
+- Examples: `cjs/`, `esm/`, `dist/`, `build/`, `coverage/`
+- Files and folders within these directories are generated and should not be manually named
+
+### Package Names
+- **Package names in package.json can use kebab-case** as per npm conventions
+- Examples: `just-web`, `storybook-addon-vis`
+
+## Migration Guidelines
+
+### When Creating New Files
+1. Always use snake_case for new file names
+2. Always use snake_case for new folder names (including component folders)
+3. Follow the established patterns in the directory you're working in
+
+### When Refactoring Existing Files
+1. Gradually migrate existing files to snake_case
+2. Update imports and references accordingly
+3. Maintain backward compatibility during transition
+
+## Enforcement
+
+### Linting Rules
+
+- Configure ESLint/Biome to enforce snake_case for file names
+- Use file naming linting rules where available
+
+### Code Review Checklist
+
+- [ ] File names follow snake_case convention
+- [ ] Folder names follow snake_case convention (including component folders)
+- [ ] File extensions are correct for the content type
+- [ ] Imports and references are updated if file names changed

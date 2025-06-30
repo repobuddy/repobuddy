@@ -32,7 +32,7 @@ This rule should be used when generating commit messages.
 	```
 	<type>[optional scope]: <description>
 
-	[optional body]co
+	[optional body]
 
 	[optional footer(s)]
 	```

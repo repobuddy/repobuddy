@@ -1,0 +1,193 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Setup Cursor Rules Workflow
+
+> To user (ignored by AI Agent):
+>
+> To use this rule, you can open the chat and type "execute the workflow in @<this file>"
+>
+> Troubleshooting:
+>
+> Cursor might fail to run tool call (e.g. `Tool call timed out after 5s (file search)`)
+> This is a Cursor bug.
+> If it happens, you need to close Cursor completely and try again.
+>
+> It sometimes stuck on the terminal command. Give an `[Enter]` on the terminal may unblock it.
+
+This is a step by step workflow to set up or migrate the Cursor rules to meet the latest best practices.
+You should follow this workflow carefully and use the same heading in the section below as you goes through each step.
+
+## Step 0: Prerequisite Check
+
+If the folder `.cursor/backup` exists, terminate the whole workflow **IMMEDIATELY**.
+
+## Step 1: Backup Existing Rules
+
+If the folder `.cursor/rules` exists, move it to `.cursor/backup`.
+If not, create it.
+The rules in the `.cursor/backup` folder are referred to as the Backup Cursor Rules in this workflow.
+
+## Step 2: Create basic folder structure
+
+Create the following structure:
+
+```
+.cursor/
+├── examples/
+└── rules/
+    ├── agents/                                 # Rules for AI agent behavior and management.
+    ├── guidelines/                             # Opinionated best practices
+    └── workflows/                              # Step-by-step guides for AI tasks
+```
+
+## Step 3: Copy Example Files
+
+Copy every example under `.cursor/repobuddy/examples` to `.cursor/examples` with the same folder structure.
+If the example already exists, skip that example.
+
+## Step 4: Copy Basic Rules
+
+- Copy `.cursor/repobuddy/rule_templates/master.mdc` to `.cursor/rules` using terminal.
+- Copy all files under `.cursor/repobuddy/rule_templates/agents` to `.cursor/rules/agents` using terminal.
+- Copy all files under `.cursor/repobuddy/rule_templates/workflows` to `.cursor/rules/workflows` using terminal.
+- Validate `.cursor/rules/workflows/extract_frontmatter_from_markdown.mdc` exists.
+- Read the new rules in `.cursor/rules`. You should comply with these new rules for the rest of this workflow.
+
+## Step 5: Setup naming convention
+
+- Copy `.cursor/repobuddy/rule_templates/guidelines/naming.mdc` to `.cursor/rules/guidelines/naming.mdc`.
+- Look for rule(s) about naming convention in Backup Cursor Rules.
+- If found, update `.cursor/rules/guidelines/naming.mdc` according to what they have.
+  - Make sure to follow `.cursor/rules/agents/cursor_rules.mdc` to maintain the structure and best practice.
+
+## Step 6: Setup Markdown Guidelines
+
+- Copy `.cursor/repobuddy/rule_templates/guidelines/markdown.mdc` to `.cursor/rules/guidelines/markdown.mdc`.
+- Look for rule(s) about markdown guideline in the Backup Cursor Rules.
+- If found, update `.cursor/rules/guidelines/markdown.mdc` according to what they have.
+  - Make sure to follow `.cursor/rules/agents/cursor_rules.mdc` to maintain the structure and best practice.
+- Check the repository for markdown related config, and adjust the rule if found.
+
+## Step 7: Setup Commit Message Guidelines
+
+- Copy `.cursor/repobuddy/rule_templates/guidelines/commit_message.mdc` to `.cursor/rules/guidelines/commit_message.mdc`.
+- Check if there is a commit message guideline in the Backup Cursor Rules.
+- If found, update `.cursor/rules/guidelines/commit_message.mdc` according to what it has.
+  - Make sure to follow `.cursor/rules/agents/cursor_rules.mdc` to maintain the structure and best practice.
+- Check if the repository uses any commit message related tools, and adjust the rule based on the config found.
+
+## Step 8: Migrate Backup Cursor Rules
+
+This step requires careful, file-by-file migration to ensure all rules are properly preserved and categorized.
+You **MUST** follow these sub-steps for each `.mdc` file in the Backup Cursor Rules.
+Mention each sub-step in your response as you execute them.
+
+### Step 8.1: Inventory Backup Files
+
+First, list all `.mdc` files in `.cursor/backup` and their current locations. Create a migration log to track progress.
+
+### Step 8.2: Categorize Each File
+
+For each `.mdc` file in the backup, determine its appropriate category:
+
+**Agents Category** (`.cursor/rules/agents/`):
+- Rules that control AI agent behavior
+- Examples: commit summary rules, rule management guidelines, agent response formatting
+
+**Guidelines Category** (`.cursor/rules/guidelines/`):
+- Opinionated best practices and standards
+- Examples: naming conventions, coding style, formatting standards, commit message formats
+
+**Workflows Category** (`.cursor/rules/workflows/`):
+- Step-by-step guides for specific tasks
+- Examples: implementation workflows, release processes, testing procedures
+
+### Step 8.3: Individual File Migration Process
+
+To start, you **MUST** echo the next paragraph and follow it:
+
+For each file, you **MUST NOT RUSH** and **MUST** follow all 7 sub-steps **EXACTLY** described below.
+You **MUST NOT** stop at sub-step 8.3.5.
+And you **MUST** mention each sub-step as you execute them.
+
+8.3.1. **Read Original File**: Open the backup file and read its complete content.
+8.3.2. **Determine Target Location**: Based on the categorization in Step 8.2, determine the appropriate subfolder
+8.3.3. **Check for Conflicts**: Verify no similar rule (check by content similarity, not just filename) already exists in the target location
+       - **Skip if found**: If a similar rule is found, skip this file and continue on the next file
+8.3.4. **Extract Frontmatter - CRITICAL STEP**: **YOU MUST USE THE WORKFLOW**
+       - **ALWAYS** use `.cursor/rules/workflows/extract_frontmatter_from_markdown.mdc` to extract the frontmatter from the original file.
+       - **NEVER** assume a file has no frontmatter without checking with the workflow first.
+       - **NEVER** create frontmatter manually without extracting it first.
+       - **ALWAYS** run the extraction command: `awk '/^---$/{p=!p;next}p' filename.mdc`
+       - **IF** the command returns no output, you should terminate the workflow immediately.
+       - **IF** the command returns output, that IS the frontmatter and you must preserve it exactly.
+8.3.5. **Create New File**: Create a new rule in the appropriate subfolder under `.cursor/rules`.
+8.3.6. **Update Content Structure**: Following `.cursor/rules/agents/cursor_rules.mdc`, update the content structure while preserving all original information.
+8.3.7. **Validate Migration**: Verify the new file has:
+       - **ALWAYS**: Use `.cursor/rules/workflows/extract_frontmatter_from_markdown.mdc` to validate the frontmatter in the new file.
+       - **ALWAYS**: Verify the `globs` value must remain exactly the same. e.g. `*.tsx,*.jsx` **MUST NOT** convert to `*.{tsx,jsx}`.
+       - **ALWAYS**: Identical frontmatter as the original
+       - Proper content structure following the template
+       - All original information preserved
+
+### Step 8.4: Migration Log
+
+For each file processed, record:
+- **Original filename and location**
+- **Target filename and location**
+- **Category assigned**
+- **Migration status** (migrated/skipped)
+- **Reason for skip** (if applicable)
+- **Frontmatter validation** (pass/fail)
+
+### Step 8.5: Final Validation
+
+After migrating all files:
+
+1. Verify all backup files have been processed
+2. Confirm no duplicate rules exist in the new structure
+3. Ensure all migrated files follow the naming convention
+4. Validate that frontmatter is preserved exactly in all migrated files
+
+**Migration Summary**: At the end of this step, provide a detailed summary listing each backup file and its migration outcome (migrated to location X, skipped for reason Y, etc.).
+
+## Step 9: Update naming convention
+
+Update all rules under `.cursor/rules` folder to follow the naming convention in `.cursor/rules/guidelines/naming.mdc`.
+The naming convention in `.cursor/rules/guidelines/naming.mdc` trumps even `.cursor/rules/guidelines/cursor_rules.mdc`.
+
+You should both rename the rule files and updating their content.
+
+## Step 10: Update Rule References
+
+Follow the rule `.cursor/rules/agents/cursor_rules.mdc` to update the references to the rules in the `.cursor/rules` folder.
+
+## Step 11: Validate Migration Success
+
+Perform these validation checks:
+
+1. **File Structure Check**:
+   - Verify `.cursor/rules/master.mdc` exists
+   - Confirm `agents/`, `guidelines/`, and `workflows/` folders exist
+   - Check that all `.mdc` files are in appropriate subfolders (not in root), except `.cursor/rules/master.mdc`
+
+2. **Essential Rules Check**:
+   - Verify `agents/cursor_rules.mdc` exists (required for rule management)
+   - Confirm `guidelines/naming.mdc` exists (required for naming conventions)
+   - Check `guidelines/markdown.mdc` exists (if markdown is used in project)
+   - Ensure `guidelines/commit_message.mdc` exists (if commit conventions are used)
+
+3. **Content Quality Check**:
+   - Validate every `.mdc` files to verify they have proper frontmatter
+   - Verify files follow the structure template from `agents/cursor_rules.mdc`
+
+If any validation fails, report the specific issue and provide guidance on how to fix it.
+
+## Last Step: Describe next steps
+
+- Follow the rule `.cursor/rules/agents/commit_summary.mdc` to generate a commit message.
+- Remind me that the `.cursor/backup` contains the original rules.
+- Ask if the new rules look good and whether you want to delete the backup folder.

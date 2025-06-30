@@ -1,0 +1,202 @@
+---
+description: Extracting frontmatter from .mdc or .mdx files using terminal commands
+globs:
+alwaysApply: false
+---
+# Extract Frontmatter from MDC and MDX Files - Step by Step Guide
+
+This guide provides step-by-step instructions for extracting frontmatter from `.mdc` and `.mdx` files.
+The normal steps you take does not work. **YOU MUST FOLLOW THIS RULE** to get the correct result.
+
+## What is Frontmatter?
+
+Frontmatter is metadata at the beginning of a markdown file, enclosed between `---` delimiters. It typically contains information like title, description, tags, and other metadata.
+
+Example:
+```yaml
+---
+title: My Document
+description: This is a sample document
+tags: [markdown, frontmatter]
+---
+```
+
+## Step-by-Step Instructions
+
+### Step 1: Verify File Exists
+First, ensure the file you want to process exists:
+
+```bash
+# Check if file exists
+ls -la your-file.mdc
+
+# Or use test command
+if [ -f "your-file.mdc" ]; then
+    echo "File exists"
+else
+    echo "File not found"
+fi
+```
+
+### Step 2: Validate Frontmatter Structure
+Before extracting, verify the file has valid frontmatter (exactly two `---` delimiters):
+
+```bash
+# Count the number of --- delimiters
+grep -c "^---$" your-file.mdc
+
+# Or use awk to validate structure
+awk '/^---$/{count++}END{if(count==2) print "Valid frontmatter"; else print "Invalid frontmatter"}' your-file.mdc
+```
+
+### Step 3: Extract Complete Frontmatter
+Use one of these methods to extract all frontmatter content:
+
+**Method A - Using awk (Recommended):**
+```bash
+awk '/^---$/{p=!p;next}p' your-file.mdc
+```
+
+**Method B - Using sed:**
+```bash
+sed -n '/^---$/,/^---$/p' your-file.mdc | sed '1d;$d'
+```
+
+**Method C - Using grep and sed:**
+```bash
+grep -A 1000 "^---$" your-file.mdc | grep -B 1000 "^---$" | sed '1d;$d'
+```
+
+### Step 4: Extract Specific Fields
+To extract specific metadata fields:
+
+```bash
+# Extract title
+awk '/^---$/{p=!p;next}p' your-file.mdc | grep "^title:" | sed 's/^title: *//'
+
+# Extract description
+awk '/^---$/{p=!p;next}p' your-file.mdc | grep "^description:" | sed 's/^description: *//'
+
+# Extract tags
+awk '/^---$/{p=!p;next}p' your-file.mdc | grep "^tags:" | sed 's/^tags: *//'
+
+# Extract any field (replace FIELD_NAME with actual field)
+awk '/^---$/{p=!p;next}p' your-file.mdc | grep "^FIELD_NAME:" | sed 's/^FIELD_NAME: *//'
+```
+
+### Step 5: Process Multiple Files
+To extract frontmatter from multiple files:
+
+```bash
+# Process all .mdc files in current directory
+for file in *.mdc; do
+    echo "=== $file ==="
+    awk '/^---$/{p=!p;next}p' "$file"
+    echo
+done
+
+# Process all .mdx files in a specific directory
+for file in /path/to/directory/*.mdx; do
+    echo "=== $file ==="
+    awk '/^---$/{p=!p;next}p' "$file"
+    echo
+done
+```
+
+## Complete Function for Reuse
+
+Create a reusable function for frontmatter extraction:
+
+```bash
+extract_frontmatter() {
+    local file="$1"
+    local field="$2"
+
+    # Check if file exists
+    if [ ! -f "$file" ]; then
+        echo "Error: File $file not found" >&2
+        return 1
+    fi
+
+    # Validate frontmatter structure
+    if ! awk '/^---$/{count++}END{exit count!=2}' "$file"; then
+        echo "Error: Invalid frontmatter in $file" >&2
+        return 1
+    fi
+
+    # Extract frontmatter
+    if [ -n "$field" ]; then
+        # Extract specific field
+        awk '/^---$/{p=!p;next}p' "$file" | grep "^$field:" | sed "s/^$field: *//"
+    else
+        # Extract all frontmatter
+        awk '/^---$/{p=!p;next}p' "$file"
+    fi
+}
+```
+
+**Usage:**
+```bash
+# Extract all frontmatter
+extract_frontmatter "your-file.mdc"
+
+# Extract specific field
+extract_frontmatter "your-file.mdc" "title"
+extract_frontmatter "your-file.mdc" "description"
+```
+
+## Common Use Cases
+
+### 1. Extract Title from All Documentation Files
+```bash
+for file in docs/*.{mdc,mdx}; do
+    title=$(extract_frontmatter "$file" "title")
+    echo "$file: $title"
+done
+```
+
+### 2. Find Files with Specific Tags
+```bash
+for file in *.mdc; do
+    tags=$(extract_frontmatter "$file" "tags")
+    if echo "$tags" | grep -q "important"; then
+        echo "Important file: $file"
+    fi
+done
+```
+
+### 3. Generate File Index
+```bash
+echo "# File Index" > index.md
+for file in *.mdc; do
+    title=$(extract_frontmatter "$file" "title")
+    description=$(extract_frontmatter "$file" "description")
+    echo "- [$title](mdc:$file): $description" >> index.md
+done
+```
+
+## Troubleshooting
+
+### Problem: No frontmatter found
+**Solution:** Check if the file has proper `---` delimiters:
+```bash
+grep -n "^---$" your-file.mdc
+```
+
+### Problem: Multiple frontmatter blocks
+**Solution:** The current methods only extract the first frontmatter block. For multiple blocks, you may need more complex parsing.
+
+### Problem: YAML parsing errors
+**Solution:** If you need to parse YAML properly, consider using tools like `yq` or `python-yaml`:
+```bash
+# Using yq (if installed)
+yq eval '.frontmatter' your-file.mdc
+```
+
+## Best Practices
+
+1. **Always validate** frontmatter structure before extraction
+2. **Use specific field extraction** when you only need certain metadata
+3. **Cache results** for performance when processing multiple files
+4. **Handle errors gracefully** with proper error checking
+5. **Use consistent field names** across your documentation
