@@ -5,133 +5,211 @@ alwaysApply: false
 ---
 # JSX Development Guidelines
 
-This document outlines the best practices and patterns for writing code in JSX syntax, such as ReatJS.
+This document outlines the best practices and patterns for writing code in JSX syntax, such as ReactJS. These guidelines ensure consistent, maintainable, and performant React components.
+
+## Table of Contents
+
+- [Basic Styling](mdc:#basic-styling)
+- [Component Structure](mdc:#component-structure)
+- [State Management](mdc:#state-management)
+- [Performance Optimization](mdc:#performance-optimization)
+- [Testing](mdc:#testing)
+- [Error Handling](mdc:#error-handling)
+- [Accessibility](mdc:#accessibility)
+- [Code Organization](mdc:#code-organization)
+- [Integration with Other Rules](mdc:#integration-with-other-rules)
+- [Quality Checklist](mdc:#quality-checklist)
 
 ## Basic Styling
 
-1. Use simple string values for className props:
-   ```typescript
-   // ✅ Good example
-   export const Default: StoryObj = {
-     render: () => (
-       <YourComponent className="flex gap-4" />
-     )
-   }
+### String Props Usage
 
-   // ❌ Bad example - avoid curly braces for simple strings
-   export const Default: StoryObj = {
-     render: () => (
-       <YourComponent className={"flex gap-4"} />
-     )
-   }
-   ```
+Use simple string values for string props instead of curly braces for simple strings.
+
+```tsx
+// ✅ Good example
+export const Default: StoryObj = {
+  render: () => (
+    <YourComponent
+      className="flex gap-4"
+      title="Component title"
+      alt="Image description"
+      placeholder="Enter text here"
+    />
+  )
+}
+
+// ❌ Bad example - avoid curly braces for simple strings
+export const Default: StoryObj = {
+  render: () => (
+    <YourComponent
+      className={"flex gap-4"}
+      title={"Component title"}
+      alt={"Image description"}
+      placeholder={"Enter text here"}
+    />
+  )
+}
+```
 
 ## Component Structure
 
-1. Use functional components with TypeScript
-2. Use function statement whenever possible
-3. Follow the following file structure:
-   ```tsx
-   // ✅ Good example
-   interface Props {
-     // Props interface
-   }
+### Functional Components
 
-   export function Component({ prop1, prop2 }: Props) {
-     // Component implementation
-     return <div>...</div>
-   }
-   ```
+1. Use functional components with TypeScript.
+2. Use `function` statement whenever possible.
+3. Follow the following file structure:
+
+```tsx
+// ✅ Good example
+interface Props {
+  // Props interface
+}
+
+export function Component({ prop1, prop2 }: Props) {
+  // Component implementation
+  return <div>...</div>
+}
+```
+
+```tsx
+// ❌ Bad example - avoid arrow functions and any types
+const Component = (props: any) => {
+  return <div>...</div>
+}
+```
 
 ## State Management
 
-1. Use React hooks for local state:
-   ```typescript
-   // ✅ Good example
-   const [state, setState] = useState<StateType>(initialState)
-   ```
+### Local State
 
-2. For global state:
-   - Use React Context for simple state sharing
-   - Consider Redux or Zustand for complex state management
+Use React hooks for local state management:
+
+```ts
+// ✅ Good example
+const [state, setState] = useState<StateType>(initialState)
+```
+
+### Global State
+
+For global state management:
+- Use React Context for simple state sharing.
+- Consider Redux or Zustand for complex state management.
 
 ## Performance Optimization
 
-1. Use `memo` for expensive components:
-   ```typescript
-   // ✅ Good example
-	 import { memo } from 'react'
+### Component Memoization
 
-   export const ExpensiveComponent = memo(({ prop }) => {
-     // Component implementation
-   })
-   ```
+Use `memo` for expensive components.
 
-2. Use useMemo and useCallback appropriately:
-   ```typescript
-   // ✅ Good example
-   const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b])
-   const memoizedCallback = useCallback(() => {
-     doSomething(a, b)
-   }, [a, b])
-   ```
+```ts
+// ✅ Good example
+import { memo } from 'react'
+
+export const ExpensiveComponent = memo(({ prop }) => {
+  // Component implementation
+})
+```
+
+### Hook Optimization
+
+Use `useMemo` and `useCallback` appropriately.
+
+```ts
+// ✅ Good example
+const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b])
+const memoizedCallback = useCallback(() => {
+  doSomething(a, b)
+}, [a, b])
+```
 
 ## Testing
 
-1. Write tests for all components as Storybook stories:
-2. Create stories for all components:
-   ```typescript
-   // ✅ Good example
-   import type { Meta, StoryObj } from '@storybook/react'
+### Storybook Stories
 
-   const meta: Meta<typeof Component> = {
-     title: 'components/Component',
-     component: Component,
-   }
+Write tests for all components as Storybook stories.
 
-   export default meta
-   type Story = StoryObj<typeof Component>
+```ts
+// ✅ Good example
+import type { Meta, StoryObj } from '@storybook/react'
 
-   export const BasicUsage: Story = {
-     args: {
-       // Component props
-     },
-   }
-   ```
+const meta: Meta<typeof Component> = {
+  title: 'components/Component',
+  component: Component,
+}
+
+export default meta
+type Story = StoryObj<typeof Component>
+
+export const BasicUsage: Story = {
+  args: {
+    // Component props
+  },
+}
+```
 
 ## Error Handling
 
-1. Use Error Boundaries for component-level error handling:
-   ```typescript
-   // ✅ Good example
-   class ErrorBoundary extends React.Component {
-     state = { hasError: false }
+### Error Boundaries
 
-     static getDerivedStateFromError(error) {
-       return { hasError: true }
-     }
+Use Error Boundaries for component-level error handling.
 
-     render() {
-       if (this.state.hasError) {
-         return <h1>Something went wrong.</h1>
-       }
-       return this.props.children
-     }
-   }
-   ```
+```ts
+// ✅ Good example
+class ErrorBoundary extends React.Component {
+  state = { hasError: false }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true }
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return <h1>Something went wrong.</h1>
+    }
+    return this.props.children
+  }
+}
+```
 
 ## Accessibility
 
-1. Use semantic HTML elements
-2. Include proper ARIA attributes
-3. Ensure keyboard navigation works
-4. Maintain proper heading hierarchy
+### Best Practices
+
+- Use semantic HTML elements.
+- Include proper ARIA attributes.
+- Ensure keyboard navigation works.
+- Maintain proper heading hierarchy.
 
 ## Code Organization
 
-1. Keep components small and focused
-2. Do not use barrel exports (index.ts)
-3. Group related components in feature folders
-4. Keep business logic in custom hooks
+### Structure Guidelines
+
+- Keep components small and focused.
+- Do not use barrel exports (`index.ts`).
+- Group related components in feature folders.
+- Keep business logic in custom hooks.
+
+## Integration with Other Rules
+
+This rule works in conjunction with:
+
+- **[TypeScript Guidelines](mdc:.cursor/rules/guidelines/typescript.mdc)**: For TypeScript patterns and type safety.
+- **[Naming Conventions](mdc:.cursor/rules/guidelines/naming.mdc)**: For component and file naming.
+- **[Project Structure](mdc:.cursor/rules/guidelines/project_structure.mdc)**: For file organization.
+- **[Testing Guidelines](mdc:.cursor/rules/guidelines/testing.mdc)**: For component testing practices.
+
+## Quality Checklist
+
+Before finalizing JSX code, verify:
+
+- [ ] Components use functional syntax with TypeScript.
+- [ ] Props are properly typed with interfaces.
+- [ ] String props use simple strings when possible.
+- [ ] Performance optimizations are applied where needed.
+- [ ] Components are tested with Storybook stories.
+- [ ] Error boundaries are implemented for critical components.
+- [ ] Accessibility standards are followed.
+- [ ] Code is organized in logical feature folders.
 
 When you use this rule file, let me know this rule file is being used in the chat by mentioning the rule filename.
