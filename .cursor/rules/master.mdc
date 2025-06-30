@@ -29,6 +29,14 @@ Opinionated best practices on specific topics:
 
 - @guidelines/commit_message.mdc - Commit message formatting and conventions
 - @guidelines/markdown.mdc - Markdown formatting standards and best practices
+- @guidelines/naming.mdc - Naming conventions for files, folders, and code elements
+- @guidelines/import_export.mdc - Import and export patterns and best practices
+
+### Workflows
+
+Process-oriented rules for specific tasks:
+
+- @workflows/extract_frontmatter_from_markdown.mdc - Extracting frontmatter from .mdc or .mdx files using terminal commands
 
 ## How to Use Rules
 
@@ -40,3 +48,8 @@ Opinionated best practices on specific topics:
 ### For Code Quality and Standards
 - Use @guidelines/commit_message.mdc when writing commit messages
 - Use @guidelines/markdown.mdc when writing or editing markdown files
+- Use @guidelines/naming.mdc when creating or updating files and folders
+- Use @guidelines/import_export.mdc when working with module imports and exports
+
+### For Specific Workflows
+- Use @workflows/extract_frontmatter_from_markdown.mdc when extracting frontmatter from markdown files
