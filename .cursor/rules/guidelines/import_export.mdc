@@ -1,0 +1,977 @@
+---
+description:
+globs: *.js,*.ts,*.jsx,*.tsx,*.cjs,*.mjs,*.cts,*.mts
+alwaysApply: false
+---
+# Import and Export Guidelines
+
+This rule provides comprehensive guidelines for importing and exporting modules across JavaScript and TypeScript applications, covering best practices for modern ES6+ module syntax, built-in modules, third-party packages, and cross-platform compatibility. These guidelines ensure optimal performance, maintainable code, and consistent patterns across different environments including Node.js, browsers, and modern bundlers.
+
+## Table of Contents
+
+- [Import Guidelines](mdc:#import-guidelines)
+  - [Built-in Module Imports](mdc:#built-in-module-imports)
+  - [Third-party Package Imports](mdc:#third-party-package-imports)
+  - [Dynamic Imports](mdc:#dynamic-imports)
+  - [Type-Only Imports](mdc:#type-only-imports)
+- [Export Guidelines](mdc:#export-guidelines)
+  - [Named Exports](mdc:#named-exports)
+  - [Default Exports](mdc:#default-exports)
+  - [Re-exports](mdc:#re-exports)
+  - [Type Exports](mdc:#type-exports)
+  - [Namespace Exports](mdc:#namespace-exports)
+  - [Barrel Exports](mdc:#barrel-exports)
+  - [Conditional Exports](mdc:#conditional-exports)
+  - [Lazy Exports](mdc:#lazy-exports)
+- [Circular Dependency Prevention](mdc:#circular-dependency-prevention)
+- [Performance Considerations](mdc:#performance-considerations)
+  - [Tree-shaking Benefits](mdc:#tree-shaking-benefits)
+  - [Module Resolution](mdc:#module-resolution)
+  - [Runtime Implications](mdc:#runtime-implications)
+- [Common Scenarios](mdc:#common-scenarios)
+  - [File System Operations](mdc:#file-system-operations)
+  - [HTTP Server Setup](mdc:#http-server-setup)
+  - [Child Process Management](mdc:#child-process-management)
+- [Anti-patterns](mdc:#anti-patterns)
+- [Import and Export Order Guidelines](mdc:#import-and-export-order-guidelines)
+- [Migration Guide](mdc:#migration-guide)
+- [Version Compatibility](mdc:#version-compatibility)
+- [Integration with Other Rules](mdc:#integration-with-other-rules)
+
+## Import Guidelines
+
+### Built-in Module Imports
+
+### Use `node:` Prefix
+
+Always prefix built-in Node.js modules with `node:` for better performance, clarity, and future-proofing.
+
+```ts
+// ✅ Good - Use node: prefix for built-in modules
+import { join, resolve } from 'node:path'
+import { readFile, writeFile } from 'node:fs/promises'
+import { createServer } from 'node:http'
+import { spawn } from 'node:child_process'
+
+// ❌ Bad - Missing node: prefix
+import { join } from 'path'
+import { readFile } from 'fs/promises'
+import { createServer } from 'http'
+```
+
+### Prefer Named Exports
+
+Use named exports instead of default imports for better tree-shaking and code clarity.
+
+```ts
+// ✅ Good - Named exports for specific functions
+import { join, resolve, extname } from 'node:path'
+import { readFile, writeFile, mkdir } from 'node:fs/promises'
+
+// ❌ Bad - Default import (less tree-shaking friendly)
+import path from 'node:path'
+import fs from 'node:fs/promises'
+```
+
+### Exception: When to Use Default Imports
+
+Use default imports only when the module is primarily used as a single unit:
+
+```ts
+// ✅ Good - Default import for utility libraries
+import chalk from 'chalk'
+import ora from 'ora'
+
+// ✅ Good - Default import for configuration objects
+import config from './config.js'
+```
+
+## Third-party Package Imports
+
+### Package Import Guidelines
+
+```ts
+// ✅ Good - Named exports for specific functionality
+import { useState, useEffect } from 'react'
+import { debounce, throttle } from 'lodash-es'
+
+// ✅ Good - Default import for main package
+import express from 'express'
+import axios from 'axios'
+
+// ❌ Bad - Importing entire library when only specific functions needed
+import * as lodash from 'lodash'
+import * as React from 'react'
+
+// ❌ Bad - Accessing named exports through default import
+import React from 'react'
+
+type X = React.CSSProperties
+React.useState()
+```
+
+### Dynamic Imports
+
+Use dynamic imports for conditional module loading and code splitting:
+
+```ts
+// ✅ Good - Dynamic import for conditional loading
+const loadModule = async (condition: boolean) => {
+  if (condition) {
+    const { default: module } = await import('./heavy-module.js')
+    return module
+  }
+  return null
+}
+
+// ✅ Good - Dynamic import with error handling
+try {
+  const { readFile } = await import('node:fs/promises')
+  const content = await readFile('file.txt', 'utf8')
+} catch (error) {
+  console.error('Failed to read file:', error)
+}
+
+// ✅ Good - Dynamic import for code splitting
+const loadComponent = async (componentName: string) => {
+  const module = await import(`./components/${componentName}.js`)
+  return module.default
+}
+
+// ✅ Good - Dynamic import with type safety
+const loadUtility = async (utilityName: 'format' | 'validate') => {
+  const { [utilityName]: utility } = await import('./utils.js')
+  return utility
+}
+```
+
+## Export Guidelines
+
+### Named Exports
+
+Prefer named exports for better tree-shaking and explicit API design:
+
+**Function Declarations**: Use `export function` for function declarations, as it's more readable and provides better stack traces.
+
+**Return Types**: Omit return type annotations when TypeScript can easily infer them. Keep explicit return types for complex types, union types, or when the return type is not obvious from the implementation.
+
+**Constants and Values**: Use `export const` for constants, configuration values, and other non-function exports.
+
+```ts
+// ✅ Good - Named exports for functions
+export function formatDate(date: Date) {
+  return date.toISOString()
+}
+
+export function validateEmail(email: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+}
+
+// ✅ Good - Named exports for constants
+export const API_BASE_URL = 'https://api.example.com'
+export const DEFAULT_TIMEOUT = 5000
+
+// ✅ Good - Named exports for types
+export type User = {
+  id: string
+  name: string
+  email: string
+}
+
+export interface ApiResponse<T> {
+  data: T
+  status: number
+  message: string
+}
+
+// ✅ Good - Named exports for classes
+export class UserService {
+  constructor(private apiUrl: string) {}
+
+  async getUser(id: string): Promise<User> {
+    // Implementation
+  }
+}
+
+// ✅ Good - Keep explicit return types for complex types
+export function parseConfig(config: unknown): Config | null {
+  if (isValidConfig(config)) {
+    return config as Config
+  }
+  return null
+}
+
+// ✅ Good - Keep explicit return types for union types
+export function getStatus(): 'loading' | 'success' | 'error' {
+  return 'loading'
+}
+
+### Default Exports
+
+Use default exports sparingly, primarily for:
+- Main application entry points
+- Configuration objects
+
+```ts
+// ✅ Good - Default export for main application
+// app.ts
+import express from 'express'
+import { router } from './routes.js'
+
+const app = express()
+app.use(router)
+
+export default app
+
+// ✅ Good - Default export for configuration
+// config.ts
+export default {
+  port: process.env.PORT || 3000,
+  database: {
+    url: process.env.DATABASE_URL,
+    pool: { min: 2, max: 10 }
+  }
+}
+```
+
+### Re-exports
+
+Use re-exports primarily for main entry points and public APIs. Avoid internal re-exports to prevent circular dependencies:
+
+```ts
+// ✅ Good - Main entry point re-exports
+export { join, resolve } from 'node:path'
+export { readFile, writeFile } from 'node:fs/promises'
+
+// ✅ Good - Re-export with renaming
+export { join as pathJoin } from 'node:path'
+export { default as ExpressApp } from 'express'
+
+// ✅ Good - Re-export only types
+export type { User, Post } from './models.js'
+export type { ApiResponse } from './api-types.js'
+
+// ✅ Good - Package sub-entry points
+export * as Utils from './utils.js'
+export * as Types from './types.js'
+
+// ❌ Bad - Internal re-exports (use direct imports instead)
+// internal/helpers/index.ts
+export { helper1, helper2 } from './specific-helpers.js'
+// Instead: import { helper1 } from './internal/helpers/specific-helpers.js'
+```
+
+### Type Exports
+
+Use dedicated type exports for better TypeScript integration:
+
+```ts
+// ✅ Good - Export types separately
+export type User = {
+  id: string
+  name: string
+  email: string
+}
+
+export type ApiResponse<T> = {
+  data: T
+  status: number
+  message: string
+}
+
+// ✅ Good - Export type-only re-exports
+export type { Request, Response } from 'express'
+export type { ComponentProps } from 'react'
+
+// ✅ Good - Export type utilities
+export type NonNullable<T> = T extends null | undefined ? never : T
+export type DeepPartial<T> = {
+  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P]
+}
+```
+
+### Namespace Exports
+
+Namespace exports should only be used for types and interfaces. They should never produce JavaScript values at runtime:
+
+```ts
+// ✅ Good - Type-only namespace exports
+export namespace Types {
+  export interface User {
+    id: string
+    name: string
+    email: string
+  }
+
+  export interface Post {
+    id: string
+    userId: string
+    title: string
+    content: string
+  }
+
+  export type UserRole = 'admin' | 'user' | 'moderator'
+  export type ApiResponse<T> = {
+    data: T
+    status: number
+    message: string
+  }
+}
+
+// ✅ Good - Namespace for type utilities
+export namespace TypeUtils {
+  export type NonNullable<T> = T extends null | undefined ? never : T
+  export type DeepPartial<T> = {
+    [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P]
+  }
+  export type PickRequired<T, K extends keyof T> = T & Required<Pick<T, K>>
+}
+
+// ❌ Bad - Namespace exports with runtime values
+export namespace StringUtils {
+  export function capitalize(str: string) {
+    return str.charAt(0).toUpperCase() + str.slice(1)
+  }
+  // This creates JavaScript code at runtime - avoid!
+}
+
+// ❌ Bad - Namespace exports for constants
+export namespace Config {
+  export const API_VERSION = 'v1'
+  export const TIMEOUT = 5000
+  // These create JavaScript variables at runtime - avoid!
+}
+```
+
+### Barrel Exports (Use Sparingly)
+
+Barrel exports should only be used for main entry points of packages. They can increase the risk of circular dependencies and make dependency graphs harder to analyze.
+
+```ts
+// ✅ Good - Main package entry point only
+// index.ts (main entry point)
+export { UserService } from './services/user.js'
+export { PostService } from './services/post.js'
+export type { User, Post } from './types.js'
+export { createApiClient } from './client.js'
+
+// ✅ Good - Package sub-entry points
+// utils/index.ts (if utils is a separate entry point specified in `package.json#exports` field)
+export { formatDate, parseDate } from './date-utils.js'
+export { validateEmail, validatePhone } from './validation.js'
+
+// ❌ Bad - Internal barrel exports
+// services/index.ts (internal organization)
+export { UserService } from './user.js'
+export { PostService } from './post.js'
+// Instead, import directly: import { UserService } from './services/user.js'
+```
+
+### Conditional Exports
+
+Use conditional exports for different environments and module systems:
+
+```ts
+// ✅ Good - Conditional exports in package.json
+{
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js",
+      "types": "./dist/types/index.d.ts"
+    },
+    "./utils": {
+      "import": "./dist/esm/utils.js",
+      "require": "./dist/cjs/utils.js"
+    }
+  }
+}
+
+// ✅ Good - Environment-specific exports
+export function getApiUrl() {
+  if (process.env.NODE_ENV === 'production') {
+    return 'https://api.production.com'
+  }
+  return 'https://api.development.com'
+}
+```
+
+### Lazy Exports
+
+Use lazy exports for expensive operations:
+
+```ts
+// ✅ Good - Lazy export for expensive initialization
+let _database: Database | null = null
+
+export function getDatabase() {
+  if (!_database) {
+    _database = new Database(process.env.DATABASE_URL)
+  }
+  return _database
+}
+
+// ✅ Good - Lazy export with factory pattern
+export function createService(config: ServiceConfig) {
+  return new Service(config)
+}
+```
+
+### Type-Only Imports
+
+### Separate Type and Value Imports
+
+Use `import type` to import only TypeScript types, interfaces, and type aliases. This ensures types are completely removed from the runtime bundle.
+
+```ts
+// ✅ Good - Separate type imports
+import type { User, Config, ApiResponse } from './types.js'
+import { createUser, updateUser } from './api.js'
+
+// ✅ Good - Type-only imports for external libraries
+import type { Request, Response } from 'express'
+import type { ComponentProps } from 'react'
+
+// ❌ Bad - Mixed type and value imports
+import { createUser, type User } from './api.js'
+import { useState, type CSSProperties } from 'react'
+```
+
+### Type-Only Import Patterns
+
+```ts
+// ✅ Good - Import multiple types in one statement
+import type { User, Post, Comment } from './models.js'
+
+// ✅ Good - Import types with renaming
+import type { User as UserModel } from './models.js'
+
+// ✅ Good - Import all types from a module
+import type * as Types from './types.js'
+
+// ✅ Good - Import specific types from external packages
+import type { AxiosResponse, AxiosRequestConfig } from 'axios'
+import type { Jest } from '@jest/globals'
+```
+
+### When to Use Type-Only Imports
+
+Use `import type` when:
+
+- **Importing only types**: No runtime values are needed
+- **External type definitions**: Importing types from third-party packages
+- **Interface definitions**: Importing interfaces and type aliases
+- **Generic types**: Importing generic type definitions
+- **Union/Intersection types**: Importing complex type compositions
+
+```ts
+// ✅ Good - Importing only types for API responses
+import type { ApiResponse, ErrorResponse } from './api-types.js'
+import { fetchData } from './api.js'
+
+async function handleResponse(): Promise<ApiResponse> {
+  const response = await fetchData()
+  return response as ApiResponse
+}
+
+// ✅ Good - Importing types for configuration
+import type { DatabaseConfig, ServerConfig } from './config-types.js'
+import { loadConfig } from './config.js'
+
+const config: DatabaseConfig = loadConfig()
+```
+
+### Re-exporting Types
+
+```ts
+// ✅ Good - Re-export types only
+export type { User, Post } from './models.js'
+export type { ApiResponse } from './api-types.js'
+
+// ✅ Good - Re-export types with renaming
+export type { User as UserModel } from './models.js'
+
+// ✅ Good - Re-export all types
+export type * from './types.js'
+```
+
+### Type Import Best Practices
+
+```ts
+// ✅ Good - Group type imports together
+import type { User, Post, Comment } from './models.js'
+import type { ApiResponse, ErrorResponse } from './api-types.js'
+import { createUser, fetchPosts } from './api.js'
+
+// ✅ Good - Use type imports for external libraries
+import type { Request, Response, NextFunction } from 'express'
+import type { ComponentProps, ReactNode } from 'react'
+import express from 'express'
+
+// ✅ Good - Import types for testing
+import type { Mock } from 'jest-mock'
+import type { Jest } from '@jest/globals'
+```
+
+## Circular Dependency Prevention
+
+### Understanding Circular Dependencies
+
+Circular dependencies occur when module A imports from module B, and module B imports from module A (directly or indirectly). This can lead to:
+- Runtime errors and undefined values
+- Difficult-to-debug issues
+- Complex dependency graphs
+- Build and bundling problems
+
+### Prevention Strategies
+
+```ts
+// ❌ Bad - Direct circular dependency
+// user-service.ts
+import { PostService } from './post-service.js'
+export class UserService {
+  async getUserPosts(userId: string) {
+    return new PostService().getPostsByUser(userId)
+  }
+}
+
+// post-service.ts
+import { UserService } from './user-service.js'  // Circular!
+export class PostService {
+  async getPostAuthor(postId: string) {
+    return new UserService().getUser(postId)
+  }
+}
+
+// ✅ Good - Break circular dependency with dependency injection
+// user-service.ts
+export class UserService {
+  constructor(private postService?: PostService) {}
+
+  async getUserPosts(userId: string) {
+    const postService = this.postService || new PostService()
+    return postService.getPostsByUser(userId)
+  }
+}
+
+// post-service.ts
+export class PostService {
+  constructor(private userService?: UserService) {}
+
+  async getPostAuthor(postId: string) {
+    const userService = this.userService || new UserService()
+    return userService.getUser(postId)
+  }
+}
+
+// ✅ Good - Use a shared interface or type
+// types.ts
+export interface User {
+  id: string
+  name: string
+}
+
+export interface Post {
+  id: string
+  userId: string
+  title: string
+}
+
+// user-service.ts
+import type { User, Post } from './types.js'
+export class UserService {
+  async getUser(id: string): Promise<User> { /* ... */ }
+}
+
+// post-service.ts
+import type { User, Post } from './types.js'
+export class PostService {
+  async getPost(id: string): Promise<Post> { /* ... */ }
+}
+```
+
+### Avoiding Barrel Export Circular Dependencies
+
+```ts
+// ❌ Bad - Barrel exports can hide circular dependencies
+// services/index.ts
+export { UserService } from './user-service.js'
+export { PostService } from './post-service.js'
+
+// user-service.ts
+import { PostService } from './index.js'  // Circular through barrel!
+
+// ✅ Good - Direct imports make dependencies explicit
+// user-service.ts
+import { PostService } from './post-service.js'  // Clear dependency
+```
+
+## Performance Considerations
+
+### Tree-shaking Benefits
+
+Named exports enable better tree-shaking:
+
+```ts
+// ✅ Good - Only imports what's needed
+import { debounce } from 'lodash-es'
+
+// ❌ Bad - Imports entire library
+import _ from 'lodash'
+const debounced = _.debounce(fn, 1000)
+```
+
+### Module Resolution
+
+The `node:` prefix provides several benefits:
+
+- **Performance**: Direct resolution without package.json lookups
+- **Clarity**: Explicitly indicates built-in Node.js modules
+- **Future-proofing**: Ensures compatibility with future Node.js versions
+- **Security**: Prevents potential supply chain attacks on built-in modules
+
+### Runtime Implications of Namespace Exports
+
+Namespace exports with runtime values create JavaScript objects at runtime, which can impact performance and bundle size:
+
+```ts
+// ❌ Bad - Creates runtime JavaScript object
+export namespace Utils {
+  export function formatDate(date: Date) { /* ... */ }
+  export function validateEmail(email: string) { /* ... */ }
+}
+
+// Generated JavaScript (simplified):
+// exports.Utils = {
+//   formatDate: function(date) { /* ... */ },
+//   validateEmail: function(email) { /* ... */ }
+// }
+
+// ✅ Good - No runtime overhead
+export function formatDate(date: Date) { /* ... */ }
+export function validateEmail(email: string) { /* ... */ }
+
+// Generated JavaScript (simplified):
+// exports.formatDate = function(date) { /* ... */ }
+// exports.validateEmail = function(email) { /* ... */ }
+```
+
+**Benefits of avoiding runtime namespace exports:**
+- **Smaller bundle size**: No unnecessary wrapper objects
+- **Better tree-shaking**: Individual exports can be eliminated if unused
+- **Faster runtime**: Direct property access vs object property access
+- **Cleaner imports**: `import { formatDate } from './utils.js'` vs `import { Utils } from './utils.js'`
+
+## Common Scenarios
+
+### File System Operations
+
+```ts
+// ✅ Good - Comprehensive file system imports
+import {
+  readFile,
+  writeFile,
+  mkdir,
+  access,
+  constants
+} from 'node:fs/promises'
+import { join, resolve, extname } from 'node:path'
+
+// Usage example
+const filePath = join(process.cwd(), 'data', 'config.json')
+const content = await readFile(filePath, 'utf8')
+```
+
+### HTTP Server Setup
+
+```ts
+// ✅ Good - HTTP server imports
+import { createServer } from 'node:http'
+import { URL } from 'node:url'
+
+const server = createServer((req, res) => {
+  const url = new URL(req.url!, `http://${req.headers.host}`)
+  // Handle request
+})
+```
+
+### Child Process Management
+
+```ts
+// ✅ Good - Process management imports
+import { spawn, exec } from 'node:child_process'
+import { promisify } from 'node:util'
+
+const execAsync = promisify(exec)
+const result = await execAsync('ls -la')
+```
+
+## Anti-patterns
+
+### Avoid These Patterns
+
+```ts
+// ❌ Bad - Importing entire modules unnecessarily
+import * as fs from 'node:fs/promises'
+import * as path from 'node:path'
+
+// ❌ Bad - Missing node: prefix
+import { join } from 'path'
+import { readFile } from 'fs/promises'
+
+// ❌ Bad - Default import when named exports are available
+import path from 'node:path'
+const joined = path.join('a', 'b')
+
+// ❌ Bad - Importing unused modules
+import { join, resolve, extname, dirname, basename } from 'node:path'
+// Only using join and resolve
+
+// ❌ Bad - Inconsistent import patterns
+import { join } from 'node:path'
+import fs from 'node:fs/promises'  // Should use named exports
+
+// ❌ Bad - Circular dependencies
+// file-a.ts
+import { something } from './file-b.js'
+export { something }
+
+// file-b.ts
+import { something } from './file-a.js'  // Circular dependency!
+
+// ❌ Bad - Import order violations
+import { something } from './local-file.js'
+import { join } from 'node:path'  // Built-in modules should come first
+import express from 'express'     // Third-party modules should come second
+
+// ❌ Bad - Bundle size issues
+import * as lodash from 'lodash'  // Imports entire library
+import * as moment from 'moment'  // Large library, consider alternatives
+
+// ❌ Bad - Export anti-patterns
+// Mixing default and named exports inappropriately
+export default class UserService {}
+export function createUser() {}  // Should be consistent
+
+// ❌ Bad - Exporting everything
+export * from './utils.js'  // Exports everything, including internal functions
+
+// ❌ Bad - Inconsistent export patterns
+export const API_URL = 'https://api.example.com'
+export default { API_URL }  // Redundant default export
+
+// ❌ Bad - Exporting mutable state
+export let currentUser: User | null = null  // Mutable exports are dangerous
+
+// ❌ Bad - Circular export dependencies
+// file-a.ts
+export { something } from './file-b.js'
+
+// file-b.ts
+export { something } from './file-a.js'  // Circular dependency!
+
+// ❌ Bad - Exporting implementation details
+export function _internalHelper() {}  // Should not export internal functions
+
+// ❌ Bad - Inconsistent naming in exports
+export { formatDate as format } from './date-utils.js'
+export { validateEmail as validate } from './validation.js'  // Inconsistent naming
+
+// ❌ Bad - Unnecessary return type annotations
+export function formatDate(date: Date): string {
+  return date.toISOString()  // TypeScript can infer this is string
+}
+
+// ✅ Good - Let TypeScript infer simple return types
+export function formatDate(date: Date) {
+  return date.toISOString()
+}
+
+// ❌ Bad - Namespace exports with runtime values
+export namespace Utils {
+  export function formatDate(date: Date) { /* ... */ }
+  export function validateEmail(email: string) { /* ... */ }
+  // Creates JavaScript objects at runtime - use regular exports instead
+}
+
+// ❌ Bad - Namespace exports for constants
+export namespace Constants {
+  export const API_URL = 'https://api.example.com'
+  export const TIMEOUT = 5000
+  // Creates JavaScript variables at runtime - use regular exports instead
+}
+
+// ❌ Bad - Internal barrel exports (circular dependency risk)
+// services/index.ts
+export { UserService } from './user.js'
+export { PostService } from './post.js'
+// Instead, import directly from specific files
+
+// ❌ Bad - Deep barrel export chains
+// components/index.ts
+export * from './button/index.js'  // button/index.ts also has barrel exports
+export * from './form/index.js'    // Creates complex dependency graphs
+
+// ❌ Bad - Barrel exports for internal organization
+// internal/utils/index.ts
+export { helper1, helper2 } from './helpers.js'
+// Use direct imports instead: import { helper1 } from './internal/utils/helpers.js'
+```
+
+### Import and Export Order Guidelines
+
+Follow this order for consistent and maintainable imports and exports:
+
+#### Import Order
+
+```ts
+// 1. External modules (built-in and third-party) - sorted alphabetically
+import express from 'express'
+import { readFile } from 'node:fs/promises'
+import { useState } from 'react'
+import { join, resolve } from 'node:path'
+
+// 2. Local modules (relative paths) - sorted alphabetically
+import { config } from './config.js'
+import type { User } from './types.js'
+
+// 3. Style imports (if applicable) - not sorted
+import './styles.css'
+import './components/button.css'
+```
+
+#### Export Order
+
+```ts
+// 1. Type exports first
+export type { User, Post } from './types.js'
+export interface ApiResponse<T> { /* ... */ }
+
+// 2. Constants and configuration
+export const API_BASE_URL = 'https://api.example.com'
+export const DEFAULT_TIMEOUT = 5000
+
+// 3. Utility functions
+export function formatDate(date: Date) { /* ... */ }
+export function validateEmail(email: string) { /* ... */ }
+
+// 4. Classes and services
+export class UserService { /* ... */ }
+export class PostService { /* ... */ }
+
+// 5. Default exports last
+export default app
+```
+
+## Migration Guide
+
+When updating existing code:
+
+### Import Migration
+
+```ts
+// Before
+import path from 'path'
+import fs from 'fs/promises'
+
+// After
+import { join, resolve, extname } from 'node:path'
+import { readFile, writeFile, mkdir } from 'node:fs/promises'
+```
+
+### Export Migration
+
+```ts
+// Before - CommonJS exports
+module.exports = {
+  formatDate,
+  validateEmail,
+  UserService
+}
+
+// After - ES6 named exports
+export function formatDate(date: Date) { /* ... */ }
+export function validateEmail(email: string) { /* ... */ }
+export class UserService { /* ... */ }
+
+// Before - Mixed default and named exports
+export default UserService
+export function createUser(): void {}
+
+// After - Consistent named exports
+export class UserService { /* ... */ }
+export function createUser() {}
+
+// Before - Exporting everything
+export * from './utils.js'
+
+// After - Selective exports
+export { formatDate, validateEmail } from './utils.js'
+export type { User, Post } from './types.js'
+
+// Before - Internal barrel exports
+// services/index.ts
+export { UserService } from './user.js'
+export { PostService } from './post.js'
+
+// After - Direct imports (avoid internal barrel exports)
+// Import directly: import { UserService } from './services/user.js'
+// Remove services/index.ts barrel file
+
+// Before - Namespace exports with runtime values
+export namespace Utils {
+  export function formatDate(date: Date) { /* ... */ }
+  export function validateEmail(email: string) { /* ... */ }
+}
+
+// After - Regular named exports (no runtime overhead)
+export function formatDate(date: Date) { /* ... */ }
+export function validateEmail(email: string) { /* ... */ }
+
+// Before - Namespace exports for constants
+export namespace Config {
+  export const API_URL = 'https://api.example.com'
+  export const TIMEOUT = 5000
+}
+
+// After - Regular constant exports
+export const API_URL = 'https://api.example.com'
+export const TIMEOUT = 5000
+```
+
+## Version Compatibility
+
+### Node.js Version Requirements
+
+The `node:` prefix for built-in modules is supported in:
+
+- **Node.js 14.18.0+**: Full support for `node:` prefix
+- **Node.js 12.20.0+**: Experimental support (not recommended for production)
+- **Node.js < 12.20.0**: Not supported
+
+### TypeScript Compatibility
+
+- **TypeScript 4.7+**: Full support for `node:` prefix in type checking
+- **TypeScript < 4.7**: May require additional configuration for proper type resolution
+
+## Integration with Other Rules
+
+This rule works in conjunction with:
+
+- **[Markdown Guidelines](mdc:.cursor/rules/guidelines/markdown.mdc)** - For documentation formatting and consistency
+- **[Naming Guidelines](mdc:.cursor/rules/guidelines/naming.mdc)** - For consistent file and module naming
+- **[Commit Message Guidelines](mdc:.cursor/rules/guidelines/commit_message.mdc)** - For commit message conventions
+
+## Summary
+
+This guide provides comprehensive coverage of Node.js import and export best practices, from basic module operations to advanced TypeScript patterns. Follow these guidelines to ensure:
+
+- **Performance**: Optimal bundle sizes through tree-shaking, proper module resolution, and avoiding runtime namespace exports
+- **Maintainability**: Consistent and readable import/export patterns across your codebase
+- **API Design**: Clean and intuitive public APIs through proper export strategies
+- **Dependency Management**: Prevention of circular dependencies through direct imports and limited barrel exports
+- **Type Safety**: Proper use of namespace exports for types only, avoiding runtime overhead
+- **Future-proofing**: Compatibility with modern Node.js and TypeScript features
+- **Security**: Protection against supply chain attacks through proper module resolution
+- **Developer Experience**: Clear and predictable module interfaces for better collaboration
+
