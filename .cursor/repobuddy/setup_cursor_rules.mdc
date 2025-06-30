@@ -50,22 +50,22 @@ If the example already exists, skip that example.
 
 ## Step 4: Copy Basic Rules
 
-- Copy `.cursor/repobuddy/rule_templates/master.mdc` to `.cursor/rules` using terminal.
-- Copy all files under `.cursor/repobuddy/rule_templates/agents` to `.cursor/rules/agents` using terminal.
-- Copy all files under `.cursor/repobuddy/rule_templates/workflows` to `.cursor/rules/workflows` using terminal.
+- Copy `.cursor/repobuddy/required/master.mdc` to `.cursor/rules` using terminal.
+- Copy all files under `.cursor/repobuddy/required/agents` to `.cursor/rules/agents` using terminal.
+- Copy all files under `.cursor/repobuddy/required/workflows` to `.cursor/rules/workflows` using terminal.
 - Validate `.cursor/rules/workflows/extract_frontmatter_from_markdown.mdc` exists.
 - Read the new rules in `.cursor/rules`. You should comply with these new rules for the rest of this workflow.
 
 ## Step 5: Setup naming convention
 
-- Copy `.cursor/repobuddy/rule_templates/guidelines/naming.mdc` to `.cursor/rules/guidelines/naming.mdc`.
+- Copy `.cursor/repobuddy/required/guidelines/naming.mdc` to `.cursor/rules/guidelines/naming.mdc`.
 - Look for rule(s) about naming convention in Backup Cursor Rules.
 - If found, update `.cursor/rules/guidelines/naming.mdc` according to what they have.
   - Make sure to follow `.cursor/rules/agents/cursor_rules.mdc` to maintain the structure and best practice.
 
 ## Step 6: Setup Markdown Guidelines
 
-- Copy `.cursor/repobuddy/rule_templates/guidelines/markdown.mdc` to `.cursor/rules/guidelines/markdown.mdc`.
+- Copy `.cursor/repobuddy/required/guidelines/markdown.mdc` to `.cursor/rules/guidelines/markdown.mdc`.
 - Look for rule(s) about markdown guideline in the Backup Cursor Rules.
 - If found, update `.cursor/rules/guidelines/markdown.mdc` according to what they have.
   - Make sure to follow `.cursor/rules/agents/cursor_rules.mdc` to maintain the structure and best practice.
@@ -73,7 +73,7 @@ If the example already exists, skip that example.
 
 ## Step 7: Setup Commit Message Guidelines
 
-- Copy `.cursor/repobuddy/rule_templates/guidelines/commit_message.mdc` to `.cursor/rules/guidelines/commit_message.mdc`.
+- Copy `.cursor/repobuddy/required/guidelines/commit_message.mdc` to `.cursor/rules/guidelines/commit_message.mdc`.
 - Check if there is a commit message guideline in the Backup Cursor Rules.
 - If found, update `.cursor/rules/guidelines/commit_message.mdc` according to what it has.
   - Make sure to follow `.cursor/rules/agents/cursor_rules.mdc` to maintain the structure and best practice.
