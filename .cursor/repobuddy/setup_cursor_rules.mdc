@@ -48,13 +48,13 @@ Create the following structure:
 Copy every example under `.cursor/repobuddy/examples` to `.cursor/examples` with the same folder structure.
 If the example already exists, skip that example.
 
-## Step 4: Copy Basic Rules
+## Step 4: Copy Core Rules
 
 - Copy `.cursor/repobuddy/required/master.mdc` to `.cursor/rules` using terminal.
 - Copy all files under `.cursor/repobuddy/required/agents` to `.cursor/rules/agents` using terminal.
 - Copy all files under `.cursor/repobuddy/required/workflows` to `.cursor/rules/workflows` using terminal.
 - Validate `.cursor/rules/workflows/extract_frontmatter_from_markdown.mdc` exists.
-- Read the new rules in `.cursor/rules`. You should comply with these new rules for the rest of this workflow.
+- Read the new rules in `.cursor/rules`. These are the Core Rule and you should comply with these new rules for the rest of this workflow.
 
 ## Step 5: Setup naming convention
 
@@ -109,24 +109,25 @@ For each `.mdc` file in the backup, determine its appropriate category:
 
 To start, you **MUST** echo the next paragraph and follow it:
 
-For each file, you **MUST NOT RUSH** and **MUST** follow all 7 sub-steps **EXACTLY** described below.
-You **MUST NOT** stop at sub-step 8.3.5.
+For each file, you **MUST NOT RUSH** and **MUST** follow all 8 sub-steps **EXACTLY** described below.
+You **MUST NOT** stop at sub-step 8.3.6.
 And you **MUST** mention each sub-step as you execute them.
 
 8.3.1. **Read Original File**: Open the backup file and read its complete content.
-8.3.2. **Determine Target Location**: Based on the categorization in Step 8.2, determine the appropriate subfolder
-8.3.3. **Check for Conflicts**: Verify no similar rule (check by content similarity, not just filename) already exists in the target location
+8.3.2. **Skip Core Rules**: Skip this fole and continue on the next file if it is correspond to one of the Core Rules in Step 4, for example `.cursor/rules/agents/cursor_rules.mdc` or `.cursor/rules/workflows/extract_frontmatter_from_markdown.mdc`.
+8.3.3. **Determine Target Location**: Based on the categorization in Step 8.2, determine the appropriate subfolder
+8.3.4. **Check for Conflicts**: Verify no similar rule (check by content similarity, not just filename) already exists in the target location
        - **Skip if found**: If a similar rule is found, skip this file and continue on the next file
-8.3.4. **Extract Frontmatter - CRITICAL STEP**: **YOU MUST USE THE WORKFLOW**
+8.3.5. **Extract Frontmatter - CRITICAL STEP**: **YOU MUST USE THE WORKFLOW**
        - **ALWAYS** use `.cursor/rules/workflows/extract_frontmatter_from_markdown.mdc` to extract the frontmatter from the original file.
        - **NEVER** assume a file has no frontmatter without checking with the workflow first.
        - **NEVER** create frontmatter manually without extracting it first.
        - **ALWAYS** run the extraction command: `awk '/^---$/{p=!p;next}p' filename.mdc`
        - **IF** the command returns no output, you should terminate the workflow immediately.
        - **IF** the command returns output, that IS the frontmatter and you must preserve it exactly.
-8.3.5. **Create New File**: Create a new rule in the appropriate subfolder under `.cursor/rules`.
-8.3.6. **Update Content Structure**: Following `.cursor/rules/agents/cursor_rules.mdc`, update the content structure while preserving all original information.
-8.3.7. **Validate Migration**: Verify the new file has:
+8.3.6. **Create New File**: Create a new rule in the appropriate subfolder under `.cursor/rules`.
+8.3.7. **Update Content Structure**: Following `.cursor/rules/agents/cursor_rules.mdc`, update the content structure while preserving all original information.
+8.3.8. **Validate Migration**: Verify the new file has:
        - **ALWAYS**: Use `.cursor/rules/workflows/extract_frontmatter_from_markdown.mdc` to validate the frontmatter in the new file.
        - **ALWAYS**: Verify the `globs` value must remain exactly the same. e.g. `*.tsx,*.jsx` **MUST NOT** convert to `*.{tsx,jsx}`.
        - **ALWAYS**: Identical frontmatter as the original
