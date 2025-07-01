@@ -114,7 +114,7 @@ You **MUST NOT** stop at sub-step 8.3.6.
 And you **MUST** mention each sub-step as you execute them.
 
 8.3.1. **Read Original File**: Open the backup file and read its complete content.
-8.3.2. **Skip Core Rules**: Skip this fole and continue on the next file if it is correspond to one of the Core Rules in Step 4, for example `.cursor/rules/agents/cursor_rules.mdc` or `.cursor/rules/workflows/extract_frontmatter_from_markdown.mdc`.
+8.3.2. **Skip Core Rules**: Skip this role and continue on the next file if it is correspond to one of the Core Rules in Step 4, for example `.cursor/rules/agents/cursor_rules.mdc` or `.cursor/rules/workflows/extract_frontmatter_from_markdown.mdc`.
 8.3.3. **Determine Target Location**: Based on the categorization in Step 8.2, determine the appropriate subfolder
 8.3.4. **Check for Conflicts**: Verify no similar rule (check by content similarity, not just filename) already exists in the target location
        - **Skip if found**: If a similar rule is found, skip this file and continue on the next file
