@@ -5,7 +5,6 @@ describe(`${nodeTestPreset.name}()`, () => {
 	describe('TZ', () => {
 		afterEach(() => {
 			// Reset the TZ environment variable after each test
-			// biome-ignore lint/performance/noDelete: on purpose
 			delete process.env.TZ
 		})
 

@@ -72,6 +72,12 @@
 				}
 			},
 			"assist": { "actions": { "source": { "organizeImports": "on" } } }
+		},
+		{
+			"includes": ["packages/typescript/tsconfig/**/*.json"],
+			"json": {
+				"parser": { "allowComments": true }
+			}
 		}
 	],
 	"linter": {
