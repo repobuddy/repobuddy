@@ -55,9 +55,9 @@
 				// Type operates at a higher dimension than value.
 				// This means there are many cases you will need to use `any` to bypass the type inferred in the value.
 				"noExplicitAny": "off",
-				// The `noConsoleLog` setting is `biome` matches the requirement or repobuddy.
+				// The `noConsole` setting in `biome` matches the requirement of repobuddy.
 				// Thus it is enabled by default.
-				"noConsole": { "level": "error", "options": { "allow": ["log"] } }
+				"noConsole": { "level": "error", "options": { "allow": ["info", "warn", "error", "assert", "table"] } }
 			}
 		}
 	},
