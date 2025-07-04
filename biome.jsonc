@@ -8,19 +8,20 @@
 		"defaultBranch": "main"
 	},
 	"files": {
-		"ignore": [
-			".astro",
-			".turbo",
-			"node_modules",
-			"cjs",
-			"coverage",
-			"dist",
-			"esm",
-			"tslib",
-			"target",
-			".vscode/*.txt",
-			"tests/performant",
-			"*.error.ts"
+		"includes": [
+			"**",
+			"!**/.astro",
+			"!**/.turbo",
+			"!**/node_modules",
+			"!**/cjs",
+			"!**/coverage",
+			"!**/dist",
+			"!**/esm",
+			"!**/tslib",
+			"!**/target",
+			"!**/.vscode/**/*.txt",
+			"!**/tests/performant",
+			"!**/*.error.ts"
 		]
 	},
 	"formatter": {
@@ -30,7 +31,7 @@
 	},
 	"overrides": [
 		{
-			"include": ["tests/performant"],
+			"includes": ["**/tests/performant/**"],
 			"formatter": {
 				"enabled": true,
 				"indentStyle": "tab",
@@ -50,7 +51,8 @@
 					"recommended": true,
 					"complexity": {
 						"noForEach": "off",
-						"useLiteralKeys": "off"
+						"useLiteralKeys": "off",
+						"noCommaOperator": "off"
 					},
 					"correctness": {
 						"noInnerDeclarations": "warn",
@@ -58,21 +60,33 @@
 						"useExhaustiveDependencies": "off"
 					},
 					"style": {
-						"noCommaOperator": "off",
 						"noNonNullAssertion": "off",
 						"noParameterAssign": "off",
-						"noVar": "off",
 						"useTemplate": "off"
 					},
 					"suspicious": {
 						"noAssignInExpressions": "off",
-						"noExplicitAny": "off"
+						"noExplicitAny": "off",
+						"noVar": "off"
 					}
 				}
 			},
-			"organizeImports": {
-				"enabled": true
+			"assist": { "actions": { "source": { "organizeImports": "on" } } }
+		}
+	],
+	"linter": {
+		"rules": {
+			"style": {
+				"useAsConstAssertion": "error",
+				"useDefaultParameterLast": "error",
+				"useEnumInitializers": "error",
+				"useSelfClosingElements": "error",
+				"useSingleVarDeclarator": "error",
+				"noUnusedTemplateLiteral": "error",
+				"useNumberNamespace": "error",
+				"noInferrableTypes": "error",
+				"noUselessElse": "error"
 			}
 		}
-	]
+	}
 }
