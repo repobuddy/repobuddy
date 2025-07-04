@@ -1,5 +1,11 @@
 # @repobuddy/biome
 
+## 2.0.1
+
+### Patch Changes
+
+- f371548: Fix `noUnusedVariables` to use default options value.
+
 ## 2.0.0
 
 ### Major Changes
