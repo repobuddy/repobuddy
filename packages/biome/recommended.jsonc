@@ -25,7 +25,12 @@
 				"noCommaOperator": "off"
 			},
 			"correctness": {
-				"noUnusedVariables": "error",
+				"noUnusedVariables": {
+					"level": "error",
+					"options": {
+						"ignoreRestSiblings": true
+					}
+				},
 				"useExhaustiveDependencies": "off"
 			},
 			"style": {
