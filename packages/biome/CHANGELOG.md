@@ -1,5 +1,11 @@
 # @repobuddy/biome
 
+## 2.0.0
+
+### Major Changes
+
+- 09e67ba: Update to support `biome` v2.
+
 ## 1.7.1
 
 ### Patch Changes
