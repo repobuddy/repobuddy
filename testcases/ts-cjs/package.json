@@ -22,7 +22,7 @@
 		"jest-extended": "^6.0.0",
 		"jest-watch-suspend": "^1.1.2",
 		"jest-watch-toggle-config-2": "^2.1.0",
-		"jest-watch-typeahead": "^2.2.2",
+		"jest-watch-typeahead": "^3.0.0",
 		"npm-run-all2": "^8.0.0",
 		"repobuddy": "workspace:^",
 		"rimraf": "^6.0.1",
