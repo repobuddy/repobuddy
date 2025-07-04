@@ -22,7 +22,7 @@
 		"@jest/globals": "^30.0.0",
 		"@repobuddy/jest": "workspace:^",
 		"@repobuddy/typescript": "workspace:^",
-		"@types/jest": "^29.5.12",
+		"@types/jest": "^30.0.0",
 		"@types/uuid": "^10.0.0",
 		"assertron": "^11.0.3",
 		"cross-env": "^7.0.3",
