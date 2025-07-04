@@ -30,6 +30,7 @@
 		"nuke:local": "rimraf node_modules",
 		"pb": "pnpm --filter ./packages/biome",
 		"plop": "plop",
+		"prepare": "playwright install chromium",
 		"release": "pnpm build && changeset publish",
 		"rt": "pnpm --filter @repobuddy/test",
 		"size": "turbo run size",
@@ -48,7 +49,7 @@
 	"dependencies": {
 		"@types/react": "^19.1.3",
 		"pathe": "^2.0.3",
-		"playwright": "^1.52.0"
+		"playwright": "^1.53.2"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.0.6",
@@ -58,7 +59,7 @@
 		"@types/node": "^20.0.0",
 		"eslint": "^9.26.0",
 		"eslint-plugin-yml": "~1.18.0",
-		"playwright": "^1.52.0",
+		"playwright": "latest",
 		"plop": "^4.0.0",
 		"repobuddy": "workspace:^",
 		"rimraf": "^6.0.1",
