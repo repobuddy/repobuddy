@@ -1,3 +1,3 @@
 #!/usr/bin/env node
 
-import './esm/bin.js'
+import '../esm/bin.js'
