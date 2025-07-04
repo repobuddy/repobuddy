@@ -1,5 +1,5 @@
 {
-	"$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
+	"$schema": "https://biomejs.dev/schemas/2.0.6/schema.json",
 	"formatter": {
 		"enabled": true,
 		"indentStyle": "tab",
@@ -10,7 +10,6 @@
 		"formatter": {
 			"quoteStyle": "single",
 			"semicolons": "asNeeded",
-			"trailingComma": "none",
 			"trailingCommas": "none"
 		}
 	},
@@ -20,7 +19,8 @@
 			"recommended": true,
 			"complexity": {
 				"noForEach": "off",
-				"useLiteralKeys": "off"
+				"useLiteralKeys": "off",
+				"noCommaOperator": "off"
 			},
 			"correctness": {
 				"noInnerDeclarations": "warn",
@@ -28,25 +28,31 @@
 				"useExhaustiveDependencies": "off"
 			},
 			"style": {
-				"noCommaOperator": "off",
 				"noNonNullAssertion": "off",
 				"noParameterAssign": "off",
-				"noVar": "off",
 				// using template has performance impact, compare to string concatenation.
-				"useTemplate": "off"
+				"useTemplate": "off",
+				"useAsConstAssertion": "error",
+				"useDefaultParameterLast": "error",
+				"useEnumInitializers": "error",
+				"useSelfClosingElements": "error",
+				"useSingleVarDeclarator": "error",
+				"noUnusedTemplateLiteral": "error",
+				"useNumberNamespace": "error",
+				"noInferrableTypes": "error",
+				"noUselessElse": "error"
 			},
 			"suspicious": {
 				"noAssignInExpressions": "off",
-				"noExplicitAny": "off"
+				"noExplicitAny": "off",
+				"noVar": "off"
 			}
 		}
 	},
-	"organizeImports": {
-		"enabled": false
-	},
+	"assist": { "actions": { "source": { "organizeImports": "off" } } },
 	"overrides": [
 		{
-			"include": ["package.json"],
+			"includes": ["**/package.json"],
 			"formatter": {
 				"lineWidth": 20
 			}

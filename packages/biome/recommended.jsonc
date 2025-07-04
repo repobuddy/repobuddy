@@ -21,14 +21,14 @@
 				// but they should not be reasons to avoid `.forEach()`.
 				"noForEach": "off",
 				// This conflicts with TypeScript when accessing index types.
-				"useLiteralKeys": "off"
+				"useLiteralKeys": "off",
+				"noCommaOperator": "off"
 			},
 			"correctness": {
 				"noUnusedVariables": "error",
 				"useExhaustiveDependencies": "off"
 			},
 			"style": {
-				"noCommaOperator": "off",
 				"noNonNullAssertion": "off",
 				// unless you uses them as out params, which you shouldn't,
 				// it is ok to assign the parameters.
@@ -39,31 +39,36 @@
 				// for more complex cases, using template does produce more readable code.
 				// But for simple case like `count + ' counts'` ->	`${count} counts`,
 				// it is a subjective style choice.
-				"useTemplate": "off"
+				"useTemplate": "off",
+				"useAsConstAssertion": "error",
+				"useDefaultParameterLast": "error",
+				"useEnumInitializers": "error",
+				"useSelfClosingElements": "error",
+				"useSingleVarDeclarator": "error",
+				"noUnusedTemplateLiteral": "error",
+				"useNumberNamespace": "error",
+				"noInferrableTypes": "error",
+				"noUselessElse": "error"
 			},
 			"suspicious": {
 				"noAssignInExpressions": "off",
-				// The `noConsoleLog` setting is `biome` matches the requirement or repobuddy.
-				// Thus it is enabled by default.
-				"noConsoleLog": "error",
 				// Type operates at a higher dimension than value.
 				// This means there are many cases you will need to use `any` to bypass the type inferred in the value.
-				"noExplicitAny": "off"
+				"noExplicitAny": "off",
+				// The `noConsoleLog` setting is `biome` matches the requirement or repobuddy.
+				// Thus it is enabled by default.
+				"noConsole": { "level": "error", "options": { "allow": ["log"] } }
 			}
 		}
 	},
-	"organizeImports": {
-		// This is disabled until this issue is resolved:
-		// https://github.com/biomejs/biome-vscode/issues/356
-		"enabled": false
-	},
+	"assist": { "actions": { "source": { "organizeImports": "off" } } },
 	"overrides": [
 		{
-			"include": [
-				"frontmatter.json",
-				".frontmatter/config/*.json",
-				".vscode/*.json",
-				"tsconfig*.json"
+			"includes": [
+				"**/frontmatter.json",
+				"**/.frontmatter/config/**/*.json",
+				"**/.vscode/**/*.json",
+				"**/tsconfig*.json"
 			],
 			"json": {
 				"parser": {
@@ -73,7 +78,7 @@
 			}
 		},
 		{
-			"include": ["package.json"],
+			"includes": ["**/package.json"],
 			"formatter": {
 				// The line width is set to a low value so that the format works well with other tools such as `sort-package-json`
 				"lineWidth": 20
