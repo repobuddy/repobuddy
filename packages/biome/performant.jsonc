@@ -24,7 +24,12 @@
 			},
 			"correctness": {
 				"noInnerDeclarations": "warn",
-				"noUnusedVariables": "error",
+				"noUnusedVariables": {
+					"level": "error",
+					"options": {
+						"ignoreRestSiblings": true
+					}
+				},
 				"useExhaustiveDependencies": "off"
 			},
 			"style": {
