@@ -1,11 +1,36 @@
 ---
-description: How to add or edit Cursor rules in our project
-globs:
-alwaysApply: false
+globs: *.mdc
 ---
 # Cursor Rules guidelines
 
 Guidelines for cursor rules in this repository.
+
+## Related Rules
+
+This rule works in conjunction with:
+
+- **[master.mdc](mdc:.cursor/rules/master.mdc)**: Central reference for all rules
+- **[Naming Guidelines](mdc:.cursor/rules/guidelines/naming.mdc)**: File naming conventions
+- **[Markdown Guidelines](mdc:.cursor/rules/guidelines/markdown.mdc)**: Content formatting standards
+
+## Table of Contents
+
+- [Cursor Rules guidelines](#cursor-rules-guidelines)
+  - [Related Rules](#related-rules)
+  - [Table of Contents](#table-of-contents)
+  - [Rules Categories](#rules-categories)
+    - [Agents](#agents)
+    - [Commands](#commands)
+    - [Guidelines](#guidelines)
+    - [Templates](#templates)
+    - [Special Cases](#special-cases)
+  - [Directory Structure](#directory-structure)
+  - [Naming Convention](#naming-convention)
+  - [Rule File Structure](#rule-file-structure)
+    - [Frontmatter Requirements](#frontmatter-requirements)
+    - [Rule Template](#rule-template)
+  - [Updating References](#updating-references)
+  - [Quality Checklist](#quality-checklist)
 
 ## Rules Categories
 
@@ -13,27 +38,32 @@ Cursor rules can be categorized based on its purpose:
 
 ### Agents
 
-**Purposes**: Rules for AI agent behavior and management
+**Purpose**: Rules for AI agent behavior and management
 **Examples**: Summary Commit, Cursor Rules Guidelines, Rule Usage
 **When to use**: For rules that control how the AI agent should behave
 
+### Commands
+
+**Purpose**: Step-by-step commands for the AI agent to perform specific tasks
+**Examples**: Implementation workflows, task-specific guidance, process documentation
+**When to use**: For rules that describe how to accomplish specific tasks or follow processes
+
 ### Guidelines
 
-**Purposes**: Opinionated best practices on specific topics
-**Examples**: Commit Message, Naming Conventions, Formating Standards, Coding Style, Best Practices
+**Purpose**: Opinionated best practices on specific topics
+**Examples**: Commit Message, Naming Conventions, Formatting Standards, Coding Style, Best Practices
 **When to use**: For rules that establish standards, conventions, or best practices
 
 ### Templates
 
-**Purposes**: Templates for the AI agent to use
+**Purpose**: Templates for the AI agent to use
 **Examples**: Rule templates, Workflow templates, etc.
 **When to use**: For rules that provide templates for the AI agent to use
 
-### Workflow
+### Special Cases
 
-**Purpose**: Step-by-step guides for the AI agent to perform specific tasks
-**Examples**: Implementation workflows, task-specific guidance, process documentation
-**When to use**: For rules that describe how to accomplish specific tasks or follow processes
+The `master.mdc` is a special case that does not belong to any category.
+It is placed directly under the `.cursor/rules` folder.
 
 ## Directory Structure
 
@@ -46,29 +76,30 @@ Rule files should be placed in the appropriate folder based on its category:
 │   ├── summary_commit.mdc                  # Add a "Commit Message" section in agent response
 │   ├── cursor_rules.mdc                    # Rule for managing cursor rules
 │   └── rule_usage.mdc                      # Add a "Rules Applied" section in agent response
-├── guidelines/                             # Opinionated best practices
-│   ├── commit_message.mdc
-│   ├── markdown.mdc
-│   ├── naming.mdc
-│   ├── project_structure.mdc
-│   └── repository_structure.mdc
-└── workflows/                              # Step-by-step workflows for AI agents to follow
-    ├── convert_test_to_story.mdc
-    ├── generate_changesets.mdc
-    ├── generate_commit_message.mdc
-    └── planning.mdc
+├── commands/                              # Step-by-step commands for AI agents to follow
+│   ├── convert_test_to_story.mdc
+│   ├── generate_changesets.mdc
+│   ├── generate_commit_message.mdc
+│   └── planning.mdc
+└── guidelines/                             # Opinionated best practices
+    ├── commit_message.mdc
+    ├── markdown.mdc
+    ├── naming.mdc
+    ├── project_structure.mdc
+    └── repository_structure.mdc
 ```
 
 ## Naming Convention
 
-Follow the naming convention:
-
-- **Use snake_case** for filenames (e.g., `react_component.mdc`, `commit_message.mdc`)
-- **Always use .mdc extension** (not .md or .markdown)
 - **Make names descriptive** of the rule's purpose
 - **Place in appropriate category subfolder** (see categories above)
 
-### Examples
+❌ **Bad names:**
+
+- `ReactComponent.mdc` (PascalCase)
+- `react-component.mdc` (kebab-case)
+- `react_component.md` (wrong extension)
+- `component.mdc` (too generic)
 
 ✅ **Good names:**
 
@@ -77,191 +108,84 @@ Follow the naming convention:
 - `storybook_story.mdc`
 - `tailwindcss.mdc`
 
-❌ **Bad names:**
-- `ReactComponent.mdc` (PascalCase)
-- `react-component.mdc` (kebab-case)
-- `react_component.md` (wrong extension)
-- `component.mdc` (too generic)
-
 ## Rule File Structure
 
 ### Frontmatter Requirements
 
-Every cursor rule file must begin with frontmatter that defines the rule's metadata:
+The `globs` field is optional and is used to specify the file patterns where this rule applies (e.g., `src/**/*.tsx`)
 
-```yaml
----
-description: Short description of the rule's purpose
-globs: optional/path/pattern/**/*
-alwaysApply: false
----
-```
+- **Important**: Complex glob patterns are not supported
+- **Example**: `*.{ts,tsx}` does not work - use `*.ts,*.tsx` instead
+- **Supported**: Simple patterns like `*.ts`, `src/**/*.tsx`, `packages/*/src/**/*.ts`
+- **Not Supported**: Brace expansion patterns like `*.{ts,tsx}`, `*.{js,jsx,ts,tsx}`
 
-**Frontmatter fields:**
-- `description`: Optional brief explanation of what the rule does
-- `globs`: Optional file patterns where this rule applies (e.g., `src/**/*.tsx`)
-  - **Important**: Complex glob patterns are not supported
-  - **Example**: `*.{ts,tsx}` does not work - use `*.ts,*.tsx` instead
-  - **Supported**: Simple patterns like `*.ts`, `src/**/*.tsx`, `packages/*/src/**/*.ts`
-  - **Not Supported**: Brace expansion patterns like `*.{ts,tsx}`, `*.{js,jsx,ts,tsx}`
-- `alwaysApply`: Whether the rule should always be applied (usually `false`)
+### Rule Template
 
-**Important**: You MUST use [Extract Frontmatter from Markdown](mdc:.cursor/rules/workflows/extract_frontmatter_from_markdown.mdc) to check for existing frontmatter in any file before creating or modifying frontmatter. Never assume a file has no frontmatter without checking with this workflow first.
-
-### Reading Frontmatter - CRITICAL REQUIREMENT
-
-When attempting to read the frontmatter of any rule file, you **MUST** follow these requirements:
-
-- **ALWAYS** use `.cursor/rules/workflows/extract_frontmatter_from_markdown.mdc` to extract the frontmatter from the file.
-- **NEVER** assume a file has no frontmatter without checking with the workflow first.
-- **NEVER** read frontmatter manually without using the extraction workflow.
-- **ALWAYS** run the extraction command: `awk '/^---$/{p=!p;next}p' filename.mdc`
-
-This requirement applies to all operations involving frontmatter, including:
-- Creating new rules
-- Modifying existing rules
-- Validating rule structure
-- Migrating rules between locations
-
-### Content Structure
-
-The cursor rules should follow this structure:
+The cursor rules should follow this template:
 
 ```md
 # Rule Title
 
-Brief introduction explaining the rule's purpose and when to apply it.
+Brief explanation of the rule's purpose and when to use it.
+
+## Related Rules
+
+This rule works in conjunction with:
+
+- **[Related Rule Name](mdc:.cursor/rules/category/rule_name.mdc)**: Brief explanation of how this rule relates
+- **[Another Rule](mdc:.cursor/rules/category/another_rule.mdc)**: Brief explanation of integration
+
+## Quick Reference
+
+[Include a summary table or bullet points for quick lookup]
 
 ## Table of Contents
 
-- @Section 1
-- @Section 2
-- @Examples
-- @Integration
+- [Section 1](#section-1)
+- [Section 2](#section-2)
 
 ## Section 1
 
 Detailed explanation with step-by-step instructions.
 
-### Subsection
+### ❌ Bad Examples to avoid
 
-More specific guidance with examples.
+[Include examples of what to avoid]
+
+### ✅ Good Examples to follow
+
+[Include positive examples]
 
 ## Section 2
 
 Additional content organized in logical sections.
 
-## Examples
+## Quality Checklist
 
-### Good Examples
-
-[Include positive examples]
-
-### Bad Examples
-
-[Include examples of what to avoid]
-
-## Integration with Other Rules
-
-This rule works in conjunction with:
-
-- @Related Rule 1 - Brief explanation
-- @Related Rule 2 - Brief explanation
+[Include verification steps to ensure compliance]
 ```
 
-### Required Sections
+In the rule template, the following sections can be skipped:
 
-Every rule should include these sections:
+- **Related Rules**: When the rule is not related to any other rule
+- **Quick Reference**: The rule is short and does not need a quick reference
+- **Table of Contents**: The rule is short and does not have a table of contents
+- **Quality Checklist**: The rule is not complex and does not need a quality checklist
 
-1. **Introduction**: Brief explanation of the rule's purpose and when to use it
-2. **Table of Contents**: For rules with multiple sections (use anchor links)
-3. **Main Content**: Organized in logical sections with clear headings
-4. **Examples**: Both good and bad examples when applicable
-5. **Integration**: References to related rules and guidelines
+## Updating References
 
-### Optional Sections
-
-Consider including these sections when relevant:
-
-- **Quick Reference**: Summary table or bullet points for quick lookup
-- **Configuration**: Settings, options, or customization details
-- **Common Mistakes**: Frequent errors and how to avoid them
-- **Quality Checklist**: Verification steps to ensure compliance
-
-## Creating New Rules
-
-Follow this step-by-step process when adding a new rule:
-
-### Step 1: Determine the Category
-
-Choose the [appropriate category](mdc:#rules-categories) based on the rule's purpose.
-
-### Step 2: Create the File
-
-1. Navigate to the appropriate subfolder in `.cursor/rules/`
-2. Create a new file with a descriptive name in snake_case
-3. Use the `.mdc` extension
-
-### Step 3: Write the Content
-
-Follow the content structure template above, including:
-
-- Clear title and introduction
-- Table of contents (if multiple sections)
-- Detailed explanations with examples
-- Integration section with related rules
-
-### Step 4: Update References
-
-Update `.cursor/rules/master.mdc` with the new rule.
-
-### Step 5: Test the Rule
-
-Ensure the rule works as expected and follows project conventions.
-
-### Example: Creating a New Guideline Rule
-
-Here's a complete example of creating a new guideline rule:
-
-1. **File location**: `.cursor/rules/guidelines/typescript.mdc`
-2. **Frontmatter**:
-   ```yaml
-   ---
-   description: Guidelines for writing TypeScript code with emphasis on type safety
-   globs: *.ts,*.tsx
-   alwaysApply: false
-   ---
-   ```
-3. **Content**: Follow the structure template with TypeScript-specific guidance
-4. **Update master.mdc**: Add reference under the guidelines section
-5. **Test**: Verify the rule works correctly
-
-## Integration with Other Rules
-
-This rule works in conjunction with:
-
-- **@Master Reference**: Central reference for all rules
-- **@Repository Structure**: Repository organization guidelines
-- **@Naming Guidelines**: File naming conventions
-- **@Markdown Guidelines**: Content formatting standards
+After creating a new rule, update `.cursor/rules/master.mdc` with the new rule.
 
 ## Quality Checklist
 
 Before finalizing a new rule, verify:
 
-- [ ] Frontmatter is complete and accurate
-- [ ] File is in the correct category subfolder
-- [ ] Filename follows snake_case convention
-- [ ] Content follows the structure template
-- [ ] Format follows markdown guidelines
-- [ ] Examples are clear and practical
-- [ ] Integration section references related rules
-- [ ] Rule is added to master.mdc
-- [ ] Rule works as expected when tested
-
-## Special Cases
-
-The `master.mdc` is a special case that does not belong to any category.
-It is placed directly under the `.cursor/rules` folder.
-
-If you encounter rules under `templates` folder (such as `.cursor/templates`), you should ignore them as they are templates and contain information not relevant to the repository.
+- [ ] Frontmatter is complete and accurate.
+- [ ] File is in the correct category subfolder.
+- [ ] Filename follows `snake_case` convention.
+- [ ] Content follows the structure template.
+- [ ] Format follows markdown guidelines.
+- [ ] Examples are clear and practical.
+- [ ] Integration section references related rules.
+- [ ] Rule is added to `master.mdc`.
+- [ ] The rule is easy to follow by AI agents.

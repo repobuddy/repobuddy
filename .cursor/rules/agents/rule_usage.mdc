@@ -1,22 +1,9 @@
 ---
-description:
-globs:
 alwaysApply: true
 ---
 # Rule Usage Instructions
 
 This rule ensures that whenever I use any Cursor rules in my responses, I explicitly mention which rules were applied. This promotes transparency and helps users understand the reasoning behind my responses.
-
-## When to Apply This Rule
-
-This rule should be applied in EVERY response where I use any Cursor rules, including:
-
-- Code generation following specific guidelines
-- File organization following structure rules
-- Documentation following markdown guidelines
-- Commit message generation
-- Component development following React guidelines
-- Any other rule-based decision making
 
 ## How to Apply This Rule
 

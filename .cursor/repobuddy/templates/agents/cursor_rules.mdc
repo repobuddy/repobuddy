@@ -29,7 +29,7 @@ Cursor rules can be categorized based on its purpose:
 **Examples**: Rule templates, Workflow templates, etc.
 **When to use**: For rules that provide templates for the AI agent to use
 
-### Workflow
+### Commands
 
 **Purpose**: Step-by-step guides for the AI agent to perform specific tasks
 **Examples**: Implementation workflows, task-specific guidance, process documentation

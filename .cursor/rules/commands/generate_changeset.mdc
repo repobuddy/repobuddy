@@ -1,0 +1,112 @@
+# Generate Changeset
+
+Step-by-step commands for creating changesets files.
+
+## Related Rules
+
+This rule works in conjunction with:
+
+- **[Markdown Guidelines](mdc:.cursor/rules/guidelines/markdown.mdc)**: For proper markdown formatting in changeset files
+
+## Changeset Naming
+
+Use short descriptions in `kebab-case`:
+
+```text
+[description].md
+```
+
+## Step-by-Step Process
+
+### 1. Identify Scope
+
+- If there are staged changes, the changeset will be based on the staged changes.
+- If there are no staged changes but there are unstaged changes, the changeset will be based on the unstaged changes.
+- If there are no staged changes and no unstaged changes, the changeset will be based on the current branch compared to the main branch.
+
+### 2. Identify Affected Packages
+
+Determine which package is affected based on the location of the changed files:
+
+- **If there are staged changes**: Use `git diff --cached --name-only` to see staged files
+- **If there are no staged changes**: Use `git status --porcelain` to see unstaged files
+- **Map file locations to packages**:
+  - `packages/biome/` → `@repobuddy/biome`
+  - `packages/buddy/` → `repobuddy`
+  - `packages/jest/` → `@repobuddy/jest`
+  - `packages/test/` → `@repobuddy/test`
+  - `packages/typescript/` → `@repobuddy/typescript`
+  - `packages/vitest/` → `@repobuddy/vitest`
+
+**Note**: If the changes do not affect any package (e.g., only documentation, CI/CD, or tooling files outside packages), no changeset file should be created. If you add root-level packages or scripts in the future, specify how to handle those here.
+
+### 3. Determine Change Type
+
+| Type | Version Bump | When to Use |
+|------|--------------|-------------|
+| **major** | `1.0.0` → `2.0.0` | Breaking changes, API changes |
+| **minor** | `1.0.0` → `1.1.0` | New features, new exports |
+| **patch** | `1.0.0` → `1.0.1` | Bug fixes, performance improvements |
+
+### 4. Create the Changeset
+
+Create manually: `[description].md` in `.changeset/`
+
+## Changeset File Format
+
+```md
+---
+"[package-name]": [version-type]
+---
+
+Brief description of the changes.
+
+More detailed explanation if needed.
+
+BREAKING CHANGE: Description of breaking changes if any.
+```
+
+### Frontmatter Rules
+
+- **Package names**: Use exact package names from `package.json`
+- **Version types**: `major`, `minor`, or `patch`
+- **Multiple packages**: List all affected packages
+- **Important**: **Package names must match exactly as in `package.json` (including scope, if any).**
+
+## Validation Steps
+
+### Pre-Creation Validation
+
+1. **Check if changeset is needed**:
+   - Does the change affect public APIs?
+   - Is it a user-facing change?
+   - Will it require a version bump?
+
+2. **Identify affected packages**:
+   - Review `git status --porcelain`
+   - Check package.json files for correct names
+
+3. **Determine version type**:
+   - Major: Breaking changes
+   - Minor: New features
+   - Patch: Bug fixes
+
+### Post-Creation Validation
+
+```sh
+pnpm cs status
+pnpm cs validate
+pnpm cs check
+```
+
+## Quality Checklist
+
+Before creating a changeset, ensure:
+
+- [ ] Changes affect public APIs or user-facing functionality
+- [ ] Correct packages are listed in frontmatter
+- [ ] Appropriate version type is selected
+- [ ] Description is clear and concise
+- [ ] Breaking changes are documented
+- [ ] Changeset filename follows naming conventions
+- [ ] Package names match `package.json` exactly
