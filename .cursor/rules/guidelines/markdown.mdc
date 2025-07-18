@@ -16,15 +16,15 @@ This rule works in conjunction with:
 
 ## Quick Reference
 
-| Element              | Syntax           | Example               |
-|----------------------|------------------|-----------------------|
-| **Bold**             | `**text**`       | `**important**`       |
-| *Italic*             | `*text*`         | `*emphasis*`          |
-| `Code`               | `` `code` ``     | `` `function()` ``    |
-| [Link](mdc:#links)   | `[text](mdc:url)` | `[Docs](mdc:docs.md)` |
-| ![Image](mdc:#images) | `![alt](mdc:src)` | `![Logo](mdc:logo.png)` |
-| List                 | `- item`         | `- First item`        |
-| Code Block           | ` ```lang`       | ` ```tsx`             |
+| Element                        | Syntax            | Example                 |
+| ------------------------------ | ----------------- | ----------------------- |
+| **Bold**                       | `**text**`        | `**important**`         |
+| *Italic*                       | `*text*`          | `*emphasis*`            |
+| `Code`                         | `` `code` ``      | `` `function()` ``      |
+| [Link Description](mdc:#links) | `[text](mdc:url)` | `[Docs](mdc:docs.md)`   |
+| ![Image](mdc:#images)          | `![alt](mdc:src)` | `![Logo](mdc:logo.png)` |
+| List                           | `- item`          | `- First item`          |
+| Code Block                     | ` ```lang`        | ` ```tsx`               |
 
 ## Table of Contents
 
@@ -228,7 +228,7 @@ function example() {
 
 ```md
 | Header 1 | Header 2 | Header 3 |
-|----------|----------|----------|
+| -------- | -------- | -------- |
 | Cell 1   | Cell 2   | Cell 3   |
 | Cell 4   | Cell 5   | Cell 6   |
 ```
@@ -239,7 +239,7 @@ When content varies in length, adjust column widths accordingly:
 
 ```md
 | Short | Medium Length Header | Very Long Header With More Content                |
-|-------|----------------------|---------------------------------------------------|
+| ----- | -------------------- | ------------------------------------------------- |
 | A     | Some content here    | This cell contains much more detailed information |
 | B     | Another row          | Additional data that spans multiple words here    |
 | C     | Final entry          | Last row with comprehensive content description   |
@@ -334,7 +334,7 @@ Follow the [API Documentation Template](mdc:.cursor/templates/markdown/api_docum
 Use these shorter identifiers for consistency:
 
 | Language           | Identifier | Notes                                                  |
-|-------------------|------------|--------------------------------------------------------|
+| ------------------ | ---------- | ------------------------------------------------------ |
 | Shell commands     | `sh`       | Preferred over `bash` for cross-platform compatibility |
 | TypeScript React   | `tsx`      | For React components with TypeScript                   |
 | TypeScript         | `ts`       | Preferred over `typescript` for brevity                |
