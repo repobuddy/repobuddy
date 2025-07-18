@@ -13,6 +13,7 @@ The normal steps you take does not work. **YOU MUST FOLLOW THIS RULE** to get th
 Frontmatter is metadata at the beginning of a markdown file, enclosed between `---` delimiters. It typically contains information like title, description, tags, and other metadata.
 
 Example:
+
 ```yaml
 ---
 title: My Document

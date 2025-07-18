@@ -138,6 +138,7 @@ Reference: [.markdownlint-cli2.jsonc](mdc:.markdownlint-cli2.jsonc)
 For comprehensive code block formatting guidelines, see [Code Block Guidelines](mdc:.cursor/rules/guidelines/code_block.mdc).
 
 Key requirements:
+
 - Always specify the language for syntax highlighting
 - Prefer shorter language identifiers for consistency
 - Use appropriate identifiers for different file types
@@ -226,14 +227,14 @@ Content below
 
 ## File Type Specific Guidelines
 
-### Regular Markdown Files (*.md, *.mdx)
+### Regular Markdown Files (`*.md`, `*.mdx`)
 
 - Use standard markdown link syntax: `[text](mdc:file.md)`
 - Follow project-specific patterns for the content type
 - Include proper frontmatter if required
 - Use relative paths for local files
 
-### Cursor Rule Files (*.mdc)
+### Cursor Rule Files (`*.mdc`)
 
 - Use `mdc:` prefix ONLY for local files that should be easily accessible when applying the rule
 - Examples: templates, other rules, config files
@@ -242,6 +243,7 @@ Content below
 - Follow the same markdown standards as other files
 
 **When to use `mdc:` prefix:**
+
 ```md
 [Other Rule](mdc:.cursor/rules/other-rule.mdc)
 [Template](mdc:.cursor/templates/example.md)
@@ -249,6 +251,7 @@ Content below
 ```
 
 **When to use standard links:**
+
 ```md
 [External Site](mdc:https:/example.com)
 [Documentation](mdc:docs/README.md)
@@ -359,4 +362,3 @@ This rule works in conjunction with:
 - [File Naming Conventions](mdc:.cursor/rules/guidelines/naming.mdc) - For consistent file naming
 - [Generate Release Note](mdc:.cursor/rules/workflows/generate_release_note.mdc) - For changelog formatting
 - [Cursor Rules](mdc:.cursor/rules/cursor_rules.mdc) - For rule-specific markdown standards
-

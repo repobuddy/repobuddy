@@ -1,0 +1,17 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+# Master Rules
+
+This file serves as the central reference for all Cursor rules in the repository.
+This file makes it easier for the AI agent to find the discover rules when they are organized in folders.
+
+## How to Use Rules
+
+[List of use cases and which rules to apply]
+
+## Available Rules
+
+[List of cursor rules organized into categories]

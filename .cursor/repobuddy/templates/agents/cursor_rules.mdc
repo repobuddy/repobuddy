@@ -23,6 +23,12 @@ Cursor rules can be categorized based on its purpose:
 **Examples**: Commit Message, Naming Conventions, Formating Standards, Coding Style, Best Practices
 **When to use**: For rules that establish standards, conventions, or best practices
 
+### Templates
+
+**Purposes**: Templates for the AI agent to use
+**Examples**: Rule templates, Workflow templates, etc.
+**When to use**: For rules that provide templates for the AI agent to use
+
 ### Workflow
 
 **Purpose**: Step-by-step guides for the AI agent to perform specific tasks
@@ -31,27 +37,26 @@ Cursor rules can be categorized based on its purpose:
 
 ## Directory Structure
 
-Rule files should always be placed in the appropriate subfolder within `PROJECT_ROOT/.cursor/rules/`:
+Rule files should be placed in the appropriate folder based on its category:
 
-```
+```sh
 .cursor/rules/
 ├── master.mdc                              # Central reference (special file)
 ├── agents/                                 # Rules for AI agent behavior and management.
-│   ├── summary_commit.mdc									# Add a "Commit Message" section in agent response
+│   ├── summary_commit.mdc                  # Add a "Commit Message" section in agent response
 │   ├── cursor_rules.mdc                    # Rule for managing cursor rules
-│   └── rule_usage.mdc											# Add a "Rules Applied" section in agent response
+│   └── rule_usage.mdc                      # Add a "Rules Applied" section in agent response
 ├── guidelines/                             # Opinionated best practices
 │   ├── commit_message.mdc
 │   ├── markdown.mdc
 │   ├── naming.mdc
 │   ├── project_structure.mdc
 │   └── repository_structure.mdc
-└── workflows/                              # Step-by-step guides for AI tasks
-    ├── plan_prd.mdc
-    ├── generate_release_note.mdc
-    ├── generate_release_slack.mdc
+└── workflows/                              # Step-by-step workflows for AI agents to follow
     ├── convert_test_to_story.mdc
-    └── implement_prd.mdc
+    ├── generate_changesets.mdc
+    ├── generate_commit_message.mdc
+    └── planning.mdc
 ```
 
 ## Naming Convention
@@ -66,6 +71,7 @@ Follow the naming convention:
 ### Examples
 
 ✅ **Good names:**
+
 - `react_component.mdc`
 - `commit_message.mdc`
 - `storybook_story.mdc`

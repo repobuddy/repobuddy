@@ -10,6 +10,7 @@ This rule ensures that whenever I use any Cursor rules in my responses, I explic
 ## When to Apply This Rule
 
 This rule should be applied in EVERY response where I use any Cursor rules, including:
+
 - Code generation following specific guidelines
 - File organization following structure rules
 - Documentation following markdown guidelines

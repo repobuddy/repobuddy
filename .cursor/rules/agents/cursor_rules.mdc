@@ -23,6 +23,12 @@ Cursor rules can be categorized based on its purpose:
 **Examples**: Commit Message, Naming Conventions, Formating Standards, Coding Style, Best Practices
 **When to use**: For rules that establish standards, conventions, or best practices
 
+### Templates
+
+**Purposes**: Templates for the AI agent to use
+**Examples**: Rule templates, Workflow templates, etc.
+**When to use**: For rules that provide templates for the AI agent to use
+
 ### Workflow
 
 **Purpose**: Step-by-step guides for the AI agent to perform specific tasks
@@ -31,27 +37,26 @@ Cursor rules can be categorized based on its purpose:
 
 ## Directory Structure
 
-Rule files should always be placed in the appropriate subfolder within `PROJECT_ROOT/.cursor/rules/`:
+Rule files should be placed in the appropriate folder based on its category:
 
-```
+```sh
 .cursor/rules/
 ├── master.mdc                              # Central reference (special file)
 ├── agents/                                 # Rules for AI agent behavior and management.
-│   ├── summary_commit.mdc									# Add a "Commit Message" section in agent response
+│   ├── summary_commit.mdc                  # Add a "Commit Message" section in agent response
 │   ├── cursor_rules.mdc                    # Rule for managing cursor rules
-│   └── rule_usage.mdc											# Add a "Rules Applied" section in agent response
+│   └── rule_usage.mdc                      # Add a "Rules Applied" section in agent response
 ├── guidelines/                             # Opinionated best practices
 │   ├── commit_message.mdc
 │   ├── markdown.mdc
 │   ├── naming.mdc
 │   ├── project_structure.mdc
 │   └── repository_structure.mdc
-└── workflows/                              # Step-by-step guides for AI tasks
-    ├── plan_prd.mdc
-    ├── generate_release_note.mdc
-    ├── generate_release_slack.mdc
+└── workflows/                              # Step-by-step workflows for AI agents to follow
     ├── convert_test_to_story.mdc
-    └── implement_prd.mdc
+    ├── generate_changesets.mdc
+    ├── generate_commit_message.mdc
+    └── planning.mdc
 ```
 
 ## Naming Convention
@@ -66,6 +71,7 @@ Follow the naming convention:
 ### Examples
 
 ✅ **Good names:**
+
 - `react_component.mdc`
 - `commit_message.mdc`
 - `storybook_story.mdc`
@@ -92,13 +98,34 @@ alwaysApply: false
 ```
 
 **Frontmatter fields:**
-- `description`: Brief explanation of what the rule does
+- `description`: Optional brief explanation of what the rule does
 - `globs`: Optional file patterns where this rule applies (e.g., `src/**/*.tsx`)
+  - **Important**: Complex glob patterns are not supported
+  - **Example**: `*.{ts,tsx}` does not work - use `*.ts,*.tsx` instead
+  - **Supported**: Simple patterns like `*.ts`, `src/**/*.tsx`, `packages/*/src/**/*.ts`
+  - **Not Supported**: Brace expansion patterns like `*.{ts,tsx}`, `*.{js,jsx,ts,tsx}`
 - `alwaysApply`: Whether the rule should always be applied (usually `false`)
+
+**Important**: You MUST use [Extract Frontmatter from Markdown](mdc:.cursor/rules/workflows/extract_frontmatter_from_markdown.mdc) to check for existing frontmatter in any file before creating or modifying frontmatter. Never assume a file has no frontmatter without checking with this workflow first.
+
+### Reading Frontmatter - CRITICAL REQUIREMENT
+
+When attempting to read the frontmatter of any rule file, you **MUST** follow these requirements:
+
+- **ALWAYS** use `.cursor/rules/workflows/extract_frontmatter_from_markdown.mdc` to extract the frontmatter from the file.
+- **NEVER** assume a file has no frontmatter without checking with the workflow first.
+- **NEVER** read frontmatter manually without using the extraction workflow.
+- **ALWAYS** run the extraction command: `awk '/^---$/{p=!p;next}p' filename.mdc`
+
+This requirement applies to all operations involving frontmatter, including:
+- Creating new rules
+- Modifying existing rules
+- Validating rule structure
+- Migrating rules between locations
 
 ### Content Structure
 
-After the frontmatter, follow this structure:
+The cursor rules should follow this structure:
 
 ```md
 # Rule Title
@@ -167,7 +194,7 @@ Follow this step-by-step process when adding a new rule:
 
 ### Step 1: Determine the Category
 
-Choose the [appropriate category](mdc:#rules-categorys) based on the rule's purpose.
+Choose the [appropriate category](mdc:#rules-categories) based on the rule's purpose.
 
 ### Step 2: Create the File
 
@@ -175,18 +202,7 @@ Choose the [appropriate category](mdc:#rules-categorys) based on the rule's purp
 2. Create a new file with a descriptive name in snake_case
 3. Use the `.mdc` extension
 
-### Step 3: Add Frontmatter
-
-Add the required frontmatter at the top of the file:
-```yaml
----
-description: Brief description of the rule's purpose
-globs: optional/path/pattern/**/*
-alwaysApply: false
----
-```
-
-### Step 4: Write the Content
+### Step 3: Write the Content
 
 Follow the content structure template above, including:
 
@@ -195,11 +211,11 @@ Follow the content structure template above, including:
 - Detailed explanations with examples
 - Integration section with related rules
 
-### Step 5: Update References
+### Step 4: Update References
 
 Update `.cursor/rules/master.mdc` with the new rule.
 
-### Step 6: Test the Rule
+### Step 5: Test the Rule
 
 Ensure the rule works as expected and follows project conventions.
 
@@ -225,7 +241,7 @@ Here's a complete example of creating a new guideline rule:
 This rule works in conjunction with:
 
 - **@Master Reference**: Central reference for all rules
-- **@Repository Structure**: Repositor organization guidelines
+- **@Repository Structure**: Repository organization guidelines
 - **@Naming Guidelines**: File naming conventions
 - **@Markdown Guidelines**: Content formatting standards
 
@@ -237,6 +253,7 @@ Before finalizing a new rule, verify:
 - [ ] File is in the correct category subfolder
 - [ ] Filename follows snake_case convention
 - [ ] Content follows the structure template
+- [ ] Format follows markdown guidelines
 - [ ] Examples are clear and practical
 - [ ] Integration section references related rules
 - [ ] Rule is added to master.mdc
@@ -248,4 +265,3 @@ The `master.mdc` is a special case that does not belong to any category.
 It is placed directly under the `.cursor/rules` folder.
 
 If you encounter rules under `templates` folder (such as `.cursor/templates`), you should ignore them as they are templates and contain information not relevant to the repository.
-
