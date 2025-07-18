@@ -1,55 +1,60 @@
----
-description:
-globs:
-alwaysApply: true
----
-# Cursor Rules Master Reference
+# Master Rules
 
 This file serves as the central reference for all Cursor rules in the repository.
+This file makes it easier for the AI agent to find the discover rules when they are organized in folders.
+
+## How to Use Rules
+
+### For AI Agent Behavior
+
+- Use [agents/cursor_rules.mdc](mdc:.cursor/rules/agents/cursor_rules.mdc) when managing or creating new cursor rules
+- Use [agents/commit_summary.mdc](mdc:.cursor/rules/agents/commit_summary.mdc) when generating commit messages
+- Use [agents/rule_usage.mdc](mdc:.cursor/rules/agents/rule_usage.mdc) to track which rules were applied
+
+### For Code Quality and Standards
+
+- Use [guidelines/commit_message.mdc](mdc:.cursor/rules/guidelines/commit_message.mdc) when writing commit messages
+- Use [guidelines/markdown.mdc](mdc:.cursor/rules/guidelines/markdown.mdc) when writing or editing markdown files
+- Use [guidelines/naming.mdc](mdc:.cursor/rules/guidelines/naming.mdc) when creating or updating files and folders
+- Use [guidelines/import_export.mdc](mdc:.cursor/rules/guidelines/import_export.mdc) when working with module imports and exports
+
+### For Specific Workflows
+
+- Use [commands/extract_frontmatter_from_markdown.mdc](mdc:.cursor/rules/commands/extract_frontmatter_from_markdown.mdc) when extracting frontmatter from markdown files
+- Use [commands/generate_changeset.mdc](mdc:.cursor/rules/commands/generate_changeset.mdc) for creating and managing changeset files in the monorepo
+
+### For Templates
+
+- Use [templates/cursor_rules.mdc](mdc:.cursor/rules/templates/cursor_rules.mdc) when creating new cursor rule files
 
 ## Available Rules
-
-All rules should be located under folders `.cursor/rules`.
-They can be placed at the root of the repository (i.e. `<REPOSITORY_ROOT>/.cursor/rules`),
-or under the root of a project in a monorepo (e.g. `<REPOSITORY_ROOT>/packages/<PROJECT_ROOT>/.cursor/rules`).
-
-Other `*.mdc` files should not be treated as rule files unless referenced explicitly.
 
 ### Agents
 
 Rules for AI agent behavior and management:
 
-- @agents/cursor_rules.mdc - Guidelines for cursor rules in this repository
-- @agents/commit_summary.mdc - Add a "Commit Message" section in agent response
-- @agents/rule_usage.mdc - Add a "Rules Applied" section in agent response
+- [agents/cursor_rules.mdc](mdc:.cursor/rules/agents/cursor_rules.mdc) - Guidelines for cursor rules in this repository
+- [agents/commit_summary.mdc](mdc:.cursor/rules/agents/commit_summary.mdc) - Add a "Commit Message" section in agent response
+- [agents/rule_usage.mdc](mdc:.cursor/rules/agents/rule_usage.mdc) - Add a "Rules Applied" section in agent response
 
 ### Guidelines
 
 Opinionated best practices on specific topics:
 
-- @guidelines/commit_message.mdc - Commit message formatting and conventions
-- @guidelines/markdown.mdc - Markdown formatting standards and best practices
-- @guidelines/naming.mdc - Naming conventions for files, folders, and code elements
-- @guidelines/import_export.mdc - Import and export patterns and best practices
+- [guidelines/commit_message.mdc](mdc:.cursor/rules/guidelines/commit_message.mdc) - Commit message formatting and conventions
+- [guidelines/markdown.mdc](mdc:.cursor/rules/guidelines/markdown.mdc) - Markdown formatting standards and best practices
+- [guidelines/naming.mdc](mdc:.cursor/rules/guidelines/naming.mdc) - Naming conventions for files, folders, and code elements
+- [guidelines/import_export.mdc](mdc:.cursor/rules/guidelines/import_export.mdc) - Import and export patterns and best practices
 
-### Workflows
+### Commands
 
 Process-oriented rules for specific tasks:
 
-- @workflows/extract_frontmatter_from_markdown.mdc - Extracting frontmatter from .mdc or .mdx files using terminal commands
+- [commands/extract_frontmatter_from_markdown.mdc](mdc:.cursor/rules/commands/extract_frontmatter_from_markdown.mdc) - Extracting frontmatter from .mdc or .mdx files using terminal commands
+- [commands/generate_changeset.mdc](mdc:.cursor/rules/commands/generate_changeset.mdc) - Step-by-step process for creating and managing changeset files in the monorepo
 
-## How to Use Rules
+### Templates
 
-### For AI Agent Behavior
-- Use @agents/cursor_rules.mdc when managing or creating new cursor rules
-- Use @agents/commit_summary.mdc when generating commit messages
-- Use @agents/rule_usage.mdc to track which rules were applied
+Templates for the AI agent to use:
 
-### For Code Quality and Standards
-- Use @guidelines/commit_message.mdc when writing commit messages
-- Use @guidelines/markdown.mdc when writing or editing markdown files
-- Use @guidelines/naming.mdc when creating or updating files and folders
-- Use @guidelines/import_export.mdc when working with module imports and exports
-
-### For Specific Workflows
-- Use @workflows/extract_frontmatter_from_markdown.mdc when extracting frontmatter from markdown files
+- [templates/cursor_rules.mdc](mdc:.cursor/rules/templates/cursor_rules.mdc) - Template for creating new cursor rule files

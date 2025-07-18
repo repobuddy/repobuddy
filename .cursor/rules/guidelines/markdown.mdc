@@ -1,23 +1,18 @@
 ---
 description: Use when writing or editing any markdown content including documentation files (.md, .mdx), Cursor rules (.mdc), JSDoc comments, README files, or any other markdown-formatted content. Essential for ensuring consistent formatting, accessibility compliance, and proper link syntax across all markdown files in the project.
-globs:
-alwaysApply: false
+globs: *.md,*.mdx,*.mdc,*.js,*.ts,*.jsx,*.tsx
+alwaysApply: true
 ---
 # Markdown Guidelines
 
 This rule provides comprehensive guidelines for writing markdown content that follows best practices and passes markdown linting in this project.
 
-## Table of Contents
+## Related Rules
 
-- [Quick Reference](mdc:#quick-reference)
-- [Configuration](mdc:#markdown-linting-configuration)
-- [General Best Practices](mdc:#general-markdown-best-practices)
-- [File Type Guidelines](mdc:#file-type-specific-guidelines)
-- [Project-Specific Patterns](mdc:#project-specific-guidelines)
-- [Language Identifiers](mdc:#language-identifiers)
-- [Templates](mdc:#templates)
-- [Common Mistakes](mdc:#common-mistakes)
-- [Quality Checklist](mdc:#quality-checklist)
+This rule works in conjunction with:
+
+- **[Naming Guidelines](mdc:.cursor/rules/guidelines/naming.mdc)**: For consistent file naming conventions
+- **[Cursor Rules Guidelines](mdc:.cursor/rules/agents/cursor_rules.mdc)**: For rule-specific markdown standards and structure
 
 ## Quick Reference
 
@@ -26,33 +21,68 @@ This rule provides comprehensive guidelines for writing markdown content that fo
 | **Bold**             | `**text**`       | `**important**`       |
 | *Italic*             | `*text*`         | `*emphasis*`          |
 | `Code`               | `` `code` ``     | `` `function()` ``    |
-| [Link](mdc:#links)                | `[text](mdc:url)`          | `[Docs](mdc:docs.md)`               |
-| ![Image](mdc:#images)              | `![alt](mdc:src)`          | `![Logo](mdc:logo.png)`              |
+| [Link](mdc:#links)   | `[text](mdc:url)` | `[Docs](mdc:docs.md)` |
+| ![Image](mdc:#images) | `![alt](mdc:src)` | `![Logo](mdc:logo.png)` |
 | List                 | `- item`         | `- First item`        |
 | Code Block           | ` ```lang`       | ` ```tsx`             |
+
+## Table of Contents
+
+- [Quick Reference](mdc:#quick-reference)
+- [Configuration](mdc:#markdown-linting-configuration)
+- [General Best Practices](mdc:#general-markdown-best-practices)
+  - [Blank Line Spacing](mdc:#blank-line-spacing)
+- [File Type Guidelines](mdc:#file-type-specific-guidelines)
+- [Project-Specific Patterns](mdc:#project-specific-guidelines)
+- [Language Identifiers](mdc:#language-identifiers)
+- [Templates](mdc:#templates)
+- [Common Mistakes](mdc:#common-mistakes)
+- [Quality Checklist](mdc:#quality-checklist)
 
 ## Markdown Linting Configuration
 
 The project uses markdownlint with the following configuration:
 
-- **Line length**: Disabled (no strict character limits)
-- **Inline HTML**: Allowed (can use HTML when needed)
-- **Heading start left**: Disabled (headings can be indented)
-- **Duplicate headings**: Disabled (can have same heading text in different sections)
+- **Line length**: Disabled (no strict character limits).
+- **Inline HTML**: Allowed (can use HTML when needed).
+- **Heading start left**: Disabled (headings can be indented).
+- **Duplicate headings**: Disabled (can have same heading text in different sections).
 
 Reference: [.markdownlint-cli2.jsonc](mdc:.markdownlint-cli2.jsonc)
 
 ## General Markdown Best Practices
 
+### Blank Line Spacing
+
+**Critical Rule**: Always leave one blank line before and after common markdown elements to ensure proper rendering and readability.
+
+Elements that require blank lines around them:
+
+- **Headings** (`#`, `##`, `###`, `####`)
+- **Lists** (ordered and unordered)
+- **Code blocks** (fenced with ```)
+- **Tables**
+- **Blockquotes** (`>`)
+- **Horizontal rules** (`---`)
+- **Images**
+- **Links** (when used as standalone elements)
+
+**Why this matters:**
+
+- Ensures proper markdown parsing
+- Improves readability
+- Prevents rendering issues
+- Follows markdown specification standards
+
 ### Headings
 
-- Use `#` for main title (H1)
-- Use `##` for section headings (H2)
-- Use `###` for subsection headings (H3)
-- Use `####` for sub-subsection headings (H4)
-- Avoid using more than 4 levels of headings
-- Leave one blank line before and after headings
-- Always include space after `#` characters
+- Use `#` for main title (H1).
+- Use `##` for section headings (H2).
+- Use `###` for subsection headings (H3).
+- Use `####` for sub-subsection headings (H4).
+- Avoid using more than 4 levels of headings.
+- **Always leave one blank line before and after headings**.
+- Always include space after `#` characters.
 
 ```md
 # Main Title
@@ -66,20 +96,20 @@ Reference: [.markdownlint-cli2.jsonc](mdc:.markdownlint-cli2.jsonc)
 
 ### Text Formatting
 
-- Use **bold** for emphasis: `**text**`
-- Use *italic* for secondary emphasis: `*text*`
-- Use `code` for inline code: `` `code` ``
-- Use ~~strikethrough~~ for deprecated content: `~~text~~`
-- Don't overuse formatting - keep it meaningful
+- Use **bold** for emphasis: `**text**`.
+- Use *italic* for secondary emphasis: `*text*`.
+- Use `code` for inline code: `` `code` ``.
+- Use ~~strikethrough~~ for deprecated content: `~~text~~`.
+- Don't overuse formatting - keep it meaningful.
 
 ### Lists
 
-- Use `-` for unordered lists (consistent throughout project)
-- Use `1.` for ordered lists
-- Indent sub-items with 2 spaces
-- Leave blank line before and after lists
-- Include space after bullet points and numbers
-- **End list entries with a period when they are complete sentences**
+- Use `-` for unordered lists (consistent throughout project).
+- Use `1.` for ordered lists.
+- Indent sub-items with 2 spaces.
+- **Always leave one blank line before and after lists**.
+- Include space after bullet points and numbers.
+- End list entries with a period when they are complete sentences.
 
 ```md
 - First item
@@ -109,28 +139,29 @@ Reference: [.markdownlint-cli2.jsonc](mdc:.markdownlint-cli2.jsonc)
 
 ### Links
 
-- Use descriptive link text that explains the destination
-- Include title attribute for accessibility when helpful
-- Avoid generic text like "click here" or "read more"
-- Use proper syntax for different file types (see [File Type Guidelines](mdc:#file-type-specific-guidelines))
+- Use descriptive link text that explains the destination.
+- Include title attribute for accessibility when helpful.
+- Avoid generic text like "click here" or "read more".
+- Use proper syntax for different file types (see [File Type Guidelines](mdc:#file-type-specific-guidelines)).
 
 ```md
 [Component Documentation](mdc:component-docs.md)
-[GitHub Repository](mdc:https:/github.com/org/repo "Visit our GitHub repository")
-[API Reference](mdc:api-reference.md "Complete API documentation")
+[GitHub Repository](https://github.com/org/repo)
+[API Reference](mdc:api-reference.md)
 ```
 
 ### Images
 
-- Always include alt text for accessibility
-- Use descriptive alt text that explains the image content
-- Include title attribute when helpful
-- Keep alt text concise but informative
+- Always include alt text for accessibility.
+- Use descriptive alt text that explains the image content.
+- Include title attribute when helpful.
+- Keep alt text concise but informative.
+- **Always leave one blank line before and after images** (unless they're inline with text).
 
 ```md
-![Dashboard screenshot](mdc:dashboard.png)
-![Component preview](mdc:component.png "Interactive component demonstration")
-![User settings panel showing theme options](mdc:settings.png)
+![Dashboard screenshot](dashboard.png)
+![Component preview](component.png)
+![User settings panel showing theme options](settings.png)
 ```
 
 ### Code Blocks
@@ -138,9 +169,11 @@ Reference: [.markdownlint-cli2.jsonc](mdc:.markdownlint-cli2.jsonc)
 For comprehensive code block formatting guidelines, see [Code Block Guidelines](mdc:.cursor/rules/guidelines/code_block.mdc).
 
 Key requirements:
-- Always specify the language for syntax highlighting
-- Prefer shorter language identifiers for consistency
-- Use appropriate identifiers for different file types
+
+- **Always leave one blank line before and after code blocks**.
+- Always specify the language for syntax highlighting.
+- Prefer shorter language identifiers for consistency.
+- Use appropriate identifiers for different file types.
 
 Common examples:
 
@@ -169,10 +202,10 @@ function example() {
 
 ### Blockquotes
 
-- Use `>` for blockquotes
-- Can be nested with multiple `>`
-- Leave blank line before and after
-- Include space after `>` character
+- Use `>` for blockquotes.
+- Can be nested with multiple `>`.
+- **Always leave one blank line before and after blockquotes**.
+- Include space after `>` character.
 
 ```md
 > This is a blockquote
@@ -184,11 +217,12 @@ function example() {
 
 ### Tables
 
-- Use proper table formatting with headers
-- Align columns appropriately using `|---|` for left alignment
-- Keep tables simple and readable
-- Include proper spacing for readability
-- **Adjust table width to content** - column widths should match the content rather than being artificially stretched
+- Use proper table formatting with headers.
+- Align columns appropriately using `|---|` for left alignment.
+- Keep tables simple and readable.
+- **Always leave one blank line before and after tables**.
+- Include proper spacing for readability.
+- **Adjust table width to content** - column widths should match the content rather than being artificially stretched.
 
 #### Basic Table Example
 
@@ -213,8 +247,8 @@ When content varies in length, adjust column widths accordingly:
 
 ### Horizontal Rules
 
-- Use `---` for horizontal rules
-- Leave blank lines before and after
+- Use `---` for horizontal rules.
+- **Always leave one blank line before and after horizontal rules**.
 
 ```md
 Content above
@@ -226,22 +260,23 @@ Content below
 
 ## File Type Specific Guidelines
 
-### Regular Markdown Files (*.md, *.mdx)
+### Regular Markdown Files (`*.md`, `*.mdx`)
 
-- Use standard markdown link syntax: `[text](mdc:file.md)`
-- Follow project-specific patterns for the content type
-- Include proper frontmatter if required
-- Use relative paths for local files
+- Use standard markdown link syntax: `[text](file.md)`.
+- Follow project-specific patterns for the content type.
+- Include proper frontmatter if required.
+- Use relative paths for local files.
 
-### Cursor Rule Files (*.mdc)
+### Cursor Rule Files (`*.mdc`)
 
-- Use `mdc:` prefix ONLY for local files that should be easily accessible when applying the rule
-- Examples: templates, other rules, config files
-- Use standard markdown syntax for external URLs
-- Include integration section at the bottom
-- Follow the same markdown standards as other files
+- Use `mdc:` prefix ONLY for local files that should be easily accessible when applying the rule.
+- Examples: templates, other rules, config files.
+- Use standard markdown syntax for external URLs.
+- Include integration section at the bottom.
+- Follow the same markdown standards as other files.
 
 **When to use `mdc:` prefix:**
+
 ```md
 [Other Rule](mdc:.cursor/rules/other-rule.mdc)
 [Template](mdc:.cursor/templates/example.md)
@@ -249,18 +284,19 @@ Content below
 ```
 
 **When to use standard links:**
+
 ```md
-[External Site](mdc:https:/example.com)
-[Documentation](mdc:docs/README.md)
+[External Site](https://example.com)
+[Documentation](docs/README.md)
 ```
 
 ### Documentation Files
 
-- Use consistent heading hierarchy
-- Include table of contents for long documents
-- Add proper navigation links
-- Include examples and code snippets
-- Follow accessibility best practices
+- Use consistent heading hierarchy.
+- Include table of contents for long documents.
+- Add proper navigation links.
+- Include examples and code snippets.
+- Follow accessibility best practices.
 
 ## Project-Specific Guidelines
 
@@ -268,37 +304,37 @@ Content below
 
 Follow the [Component Documentation Template](mdc:.cursor/templates/markdown/component_documentation.md):
 
-- Use proper heading hierarchy
-- Include usage examples with code blocks
-- Document props and their types
-- Include accessibility considerations
-- Provide installation instructions
-- Include related components section
+- Use proper heading hierarchy.
+- Include usage examples with code blocks.
+- Document props and their types.
+- Include accessibility considerations.
+- Provide installation instructions.
+- Include related components section.
 
 ### API Documentation
 
 Follow the [API Documentation Template](mdc:.cursor/templates/markdown/api_documentation.md):
 
-- Use consistent formatting for parameters
-- Include type information
-- Provide usage examples
-- Document return values
-- Include error handling
-- Provide authentication details
+- Use consistent formatting for parameters.
+- Include type information.
+- Provide usage examples.
+- Document return values.
+- Include error handling.
+- Provide authentication details.
 
 ### Changelog Entries
 
-- Follow the existing changelog format
-- Use appropriate change types (feat, fix, docs, etc.)
-- Include breaking change notes when applicable
-- Reference issues and PRs when relevant
+- Follow the existing changelog format.
+- Use appropriate change types (feat, fix, docs, etc.).
+- Include breaking change notes when applicable.
+- Reference issues and PRs when relevant.
 
 ## Language Identifiers
 
 Use these shorter identifiers for consistency:
 
 | Language           | Identifier | Notes                                                  |
-| :----------------- | :--------- | :----------------------------------------------------- |
+|-------------------|------------|--------------------------------------------------------|
 | Shell commands     | `sh`       | Preferred over `bash` for cross-platform compatibility |
 | TypeScript React   | `tsx`      | For React components with TypeScript                   |
 | TypeScript         | `ts`       | Preferred over `typescript` for brevity                |
@@ -314,8 +350,8 @@ Use these shorter identifiers for consistency:
 
 Use these templates for consistent documentation:
 
-- [Component Documentation](mdc:.cursor/templates/markdown/component_documentation.md) - For React components and libraries
-- [API Documentation](mdc:.cursor/templates/markdown/api_documentation.md) - For REST APIs and web services
+- [Component Documentation](mdc:.cursor/templates/markdown/component_documentation.md) - For React components and libraries.
+- [API Documentation](mdc:.cursor/templates/markdown/api_documentation.md) - For REST APIs and web services.
 
 ## Common Mistakes
 
@@ -323,40 +359,31 @@ See [Common Markdown Mistakes](mdc:.cursor/templates/markdown/common_mistakes.md
 
 Key areas to watch:
 
-- **Heading spacing**: Always include space after `#`
-- **Link text**: Use descriptive text, not "click here"
-- **Code blocks**: Always specify language
-- **List formatting**: Consistent bullet style and spacing
-- **Link syntax**: Use `mdc:` only for Cursor rule files
-- **Table formatting**: Proper alignment and spacing
+- **Heading spacing**: Always include space after `#`.
+- **Link text**: Use descriptive text, not "click here".
+- **Code blocks**: Always specify language.
+- **List formatting**: Consistent bullet style and spacing.
+- **Link syntax**: Use `mdc:` only for Cursor rule files.
+- **Table formatting**: Proper alignment and spacing.
 
 ## Quality Checklist
 
 Before submitting markdown content, ensure:
 
-- [ ] All headings follow proper hierarchy (H1 → H2 → H3 → H4)
-- [ ] Code blocks have language identifiers
-- [ ] Links have descriptive text
-- [ ] Images have meaningful alt text
-- [ ] Lists are properly formatted with consistent bullets
-- [ ] Tables are aligned correctly
-- [ ] No broken links
-- [ ] Consistent formatting throughout
-- [ ] Proper use of emphasis and code formatting
-- [ ] Accessibility considerations addressed
-- [ ] Using shortest appropriate language identifiers
-- [ ] Using `mdc:` prefix ONLY for Cursor rule files (*.mdc)
-- [ ] Using standard markdown links for config files, regular markdown files, and external URLs
-- [ ] File type appropriate link syntax used
-- [ ] Proper spacing around headings, lists, and code blocks
-- [ ] Meaningful code comments when needed
-
-## Integration with Other Rules
-
-This rule works in conjunction with:
-
-- [Code Block Formatting](mdc:.cursor/rules/guidelines/code_block.mdc) - For consistent code block formatting
-- [File Naming Conventions](mdc:.cursor/rules/guidelines/naming.mdc) - For consistent file naming
-- [Generate Release Note](mdc:.cursor/rules/workflows/generate_release_note.mdc) - For changelog formatting
-- [Cursor Rules](mdc:.cursor/rules/cursor_rules.mdc) - For rule-specific markdown standards
-
+- [ ] All headings follow proper hierarchy (H1 → H2 → H3 → H4).
+- [ ] **Blank lines around all markdown elements** (headings, lists, code blocks, tables, blockquotes, horizontal rules, images).
+- [ ] Code blocks have language identifiers.
+- [ ] Links have descriptive text.
+- [ ] Images have meaningful alt text.
+- [ ] Lists are properly formatted with consistent bullets.
+- [ ] Tables are aligned correctly.
+- [ ] No broken links.
+- [ ] Consistent formatting throughout.
+- [ ] Proper use of emphasis and code formatting.
+- [ ] Accessibility considerations addressed.
+- [ ] Using shortest appropriate language identifiers.
+- [ ] Using `mdc:` prefix ONLY for Cursor rule files (*.mdc).
+- [ ] Using standard markdown links for config files, regular markdown files, and external URLs.
+- [ ] File type appropriate link syntax used.
+- [ ] Proper spacing around headings, lists, and code blocks.
+- [ ] Meaningful code comments when needed.
