@@ -26,6 +26,7 @@ When generating a commit message, place the commit message within a text code bl
 ## Examples
 
 For reference, see these specific examples:
+
 - **Component Creation**: [component_creation.md](mdc:.cursor/examples/commit_message/component_creation.md) - Shows feature addition with detailed body
 - **Bug Fix**: [bug_fix.md](mdc:.cursor/examples/commit_message/bug_fix.md) - Shows fix type with bullet points in body
 - **Documentation Update**: [doc_update.md](mdc:.cursor/examples/commit_message/doc_update.md) - Shows docs type with multiple changes
@@ -41,6 +42,7 @@ For reference, see these specific examples:
 ## Integration with Existing Rules
 
 This rule works in conjunction with:
+
 - [commit_message.mdc](mdc:.cursor/rules/guidelines/commit_message.mdc) - For commit message format and conventions
 - [master.mdc](mdc:.cursor/rules/master.mdc) - For overall rule organization
 - [rule_usage.mdc](mdc:.cursor/rules/chat_behaviors/rule_usage.mdc) - For documenting rule application

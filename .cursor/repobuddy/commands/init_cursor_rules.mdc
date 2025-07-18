@@ -1,13 +1,11 @@
 ---
-description:
-globs:
 alwaysApply: false
 ---
-# Setup Cursor Rules Workflow
+# Initialize Cursor Rules Workflow
 
 > To user (ignored by AI Agent):
 >
-> To use this rule, you can open the chat and type "execute the workflow in @<this file>"
+> To use this rule, you can enter this in the chat: `run @init_cursor_rules.mdc`
 >
 > Troubleshooting:
 >
@@ -17,7 +15,7 @@ alwaysApply: false
 >
 > It sometimes stuck on the terminal command. Give an `[Enter]` on the terminal may unblock it.
 
-This is a step by step workflow to set up or migrate the Cursor rules to meet the latest best practices.
+This is a step by step workflow to initialize or migrate the Cursor rules to the latest best practices from @repobuddy.
 You should follow this workflow carefully and use the same heading in the section below as you goes through each step.
 
 ## Step 0: Prerequisite Check
@@ -34,7 +32,7 @@ The rules in the `.cursor/backup` folder are referred to as the Backup Cursor Ru
 
 Create the following structure:
 
-```
+```sh
 .cursor/
 ├── examples/
 └── rules/
@@ -94,14 +92,17 @@ First, list all `.mdc` files in `.cursor/backup` and their current locations. Cr
 For each `.mdc` file in the backup, determine its appropriate category:
 
 **Agents Category** (`.cursor/rules/agents/`):
+
 - Rules that control AI agent behavior
 - Examples: commit summary rules, rule management guidelines, agent response formatting
 
 **Guidelines Category** (`.cursor/rules/guidelines/`):
+
 - Opinionated best practices and standards
 - Examples: naming conventions, coding style, formatting standards, commit message formats
 
 **Workflows Category** (`.cursor/rules/workflows/`):
+
 - Step-by-step guides for specific tasks
 - Examples: implementation workflows, release processes, testing procedures
 
@@ -137,6 +138,7 @@ And you **MUST** mention each sub-step as you execute them.
 ### Step 8.4: Migration Log
 
 For each file processed, record:
+
 - **Original filename and location**
 - **Target filename and location**
 - **Category assigned**

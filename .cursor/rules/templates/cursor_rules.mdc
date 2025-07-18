@@ -1,0 +1,37 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+
+# Rule Title
+
+Brief introduction explaining the rule's purpose and when to apply it.
+
+## Related Rules
+
+This rule works in conjunction with:
+
+- @Related Rule 1 - Brief explanation
+- @Related Rule 2 - Brief explanation
+
+## Table of Contents
+
+- @Section 1
+- @Section 2
+
+## Section 1
+
+Detailed explanation with step-by-step instructions.
+
+### Bad Examples
+
+[Include examples of what to avoid]
+
+### Good Examples
+
+[Include positive examples]
+
+## Section 2
+
+Additional content organized in logical sections.
