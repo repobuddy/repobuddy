@@ -6,6 +6,12 @@ description: to generate commit message
 
 Generate commit messages following the Conventional Commits specification with project-specific conventions.
 
+## Required Rules
+
+The AI agent should read and follow these rules along with the subject rule:
+
+- **[Markdown Guidelines](mdc:.cursor/rules/guidelines/markdown.mdc)**: For proper text formatting and structure in commit messages
+
 ## Analyze the Changes
 
 - **Check if there are any staged changes**: Use `git status --porcelain` to check if there are any staged changes.

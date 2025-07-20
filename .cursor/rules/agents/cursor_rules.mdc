@@ -5,18 +5,18 @@ globs: *.mdc
 
 Guidelines for cursor rules in this repository.
 
-## Related Rules
+## Required Rules
 
-This rule works in conjunction with:
+The AI agent should read and follow these rules along with the subject rule:
 
-- **[master.mdc](mdc:.cursor/rules/master.mdc)**: Central reference for all rules
-- **[Naming Guidelines](mdc:.cursor/rules/guidelines/naming.mdc)**: File naming conventions
-- **[Markdown Guidelines](mdc:.cursor/rules/guidelines/markdown.mdc)**: Content formatting standards
+- **[master.mdc](mdc:.cursor/rules/master.mdc)**: Central reference for all rules that must be understood
+- **[Naming Guidelines](mdc:.cursor/rules/guidelines/naming.mdc)**: File naming conventions that must be followed
+- **[Markdown Guidelines](mdc:.cursor/rules/guidelines/markdown.mdc)**: Content formatting standards that must be applied
 
 ## Table of Contents
 
 - [Cursor Rules guidelines](#cursor-rules-guidelines)
-  - [Related Rules](#related-rules)
+  - [Required Rules](#required-rules)
   - [Table of Contents](#table-of-contents)
   - [Rules Categories](#rules-categories)
     - [Agents](#agents)
@@ -127,12 +127,12 @@ The cursor rules should follow this template:
 
 Brief explanation of the rule's purpose and when to use it.
 
-## Related Rules
+## Required Rules
 
-This rule works in conjunction with:
+The AI agent should read and follow these rules along with the subject rule:
 
-- **[Related Rule Name](mdc:.cursor/rules/category/rule_name.mdc)**: Brief explanation of how this rule relates
-- **[Another Rule](mdc:.cursor/rules/category/another_rule.mdc)**: Brief explanation of integration
+- **[Required Rule Name](mdc:.cursor/rules/category/rule_name.mdc)**: Brief explanation of why this rule is required
+- **[Another Required Rule](mdc:.cursor/rules/category/another_rule.mdc)**: Brief explanation of why this rule is required
 
 ## Quick Reference
 
@@ -166,7 +166,7 @@ Additional content organized in logical sections.
 
 In the rule template, the following sections can be skipped:
 
-- **Related Rules**: When the rule is not related to any other rule
+- **Required Rules**: When the rule does not require any other rules to be followed
 - **Quick Reference**: The rule is short and does not need a quick reference
 - **Table of Contents**: The rule is short and does not have a table of contents
 - **Quality Checklist**: The rule is not complex and does not need a quality checklist
@@ -185,6 +185,6 @@ Before finalizing a new rule, verify:
 - [ ] Content follows the structure template.
 - [ ] Format follows markdown guidelines.
 - [ ] Examples are clear and practical.
-- [ ] Integration section references related rules.
+- [ ] Required Rules section references rules that must be followed.
 - [ ] Rule is added to `master.mdc`.
 - [ ] The rule is easy to follow by AI agents.

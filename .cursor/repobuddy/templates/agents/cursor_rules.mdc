@@ -77,6 +77,7 @@ Follow the naming convention:
 - `tailwindcss.mdc`
 
 ❌ **Bad names:**
+
 - `ReactComponent.mdc` (PascalCase)
 - `react-component.mdc` (kebab-case)
 - `react_component.md` (wrong extension)
@@ -97,6 +98,7 @@ alwaysApply: false
 ```
 
 **Frontmatter fields:**
+
 - `description`: Optional brief explanation of what the rule does
 - `globs`: Optional file patterns where this rule applies (e.g., `src/**/*.tsx`)
   - **Important**: Complex glob patterns are not supported
@@ -117,6 +119,7 @@ When attempting to read the frontmatter of any rule file, you **MUST** follow th
 - **ALWAYS** run the extraction command: `awk '/^---$/{p=!p;next}p' filename.mdc`
 
 This requirement applies to all operations involving frontmatter, including:
+
 - Creating new rules
 - Modifying existing rules
 - Validating rule structure
@@ -176,7 +179,7 @@ Every rule should include these sections:
 2. **Table of Contents**: For rules with multiple sections (use anchor links)
 3. **Main Content**: Organized in logical sections with clear headings
 4. **Examples**: Both good and bad examples when applicable
-5. **Integration**: References to related rules and guidelines
+5. **Required Rules**: References to required rules and guidelines
 
 ### Optional Sections
 
@@ -208,7 +211,7 @@ Follow the content structure template above, including:
 - Clear title and introduction
 - Table of contents (if multiple sections)
 - Detailed explanations with examples
-- Integration section with related rules
+- Required Rules section with required rules
 
 ### Step 4: Update References
 
@@ -224,6 +227,7 @@ Here's a complete example of creating a new guideline rule:
 
 1. **File location**: `.cursor/rules/guidelines/typescript.mdc`
 2. **Frontmatter**:
+
    ```yaml
    ---
    description: Guidelines for writing TypeScript code with emphasis on type safety
@@ -231,6 +235,7 @@ Here's a complete example of creating a new guideline rule:
    alwaysApply: false
    ---
    ```
+
 3. **Content**: Follow the structure template with TypeScript-specific guidance
 4. **Update master.mdc**: Add reference under the guidelines section
 5. **Test**: Verify the rule works correctly
@@ -254,7 +259,7 @@ Before finalizing a new rule, verify:
 - [ ] Content follows the structure template
 - [ ] Format follows markdown guidelines
 - [ ] Examples are clear and practical
-- [ ] Integration section references related rules
+- [ ] Required Rules section references required rules
 - [ ] Rule is added to master.mdc
 - [ ] Rule works as expected when tested
 

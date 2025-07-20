@@ -1,12 +1,16 @@
+---
+description: to generate changeset files
+---
+
 # Generate Changeset
 
 Step-by-step commands for creating changesets files.
 
-## Related Rules
+## Required Rules
 
-This rule works in conjunction with:
+The AI agent should read and follow these rules along with the subject rule:
 
-- **[Markdown Guidelines](mdc:.cursor/rules/guidelines/markdown.mdc)**: For proper markdown formatting in changeset files
+- **[Markdown Guidelines](mdc:.cursor/rules/guidelines/markdown.mdc)**: For proper markdown formatting in changeset files that must be followed
 
 ## Changeset Naming
 

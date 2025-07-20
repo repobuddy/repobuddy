@@ -69,13 +69,15 @@ When rules are used, include this section before any final summary:
 ## Special Cases
 
 - **No Rules Used**: If no specific Cursor rules were applied, omit the "Rules Applied" section
-- **Multiple Related Rules**: Group related rules together with a single explanation
+- **Multiple Required Rules**: Group required rules together with a single explanation
 - **Rule References**: Always use the proper `[Rule Name](mdc:.cursor/rules/category/rule_name.mdc)` format for links
 - **Brief Explanations**: Keep explanations concise but informative - one sentence per rule is usually sufficient
 
-## Integration with Other Rules
+## Required Rules
 
-This rule works in conjunction with all other Cursor rules and should be applied whenever any other rule is used. It ensures that users can understand the reasoning behind responses and can reference the specific guidelines that were followed.
+The AI agent should read and follow these rules along with the subject rule:
+
+- **All Cursor Rules**: This rule works in conjunction with all other Cursor rules and should be applied whenever any other rule is used. It ensures that users can understand the reasoning behind responses and can reference the specific guidelines that were followed.
 
 ## Benefits
 

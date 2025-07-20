@@ -7,12 +7,11 @@ alwaysApply: true
 
 This rule provides comprehensive guidelines for writing markdown content that follows best practices and passes markdown linting in this project.
 
-## Related Rules
+## Required Rules
 
-This rule works in conjunction with:
+The AI agent should read and follow these rules along with the subject rule:
 
-- **[Naming Guidelines](mdc:.cursor/rules/guidelines/naming.mdc)**: For consistent file naming conventions
-- **[Cursor Rules Guidelines](mdc:.cursor/rules/agents/cursor_rules.mdc)**: For rule-specific markdown standards and structure
+- **[Naming Guidelines](mdc:.cursor/rules/guidelines/naming.mdc)**: For consistent file naming conventions that must be followed
 
 ## Quick Reference
 
