@@ -1,3 +1,7 @@
+---
+alwaysApply: true
+---
+
 # Master Rules
 
 This file serves as the central reference for all Cursor rules in the repository.
@@ -13,7 +17,6 @@ This file makes it easier for the AI agent to find the discover rules when they 
 
 ### For Code Quality and Standards
 
-- Use [commands/generate_commit_message.mdc](mdc:.cursor/rules/commands/generate_commit_message.mdc) when writing commit messages
 - Use [guidelines/markdown.mdc](mdc:.cursor/rules/guidelines/markdown.mdc) when writing or editing markdown files
 - Use [guidelines/naming.mdc](mdc:.cursor/rules/guidelines/naming.mdc) when creating or updating files and folders
 - Use [guidelines/import_export.mdc](mdc:.cursor/rules/guidelines/import_export.mdc) when working with module imports and exports
@@ -22,6 +25,7 @@ This file makes it easier for the AI agent to find the discover rules when they 
 
 - Use [commands/extract_frontmatter_from_markdown.mdc](mdc:.cursor/rules/commands/extract_frontmatter_from_markdown.mdc) when extracting frontmatter from markdown files
 - Use [commands/generate_changeset.mdc](mdc:.cursor/rules/commands/generate_changeset.mdc) for creating and managing changeset files in the monorepo
+- Use [commands/generate_commit_message.mdc](mdc:.cursor/rules/commands/generate_commit_message.mdc) when writing commit messages
 
 ### For Templates
 
@@ -41,7 +45,6 @@ Rules for AI agent behavior and management:
 
 Opinionated best practices on specific topics:
 
-- [commands/generate_commit_message.mdc](mdc:.cursor/rules/commands/generate_commit_message.mdc) - Commit message formatting and conventions
 - [guidelines/markdown.mdc](mdc:.cursor/rules/guidelines/markdown.mdc) - Markdown formatting standards and best practices
 - [guidelines/naming.mdc](mdc:.cursor/rules/guidelines/naming.mdc) - Naming conventions for files, folders, and code elements
 - [guidelines/import_export.mdc](mdc:.cursor/rules/guidelines/import_export.mdc) - Import and export patterns and best practices
@@ -52,6 +55,7 @@ Process-oriented rules for specific tasks:
 
 - [commands/extract_frontmatter_from_markdown.mdc](mdc:.cursor/rules/commands/extract_frontmatter_from_markdown.mdc) - Extracting frontmatter from .mdc or .mdx files using terminal commands
 - [commands/generate_changeset.mdc](mdc:.cursor/rules/commands/generate_changeset.mdc) - Step-by-step process for creating and managing changeset files in the monorepo
+- [commands/generate_commit_message.mdc](mdc:.cursor/rules/commands/generate_commit_message.mdc) - Commit message formatting and conventions
 
 ### Templates
 

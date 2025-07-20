@@ -72,20 +72,21 @@ Rule files should be placed in the appropriate folder based on its category:
 ```sh
 .cursor/rules/
 ├── master.mdc                              # Central reference (special file)
-├── agents/                                 # Rules for AI agent behavior and management.
-│   ├── summary_commit.mdc                  # Add a "Commit Message" section in agent response
+├── agents/                                 # Rules for AI agent behavior and management
+│   ├── commit_summary.mdc                  # Add a "Commit Message" section in agent response
 │   ├── cursor_rules.mdc                    # Rule for managing cursor rules
 │   └── rule_usage.mdc                      # Add a "Rules Applied" section in agent response
 ├── commands/                              # Step-by-step commands for AI agents to follow
-│   ├── convert_test_to_story.mdc
-│   ├── generate_changesets.mdc
+│   ├── extract_frontmatter_from_markdown.mdc
+│   ├── generate_changeset.mdc
 │   ├── generate_commit_message.mdc
 │   └── planning.mdc
-└── guidelines/                             # Opinionated best practices
-    ├── markdown.mdc
-    ├── naming.mdc
-    ├── project_structure.mdc
-    └── repository_structure.mdc
+├── guidelines/                             # Opinionated best practices
+│   ├── import_export.mdc
+│   ├── markdown.mdc
+│   └── naming.mdc
+└── templates/                              # Templates for the AI agent to use
+    └── cursor_rules.mdc                    # Template for creating new cursor rule files
 ```
 
 ## Naming Convention
