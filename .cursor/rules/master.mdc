@@ -21,6 +21,10 @@ This file makes it easier for the AI agent to find the discover rules when they 
 - Use [guidelines/naming.mdc](mdc:.cursor/rules/guidelines/naming.mdc) when creating or updating files and folders
 - Use [guidelines/import_export.mdc](mdc:.cursor/rules/guidelines/import_export.mdc) when working with module imports and exports
 
+### For Project Structure and Organization
+
+- Use [project/repository_structure.mdc](mdc:.cursor/rules/project/repository_structure.mdc) when understanding or modifying the monorepo structure
+
 ### For Specific Workflows
 
 - Use [commands/extract_frontmatter_from_markdown.mdc](mdc:.cursor/rules/commands/extract_frontmatter_from_markdown.mdc) when extracting frontmatter from markdown files
@@ -48,6 +52,12 @@ Opinionated best practices on specific topics:
 - [guidelines/markdown.mdc](mdc:.cursor/rules/guidelines/markdown.mdc) - Markdown formatting standards and best practices
 - [guidelines/naming.mdc](mdc:.cursor/rules/guidelines/naming.mdc) - Naming conventions for files, folders, and code elements
 - [guidelines/import_export.mdc](mdc:.cursor/rules/guidelines/import_export.mdc) - Import and export patterns and best practices
+
+### Project
+
+Project structure and organization:
+
+- [project/repository_structure.mdc](mdc:.cursor/rules/project/repository_structure.mdc) - Comprehensive guide to the repobuddy monorepo structure and organization
 
 ### Commands
 

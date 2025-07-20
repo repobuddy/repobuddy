@@ -165,10 +165,6 @@ Elements that require blank lines around them:
 
 ### Code Blocks
 
-For comprehensive code block formatting guidelines, see [Code Block Guidelines](mdc:.cursor/rules/guidelines/code_block.mdc).
-
-Key requirements:
-
 - **Always leave one blank line before and after code blocks**.
 - Always specify the language for syntax highlighting.
 - Prefer shorter language identifiers for consistency.

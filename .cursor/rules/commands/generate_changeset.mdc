@@ -1,6 +1,3 @@
----
-description: to generate changeset files
----
 
 # Generate Changeset
 
@@ -11,6 +8,31 @@ Step-by-step commands for creating changesets files.
 The AI agent should read and follow these rules along with the subject rule:
 
 - **[Markdown Guidelines](mdc:.cursor/rules/guidelines/markdown.mdc)**: For proper markdown formatting in changeset files that must be followed
+- **[Repository Structure](mdc:.cursor/rules/project/repository_structure.mdc)**: For the structure of the repository and the packages inside it
+
+## Quick Reference
+
+| Step          | Command                         | Purpose                 |
+| ------------- | ------------------------------- | ----------------------- |
+| Check scope   | `git status --porcelain`        | Identify changed files  |
+| Find packages | `git diff --cached --name-only` | Map files to packages   |
+| Validate      | `pnpm cs validate`              | Check changeset format  |
+| Status        | `pnpm cs status`                | View pending changesets |
+
+## Table of Contents
+
+- [Changeset Naming](mdc:#changeset-naming)
+- [Step-by-Step Process](mdc:#step-by-step-process)
+  - [1. Identify Scope](mdc:#1-identify-scope)
+  - [2. Identify Affected Packages](mdc:#2-identify-affected-packages)
+  - [3. Determine Change Type](mdc:#3-determine-change-type)
+  - [4. Create the Changeset](mdc:#4-create-the-changeset)
+- [Changeset File Format](mdc:#changeset-file-format)
+  - [Frontmatter Rules](mdc:#frontmatter-rules)
+- [Validation Steps](mdc:#validation-steps)
+  - [Pre-Creation Validation](mdc:#pre-creation-validation)
+  - [Post-Creation Validation](mdc:#post-creation-validation)
+- [Quality Checklist](mdc:#quality-checklist)
 
 ## Changeset Naming
 
@@ -34,22 +56,17 @@ Determine which package is affected based on the location of the changed files:
 
 - **If there are staged changes**: Use `git diff --cached --name-only` to see staged files
 - **If there are no staged changes**: Use `git status --porcelain` to see unstaged files
-- **Map file locations to packages**:
-  - `packages/biome/` → `@repobuddy/biome`
-  - `packages/buddy/` → `repobuddy`
-  - `packages/jest/` → `@repobuddy/jest`
-  - `packages/test/` → `@repobuddy/test`
-  - `packages/typescript/` → `@repobuddy/typescript`
-  - `packages/vitest/` → `@repobuddy/vitest`
+
+Refer to the [Repository Structure](mdc:.cursor/rules/project/repository_structure.mdc) for the list of packages and their locations.
 
 **Note**: If the changes do not affect any package (e.g., only documentation, CI/CD, or tooling files outside packages), no changeset file should be created. If you add root-level packages or scripts in the future, specify how to handle those here.
 
 ### 3. Determine Change Type
 
-| Type | Version Bump | When to Use |
-|------|--------------|-------------|
-| **major** | `1.0.0` → `2.0.0` | Breaking changes, API changes |
-| **minor** | `1.0.0` → `1.1.0` | New features, new exports |
+| Type      | Version Bump      | When to Use                         |
+| --------- | ----------------- | ----------------------------------- |
+| **major** | `1.0.0` → `2.0.0` | Breaking changes, API changes       |
+| **minor** | `1.0.0` → `1.1.0` | New features, new exports           |
 | **patch** | `1.0.0` → `1.0.1` | Bug fixes, performance improvements |
 
 ### 4. Create the Changeset
@@ -94,14 +111,6 @@ BREAKING CHANGE: Description of breaking changes if any.
    - Major: Breaking changes
    - Minor: New features
    - Patch: Bug fixes
-
-### Post-Creation Validation
-
-```sh
-pnpm cs status
-pnpm cs validate
-pnpm cs check
-```
 
 ## Quality Checklist
 
