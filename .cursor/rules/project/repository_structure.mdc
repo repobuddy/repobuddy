@@ -1,0 +1,248 @@
+# Repository Structure
+
+Comprehensive guide to the repobuddy monorepo structure and organization.
+
+## Required Rules
+
+The AI agent should read and follow these rules along with the subject rule:
+
+- **[Naming Guidelines](mdc:.cursor/rules/guidelines/naming.mdc)**: For consistent file and directory naming conventions
+- **[Markdown Guidelines](mdc:.cursor/rules/guidelines/markdown.mdc)**: For proper documentation formatting
+
+## Quick Reference
+
+| Directory    | Purpose                | Contents                       |
+| ------------ | ---------------------- | ------------------------------ |
+| `packages/`  | Published npm packages | Core library packages          |
+| `testcases/` | Integration tests      | Real-world usage examples      |
+| `examples/`  | Documentation examples | Simple demonstration projects  |
+| `website/`   | Documentation site     | Astro-based documentation      |
+| `docs/`      | Project documentation  | Guides and reference materials |
+| `plops/`     | Code generation        | Plop templates and generators  |
+
+## Table of Contents
+
+- [Project Overview](mdc:#project-overview)
+- [Root Directory Structure](mdc:#root-directory-structure)
+- [Package Organization](mdc:#package-organization)
+  - [Core Packages](mdc:#core-packages)
+  - [Package Structure](mdc:#package-structure)
+- [Testing Infrastructure](mdc:#testing-infrastructure)
+  - [Testcases](mdc:#testcases)
+  - [Examples](mdc:#examples)
+- [Documentation](mdc:#documentation)
+- [Build System](mdc:#build-system)
+- [Development Workflow](mdc:#development-workflow)
+- [Quality Checklist](mdc:#quality-checklist)
+
+## Project Overview
+
+Repobuddy is a monorepo containing tools and utilities for managing JavaScript/TypeScript repositories. The project uses:
+
+- **Package Manager**: [pnpm](mdc:pnpm-workspace.yaml) with workspace configuration
+- **Build System**: [Turbo](mdc:turbo.json) for monorepo task orchestration
+- **Code Quality**: [Biome](mdc:biome.jsonc) for linting and formatting
+- **Testing**: [Jest](mdc:packages/jest/) and [Vitest](mdc:packages/vitest/) configurations
+- **Documentation**: [Astro](mdc:website/) for the documentation site
+
+## Root Directory Structure
+
+```sh
+repobuddy/
+├── .changeset/           # Changeset files for versioning
+├── .cursor/              # Cursor IDE configuration and rules
+├── .github/              # GitHub workflows and templates
+├── .vscode/              # VS Code workspace settings
+├── docs/                 # Project documentation
+├── examples/             # Simple demonstration projects
+├── packages/             # Published npm packages
+├── plops/                # Code generation templates
+├── testcases/            # Integration test projects
+├── website/              # Documentation site (Astro)
+├── biome.jsonc           # Biome configuration
+├── package.json          # Root package configuration
+├── pnpm-workspace.yaml   # Workspace configuration
+├── turbo.json            # Turbo build configuration
+└── tsconfig.json         # Root TypeScript configuration
+```
+
+## Package Organization
+
+### Core Packages
+
+The `packages/` directory contains the main published npm packages:
+
+| Package                 | Purpose                          | Location                                         |
+| ----------------------- | -------------------------------- | ------------------------------------------------ |
+| `@repobuddy/biome`      | Biome configuration presets      | [packages/biome/](mdc:packages/biome/)           |
+| `@repobuddy/buddy`      | Core repository management CLI   | [packages/buddy/](mdc:packages/buddy/)           |
+| `@repobuddy/jest`       | Jest configuration presets       | [packages/jest/](mdc:packages/jest/)             |
+| `@repobuddy/test`       | Testing utilities                | [packages/test/](mdc:packages/test/)             |
+| `@repobuddy/typescript` | TypeScript configuration presets | [packages/typescript/](mdc:packages/typescript/) |
+| `@repobuddy/vitest`     | Vitest configuration presets     | [packages/vitest/](mdc:packages/vitest/)         |
+
+### Package Structure
+
+Each package follows a consistent structure:
+
+```sh
+packages/[package-name]/
+├── ts/                   # TypeScript source files
+├── tests/                # Package-specific tests
+├── package.json          # Package configuration
+├── CHANGELOG.md          # Version history
+├── LICENSE               # License information
+└── readme.md             # Package documentation
+```
+
+**Key conventions:**
+
+- **Source code**: Located in `ts/` directory (not `src/`)
+- **Tests**: Located in `tests/` directory
+- **Configuration**: Each package has its own `package.json` and TypeScript config
+- **Documentation**: Each package has its own `readme.md`
+
+## Testing Infrastructure
+
+### Testcases
+
+The `testcases/` directory contains real-world integration test projects that demonstrate how the packages work together:
+
+| Testcase        | Purpose                       | Configuration               |
+| --------------- | ----------------------------- | --------------------------- |
+| `build-ts/`     | TypeScript build testing      | TypeScript compilation      |
+| `dual-ts-jest/` | Dual TypeScript + Jest setup  | Both CJS and ESM            |
+| `dual-ts-swc/`  | Dual TypeScript + SWC setup   | Both CJS and ESM            |
+| `js-cjs/`       | JavaScript CommonJS testing   | Node.js CJS modules         |
+| `js-esm/`       | JavaScript ESM testing        | Node.js ESM modules         |
+| `jsdom-ts/`     | JSDOM + TypeScript testing    | Browser environment         |
+| `ts-cjs/`       | TypeScript CommonJS testing   | Compiled to CJS             |
+| `ts-esm/`       | TypeScript ESM testing        | Compiled to ESM             |
+| `two-chalk/`    | Multiple chalk versions       | Dependency conflict testing |
+| `with-t/`       | Testing utilities integration | Custom test helpers         |
+
+**Testcase structure:**
+
+```sh
+testcases/[testcase-name]/
+├── jest.config.*         # Jest configuration
+├── package.json          # Testcase dependencies
+├── tsconfig.json         # TypeScript configuration
+├── src/ or ts/           # Source files
+└── README.md             # Testcase documentation
+```
+
+### Examples
+
+The `examples/` directory contains simple demonstration projects:
+
+| Example  | Purpose             | Description                         |
+| -------- | ------------------- | ----------------------------------- |
+| `biome/` | Biome configuration | Shows how to use `@repobuddy/biome` |
+
+## Documentation
+
+### Website
+
+The `website/` directory contains the Astro-based documentation site:
+
+- **Framework**: [Astro](mdc:website/astro.config.ts)
+- **Content**: Located in `src/content/docs/`
+- **Styling**: Custom CSS and assets in `src/assets/`
+- **Build**: Configured in [astro.config.ts](mdc:website/astro.config.ts)
+
+### Project Documentation
+
+The `docs/` directory contains project-level documentation:
+
+- **Guides**: Step-by-step instructions
+- **Reference**: API documentation and configuration
+- **Scenarios**: Common use cases and examples
+
+## Build System
+
+### Turbo Configuration
+
+The project uses [Turbo](mdc:turbo.json) for monorepo task orchestration:
+
+**Key tasks:**
+
+- `build`: Compiles TypeScript packages
+- `test`: Runs tests across all packages
+- `coverage`: Generates test coverage reports
+- `check`: Runs code quality checks
+- `lint`: Runs linting across the monorepo
+- `size`: Analyzes bundle sizes
+
+**Task dependencies:**
+
+- Build tasks depend on `^build` (upstream builds)
+- Test tasks depend on Jest/Vitest builds
+- Coverage depends on test builds
+
+### Package Manager
+
+The project uses [pnpm](mdc:pnpm-workspace.yaml) with workspace configuration:
+
+**Workspace packages:**
+
+- `packages/*` - Core npm packages
+- `examples/*` - Documentation examples
+- `testcases/*` - Integration test projects
+- `website` - Documentation site
+
+## Development Workflow
+
+### Scripts
+
+The root [package.json](mdc:package.json) provides convenient scripts:
+
+| Script    | Purpose                 | Command                                       |
+| --------- | ----------------------- | --------------------------------------------- |
+| `buddy`   | Run buddy CLI           | `pnpm --filter ./packages/buddy`              |
+| `build`   | Build all packages      | `turbo run build`                             |
+| `test`    | Run all tests           | `turbo run test`                              |
+| `check`   | Run code quality checks | `biome check .`                               |
+| `format`  | Format all code         | `biome format . --write`                      |
+| `verify`  | Run full verification   | `turbo run check lint coverage depcheck size` |
+| `cs`      | Changeset commands      | `changeset`                                   |
+| `release` | Build and publish       | `pnpm build && changeset publish`             |
+
+### Package-specific Scripts
+
+Each package can be targeted directly:
+
+- `pb` - `@repobuddy/biome`
+- `jest` - `@repobuddy/jest`
+- `ts` - `@repobuddy/typescript`
+- `vt` - `@repobuddy/vitest`
+- `rt` - `@repobuddy/test`
+
+### Testcase Scripts
+
+Testcases can be run individually:
+
+- `js-cjs` - JavaScript CommonJS testcase
+- `js-esm` - JavaScript ESM testcase
+- `ts-cjs` - TypeScript CommonJS testcase
+- `ts-esm` - TypeScript ESM testcase
+- `jsdom-ts` - JSDOM TypeScript testcase
+- `dtj` - Dual TypeScript Jest testcase
+
+## Quality Checklist
+
+When working with the repository structure, ensure:
+
+- [ ] New packages are added to `packages/` directory
+- [ ] Package structure follows the established pattern (`ts/`, `tests/`, etc.)
+- [ ] Testcases are added to `testcases/` for integration testing
+- [ ] Examples are added to `examples/` for documentation
+- [ ] Documentation is updated in both `docs/` and `website/`
+- [ ] Package names match the `@repobuddy/` scope
+- [ ] Workspace configuration includes new packages
+- [ ] Turbo configuration includes new tasks
+- [ ] Root scripts provide convenient access to new packages
+- [ ] Changeset files are created for versioned changes
+- [ ] TypeScript configurations are consistent across packages
+- [ ] Test coverage includes new functionality
+- [ ] Bundle size analysis includes new packages
