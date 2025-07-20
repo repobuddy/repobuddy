@@ -82,7 +82,6 @@ Rule files should be placed in the appropriate folder based on its category:
 │   ├── generate_commit_message.mdc
 │   └── planning.mdc
 └── guidelines/                             # Opinionated best practices
-    ├── commit_message.mdc
     ├── markdown.mdc
     ├── naming.mdc
     ├── project_structure.mdc

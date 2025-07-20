@@ -33,7 +33,7 @@ When rules are used, include this section before any final summary:
 ## Rules Applied
 
 - **[Example Rule Name](mdc:.cursor/rules/guidelines/example_rule.mdc)**: Brief explanation of how this rule guided the response
-- **[Another Example Rule](mdc:.cursor/rules/workflows/example_workflow.mdc)**: Brief explanation of how this rule was applied
+- **[Another Example Rule](mdc:.cursor/rules/commands/example_workflow.mdc)**: Brief explanation of how this rule was applied
 ```
 
 ## Examples
@@ -62,7 +62,7 @@ When rules are used, include this section before any final summary:
 ```md
 ## Rules Applied
 
-- **[Commit Messages](mdc:.cursor/rules/guidelines/commit_message.mdc)**: Used conventional commits format with appropriate type and scope
+- **[Commit Messages](mdc:.cursor/rules/commands/generate_commit_message.mdc)**: Used conventional commits format with appropriate type and scope
 - **[Commit Summary](mdc:.cursor/rules/agents/commit_summary.mdc)**: Generated commit message at end of session with proper summary format
 ```
 

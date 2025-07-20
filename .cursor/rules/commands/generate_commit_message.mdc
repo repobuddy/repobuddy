@@ -1,0 +1,67 @@
+---
+description: to generate commit message
+---
+
+# Generate Commit Message
+
+Generate commit messages following the Conventional Commits specification with project-specific conventions.
+
+## Analyze the Changes
+
+- **Check if there are any staged changes**: Use `git status --porcelain` to check if there are any staged changes.
+- **If there are staged changes**: Use `git diff --cached` to analyze staged changes.
+- **If there are no staged changes**: Use `git diff` to analyze unstaged changes.
+- **If there are no changes at all**: Inform the user there are no changes to commit.
+
+## Project-Specific Conventions
+
+- **Cursor Rules Changes**: Use `chore(rules)` for changes only in `.cursor/rules`
+
+## Format
+
+```text
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+## Guidelines
+
+- Use **imperative mood** (add, fix, update, remove)
+- Use **lowercase** with **no period** at end
+- Be **specific** and **concise**
+- Add body for complex changes or breaking changes
+- Use `BREAKING CHANGE:` prefix for breaking changes
+
+## Examples
+
+### Simple Changes
+
+```text
+fix(component): resolve button hover state in dark mode
+feat(api): add user authentication endpoint
+chore(rules): simplify commit message generation rule
+docs(readme): update installation instructions
+```
+
+### Complex Changes
+
+```text
+feat(jest): add new preset for TypeScript ESM projects
+
+Implements a new Jest preset specifically designed for TypeScript projects using ES modules. This preset includes proper module resolution, TypeScript compilation, and ESM compatibility.
+
+BREAKING CHANGE: The new preset requires Jest 29+ and TypeScript 4.9+
+```
+
+## Output Format
+
+Provide the commit message in this format for easy copying:
+
+```text
+[generated commit message]
+```
+
+This allows the user to easily copy and use the commit message.

@@ -38,7 +38,7 @@ Create the following structure:
 └── rules/
     ├── agents/                                 # Rules for AI agent behavior and management.
     ├── guidelines/                             # Opinionated best practices
-    └── workflows/                              # Step-by-step guides for AI tasks
+    └── commands/                               # Step-by-step commands for AI agents to follow
 ```
 
 ## Step 3: Copy Example Files
@@ -50,8 +50,8 @@ If the example already exists, skip that example.
 
 - Copy `.cursor/repobuddy/required/master.mdc` to `.cursor/rules` using terminal.
 - Copy all files under `.cursor/repobuddy/required/agents` to `.cursor/rules/agents` using terminal.
-- Copy all files under `.cursor/repobuddy/required/workflows` to `.cursor/rules/workflows` using terminal.
-- Validate `.cursor/rules/workflows/extract_frontmatter_from_markdown.mdc` exists.
+- Copy all files under `.cursor/repobuddy/required/commands` to `.cursor/rules/commands` using terminal.
+- Validate `.cursor/rules/commands/extract_frontmatter_from_markdown.mdc` exists.
 - Read the new rules in `.cursor/rules`. These are the Core Rule and you should comply with these new rules for the rest of this workflow.
 
 ## Step 5: Setup naming convention
@@ -71,9 +71,9 @@ If the example already exists, skip that example.
 
 ## Step 7: Setup Commit Message Guidelines
 
-- Copy `.cursor/repobuddy/required/guidelines/commit_message.mdc` to `.cursor/rules/guidelines/commit_message.mdc`.
+- Copy `.cursor/repobuddy/required/commands/generate_commit_message.mdc` to `.cursor/rules/commands/generate_commit_message.mdc`.
 - Check if there is a commit message guideline in the Backup Cursor Rules.
-- If found, update `.cursor/rules/guidelines/commit_message.mdc` according to what it has.
+- If found, update `.cursor/rules/commands/generate_commit_message.mdc` according to what it has.
   - Make sure to follow `.cursor/rules/agents/cursor_rules.mdc` to maintain the structure and best practice.
 - Check if the repository uses any commit message related tools, and adjust the rule based on the config found.
 
@@ -101,7 +101,7 @@ For each `.mdc` file in the backup, determine its appropriate category:
 - Opinionated best practices and standards
 - Examples: naming conventions, coding style, formatting standards, commit message formats
 
-**Workflows Category** (`.cursor/rules/workflows/`):
+**Commands Category** (`.cursor/rules/commands/`):
 
 - Step-by-step guides for specific tasks
 - Examples: implementation workflows, release processes, testing procedures
@@ -115,12 +115,12 @@ You **MUST NOT** stop at sub-step 8.3.6.
 And you **MUST** mention each sub-step as you execute them.
 
 8.3.1. **Read Original File**: Open the backup file and read its complete content.
-8.3.2. **Skip Core Rules**: Skip this role and continue on the next file if it is correspond to one of the Core Rules in Step 4, for example `.cursor/rules/agents/cursor_rules.mdc` or `.cursor/rules/workflows/extract_frontmatter_from_markdown.mdc`.
+8.3.2. **Skip Core Rules**: Skip this role and continue on the next file if it is correspond to one of the Core Rules in Step 4, for example `.cursor/rules/agents/cursor_rules.mdc` or `.cursor/rules/commands/extract_frontmatter_from_markdown.mdc`.
 8.3.3. **Determine Target Location**: Based on the categorization in Step 8.2, determine the appropriate subfolder
 8.3.4. **Check for Conflicts**: Verify no similar rule (check by content similarity, not just filename) already exists in the target location
        - **Skip if found**: If a similar rule is found, skip this file and continue on the next file
-8.3.5. **Extract Frontmatter - CRITICAL STEP**: **YOU MUST USE THE WORKFLOW**
-       - **ALWAYS** use `.cursor/rules/workflows/extract_frontmatter_from_markdown.mdc` to extract the frontmatter from the original file.
+8.3.5. **Extract Frontmatter - CRITICAL STEP**: **YOU MUST USE THE COMMAND**
+       - **ALWAYS** use `.cursor/rules/commands/extract_frontmatter_from_markdown.mdc` to extract the frontmatter from the original file.
        - **NEVER** assume a file has no frontmatter without checking with the workflow first.
        - **NEVER** create frontmatter manually without extracting it first.
        - **ALWAYS** run the extraction command: `awk '/^---$/{p=!p;next}p' filename.mdc`
@@ -129,7 +129,7 @@ And you **MUST** mention each sub-step as you execute them.
 8.3.6. **Create New File**: Create a new rule in the appropriate subfolder under `.cursor/rules`.
 8.3.7. **Update Content Structure**: Following `.cursor/rules/agents/cursor_rules.mdc`, update the content structure while preserving all original information.
 8.3.8. **Validate Migration**: Verify the new file has:
-       - **ALWAYS**: Use `.cursor/rules/workflows/extract_frontmatter_from_markdown.mdc` to validate the frontmatter in the new file.
+       - **ALWAYS**: Use `.cursor/rules/commands/extract_frontmatter_from_markdown.mdc` to validate the frontmatter in the new file.
        - **ALWAYS**: Verify the `globs` value must remain exactly the same. e.g. `*.tsx,*.jsx` **MUST NOT** convert to `*.{tsx,jsx}`.
        - **ALWAYS**: Identical frontmatter as the original
        - Proper content structure following the template
@@ -174,14 +174,14 @@ Perform these validation checks:
 
 1. **File Structure Check**:
    - Verify `.cursor/rules/master.mdc` exists
-   - Confirm `agents/`, `guidelines/`, and `workflows/` folders exist
+   - Confirm `agents/`, `guidelines/`, and `commands/` folders exist
    - Check that all `.mdc` files are in appropriate subfolders (not in root), except `.cursor/rules/master.mdc`
 
 2. **Essential Rules Check**:
    - Verify `agents/cursor_rules.mdc` exists (required for rule management)
    - Confirm `guidelines/naming.mdc` exists (required for naming conventions)
    - Check `guidelines/markdown.mdc` exists (if markdown is used in project)
-   - Ensure `guidelines/commit_message.mdc` exists (if commit conventions are used)
+   - Ensure `commands/generate_commit_message.mdc` exists (if commit conventions are used)
 
 3. **Content Quality Check**:
    - Validate every `.mdc` files to verify they have proper frontmatter

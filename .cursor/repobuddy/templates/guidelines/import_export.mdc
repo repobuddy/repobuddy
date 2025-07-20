@@ -960,7 +960,7 @@ This rule works in conjunction with:
 
 - **[Markdown Guidelines](mdc:.cursor/rules/guidelines/markdown.mdc)** - For documentation formatting and consistency
 - **[Naming Guidelines](mdc:.cursor/rules/guidelines/naming.mdc)** - For consistent file and module naming
-- **[Commit Message Guidelines](mdc:.cursor/rules/guidelines/commit_message.mdc)** - For commit message conventions
+- **[Commit Message Guidelines](mdc:.cursor/rules/commands/generate_commit_message.mdc)** - For commit message conventions
 
 ## Summary
 

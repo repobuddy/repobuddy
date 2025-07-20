@@ -13,7 +13,7 @@ This file makes it easier for the AI agent to find the discover rules when they 
 
 ### For Code Quality and Standards
 
-- Use [guidelines/commit_message.mdc](mdc:.cursor/rules/guidelines/commit_message.mdc) when writing commit messages
+- Use [commands/generate_commit_message.mdc](mdc:.cursor/rules/commands/generate_commit_message.mdc) when writing commit messages
 - Use [guidelines/markdown.mdc](mdc:.cursor/rules/guidelines/markdown.mdc) when writing or editing markdown files
 - Use [guidelines/naming.mdc](mdc:.cursor/rules/guidelines/naming.mdc) when creating or updating files and folders
 - Use [guidelines/import_export.mdc](mdc:.cursor/rules/guidelines/import_export.mdc) when working with module imports and exports
@@ -41,7 +41,7 @@ Rules for AI agent behavior and management:
 
 Opinionated best practices on specific topics:
 
-- [guidelines/commit_message.mdc](mdc:.cursor/rules/guidelines/commit_message.mdc) - Commit message formatting and conventions
+- [commands/generate_commit_message.mdc](mdc:.cursor/rules/commands/generate_commit_message.mdc) - Commit message formatting and conventions
 - [guidelines/markdown.mdc](mdc:.cursor/rules/guidelines/markdown.mdc) - Markdown formatting standards and best practices
 - [guidelines/naming.mdc](mdc:.cursor/rules/guidelines/naming.mdc) - Naming conventions for files, folders, and code elements
 - [guidelines/import_export.mdc](mdc:.cursor/rules/guidelines/import_export.mdc) - Import and export patterns and best practices
