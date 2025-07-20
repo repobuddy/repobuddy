@@ -13,7 +13,7 @@ This rule should be applied in EVERY response involving code changes.
 
 ## Commit Message Generation Process
 
-Follow [commit_message.mdc](mdc:.cursor/rules/guidelines/commit_message.mdc) to generate the commit message.
+Follow [generate_commit_message.mdc](mdc:.cursor/rules/commands/generate_commit_message.mdc) to generate the commit message.
 
 ## Response Format
 
@@ -43,6 +43,6 @@ For reference, see these specific examples:
 
 This rule works in conjunction with:
 
-- [commit_message.mdc](mdc:.cursor/rules/guidelines/commit_message.mdc) - For commit message format and conventions
+- [generate_commit_message.mdc](mdc:.cursor/rules/commands/generate_commit_message.mdc) - For commit message format and conventions
 - [master.mdc](mdc:.cursor/rules/master.mdc) - For overall rule organization
 - [rule_usage.mdc](mdc:.cursor/rules/chat_behaviors/rule_usage.mdc) - For documenting rule application

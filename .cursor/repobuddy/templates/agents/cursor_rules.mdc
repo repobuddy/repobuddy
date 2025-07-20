@@ -46,17 +46,16 @@ Rule files should be placed in the appropriate folder based on its category:
 │   ├── summary_commit.mdc                  # Add a "Commit Message" section in agent response
 │   ├── cursor_rules.mdc                    # Rule for managing cursor rules
 │   └── rule_usage.mdc                      # Add a "Rules Applied" section in agent response
-├── guidelines/                             # Opinionated best practices
-│   ├── commit_message.mdc
-│   ├── markdown.mdc
-│   ├── naming.mdc
-│   ├── project_structure.mdc
-│   └── repository_structure.mdc
-└── workflows/                              # Step-by-step workflows for AI agents to follow
-    ├── convert_test_to_story.mdc
-    ├── generate_changesets.mdc
-    ├── generate_commit_message.mdc
-    └── planning.mdc
+├── commands/                               # Step-by-step commands for AI agents to follow
+│   ├── convert_test_to_story.mdc
+│   ├── generate_changesets.mdc
+│   ├── generate_commit_message.mdc
+│   └── planning.mdc
+└── guidelines/                             # Opinionated best practices
+    ├── markdown.mdc
+    ├── naming.mdc
+    ├── project_structure.mdc
+    └── repository_structure.mdc
 ```
 
 ## Naming Convention
@@ -106,13 +105,13 @@ alwaysApply: false
   - **Not Supported**: Brace expansion patterns like `*.{ts,tsx}`, `*.{js,jsx,ts,tsx}`
 - `alwaysApply`: Whether the rule should always be applied (usually `false`)
 
-**Important**: You MUST use [Extract Frontmatter from Markdown](mdc:.cursor/rules/workflows/extract_frontmatter_from_markdown.mdc) to check for existing frontmatter in any file before creating or modifying frontmatter. Never assume a file has no frontmatter without checking with this workflow first.
+**Important**: You MUST use [Extract Frontmatter from Markdown](mdc:.cursor/rules/commands/extract_frontmatter_from_markdown.mdc) to check for existing frontmatter in any file before creating or modifying frontmatter. Never assume a file has no frontmatter without checking with this workflow first.
 
 ### Reading Frontmatter - CRITICAL REQUIREMENT
 
 When attempting to read the frontmatter of any rule file, you **MUST** follow these requirements:
 
-- **ALWAYS** use `.cursor/rules/workflows/extract_frontmatter_from_markdown.mdc` to extract the frontmatter from the file.
+- **ALWAYS** use `.cursor/rules/commands/extract_frontmatter_from_markdown.mdc` to extract the frontmatter from the file.
 - **NEVER** assume a file has no frontmatter without checking with the workflow first.
 - **NEVER** read frontmatter manually without using the extraction workflow.
 - **ALWAYS** run the extraction command: `awk '/^---$/{p=!p;next}p' filename.mdc`

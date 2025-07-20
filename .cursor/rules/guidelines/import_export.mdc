@@ -518,6 +518,7 @@ import type { Jest } from '@jest/globals'
 ### Understanding Circular Dependencies
 
 Circular dependencies occur when module A imports from module B, and module B imports from module A (directly or indirectly). This can lead to:
+
 - Runtime errors and undefined values
 - Difficult-to-debug issues
 - Complex dependency graphs
@@ -657,6 +658,7 @@ export function validateEmail(email: string) { /* ... */ }
 ```
 
 **Benefits of avoiding runtime namespace exports:**
+
 - **Smaller bundle size**: No unnecessary wrapper objects
 - **Better tree-shaking**: Individual exports can be eliminated if unused
 - **Faster runtime**: Direct property access vs object property access
@@ -960,7 +962,7 @@ This rule works in conjunction with:
 
 - **[Markdown Guidelines](mdc:.cursor/rules/guidelines/markdown.mdc)** - For documentation formatting and consistency
 - **[Naming Guidelines](mdc:.cursor/rules/guidelines/naming.mdc)** - For consistent file and module naming
-- **[Commit Message Guidelines](mdc:.cursor/rules/guidelines/commit_message.mdc)** - For commit message conventions
+- **[Commit Message Guidelines](mdc:.cursor/rules/commands/generate_commit_message.mdc)** - For commit message conventions
 
 ## Summary
 
@@ -974,4 +976,3 @@ This guide provides comprehensive coverage of Node.js import and export best pra
 - **Future-proofing**: Compatibility with modern Node.js and TypeScript features
 - **Security**: Protection against supply chain attacks through proper module resolution
 - **Developer Experience**: Clear and predictable module interfaces for better collaboration
-

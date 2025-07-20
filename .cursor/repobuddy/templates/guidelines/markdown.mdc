@@ -360,5 +360,5 @@ This rule works in conjunction with:
 
 - [Code Block Formatting](mdc:.cursor/rules/guidelines/code_block.mdc) - For consistent code block formatting
 - [File Naming Conventions](mdc:.cursor/rules/guidelines/naming.mdc) - For consistent file naming
-- [Generate Release Note](mdc:.cursor/rules/workflows/generate_release_note.mdc) - For changelog formatting
+- [Generate Release Note](mdc:.cursor/rules/commands/generate_release_note.mdc) - For changelog formatting
 - [Cursor Rules](mdc:.cursor/rules/cursor_rules.mdc) - For rule-specific markdown standards
