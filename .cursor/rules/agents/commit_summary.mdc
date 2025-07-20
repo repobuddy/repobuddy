@@ -1,8 +1,7 @@
 ---
-description:
-globs:
-alwaysApply: true
+description: This rule ensures a commit message is generated when you summarize code changes.
 ---
+
 # Commit Summary Instructions
 
 This rule ensures a commit message is generated when you summarize code changes.
