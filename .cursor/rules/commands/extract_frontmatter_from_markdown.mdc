@@ -13,6 +13,7 @@ The normal steps you take does not work. **YOU MUST FOLLOW THIS RULE** to get th
 Frontmatter is metadata at the beginning of a markdown file, enclosed between `---` delimiters. It typically contains information like title, description, tags, and other metadata.
 
 Example:
+
 ```yaml
 ---
 title: My Document
@@ -24,6 +25,7 @@ tags: [markdown, frontmatter]
 ## Step-by-Step Instructions
 
 ### Step 1: Verify File Exists
+
 First, ensure the file you want to process exists:
 
 ```bash
@@ -39,6 +41,7 @@ fi
 ```
 
 ### Step 2: Validate Frontmatter Structure
+
 Before extracting, verify the file has valid frontmatter (exactly two `---` delimiters):
 
 ```bash

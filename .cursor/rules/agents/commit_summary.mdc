@@ -11,6 +11,14 @@ This rule ensures a commit message is generated when you summarize code changes.
 
 This rule should be applied in EVERY response involving code changes.
 
+## Required Rules
+
+The AI agent should read and follow these rules along with the subject rule:
+
+- **[generate_commit_message.mdc](mdc:.cursor/rules/commands/generate_commit_message.mdc)**: For commit message format and conventions that must be followed
+- **[master.mdc](mdc:.cursor/rules/master.mdc)**: For overall rule organization that must be understood
+- **[rule_usage.mdc](mdc:.cursor/rules/agents/rule_usage.mdc)**: For documenting rule application that must be applied
+
 ## Commit Message Generation Process
 
 Follow [generate_commit_message.mdc](mdc:.cursor/rules/commands/generate_commit_message.mdc) to generate the commit message.
@@ -38,11 +46,3 @@ For reference, see these specific examples:
 1. The user may point out the oversight
 2. You must immediately generate the commit message
 3. Acknowledge the rule was missed and explain why it should have been applied
-
-## Integration with Existing Rules
-
-This rule works in conjunction with:
-
-- [generate_commit_message.mdc](mdc:.cursor/rules/commands/generate_commit_message.mdc) - For commit message format and conventions
-- [master.mdc](mdc:.cursor/rules/master.mdc) - For overall rule organization
-- [rule_usage.mdc](mdc:.cursor/rules/chat_behaviors/rule_usage.mdc) - For documenting rule application
