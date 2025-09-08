@@ -415,8 +415,8 @@ importers:
         specifier: 8.0.0-beta.7
         version: 8.0.0-beta.7
       uuid:
-        specifier: ^12.0.0
-        version: 12.0.0
+        specifier: ^13.0.0
+        version: 13.0.0
     devDependencies:
       '@jest/globals':
         specifier: ^30.0.0
@@ -485,8 +485,8 @@ importers:
         specifier: 8.0.0-beta.7
         version: 8.0.0-beta.7
       uuid:
-        specifier: ^12.0.0
-        version: 12.0.0
+        specifier: ^13.0.0
+        version: 13.0.0
     devDependencies:
       '@jest/globals':
         specifier: ^30.0.0
@@ -7635,8 +7635,8 @@ packages:
   util@0.12.5:
     resolution: {integrity: sha512-kZf/K6hEIrWHI6XqOFUiiMa+79wE/D8Q+NCNAWclkyg3b4d2k7s0QGepNjiABc+aR3N1PAyHL7p6UcLY6LmrnA==}
 
-  uuid@12.0.0:
-    resolution: {integrity: sha512-USe1zesMYh4fjCA8ZH5+X5WIVD0J4V1Jksm1bFTVBX2F/cwSXt0RO5w/3UXbdLKmZX65MiWV+hwhSS8p6oBTGA==}
+  uuid@13.0.0:
+    resolution: {integrity: sha512-XQegIaBTVUjSHliKqcnFqYypAd4S+WCYt5NIeRs6w/UAry7z8Y9j5ZwRRL4kzq9U3sD6v+85er9FvkEaBpji2w==}
     hasBin: true
 
   uuid@9.0.1:
@@ -16640,7 +16640,7 @@ snapshots:
       is-typed-array: 1.1.15
       which-typed-array: 1.1.19
 
-  uuid@12.0.0: {}
+  uuid@13.0.0: {}
 
   uuid@9.0.1: {}
 
