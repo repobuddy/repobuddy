@@ -23,7 +23,7 @@
 		"@repobuddy/jest": "workspace:^",
 		"@repobuddy/typescript": "workspace:^",
 		"@types/jest": "^30.0.0",
-		"@types/uuid": "^10.0.0",
+		"@types/uuid": "^11.0.0",
 		"assertron": "^11.0.3",
 		"cross-env": "^7.0.3",
 		"dirname-filename-esm": "^1.1.1",
