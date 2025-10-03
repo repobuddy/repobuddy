@@ -58,7 +58,7 @@
 		"@repobuddy/typescript": "workspace:^",
 		"@types/node": "^20.0.0",
 		"eslint": "^9.26.0",
-		"eslint-plugin-yml": "~1.18.0",
+		"eslint-plugin-yml": "~1.19.0",
 		"playwright": "latest",
 		"plop": "^4.0.0",
 		"repobuddy": "workspace:^",
