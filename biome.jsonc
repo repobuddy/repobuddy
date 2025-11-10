@@ -26,16 +26,13 @@
 	},
 	"formatter": {
 		"enabled": true,
-		"indentStyle": "tab",
-		"lineEnding": "lf"
+		"useEditorconfig": true
 	},
 	"overrides": [
 		{
 			"includes": ["**/tests/performant/**"],
 			"formatter": {
 				"enabled": true,
-				"indentStyle": "tab",
-				"lineEnding": "lf",
 				"lineWidth": 120
 			},
 			"javascript": {
