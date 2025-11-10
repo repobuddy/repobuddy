@@ -1,1 +1,1 @@
-;[].forEach((x) => console.info(x))
+;[].forEach((x) => void console.info(x))

@@ -22,7 +22,7 @@ describe(`${browserTestPreset.name}()`, () => {
 	it('can include general tests', () => {
 		const r = browserTestPreset({ includeGeneralTests: true })
 		const include = r.config().test.include
-		configDefaults.include.testGeneral.forEach((item) => expect(include).toContain(item))
+		configDefaults.include.testGeneral.forEach((item) => void expect(include).toContain(item))
 	})
 
 	it('supports config without name', () => {
