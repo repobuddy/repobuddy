@@ -1,7 +1,6 @@
 import { configDefaults as vitestConfigDefaults } from 'vitest/config'
 
-export const configDefaults = {
-	...vitestConfigDefaults,
+export const buddyConfigDefaults = {
 	include: {
 		vitestDefault: vitestConfigDefaults.include,
 		source: ['{src,source,code}/**/*.{js,mjs,cjs,ts,jsx,tsx,cts,mts}'],

@@ -10,6 +10,6 @@ export default defineConfig({
 				'**/*.stories.{js,mjs,jsx,tsx}',
 			],
 		},
-		workspace: ['vitest.config.*.ts'],
+		projects: ['vitest.config.*.ts'],
 	},
 })

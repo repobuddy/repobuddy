@@ -1,12 +1,12 @@
 import { defineConfig } from 'vitest/config'
-import { configDefaults } from './src/config/config-defaults'
+import { buddyConfigDefaults } from './src/config/buddy_config_defaults'
 
 export default defineConfig({
 	test: {
 		coverage: {
-			include: configDefaults.include.source,
-			exclude: configDefaults.exclude.test,
+			include: buddyConfigDefaults.include.source,
+			exclude: buddyConfigDefaults.exclude.test,
 		},
-		workspace: ['vitest.config.*.ts'],
+		projects: ['vitest.config.*.ts'],
 	},
 })

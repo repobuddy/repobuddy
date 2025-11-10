@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from 'vitest'
-import { configDefaults, nodeTestPreset } from './index.ts'
+import { buddyConfigDefaults, nodeTestPreset } from './index.ts'
 
 describe(`${nodeTestPreset.name}()`, () => {
 	describe('TZ', () => {
@@ -33,7 +33,7 @@ describe(`${nodeTestPreset.name}()`, () => {
 
 	it('can include general test', () => {
 		const r = nodeTestPreset({ includeGeneralTests: true })
-		expect(r.config().test.include).toEqual(expect.arrayContaining(configDefaults.include.testGeneral))
+		expect(r.config().test.include).toEqual(expect.arrayContaining(buddyConfigDefaults.include.testGeneral))
 	})
 
 	it('can override environment', () => {
@@ -43,11 +43,11 @@ describe(`${nodeTestPreset.name}()`, () => {
 
 	it('should include browser tests when environment is jsdom', () => {
 		const r = nodeTestPreset({ environment: 'jsdom' })
-		expect(r.config().test.include).toEqual(expect.arrayContaining(configDefaults.include.testBrowser))
+		expect(r.config().test.include).toEqual(expect.arrayContaining(buddyConfigDefaults.include.testBrowser))
 	})
 
 	it('should include browser tests when environment is happy-dom', () => {
 		const r = nodeTestPreset({ environment: 'happy-dom' })
-		expect(r.config().test.include).toEqual(expect.arrayContaining(configDefaults.include.testBrowser))
+		expect(r.config().test.include).toEqual(expect.arrayContaining(buddyConfigDefaults.include.testBrowser))
 	})
 })

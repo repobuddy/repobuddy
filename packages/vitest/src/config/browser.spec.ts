@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { browserTestPreset } from './browser.ts'
-import { configDefaults } from './config-defaults.ts'
+import { buddyConfigDefaults } from './buddy_config_defaults.ts'
 
 describe(`${browserTestPreset.name}()`, () => {
 	it('defines name as @repobuddy/vitest/browser-preset', () => {
@@ -11,18 +11,18 @@ describe(`${browserTestPreset.name}()`, () => {
 
 	it('uses playwright', () => {
 		const r = browserTestPreset()
-		expect(r.config().test.browser.provider).toBe('playwright')
+		expect(r.config().test.browser.provider).toSatisfy((v) => v.name === 'playwright')
 	})
 
 	it('include browser specific tests', () => {
 		const r = browserTestPreset()
-		expect(r.config().test.include).toEqual(configDefaults.include.testBrowser)
+		expect(r.config().test.include).toEqual(buddyConfigDefaults.include.testBrowser)
 	})
 
 	it('can include general tests', () => {
 		const r = browserTestPreset({ includeGeneralTests: true })
 		const include = r.config().test.include
-		configDefaults.include.testGeneral.forEach((item) => void expect(include).toContain(item))
+		buddyConfigDefaults.include.testGeneral.forEach((item) => void expect(include).toContain(item))
 	})
 
 	it('supports config without name', () => {

@@ -1,5 +1,6 @@
+import { playwright } from '@vitest/browser-playwright'
 import type { ViteUserConfig } from 'vitest/config'
-import { configDefaults } from './config-defaults.ts'
+import { buddyConfigDefaults } from './buddy_config_defaults.ts'
 import type { PresetOptions } from './types.ts'
 
 /**
@@ -9,17 +10,17 @@ import type { PresetOptions } from './types.ts'
 export function browserTestPreset(options?: PresetOptions | undefined) {
 	return {
 		name: '@repobuddy/vitest/browser-preset',
-		config(userConfig?: ViteUserConfig | undefined): any {
+		config(userConfig?: ViteUserConfig | undefined) {
 			return {
 				test: {
-					...configDefaults.test,
+					...buddyConfigDefaults.test,
 					include: options?.includeGeneralTests
-						? [...configDefaults.include.testGeneral, ...configDefaults.include.testBrowser]
-						: configDefaults.include.testBrowser,
+						? [...buddyConfigDefaults.include.testGeneral, ...buddyConfigDefaults.include.testBrowser]
+						: buddyConfigDefaults.include.testBrowser,
 					browser: {
 						enabled: true,
 						headless: true,
-						provider: 'playwright',
+						provider: playwright() as any,
 						...(userConfig?.test?.browser?.instances
 							? undefined
 							: {
@@ -33,8 +34,8 @@ export function browserTestPreset(options?: PresetOptions | undefined) {
 								}),
 					},
 					coverage: {
-						include: configDefaults.include.source,
-						exclude: configDefaults.exclude.test,
+						include: buddyConfigDefaults.include.source,
+						exclude: buddyConfigDefaults.exclude.test,
 					},
 					setupFiles: ['@repobuddy/vitest/setup/browser'],
 				},

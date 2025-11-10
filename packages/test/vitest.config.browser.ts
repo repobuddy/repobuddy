@@ -1,4 +1,5 @@
 import storybookTest from '@storybook/experimental-addon-test/vitest-plugin'
+import { playwright } from '@vitest/browser-playwright'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { defineProject } from 'vitest/config'
@@ -35,7 +36,7 @@ export default defineProject({
 		name: 'test:browser',
 		browser: {
 			enabled: true,
-			provider: 'playwright',
+			provider: playwright(),
 			instances: [
 				{
 					name: 'chromium',

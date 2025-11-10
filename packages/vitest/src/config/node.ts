@@ -1,5 +1,5 @@
 import type { ViteUserConfig } from 'vitest/config'
-import { configDefaults } from './config-defaults.ts'
+import { buddyConfigDefaults } from './buddy_config_defaults.ts'
 import type { PresetOptions } from './types.ts'
 
 interface NodePresetOptions extends PresetOptions {
@@ -18,21 +18,21 @@ export function nodeTestPreset(options?: NodePresetOptions | undefined) {
 		config(_userConfig?: ViteUserConfig | undefined): any {
 			// set timezone to GMT so that the test will generate the same result everywhere
 			process.env.TZ = process.env.TZ ?? 'GMT'
-			const include = [...configDefaults.include.testNode]
+			const include = [...buddyConfigDefaults.include.testNode]
 			if (options?.includeGeneralTests) {
-				include.push(...configDefaults.include.testGeneral)
+				include.push(...buddyConfigDefaults.include.testGeneral)
 			}
 			if (options?.environment && ['jsdom', 'happy-dom'].includes(options?.environment)) {
-				include.push(...configDefaults.include.testBrowser)
+				include.push(...buddyConfigDefaults.include.testBrowser)
 			}
 			return {
 				test: {
-					...configDefaults.test,
+					...buddyConfigDefaults.test,
 					include,
 					environment: options?.environment ?? 'node',
 					coverage: {
-						include: configDefaults.include.source,
-						exclude: configDefaults.exclude.test,
+						include: buddyConfigDefaults.include.source,
+						exclude: buddyConfigDefaults.exclude.test,
 					},
 				},
 			}
