@@ -46,6 +46,6 @@
 		"react": "^19.0.0"
 	},
 	"peerDependencies": {
-		"@biomejs/biome": ">= 1.8.0"
+		"@biomejs/biome": ">= 2"
 	}
 }
