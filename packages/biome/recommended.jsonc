@@ -1,5 +1,5 @@
 {
-	"$schema": "https://biomejs.dev/schemas/2.0.6/schema.json",
+	"$schema": "https://biomejs.dev/schemas/2.3.4/schema.json",
 	"formatter": {
 		"enabled": true,
 		"indentStyle": "tab",
@@ -62,7 +62,34 @@
 				"noExplicitAny": "off",
 				// The `noConsole` setting in `biome` matches the requirement of repobuddy.
 				// Thus it is enabled by default.
-				"noConsole": { "level": "error", "options": { "allow": ["info", "warn", "error", "assert", "table"] } }
+				"noConsole": {
+					"level": "error",
+					"options": {
+						"allow": [
+							"info",
+							"warn",
+							"error",
+							"assert",
+							"table",
+							"clear",
+							"count",
+							"countReset",
+							"debug",
+							"dir",
+							"dirxml",
+							"group",
+							"groupCollapsed",
+							"groupEnd",
+							"time",
+							"timeEnd",
+							"timeLog",
+							"trace",
+							"profile",
+							"profileEnd",
+							"timeStamp"
+						]
+					}
+				}
 			}
 		}
 	},
