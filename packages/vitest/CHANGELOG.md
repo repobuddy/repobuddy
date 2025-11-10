@@ -1,5 +1,11 @@
 # @repobuddy/vitest
 
+## 2.0.0
+
+### Major Changes
+
+- dab777e: Upgrade to support Vitest 4.
+
 ## 1.2.2
 
 ### Patch Changes
