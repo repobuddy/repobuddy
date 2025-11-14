@@ -83,7 +83,7 @@
 		"rimraf": "~6.1.0",
 		"size-limit": "~11.2.0",
 		"storybook": "^8.6.12",
-		"storybook-addon-vis": "^1.0.0",
+		"storybook-addon-vis": "^2.0.0",
 		"typescript": "^5.3.3",
 		"vitest": "^4.0.8"
 	},
