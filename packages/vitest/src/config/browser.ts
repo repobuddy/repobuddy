@@ -20,13 +20,13 @@ export function browserTestPreset(options?: PresetOptions | undefined) {
 					browser: {
 						enabled: true,
 						headless: true,
-						provider: playwright() as any,
+						provider: playwright(),
 						...(userConfig?.test?.browser?.instances
 							? undefined
 							: {
 									instances: [
 										{
-											name: (userConfig?.test?.name ? `${userConfig?.test?.name} (chromium)` : undefined) as string,
+											name: (userConfig?.test?.name ? `${userConfig.test.name} (chromium)` : undefined) as string,
 											browser: 'chromium',
 											screenshotFailures: false,
 										},
