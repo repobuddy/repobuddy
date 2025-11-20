@@ -74,7 +74,7 @@
 		"@storybook/react": "^8.6.12",
 		"@storybook/react-vite": "^8.6.12",
 		"@storybook/test": "^8.6.12",
-		"@vitest/browser": "4.0.10",
+		"@vitest/browser": "4.0.12",
 		"@vitest/coverage-v8": "^4.0.8",
 		"depcheck": "~1.4.3",
 		"npm-run-all2": "^8.0.0",
