@@ -1,5 +1,11 @@
 # @repobuddy/vitest
 
+## 2.0.1
+
+### Patch Changes
+
+- b6d5693: Remove unnecessary type casting in `browserTestPreset`.
+
 ## 2.0.0
 
 ### Major Changes
