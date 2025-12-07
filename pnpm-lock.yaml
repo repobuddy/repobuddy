@@ -311,7 +311,7 @@ importers:
         specifier: workspace:*
         version: link:../test
       '@vitest/browser-playwright':
-        specifier: '>= 4'
+        specifier: ^4.0.15
         version: 4.0.15(playwright@1.55.1)(vite@7.2.2(@types/node@24.10.1)(jiti@2.4.2)(sass@1.77.8)(yaml@2.7.1))(vitest@4.0.15)
     devDependencies:
       '@repobuddy/typescript':

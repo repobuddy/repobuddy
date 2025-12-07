@@ -96,8 +96,8 @@
 		"vitest": "^4.0.15"
 	},
 	"peerDependencies": {
-		"@vitest/browser-playwright": ">= 4",
-		"vitest": ">= 4"
+		"@vitest/browser-playwright": "^4.0.15",
+		"vitest": "^4.0.15"
 	},
 	"peerDependenciesMeta": {
 		"@vitest/browser-playwright": {

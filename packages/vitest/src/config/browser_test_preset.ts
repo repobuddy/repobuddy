@@ -20,7 +20,8 @@ export function browserTestPreset(options?: PresetOptions | undefined) {
 					browser: {
 						enabled: true,
 						headless: true,
-						provider: playwright(),
+						//
+						provider: playwright() as any,
 						...(userConfig?.test?.browser?.instances
 							? undefined
 							: {
