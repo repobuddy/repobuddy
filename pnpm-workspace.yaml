@@ -3,9 +3,3 @@ packages:
   - packages/*
   - testcases/*
   - website
-ignoredBuiltDependencies:
-  - sharp
-onlyBuiltDependencies:
-  - '@biomejs/biome'
-  - '@swc/core'
-  - esbuild
