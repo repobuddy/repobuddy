@@ -1,5 +1,16 @@
 # @repobuddy/vitest
 
+## 2.1.0
+
+### Minor Changes
+
+- 61b37f3: Add `@repobuddy/vitest/config/node` and `@repobuddy/vitest/config/browser` exports.
+  `@repobuddy/vitest/config` exports requires `@vitest/browser-playwright` as peer dependency even if you are not using browser tests.
+
+### Patch Changes
+
+- b6d5693: Remove unnecessary type casting in `browserTestPreset`.
+
 ## 2.0.0
 
 ### Major Changes
