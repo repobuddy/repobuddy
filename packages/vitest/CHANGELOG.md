@@ -1,5 +1,11 @@
 # @repobuddy/vitest
 
+## 2.1.1
+
+### Patch Changes
+
+- fc759e3: Update vitest and @vitest/browser-playwright to 4.0.15.
+
 ## 2.1.0
 
 ### Minor Changes
