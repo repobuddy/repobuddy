@@ -1,5 +1,5 @@
-import type { ResolverOptions } from 'jest-resolve'
 import { dirname, join } from 'node:path'
+import type { ResolverOptions } from 'jest-resolve'
 import { sync as readPkgSync } from 'read-pkg-up'
 import { resolve } from 'resolve.imports'
 

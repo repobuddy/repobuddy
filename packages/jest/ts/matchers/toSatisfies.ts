@@ -1,4 +1,4 @@
-import { createSatisfier, formatDiffs, type Expectation } from 'satisfier'
+import { createSatisfier, type Expectation, formatDiffs } from 'satisfier'
 
 declare module '@jest/expect' {
 	interface Matchers<R> {

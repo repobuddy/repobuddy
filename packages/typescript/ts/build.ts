@@ -1,8 +1,8 @@
+import { copyFile } from 'node:fs/promises'
+import { join } from 'node:path'
 import { command, z } from 'clibuilder'
 import { dirname } from 'dirname-filename-esm'
 import { execa } from 'execa'
-import { copyFile } from 'node:fs/promises'
-import { join } from 'node:path'
 
 export const build = command({
 	name: 'build',

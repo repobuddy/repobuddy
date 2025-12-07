@@ -1,7 +1,7 @@
-import { command, z } from 'clibuilder'
-import { dirname } from 'dirname-filename-esm'
 import { copyFile } from 'node:fs/promises'
 import { join } from 'node:path'
+import { command, z } from 'clibuilder'
+import { dirname } from 'dirname-filename-esm'
 
 export const copyCJSPackageJson = command({
 	name: 'copy-cjs-package-json',

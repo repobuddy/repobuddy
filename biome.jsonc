@@ -1,6 +1,6 @@
 {
 	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
-	"extends": ["./packages/biome/recommended.jsonc"],
+	"extends": ["@repobuddy/biome/recommended"],
 	"vcs": {
 		"enabled": true,
 		"clientKind": "git",
@@ -8,21 +8,7 @@
 		"defaultBranch": "main"
 	},
 	"files": {
-		"includes": [
-			"**",
-			"!**/.astro",
-			"!**/.turbo",
-			"!**/node_modules",
-			"!**/cjs",
-			"!**/coverage",
-			"!**/dist",
-			"!**/esm",
-			"!**/tslib",
-			"!**/target",
-			"!**/.vscode/**/*.txt",
-			"!**/tests/performant",
-			"!**/*.error.ts"
-		]
+		"includes": ["!**/tests/performant", "!**/*.error.ts"]
 	},
 	"formatter": {
 		"enabled": true,
@@ -31,10 +17,6 @@
 	"overrides": [
 		{
 			"includes": ["**/tests/performant/**"],
-			"formatter": {
-				"enabled": true,
-				"lineWidth": 120
-			},
 			"javascript": {
 				"formatter": {
 					"quoteStyle": "single",
@@ -67,8 +49,7 @@
 						"noVar": "off"
 					}
 				}
-			},
-			"assist": { "actions": { "source": { "organizeImports": "on" } } }
+			}
 		},
 		{
 			"includes": ["packages/typescript/tsconfig/**/*.json"],
@@ -91,5 +72,6 @@
 				"noUselessElse": "error"
 			}
 		}
-	}
+	},
+	"assist": { "actions": { "source": { "organizeImports": "on" } } }
 }

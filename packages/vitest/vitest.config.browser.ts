@@ -1,6 +1,6 @@
-import storybookTest from '@storybook/addon-vitest/vitest-plugin'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import storybookTest from '@storybook/addon-vitest/vitest-plugin'
 import { storybookVis } from 'storybook-addon-vis/vitest-plugin'
 import { defineProject } from 'vitest/config'
 import { browserTestPreset } from './src/config/browser.ts'

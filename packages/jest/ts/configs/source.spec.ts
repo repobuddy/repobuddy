@@ -1,6 +1,6 @@
 import { describe, expect, it, jest } from '@jest/globals'
-import { ctx } from './source.ctx.js'
 import { configSource } from './index.js'
+import { ctx } from './source.ctx.js'
 
 describe(`${configSource.name}()`, () => {
 	it('can specify different root', () => {

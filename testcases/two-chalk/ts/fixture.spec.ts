@@ -1,4 +1,4 @@
-import { it, expect } from '@jest/globals'
+import { expect, it } from '@jest/globals'
 import { baseline } from '@unional/fixture'
 
 it('uses baseline', () => {

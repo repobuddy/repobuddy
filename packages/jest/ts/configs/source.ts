@@ -1,5 +1,5 @@
-import type { Config } from 'jest'
 import { resolve } from 'node:path'
+import type { Config } from 'jest'
 import { ctx } from './source.ctx.js'
 
 /**
