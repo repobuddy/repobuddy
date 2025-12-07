@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { browserTestPreset } from './browser.ts'
+import { browserTestPreset } from './browser_test_preset.ts'
 import { buddyConfigDefaults } from './buddy_config_defaults.ts'
 
 describe(`${browserTestPreset.name}()`, () => {

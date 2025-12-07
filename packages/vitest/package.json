@@ -37,6 +37,18 @@
 				"default": "./esm/config/index.js"
 			}
 		},
+		"./config/node": {
+			"import": {
+				"types": "./esm/config/node.d.ts",
+				"default": "./esm/config/node.js"
+			}
+		},
+		"./config/browser": {
+			"import": {
+				"types": "./esm/config/browser.d.ts",
+				"default": "./esm/config/browser.js"
+			}
+		},
 		"./setup/browser": {
 			"import": {
 				"types": "./esm/setup/browser.d.ts",

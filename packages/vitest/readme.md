@@ -36,7 +36,7 @@ rush add -p --dev @repobuddy/vitest
 ```ts
 // vitest.config.node.ts
 import { defineConfig } from 'vitest/config'
-import { nodeTestPreset } from '@repobuddy/vitest'
+import { nodeTestPreset } from '@repobuddy/vitest/config/node'
 
 export default defineConfig({
   plugins: [nodeTestPreset({ includeGeneralTests: true })],
@@ -45,7 +45,7 @@ export default defineConfig({
 
 // vitest.config.browser.ts
 import { defineConfig } from 'vitest/config'
-import { browserTestPreset } from '@repobuddy/vitest'
+import { browserTestPreset } from '@repobuddy/vitest/config/browser'
 
 export default defineConfig({
   plugins: [browserTestPreset()],
