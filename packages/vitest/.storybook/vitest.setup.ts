@@ -1,4 +1,4 @@
-import { setProjectAnnotations } from '@storybook/react'
+import { setProjectAnnotations } from '@storybook/react-vite'
 import { vis, visAnnotations } from 'storybook-addon-vis/vitest-setup'
 import { beforeAll } from 'vitest'
 import * as projectAnnotations from './preview'
