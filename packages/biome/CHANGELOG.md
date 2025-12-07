@@ -1,5 +1,12 @@
 # @repobuddy/biome
 
+## 2.2.0
+
+### Minor Changes
+
+- 4ef67eb: Update `biome` to `2.3.8`.
+  Add default include pattern.
+
 ## 2.1.0
 
 ### Minor Changes
