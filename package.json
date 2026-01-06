@@ -32,6 +32,7 @@
 		"plop": "plop",
 		"prepare": "playwright install chromium",
 		"release": "pnpm build && changeset publish",
+		"rb": "pnpm --filter @repobuddy/biome",
 		"rt": "pnpm --filter @repobuddy/test",
 		"size": "turbo run size",
 		"test": "turbo run test",

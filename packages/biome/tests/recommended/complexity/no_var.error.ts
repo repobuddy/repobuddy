@@ -1,5 +1,5 @@
 export function hello(): string {
-	// biome-ignore lint/style/noVar: fail as expected
+	// biome-ignore lint/suspicious/noVar: expected error
 	var greeting = 'Hello World!'
 	return greeting
 }

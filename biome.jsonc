@@ -8,7 +8,7 @@
 		"defaultBranch": "main"
 	},
 	"files": {
-		"includes": ["!**/tests/performant", "!**/*.error.ts"]
+		"includes": ["!**/tests/performant"]
 	},
 	"formatter": {
 		"enabled": true,

@@ -28,6 +28,10 @@
 				"noCommaOperator": "off"
 			},
 			"correctness": {
+				"noUnusedImports": {
+					"level": "error",
+					"fix": "safe"
+				},
 				"noUnusedVariables": {
 					"level": "error",
 					"options": {
@@ -92,11 +96,12 @@
 							"timeStamp"
 						]
 					}
-				}
+				},
+				"noVar": "warn"
 			}
 		}
 	},
-	"assist": { "actions": { "source": { "organizeImports": "off" } } },
+	"assist": { "actions": { "source": { "organizeImports": "on" } } },
 	"overrides": [
 		{
 			"includes": [
