@@ -1,5 +1,16 @@
 # @repobuddy/biome
 
+## 2.3.0
+
+### Minor Changes
+
+- e84465d: Enable `organizeImports`.
+  It is stable enough to be enabled by default now.
+
+### Patch Changes
+
+- e84465d: Enable `noVar` warning by default.
+
 ## 2.2.0
 
 ### Minor Changes
