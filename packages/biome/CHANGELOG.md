@@ -1,5 +1,12 @@
 # @repobuddy/biome
 
+## 2.3.1
+
+### Patch Changes
+
+- 000f22d: Remove embedded Biome schema URLs from the preset configs.
+  This avoids biome version mismatch error.
+
 ## 2.3.0
 
 ### Minor Changes
