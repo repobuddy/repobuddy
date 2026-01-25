@@ -41,6 +41,13 @@
 		"**/.frontmatter/config/*.json": "jsonc",
 		"**/tsconfig/**/*.json": "jsonc"
 	},
+	"json.schemas": [
+		{
+			"fileMatch": ["packages/biome/performant.jsonc", "packages/biome/recommended.jsonc"],
+			"url": "./node_modules/@biomejs/biome/configuration_schema.json"
+		}
+	],
+	"json.trace.server": "verbose",
 	"javascript.format.semicolons": "remove",
 	"material-icon-theme.files.associations": {
 		"*.accept.js": "test-js",
