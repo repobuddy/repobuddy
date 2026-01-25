@@ -719,19 +719,19 @@ importers:
         version: 1.1.2
       jest:
         specifier: ^30.0.0
-        version: 30.0.0(@types/node@20.17.44)(esbuild-register@3.6.0(esbuild@0.27.0))
+        version: 30.0.0(@types/node@24.10.1)(esbuild-register@3.6.0(esbuild@0.27.0))
       jest-esm-transformer-2:
         specifier: ^1.0.0
         version: 1.0.0
       jest-watch-suspend:
         specifier: ^1.1.2
-        version: 1.1.2(jest@30.0.0(@types/node@20.17.44)(esbuild-register@3.6.0(esbuild@0.27.0)))
+        version: 1.1.2(jest@30.0.0(@types/node@24.10.1)(esbuild-register@3.6.0(esbuild@0.27.0)))
       jest-watch-toggle-config-2:
         specifier: ^2.1.0
-        version: 2.1.0(jest@30.0.0(@types/node@20.17.44)(esbuild-register@3.6.0(esbuild@0.27.0)))
+        version: 2.1.0(jest@30.0.0(@types/node@24.10.1)(esbuild-register@3.6.0(esbuild@0.27.0)))
       jest-watch-typeahead:
         specifier: ^3.0.0
-        version: 3.0.1(jest@30.0.0(@types/node@20.17.44)(esbuild-register@3.6.0(esbuild@0.27.0)))
+        version: 3.0.1(jest@30.0.0(@types/node@24.10.1)(esbuild-register@3.6.0(esbuild@0.27.0)))
       npm-run-all2:
         specifier: ^8.0.0
         version: 8.0.1
@@ -743,13 +743,13 @@ importers:
         version: 7.1.0
       ts-jest:
         specifier: 29.4.3
-        version: 29.4.3(@babel/core@7.28.3)(@jest/transform@30.0.0)(@jest/types@30.0.0)(babel-jest@30.0.0(@babel/core@7.28.3))(esbuild@0.27.0)(jest-util@30.0.0)(jest@30.0.0(@types/node@20.17.44)(esbuild-register@3.6.0(esbuild@0.27.0)))(typescript@5.8.3)
+        version: 29.4.3(@babel/core@7.28.3)(@jest/transform@30.0.0)(@jest/types@30.0.0)(babel-jest@30.0.0(@babel/core@7.28.3))(esbuild@0.27.0)(jest-util@30.0.0)(jest@30.0.0(@types/node@24.10.1)(esbuild-register@3.6.0(esbuild@0.27.0)))(typescript@5.8.3)
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
       uni-require:
         specifier: ^1.0.0
-        version: 1.0.0(@types/node@20.17.44)
+        version: 1.0.0(@types/node@24.10.1)
 
   testcases/two-chalk:
     devDependencies:
@@ -937,6 +937,10 @@ packages:
     resolution: {integrity: sha512-cjQ7ZlQ0Mv3b47hABuTevyTuYN4i+loJKGeV9flcCgIK37cCXRh+L1bd3iBHlynerhQ7BhCkn2BPbQUL+rGqFg==}
     engines: {node: '>=6.9.0'}
 
+  '@babel/code-frame@7.28.6':
+    resolution: {integrity: sha512-JYgintcMjRiCvS8mMECzaEn+m3PfoQiyqukOMCCVQtoJGYJw8j/8LBJEiqkHLkfwCcs74E3pbAUFNg7d9VNJ+Q==}
+    engines: {node: '>=6.9.0'}
+
   '@babel/compat-data@7.28.0':
     resolution: {integrity: sha512-60X7qkglvrap8mn1lh2ebxXdZYtUcpd7gsmy9kLaBJ4i/WdY8PqTSdxyA8qraikqKQK5C1KRBKXqznrVapyNaw==}
     engines: {node: '>=6.9.0'}
@@ -1107,8 +1111,8 @@ packages:
     resolution: {integrity: sha512-VBj9MYyDb9tuLq7yzqjgzt6Q+IBQLrGZfdjOekyEirZPHxXWoTSGUTMrpsfi58Up73d13NfYLv8HT9vmznjzhQ==}
     engines: {node: '>=6.9.0'}
 
-  '@babel/runtime@7.28.4':
-    resolution: {integrity: sha512-Q/N6JNWvIvPnLDvjlE1OUBLPQHH6l3CltCEsHIujp45zQUSSh8K+gHnaEX45yAT1nyngnINhvWtzN+Nb9D8RAQ==}
+  '@babel/runtime@7.28.6':
+    resolution: {integrity: sha512-05WQkdpL9COIMz4LjTxGpPNCdlpyimKppYNoJ5Di5EUObifl8t4tuLuUBBZEpoLYOmfvIWrsp9fCl0HoPRVTdA==}
     engines: {node: '>=6.9.0'}
 
   '@babel/template@7.27.2':
@@ -7366,6 +7370,12 @@ snapshots:
       js-tokens: 4.0.0
       picocolors: 1.1.1
 
+  '@babel/code-frame@7.28.6':
+    dependencies:
+      '@babel/helper-validator-identifier': 7.28.5
+      js-tokens: 4.0.0
+      picocolors: 1.1.1
+
   '@babel/compat-data@7.28.0': {}
 
   '@babel/core@7.28.3':
@@ -7556,7 +7566,7 @@ snapshots:
     dependencies:
       regenerator-runtime: 0.14.1
 
-  '@babel/runtime@7.28.4': {}
+  '@babel/runtime@7.28.6': {}
 
   '@babel/template@7.27.2':
     dependencies:
@@ -9090,8 +9100,8 @@ snapshots:
 
   '@testing-library/dom@10.4.0':
     dependencies:
-      '@babel/code-frame': 7.27.1
-      '@babel/runtime': 7.28.4
+      '@babel/code-frame': 7.28.6
+      '@babel/runtime': 7.28.6
       '@types/aria-query': 5.0.4
       aria-query: 5.3.0
       chalk: 4.1.2
@@ -9233,7 +9243,6 @@ snapshots:
   '@types/node@24.10.1':
     dependencies:
       undici-types: 7.16.0
-    optional: true
 
   '@types/normalize-package-data@2.4.1': {}
 
@@ -11824,38 +11833,16 @@ snapshots:
       leven: 3.1.0
       pretty-format: 30.0.0
 
-  jest-watch-suspend@1.1.2(jest@30.0.0(@types/node@20.17.44)(esbuild-register@3.6.0(esbuild@0.27.0))):
-    dependencies:
-      chalk: 2.4.2
-      jest: 30.0.0(@types/node@20.17.44)(esbuild-register@3.6.0(esbuild@0.27.0))
-      unpartial: 0.6.4
-
   jest-watch-suspend@1.1.2(jest@30.0.0(@types/node@24.10.1)(esbuild-register@3.6.0(esbuild@0.27.0))):
     dependencies:
       chalk: 2.4.2
       jest: 30.0.0(@types/node@24.10.1)(esbuild-register@3.6.0(esbuild@0.27.0))
       unpartial: 0.6.4
 
-  jest-watch-toggle-config-2@2.1.0(jest@30.0.0(@types/node@20.17.44)(esbuild-register@3.6.0(esbuild@0.27.0))):
-    dependencies:
-      chalk: 4.1.2
-      jest: 30.0.0(@types/node@20.17.44)(esbuild-register@3.6.0(esbuild@0.27.0))
-
   jest-watch-toggle-config-2@2.1.0(jest@30.0.0(@types/node@24.10.1)(esbuild-register@3.6.0(esbuild@0.27.0))):
     dependencies:
       chalk: 4.1.2
       jest: 30.0.0(@types/node@24.10.1)(esbuild-register@3.6.0(esbuild@0.27.0))
-
-  jest-watch-typeahead@3.0.1(jest@30.0.0(@types/node@20.17.44)(esbuild-register@3.6.0(esbuild@0.27.0))):
-    dependencies:
-      ansi-escapes: 7.0.0
-      chalk: 5.6.0
-      jest: 30.0.0(@types/node@20.17.44)(esbuild-register@3.6.0(esbuild@0.27.0))
-      jest-regex-util: 30.0.0
-      jest-watcher: 30.0.0
-      slash: 5.1.0
-      string-length: 6.0.0
-      strip-ansi: 7.1.0
 
   jest-watch-typeahead@3.0.1(jest@30.0.0(@types/node@24.10.1)(esbuild-register@3.6.0(esbuild@0.27.0))):
     dependencies:
@@ -14039,27 +14026,6 @@ snapshots:
 
   ts-dedent@2.2.0: {}
 
-  ts-jest@29.4.3(@babel/core@7.28.3)(@jest/transform@30.0.0)(@jest/types@30.0.0)(babel-jest@30.0.0(@babel/core@7.28.3))(esbuild@0.27.0)(jest-util@30.0.0)(jest@30.0.0(@types/node@20.17.44)(esbuild-register@3.6.0(esbuild@0.27.0)))(typescript@5.8.3):
-    dependencies:
-      bs-logger: 0.2.6
-      fast-json-stable-stringify: 2.1.0
-      handlebars: 4.7.8
-      jest: 30.0.0(@types/node@20.17.44)(esbuild-register@3.6.0(esbuild@0.27.0))
-      json5: 2.2.3
-      lodash.memoize: 4.1.2
-      make-error: 1.3.6
-      semver: 7.7.3
-      type-fest: 4.41.0
-      typescript: 5.8.3
-      yargs-parser: 21.1.1
-    optionalDependencies:
-      '@babel/core': 7.28.3
-      '@jest/transform': 30.0.0
-      '@jest/types': 30.0.0
-      babel-jest: 30.0.0(@babel/core@7.28.3)
-      esbuild: 0.27.0
-      jest-util: 30.0.0
-
   ts-jest@29.4.3(@babel/core@7.28.3)(@jest/transform@30.0.0)(@jest/types@30.0.0)(babel-jest@30.0.0(@babel/core@7.28.3))(esbuild@0.27.0)(jest-util@30.0.0)(jest@30.0.0(@types/node@24.10.1)(esbuild-register@3.6.0(esbuild@0.27.0)))(typescript@5.8.3):
     dependencies:
       bs-logger: 0.2.6
@@ -14175,12 +14141,11 @@ snapshots:
 
   undici-types@6.19.8: {}
 
-  undici-types@7.16.0:
-    optional: true
+  undici-types@7.16.0: {}
 
-  uni-require@1.0.0(@types/node@20.17.44):
+  uni-require@1.0.0(@types/node@24.10.1):
     dependencies:
-      '@types/node': 20.17.44
+      '@types/node': 24.10.1
 
   unicorn-magic@0.1.0: {}
 
