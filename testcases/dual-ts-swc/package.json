@@ -15,7 +15,7 @@
 	"dependencies": {
 		"chalk": "^5.2.0",
 		"strip-ansi": "^7.0.1",
-		"type-plus": "8.0.0-beta.7",
+		"type-plus": "8.0.0-beta.8",
 		"uuid": "^13.0.0"
 	},
 	"devDependencies": {
