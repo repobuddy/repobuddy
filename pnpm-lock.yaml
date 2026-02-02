@@ -394,8 +394,8 @@ importers:
         specifier: ^7.0.1
         version: 7.1.0
       type-plus:
-        specifier: 8.0.0-beta.7
-        version: 8.0.0-beta.7
+        specifier: 8.0.0-beta.8
+        version: 8.0.0-beta.8(typescript@5.8.3)
       uuid:
         specifier: ^13.0.0
         version: 13.0.0
@@ -464,8 +464,8 @@ importers:
         specifier: ^7.0.1
         version: 7.1.0
       type-plus:
-        specifier: 8.0.0-beta.7
-        version: 8.0.0-beta.7
+        specifier: 8.0.0-beta.8
+        version: 8.0.0-beta.8(typescript@5.8.3)
       uuid:
         specifier: ^13.0.0
         version: 13.0.0
@@ -6673,6 +6673,11 @@ packages:
 
   type-plus@8.0.0-beta.7:
     resolution: {integrity: sha512-LTV9UqBJ20I48Ba2L8N25EOowtrs40MLzsqQFfvAXnPAN9z0ny4CjduFfNIfW7euZ6wr6ImShEtrhR1virHiNw==}
+
+  type-plus@8.0.0-beta.8:
+    resolution: {integrity: sha512-egrpXQq2tV0abCf99+n4SCD/stT76qEwPBI1q7BqiVUe5pHWc+bm4vsOiNR84SmZTv4SoEl9UOZUdkEbS3POdw==}
+    peerDependencies:
+      typescript: '>= 5.6.0'
 
   typesafe-path@0.2.2:
     resolution: {integrity: sha512-OJabfkAg1WLZSqJAJ0Z6Sdt3utnbzr/jh+NAHoyWHJe8CMSy79Gm085094M9nvTPy22KzTVn5Zq5mbapCI/hPA==}
@@ -14221,6 +14226,12 @@ snapshots:
   type-plus@8.0.0-beta.7:
     dependencies:
       tersify: 3.12.1
+      unpartial: 1.0.5
+
+  type-plus@8.0.0-beta.8(typescript@5.8.3):
+    dependencies:
+      tersify: 3.12.1
+      typescript: 5.8.3
       unpartial: 1.0.5
 
   typesafe-path@0.2.2: {}
