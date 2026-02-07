@@ -428,7 +428,7 @@
 		"@types/jest": "^30.0.0",
 		"assertron": "^11.0.3",
 		"chalk": "^5.2.0",
-		"cross-env": "^7.0.3",
+		"cross-env": "^10.0.0",
 		"depcheck": "^1.4.3",
 		"esbuild": "^0.27.0",
 		"identity-obj-proxy": "^3.0.0",
