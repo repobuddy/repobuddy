@@ -55,7 +55,7 @@
 	"devDependencies": {
 		"@jest/globals": "^30.0.0",
 		"@repobuddy/jest": "workspace:*",
-		"cross-env": "^7.0.3",
+		"cross-env": "^10.0.0",
 		"depcheck": "^1.4.3",
 		"jest": "^30.0.0",
 		"npm-run-all2": "^8.0.0",
