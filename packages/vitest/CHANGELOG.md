@@ -1,5 +1,12 @@
 # @repobuddy/vitest
 
+## 2.1.2
+
+### Patch Changes
+
+- Updated dependencies [fb1b12d]
+  - @repobuddy/test@1.0.1
+
 ## 2.1.1
 
 ### Patch Changes
