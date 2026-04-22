@@ -18,5 +18,6 @@ function isRunningInEdgeRuntime() {
 }
 
 function isRunningInVitest() {
-	return !!(globalThis as any)['__vitest_browser__']
+	const g = globalThis as any
+	return !!g['__vitest_browser__'] || !!g['__vitest_worker__']
 }

@@ -26,8 +26,8 @@
 	"exports": {
 		".": {
 			"import": {
-				"types": "./esm/index.d.ts",
 				"source": "./src/index.ts",
+				"types": "./esm/index.d.ts",
 				"default": "./esm/index.js"
 			}
 		}
