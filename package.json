@@ -57,7 +57,7 @@
 		"@changesets/cli": "^2.26.0",
 		"@repobuddy/biome": "workspace:^",
 		"@repobuddy/typescript": "workspace:^",
-		"@types/node": "^20.0.0",
+		"@types/node": "^24.0.0",
 		"eslint": "^10.0.0",
 		"eslint-plugin-yml": "~3.3.0",
 		"playwright": "latest",
