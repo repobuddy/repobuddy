@@ -85,7 +85,7 @@
 		"@vitest/browser": "^4.0.15",
 		"@vitest/coverage-v8": "^4.0.15",
 		"depcheck": "~1.4.3",
-		"npm-run-all2": "^8.0.0",
+		"npm-run-all2": "^9.0.0",
 		"react": "^19.1.0",
 		"react-dom": "^19.1.0",
 		"rimraf": "~6.1.0",
