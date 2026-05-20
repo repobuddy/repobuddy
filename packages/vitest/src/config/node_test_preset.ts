@@ -17,7 +17,7 @@ export function nodeTestPreset(options?: NodePresetOptions | undefined) {
 		name: '@repobuddy/vitest/node-preset',
 		config(_userConfig?: ViteUserConfig | undefined): any {
 			// set timezone to GMT so that the test will generate the same result everywhere
-			process.env.TZ = process.env.TZ ?? 'GMT'
+			process.env['TZ'] = process.env['TZ'] ?? 'GMT'
 			const include = [...buddyConfigDefaults.include.testNode]
 			if (options?.includeGeneralTests) {
 				include.push(...buddyConfigDefaults.include.testGeneral)

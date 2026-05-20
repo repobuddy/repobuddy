@@ -5,18 +5,18 @@ describe(`${nodeTestPreset.name}()`, () => {
 	describe('TZ', () => {
 		afterEach(() => {
 			// Reset the TZ environment variable after each test
-			delete process.env.TZ
+			delete process.env['TZ']
 		})
 
 		it('do not override TZ if already set', () => {
-			process.env.TZ = 'America/New_York'
+			process.env['TZ'] = 'America/New_York'
 			nodeTestPreset().config()
-			expect(process.env.TZ).toBe('America/New_York')
+			expect(process.env['TZ']).toBe('America/New_York')
 		})
 
 		it('set TZ to GMT', () => {
 			nodeTestPreset().config()
-			expect(process.env.TZ).toBe('GMT')
+			expect(process.env['TZ']).toBe('GMT')
 		})
 	})
 
