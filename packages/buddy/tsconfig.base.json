@@ -1,12 +1,13 @@
 {
 	"extends": "../typescript/tsconfig/monorepo",
 	"compilerOptions": {
-		"rootDir": "ts"
+		"rootDir": "ts",
+		"skipLibCheck": true
 	},
+	"include": ["ts", "types"],
 	"references": [
 		{
 			"path": "../jest/tsconfig.base.json"
 		}
-	],
-	"include": ["ts", "types"]
+	]
 }
