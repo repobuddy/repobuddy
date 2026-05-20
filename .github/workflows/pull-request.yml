@@ -10,7 +10,6 @@ jobs:
     uses: repobuddy/.github/.github/workflows/pnpm-verify.yml@main
     with:
       os: '["ubuntu-latest"]'
-      command: 'verify:ci'
 
   update-snapshots:
     needs: [code]

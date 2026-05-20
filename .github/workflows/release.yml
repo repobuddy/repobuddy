@@ -8,7 +8,6 @@ jobs:
     uses: repobuddy/.github/.github/workflows/pnpm-verify.yml@main
     with:
       os: '["ubuntu-latest"]'
-      command: 'verify:ci'
 
   release:
     uses: repobuddy/.github/.github/workflows/pnpm-release-changeset.yml@main
