@@ -6,49 +6,15 @@ on:
       - 'changeset-release/*'
       - 'vis-bot/update-snapshot/*'
 jobs:
-  verify:
-    strategy:
-      matrix:
-        os:
-          - ubuntu-latest
-          # Disable Windows CI as it keeps getting permission errors
-          # - windows-latest
-        node-version:
-          - lts/-1
-          - lts/*
-    runs-on: ${{ matrix.os }}
-    env:
-      PLAYWRIGHT_PATH: ${{ matrix.os == 'windows-latest' && 'C:\\Users\\runneradmin\\AppData\\Local\\ms-playwright' || '~/.cache/ms-playwright' }}
-    steps:
-      - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v6
-      - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v6
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: pnpm
-
-      - name: Cache Playwright Browsers
-        uses: actions/cache@v5
-        id: cache-playwright
-        with:
-          path: ${{ env.PLAYWRIGHT_PATH }}
-          key: ${{ runner.os }}-playwright-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-playwright-
-
-      - name: Install playwright browsers
-        if: steps.cache-playwright.outputs.cache-hit != 'true'
-        run: pnpx playwright install --with-deps chromium
-
-      - name: Install Dependencies
-        run: pnpm install
-
-      - run: pnpm verify:ci
+  code:
+    uses: repobuddy/.github/.github/workflows/pnpm-verify.yml@main
+    with:
+      os: '["ubuntu-latest"]'
+      command: 'verify:ci'
 
   update-snapshots:
-    needs: [verify]
-    if: ${{ needs.verify.result == 'failure' }}
+    needs: [code]
+    if: ${{ needs.code.result == 'failure' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -68,18 +34,8 @@ jobs:
           node-version: lts/*
           cache: pnpm
 
-      - name: Cache Playwright Browsers
-        uses: actions/cache@v5
-        id: cache-playwright
-        with:
-          path: ${{ env.PLAYWRIGHT_PATH }}
-          key: ${{ runner.os }}-playwright-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-playwright-
-
       - name: Install playwright browsers
-        if: steps.cache-playwright.outputs.cache-hit != 'true'
-        run: pnpx playwright install --with-deps chromium
+        uses: repobuddy/.github/.github/actions/setup-playwright@main
 
       - name: Install Dependencies
         run: pnpm install
@@ -115,14 +71,3 @@ jobs:
             --base "${{ github.head_ref }}" \
             --head "$BRANCH" \
           || true
-
-  all-checks:
-    needs: [verify]
-    runs-on: ubuntu-latest
-    if: always()
-    steps:
-      - name: All checks passed
-        run: |
-          if [[ "${{ needs.verify.result }}" != "success" ]]; then
-            exit 1
-          fi
