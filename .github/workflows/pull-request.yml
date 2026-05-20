@@ -46,6 +46,76 @@ jobs:
 
       - run: pnpm verify:ci
 
+  update-snapshots:
+    needs: [verify]
+    if: ${{ needs.verify.result == 'failure' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      PLAYWRIGHT_PATH: ~/.cache/ms-playwright
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.head_ref }}
+          token: ${{ github.token }}
+
+      - uses: pnpm/action-setup@v6
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: lts/*
+          cache: pnpm
+
+      - name: Cache Playwright Browsers
+        uses: actions/cache@v5
+        id: cache-playwright
+        with:
+          path: ${{ env.PLAYWRIGHT_PATH }}
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      - name: Install playwright browsers
+        if: steps.cache-playwright.outputs.cache-hit != 'true'
+        run: pnpx playwright install --with-deps chromium
+
+      - name: Install Dependencies
+        run: pnpm install
+
+      - name: Update snapshots
+        run: pnpm --filter @repobuddy/vitest exec vitest run --update-snapshot
+        continue-on-error: true
+
+      - name: Check for snapshot changes
+        id: changes
+        run: |
+          git add packages/vitest/__vis__
+          if git diff --cached --quiet; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Push snapshot updates
+        if: steps.changes.outputs.has_changes == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          BRANCH="vis-bot/update-snapshot/${{ github.head_ref }}"
+          git checkout -b "$BRANCH"
+          git commit -m "fix: update visual snapshots"
+          git push origin "$BRANCH" --force
+          gh pr create \
+            --title "fix: update visual snapshots for ${{ github.head_ref }}" \
+            --body "Automated snapshot update for #${{ github.event.pull_request.number }}" \
+            --base "${{ github.head_ref }}" \
+            --head "$BRANCH" \
+          || true
+
   all-checks:
     needs: [verify]
     runs-on: ubuntu-latest
