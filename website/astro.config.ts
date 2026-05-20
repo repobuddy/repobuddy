@@ -12,11 +12,11 @@ export default defineConfig({
 				dark: './src/assets/logo.svg',
 				// replacesTitle: true
 			},
-			social: {
-				discord: 'https://discord.gg/5amXyarNHR',
-				github: 'https://github.com/repobuddy/repobuddy',
-				'x.com': 'https://x.com/Unional',
-			},
+			social: [
+				{ icon: 'discord', label: 'Discord', href: 'https://discord.gg/5amXyarNHR' },
+				{ icon: 'github', label: 'GitHub', href: 'https://github.com/repobuddy/repobuddy' },
+				{ icon: 'x.com', label: 'X', href: 'https://x.com/Unional' },
+			],
 			sidebar: [
 				{
 					label: 'Guides',
@@ -27,7 +27,7 @@ export default defineConfig({
 				},
 				{
 					label: 'Reference',
-					autogenerate: { directory: 'reference' },
+					items: [{ autogenerate: { directory: 'reference' } }],
 				},
 			],
 			editLink: {
