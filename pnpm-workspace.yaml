@@ -6,5 +6,6 @@ packages:
 allowBuilds:
   '@swc/core': true
   esbuild: true
+  fsevents: true
   sharp: true
   unrs-resolver: true
