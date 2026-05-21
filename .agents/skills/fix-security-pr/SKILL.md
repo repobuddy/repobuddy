@@ -1,7 +1,7 @@
 ---
-name: fix-security-pr
+## name: fix-security-pr
+
 description: "Fix a PR that is failing due to security or vulnerability issues — npm/pnpm/yarn/bun audit failures, CVE alerts, Dependabot merge conflicts, Snyk failures, or GitHub security advisory blocks. Use when asked to 'fix the security PR', 'resolve the vulnerability failure', or 'unblock the Dependabot PR'."
----
 
 # Fix Security PR
 
