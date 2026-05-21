@@ -5,6 +5,36 @@
 
 [`repobuddy`] helps you to manage your repository.
 
+## Agent Skills
+
+`repobuddy` provides [agent skills] for AI coding assistants (Claude Code, Cursor, etc.) to help manage your repository.
+
+### Available Skills
+
+| Skill | Description |
+|---|---|
+| [`create-issue`] | Create a bug report or feature request — searches for duplicates first |
+
+### Installing Skills
+
+**Via `npx skills`:**
+
+```bash
+npx skills add repobuddy/repobuddy
+```
+
+**Via Claude Code** — ask Claude to find and install the skill:
+
+```
+find a skill for creating issues
+```
+
+or install directly:
+
+```
+/find-skills repobuddy/repobuddy
+```
+
 ## [@repobuddy/biome]
 
 [![NPM version][npm-biome-image]][npm-biome-url] [![NPM downloads][downloads-biome-image]][npm-biome-url] [![Codecov][codecov-biome-image]][codecov-biome-url]
@@ -26,6 +56,8 @@
 [@repobuddy/biome]: ./packages/biome/readme.md
 [@repobuddy/jest]: ./packages/jest/readme.md
 [@repobuddy/typescript]: ./packages/typescript/readme.md
+[agent skills]: https://github.com/vercel-labs/skills
+[`create-issue`]: ./skills/create-issue/SKILL.md
 [biome]: https://biomejs.dev/
 [codecov-biome-image]: https://codecov.io/gh/repobuddy/repobuddy/badge.svg?flag=biome
 [codecov-biome-url]: https://codecov.io/gh/repobuddy/repobuddy
