@@ -3,3 +3,9 @@ packages:
   - packages/*
   - testcases/*
   - website
+allowBuilds:
+  '@swc/core': true
+  esbuild: true
+  fsevents: true
+  sharp: true
+  unrs-resolver: true

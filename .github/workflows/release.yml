@@ -4,50 +4,14 @@ on:
     branches: [main]
 
 jobs:
-  verify:
-    strategy:
-      matrix:
-        os:
-          - ubuntu-latest
-          # Disable Windows CI as it keeps getting permission errors
-          # - windows-latest
-        node-version:
-          - lts/-1
-          - lts/*
-    runs-on: ${{ matrix.os }}
-    env:
-      PLAYWRIGHT_PATH: ${{ matrix.os == 'windows-latest' && 'C:\\Users\\runneradmin\\AppData\\Local\\ms-playwright' || '~/.cache/ms-playwright' }}
-    steps:
-      - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v6
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: pnpm
-
-      - name: Cache Playwright Browsers
-        uses: actions/cache@v5
-        id: cache-playwright
-        with:
-          path: ${{ env.PLAYWRIGHT_PATH }}
-          key: ${{ runner.os }}-playwright-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-playwright-
-
-      - name: Install playwright browsers
-        if: steps.cache-playwright.outputs.cache-hit != 'true'
-        run: pnpx playwright install --with-deps chromium
-
-      - name: Install Dependencies
-        run: pnpm install
-
-      - run: pnpm verify:ci
-
+  code:
+    uses: repobuddy/.github/.github/workflows/pnpm-verify.yml@main
+    with:
+      os: '["ubuntu-latest"]'
 
   release:
     uses: repobuddy/.github/.github/workflows/pnpm-release-changeset.yml@main
-    needs: verify
+    needs: code
     secrets: inherit
 
   docgen:
