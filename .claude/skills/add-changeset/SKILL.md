@@ -1,7 +1,7 @@
 ---
-## name: add-changeset
-
+name: add-changeset
 description: "Add a changeset to the current change. Use when preparing a PR that affects published packages, when asked to 'add a changeset' or `add cs`, or when CI reports a missing changeset. Detects monorepos and selects affected packages automatically."
+---
 
 # Add Changeset
 
@@ -155,10 +155,10 @@ Once the changeset is merged to the base branch, the CI release workflow (`chang
 
 ## Verification
 
-- [] File exists in `.changeset/` with a descriptive or slug filename
-- [] Frontmatter lists all affected packages with the correct bump type
-- [] All packages in any `fixed` group are included together
-- [] Summary is consumer-focused — no internal file names or commit SHAs
-- [] Code identifiers are wrapped in backticks
-- [] Summary ends with a period
-- [] Breaking changes include migration steps
+- [ ] File exists in `.changeset/` with a descriptive or slug filename
+- [ ] Frontmatter lists all affected packages with the correct bump type
+- [ ] All packages in any `fixed` group are included together
+- [ ] Summary is consumer-focused — no internal file names or commit SHAs
+- [ ] Code identifiers are wrapped in backticks
+- [ ] Summary ends with a period
+- [ ] Breaking changes include migration steps

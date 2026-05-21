@@ -1,6 +1,6 @@
 {
 	"files": {
-		"includes": ["**", "!**/.vscode/**/*.txt"]
+		"includes": ["**", "!**/.vscode/**/*.txt", "!**/*.md"]
 	},
 	"formatter": {
 		"enabled": true,

@@ -1,7 +1,7 @@
 ---
-## name: setup-changesets
-
+name: setup-changesets
 description: "Set up changesets in a new or existing repository. Use when asked to 'add changesets', 'set up releases', or 'configure versioning'. Handles single packages and monorepos. Detects and migrates from competing release tools. Optionally sets up a shared reusable workflow in a <user/org>/.github repo."
+---
 
 # Setup Changesets
 
