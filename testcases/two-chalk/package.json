@@ -14,7 +14,7 @@
 		"@unional/fixture": "^3.2.8",
 		"assertron": "^11.0.3",
 		"chalk": "^5.2.0",
-		"cross-env": "^7.0.3",
+		"cross-env": "^10.0.0",
 		"dirname-filename-esm": "^1.1.1",
 		"jest": "^30.0.0",
 		"jest-esm-transformer-2": "^1.0.0",
