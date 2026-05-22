@@ -14,6 +14,7 @@
 | Skill | Description |
 |---|---|
 | [`create-issue`] | Create a bug report or feature request — searches for duplicates first |
+| [`merge-dep-prs`] | Merge pending dependency update PRs — diagnoses CI failures, never merges release PRs |
 
 ### Installing Skills
 
@@ -58,6 +59,7 @@ or install directly:
 [@repobuddy/typescript]: ./packages/typescript/readme.md
 [agent skills]: https://github.com/vercel-labs/skills
 [`create-issue`]: ./skills/create-issue/SKILL.md
+[`merge-dep-prs`]: ./skills/merge-dep-prs/SKILL.md
 [biome]: https://biomejs.dev/
 [codecov-biome-image]: https://codecov.io/gh/repobuddy/repobuddy/badge.svg?flag=biome
 [codecov-biome-url]: https://codecov.io/gh/repobuddy/repobuddy
