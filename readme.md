@@ -7,24 +7,37 @@
 
 ## Agent Skills
 
-`repobuddy` provides [agent skills] for AI coding assistants (Claude Code, Cursor, etc.) to help manage your repository.
+`repobuddy` provides [agent skills] for AI coding assistants (Claude Code, Cursor, etc.) to help manage your repository. Skills live in [`skills/`](./skills/) and are installed with the [Skills CLI].
 
 ### Available Skills
 
 | Skill | Description |
-|---|---|
+| --- | --- |
 | [`create-issue`] | Create a bug report or feature request — searches for duplicates first |
 | [`merge-dep-prs`] | Merge pending dependency update PRs — diagnoses CI failures, never merges release PRs |
+| [`setup-github-repo`] | Set up a GitHub repo with branch protection, Dependabot, and CI |
 
 ### Installing Skills
 
-**Via `npx skills`:**
+**List available skills:**
 
-```bash
+```sh
+npx skills add repobuddy/repobuddy --list
+```
+
+**Install all skills:**
+
+```sh
 npx skills add repobuddy/repobuddy
 ```
 
-**Via Claude Code** — ask Claude to find and install the skill:
+**Install specific skills:**
+
+```sh
+npx skills add repobuddy/repobuddy --skill create-issue --skill setup-github-repo
+```
+
+**Via Claude Code** — ask Claude to find and install a skill:
 
 ```
 find a skill for creating issues
@@ -34,6 +47,21 @@ or install directly:
 
 ```
 /find-skills repobuddy/repobuddy
+```
+
+### Related Skill Collections
+
+These companion repositories provide additional skills often used alongside `repobuddy`:
+
+| Repository | Skills |
+| --- | --- |
+| [`repobuddy/agent-changesets`] | Changeset authoring and release setup |
+| [`repobuddy/agent-security`] | Security PR remediation |
+
+Install from a related repo the same way:
+
+```sh
+npx skills add repobuddy/agent-changesets
 ```
 
 ## [@repobuddy/biome]
@@ -58,8 +86,12 @@ or install directly:
 [@repobuddy/jest]: ./packages/jest/readme.md
 [@repobuddy/typescript]: ./packages/typescript/readme.md
 [agent skills]: https://github.com/vercel-labs/skills
+[Skills CLI]: https://github.com/vercel-labs/skills
 [`create-issue`]: ./skills/create-issue/SKILL.md
 [`merge-dep-prs`]: ./skills/merge-dep-prs/SKILL.md
+[`setup-github-repo`]: ./skills/setup-github-repo/SKILL.md
+[`repobuddy/agent-changesets`]: https://github.com/repobuddy/agent-changesets
+[`repobuddy/agent-security`]: https://github.com/repobuddy/agent-security
 [biome]: https://biomejs.dev/
 [codecov-biome-image]: https://codecov.io/gh/repobuddy/repobuddy/badge.svg?flag=biome
 [codecov-biome-url]: https://codecov.io/gh/repobuddy/repobuddy
