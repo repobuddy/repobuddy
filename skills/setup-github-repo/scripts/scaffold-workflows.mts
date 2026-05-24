@@ -4,7 +4,7 @@
  * Scaffolds GitHub Actions workflow files based on detected repo state.
  * Reads .github/setup-state.json produced by detect-state.mts.
  * Skips files that already exist.
- * Usage: npx tsx scaffold-workflows.mts --state .github/setup-state.json [--workflows pull-request,release,dependabot-automerge,codeql] [--yes]
+ * Usage: npx tsx scaffold-workflows.mts --state .github/setup-state.json [--workflows pull-request,release,dependabot-automerge,codeql] [--yes] [--verbose]
  */
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
@@ -17,6 +17,11 @@ const args = process.argv.slice(2)
 const statePath = args[args.indexOf('--state') + 1] ?? '.github/setup-state.json'
 const workflowsArg = args[args.indexOf('--workflows') + 1]
 const autoYes = args.includes('--yes') || args.includes('-y')
+const verbose = args.includes('--verbose')
+
+function writeResult(result: Record<string, unknown>) {
+	process.stdout.write(`${JSON.stringify(result)}\n`)
+}
 
 if (!existsSync(statePath)) {
 	console.error(`State file not found: ${statePath}`)
@@ -64,30 +69,35 @@ if (workflowsArg) {
 // --- Filter already-existing ---
 
 const workflowsDir = '.github/workflows'
+const skipped: Array<{ name: string; reason: string }> = []
+
 const toCreate = toOffer.filter((name) => {
 	const file = `${name}.yml`
 	if (detected.existingWorkflows.includes(file)) {
-		console.log(`  [skip] ${file} — already exists`)
+		skipped.push({ name: file, reason: 'already exists' })
+		if (verbose) console.warn(`  [skip] ${file} — already exists`)
 		return false
 	}
 	return true
 })
 
 if (toCreate.length === 0) {
-	console.log('\nAll requested workflow files already exist. Nothing to create.')
+	writeResult({ ok: true, created: [], skipped })
 	process.exit(0)
 }
 
-console.log('\nWorkflows to create:')
-for (const name of toCreate) {
-	console.log(`  ${name}.yml`)
+if (verbose) {
+	console.warn('\nWorkflows to create:')
+	for (const name of toCreate) {
+		console.warn(`  ${name}.yml`)
+	}
 }
 
 // --- Confirm ---
 
 async function confirm(): Promise<boolean> {
 	if (autoYes) return true
-	const rl = createInterface({ input: process.stdin, output: process.stdout })
+	const rl = createInterface({ input: process.stdin, output: process.stderr })
 	return new Promise((resolve) => {
 		rl.question('\nCreate these files? [y/N] ', (answer) => {
 			rl.close()
@@ -304,21 +314,29 @@ const templates: Record<string, () => string> = {
 
 const ok = await confirm()
 if (!ok) {
-	console.log('Aborted.')
+	writeResult({ ok: false, reason: 'aborted', created: [], skipped })
 	process.exit(0)
 }
 
 mkdirSync(workflowsDir, { recursive: true })
 
+const created: string[] = []
+
 for (const name of toCreate) {
 	const generate = templates[name]
 	if (!generate) {
-		console.log(`  [skip] ${name} — unknown workflow name`)
+		skipped.push({ name: `${name}.yml`, reason: 'unknown workflow name' })
+		if (verbose) console.warn(`  [skip] ${name} — unknown workflow name`)
 		continue
 	}
 	const filePath = join(workflowsDir, `${name}.yml`)
 	writeFileSync(filePath, generate())
-	console.log(`  [created] ${filePath}`)
+	created.push(filePath)
+	if (verbose) console.warn(`  [created] ${filePath}`)
 }
 
-console.log('\nDone. Review the generated files before committing — CI steps may need customization.')
+writeResult({ ok: true, created, skipped })
+
+if (verbose) {
+	console.warn('\nDone. Review the generated files before committing — CI steps may need customization.')
+}

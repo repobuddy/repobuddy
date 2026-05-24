@@ -64,9 +64,17 @@ description: Use this skill when <trigger condition>. <One-line summary of what 
 2. Second step
 ```
 
-### 2. Validate the skill
+### 2. Audit the skill
 
-Invoke the `validate-skill` skill on the new file. Fix any CRITICAL findings before proceeding. Do not continue to step 3 if any CRITICAL findings remain.
+Run automated checks first:
+
+```bash
+npx tsx .agents/skills/audit-skill/scripts/validate-skills.mts --path ~/.agents/skills/<name>
+```
+
+Fix any CRITICAL findings before proceeding.
+
+Then invoke the **audit-skill** agent skill for full review (Q6–Q12, E3–E8, P1–P3). Do not continue to step 3 if any CRITICAL findings remain.
 
 ### 3. Link to agents
 
@@ -99,6 +107,17 @@ Adjust the target path for other agents as needed (e.g., `~/.cursor/skills/`, `~
 - **Decisions over documentation.** Encode what to decide and how — don't repeat reference material the model already knows.
 - **Narrow and composable.** One workflow per skill. Skills can be triggered by situation (user-facing) or called by other skills (sub-skills). Sub-skills have no situational trigger — their `description` should say "Internal skill: called by X" to avoid accidental activation. Neither type should be loaded as ambient context.
 - **No baked-in opinions.** Detect the user's setup (package manager, monorepo shape, tooling) at runtime rather than assuming a specific stack.
+
+## Skill script output discipline
+
+If the skill includes a `scripts/` directory, apply these rules so agents do not confuse human output with machine results:
+
+- **Stdout is the machine contract** — one JSON value or silence; no prose, tables, or progress in default mode
+- **Files hold durable state** — agents read artifacts by path named in stdout JSON or SKILL.md
+- **Stderr is human/diagnostic** — use `console.warn` / `console.error`; gate tables and progress behind `--verbose`
+- **Skills present; scripts record** — SKILL.md tells the agent what file or field to read; the agent summarizes for the user
+- **Autonomous runs** — document `--yes` or equivalent non-interactive flags; never put prompts on stdout
+- **Implementation** — use `process.stdout.write(JSON.stringify(result) + '\n')` for contract output; never `console.log`
 
 ## Notes
 

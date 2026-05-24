@@ -46,7 +46,14 @@ else
 fi
 ```
 
-The script outputs `.github/setup-state.json` and prints a summary table showing current vs target state for each setting. Show this table to the user and confirm before applying any changes.
+The script writes `.github/setup-state.json` and prints a small JSON ack to stdout. **Do not parse stdout for state** — read the artifact file instead:
+
+```bash
+jq '[.rows[] | select(.action | startswith("will"))]' .github/setup-state.json
+jq '{repo, defaultBranch, detected}' .github/setup-state.json
+```
+
+Summarize pending changes for the user and confirm before applying any changes. Add `--verbose` to the detect command for a human-readable table on stderr (debugging only).
 
 ## Step 2 — Apply critical repository settings
 
@@ -148,13 +155,13 @@ The scaffold script detects which workflows to offer based on filesystem signals
 ```bash
 SKILL_DIR=$(npx skills path setup-github-repo 2>/dev/null || echo "$HOME/.agents/skills/setup-github-repo")
 if [ "$node_major" -ge 23 ]; then
-  node "$SKILL_DIR/scripts/scaffold-workflows.mts" --state .github/setup-state.json
+  node "$SKILL_DIR/scripts/scaffold-workflows.mts" --state .github/setup-state.json --yes
 else
-  npx tsx "$SKILL_DIR/scripts/scaffold-workflows.mts" --state .github/setup-state.json
+  npx tsx "$SKILL_DIR/scripts/scaffold-workflows.mts" --state .github/setup-state.json --yes
 fi
 ```
 
-The script reports which files it would create, then asks confirmation before writing. It skips files that already exist.
+Use `--yes` for agent runs (non-interactive). Omit `--yes` for human runs — the script prompts on stderr. Read JSON stdout for `created` and `skipped`; add `--verbose` for progress on stderr.
 
 ### Workflow descriptions
 
