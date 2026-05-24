@@ -1,6 +1,6 @@
 ---
 name: create-issue
-description: "Create a bug report or feature request on GitHub, GitLab, or similar platforms. Searches for existing similar issues first to avoid duplicates. Use when asked to 'create an issue', 'file a bug', 'open a feature request', or 'report a problem'."
+description: "Create a bug report or feature request on GitHub, GitLab, or similar platforms. Searches for existing similar issues first to avoid duplicates. Use this skill when asked to 'create an issue', 'file a bug', 'open a feature request', or 'report a problem'."
 ---
 
 # Create Issue
@@ -120,3 +120,4 @@ After creation, output the issue URL so the user can navigate to it directly.
 - [ ] User confirmed no duplicate exists
 - [ ] User confirmed the issue details before creation
 - [ ] Issue URL returned to user after creation
+
