@@ -1,12 +1,15 @@
 #!/usr/bin/env node
 /**
  * Detects current GitHub repo settings and filesystem signals.
- * Writes .github/setup-state.json and prints a diff table to stdout.
+ * Writes .github/setup-state.json; prints a JSON ack to stdout.
+ * Human-readable table on stderr with --verbose.
  */
 
 import { execSync } from 'node:child_process'
 import { existsSync, mkdirSync, readdirSync, writeFileSync } from 'node:fs'
 import { extname, join } from 'node:path'
+
+const verbose = process.argv.includes('--verbose')
 
 function run(cmd: string): string {
 	return execSync(cmd, { encoding: 'utf8' }).trim()
@@ -137,32 +140,90 @@ function detectPackageManager(): string | null {
 
 // --- Build state ---
 
+interface Row {
+	setting: string
+	current: string
+	target: string
+	action: string
+}
+
 const language = detectLanguage()
 const packageManager = detectPackageManager()
 const hasPackageJson = existsSync('package.json')
 const hasDependabotConfig = existsSync('.github/dependabot.yml')
 
+const current = {
+	deleteBranchOnMerge: repoSettings.delete_branch_on_merge ?? false,
+	allowAutoMerge: repoSettings.allow_auto_merge ?? false,
+	allowMergeCommit: repoSettings.allow_merge_commit ?? true,
+	allowSquashMerge: repoSettings.allow_squash_merge ?? true,
+	allowRebaseMerge: repoSettings.allow_rebase_merge ?? true,
+	allowUpdateBranch: repoSettings.allow_update_branch ?? false,
+	hasWiki: repoSettings.has_wiki ?? false,
+	hasProjects: repoSettings.has_projects ?? false,
+	hasDiscussions: repoSettings.has_discussions ?? false,
+	dependabotSecurityUpdates: repoSettings.security_and_analysis?.dependabot_security_updates?.status ?? 'disabled',
+	secretScanning: repoSettings.security_and_analysis?.secret_scanning?.status ?? 'disabled',
+	secretScanningPushProtection:
+		repoSettings.security_and_analysis?.secret_scanning_push_protection?.status ?? 'disabled',
+	defaultBranchRuleset: defaultBranchRuleset ? { id: defaultBranchRuleset.id, name: defaultBranchRuleset.name } : null,
+}
+
+const rows: Row[] = [
+	{
+		setting: 'delete_branch_on_merge',
+		current: String(current.deleteBranchOnMerge),
+		target: 'true',
+		action: current.deleteBranchOnMerge ? 'already set' : 'will set',
+	},
+	{
+		setting: 'allow_auto_merge',
+		current: String(current.allowAutoMerge),
+		target: 'true',
+		action: current.allowAutoMerge ? 'already set' : 'will set',
+	},
+	{
+		setting: 'allow_merge_commit',
+		current: String(current.allowMergeCommit),
+		target: 'false',
+		action: !current.allowMergeCommit ? 'already set' : 'will set',
+	},
+	{
+		setting: 'allow_squash_merge',
+		current: String(current.allowSquashMerge),
+		target: 'true',
+		action: current.allowSquashMerge ? 'already set' : 'will set',
+	},
+	{
+		setting: 'allow_rebase_merge',
+		current: String(current.allowRebaseMerge),
+		target: 'true',
+		action: current.allowRebaseMerge ? 'already set' : 'will set',
+	},
+	{
+		setting: 'allow_update_branch',
+		current: String(current.allowUpdateBranch),
+		target: 'true',
+		action: current.allowUpdateBranch ? 'already set' : 'will set',
+	},
+	{
+		setting: 'dependabot_security_updates',
+		current: current.dependabotSecurityUpdates,
+		target: 'enabled',
+		action: current.dependabotSecurityUpdates === 'enabled' ? 'already set' : 'will set',
+	},
+	{
+		setting: 'default branch ruleset',
+		current: current.defaultBranchRuleset ? `exists (${current.defaultBranchRuleset.name})` : 'none',
+		target: 'default-branch-protection',
+		action: current.defaultBranchRuleset ? 'already set' : 'will create',
+	},
+]
+
 const state = {
 	repo: nameWithOwner,
 	defaultBranch,
-	current: {
-		deleteBranchOnMerge: repoSettings.delete_branch_on_merge ?? false,
-		allowAutoMerge: repoSettings.allow_auto_merge ?? false,
-		allowMergeCommit: repoSettings.allow_merge_commit ?? true,
-		allowSquashMerge: repoSettings.allow_squash_merge ?? true,
-		allowRebaseMerge: repoSettings.allow_rebase_merge ?? true,
-		allowUpdateBranch: repoSettings.allow_update_branch ?? false,
-		hasWiki: repoSettings.has_wiki ?? false,
-		hasProjects: repoSettings.has_projects ?? false,
-		hasDiscussions: repoSettings.has_discussions ?? false,
-		dependabotSecurityUpdates: repoSettings.security_and_analysis?.dependabot_security_updates?.status ?? 'disabled',
-		secretScanning: repoSettings.security_and_analysis?.secret_scanning?.status ?? 'disabled',
-		secretScanningPushProtection:
-			repoSettings.security_and_analysis?.secret_scanning_push_protection?.status ?? 'disabled',
-		defaultBranchRuleset: defaultBranchRuleset
-			? { id: defaultBranchRuleset.id, name: defaultBranchRuleset.name }
-			: null,
-	},
+	current,
 	detected: {
 		language,
 		codeqlLanguage: language ? (codeqlLanguageMap[language] ?? 'javascript') : null,
@@ -171,100 +232,56 @@ const state = {
 		hasDependabotConfig,
 		existingWorkflows,
 	},
+	rows,
 }
 
-// --- Write state file ---
+const artifact = '.github/setup-state.json'
 
 mkdirSync('.github', { recursive: true })
-writeFileSync('.github/setup-state.json', JSON.stringify(state, null, 2))
+writeFileSync(artifact, JSON.stringify(state, null, 2))
 
-// --- Print diff table ---
+const willSet = rows.filter((r) => r.action.startsWith('will')).length
+const alreadySet = rows.length - willSet
 
-interface Row {
-	setting: string
-	current: string
-	target: string
-	action: string
+process.stdout.write(
+	`${JSON.stringify({
+		ok: true,
+		artifact,
+		repo: nameWithOwner,
+		defaultBranch,
+		counts: { willSet, alreadySet },
+	})}\n`,
+)
+
+if (verbose) {
+	const colWidths = [
+		Math.max(...rows.map((r) => r.setting.length), 'Setting'.length),
+		Math.max(...rows.map((r) => r.current.length), 'Current'.length),
+		Math.max(...rows.map((r) => r.target.length), 'Target'.length),
+		Math.max(...rows.map((r) => r.action.length), 'Action'.length),
+	]
+
+	function pad(s: string, n: number) {
+		return s.padEnd(n)
+	}
+	function formatRow(cols: string[]) {
+		return '| ' + cols.map((c, i) => pad(c, colWidths[i]!)).join(' | ') + ' |'
+	}
+	function divider() {
+		return '|-' + colWidths.map((w) => '-'.repeat(w)).join('-|-') + '-|'
+	}
+
+	console.warn(`\nRepo: ${nameWithOwner}  (default branch: ${defaultBranch})\n`)
+	console.warn(formatRow(['Setting', 'Current', 'Target', 'Action']))
+	console.warn(divider())
+	for (const r of rows) {
+		console.warn(formatRow([r.setting, r.current, r.target, r.action]))
+	}
+
+	console.warn('\nDetected:')
+	console.warn(`  Language:        ${language ?? 'unknown'}`)
+	console.warn(`  CodeQL language: ${state.detected.codeqlLanguage ?? 'unknown'}`)
+	console.warn(`  Package manager: ${packageManager ?? 'none'}`)
+	console.warn(`  Existing workflows: ${existingWorkflows.length > 0 ? existingWorkflows.join(', ') : 'none'}`)
+	console.warn(`\nState written to ${artifact}`)
 }
-
-const rows: Row[] = [
-	{
-		setting: 'delete_branch_on_merge',
-		current: String(state.current.deleteBranchOnMerge),
-		target: 'true',
-		action: state.current.deleteBranchOnMerge ? 'already set' : 'will set',
-	},
-	{
-		setting: 'allow_auto_merge',
-		current: String(state.current.allowAutoMerge),
-		target: 'true',
-		action: state.current.allowAutoMerge ? 'already set' : 'will set',
-	},
-	{
-		setting: 'allow_merge_commit',
-		current: String(state.current.allowMergeCommit),
-		target: 'false',
-		action: !state.current.allowMergeCommit ? 'already set' : 'will set',
-	},
-	{
-		setting: 'allow_squash_merge',
-		current: String(state.current.allowSquashMerge),
-		target: 'true',
-		action: state.current.allowSquashMerge ? 'already set' : 'will set',
-	},
-	{
-		setting: 'allow_rebase_merge',
-		current: String(state.current.allowRebaseMerge),
-		target: 'true',
-		action: state.current.allowRebaseMerge ? 'already set' : 'will set',
-	},
-	{
-		setting: 'allow_update_branch',
-		current: String(state.current.allowUpdateBranch),
-		target: 'true',
-		action: state.current.allowUpdateBranch ? 'already set' : 'will set',
-	},
-	{
-		setting: 'dependabot_security_updates',
-		current: state.current.dependabotSecurityUpdates,
-		target: 'enabled',
-		action: state.current.dependabotSecurityUpdates === 'enabled' ? 'already set' : 'will set',
-	},
-	{
-		setting: 'default branch ruleset',
-		current: state.current.defaultBranchRuleset ? `exists (${state.current.defaultBranchRuleset.name})` : 'none',
-		target: 'default-branch-protection',
-		action: state.current.defaultBranchRuleset ? 'already set' : 'will create',
-	},
-]
-
-const colWidths = [
-	Math.max(...rows.map((r) => r.setting.length), 'Setting'.length),
-	Math.max(...rows.map((r) => r.current.length), 'Current'.length),
-	Math.max(...rows.map((r) => r.target.length), 'Target'.length),
-	Math.max(...rows.map((r) => r.action.length), 'Action'.length),
-]
-
-function pad(s: string, n: number) {
-	return s.padEnd(n)
-}
-function row(cols: string[]) {
-	return '| ' + cols.map((c, i) => pad(c, colWidths[i]!)).join(' | ') + ' |'
-}
-function divider() {
-	return '|-' + colWidths.map((w) => '-'.repeat(w)).join('-|-') + '-|'
-}
-
-console.log(`\nRepo: ${nameWithOwner}  (default branch: ${defaultBranch})\n`)
-console.log(row(['Setting', 'Current', 'Target', 'Action']))
-console.log(divider())
-for (const r of rows) {
-	console.log(row([r.setting, r.current, r.target, r.action]))
-}
-
-console.log('\nDetected:')
-console.log(`  Language:        ${language ?? 'unknown'}`)
-console.log(`  CodeQL language: ${state.detected.codeqlLanguage ?? 'unknown'}`)
-console.log(`  Package manager: ${packageManager ?? 'none'}`)
-console.log(`  Existing workflows: ${existingWorkflows.length > 0 ? existingWorkflows.join(', ') : 'none'}`)
-console.log('\nState written to .github/setup-state.json')
