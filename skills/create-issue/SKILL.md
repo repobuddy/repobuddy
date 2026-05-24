@@ -32,7 +32,19 @@ If the user has not already provided them, ask for:
 
 Do not ask for information the user has already provided.
 
-### 2. Search for similar existing issues
+### 2. Gather environment and version details
+
+For bug reports, collect the system and package information that will help maintainers reproduce and triage the issue.
+
+Include relevant details such as:
+- **Host environment** — OS/distribution, kernel, architecture, container/WSL/CI context when relevant
+- **Runtime and tooling** — Node/Python/runtime version, package manager, compiler/transpiler version, browser version, framework CLI version
+- **Package or app versions** — the affected package version, and any closely related dependency versions that materially affect the bug
+- **Version split notes** — if the package under test uses one toolchain version but the failing downstream consumer uses another, capture both explicitly
+
+Prefer discovering exact versions from the local environment or repo when possible instead of asking the user. If the issue is a feature request, include environment details only when they materially affect the request.
+
+### 3. Search for similar existing issues
 
 Before creating, search for duplicates. Use the title keywords and key terms from the description.
 
@@ -54,16 +66,17 @@ Present any matches to the user:
 
 If a match is found and the user confirms it is the same issue, stop — do not create a duplicate. Instead, provide the URL of the existing issue and suggest the user add a comment or reaction if they want to signal the issue affects them too.
 
-### 3. Confirm creation
+### 4. Confirm creation
 
 If no duplicates found (or user confirms none match), summarize what will be created:
 - Title
 - Type (bug / feature request)
 - Key points from the description
+- Environment and version details that will be included, when relevant
 
 Ask for confirmation before proceeding.
 
-### 4. Create the issue
+### 5. Create the issue
 
 **GitHub:**
 ```bash
@@ -87,6 +100,19 @@ gh issue create \
 ## Actual Behavior
 
 <actual>
+
+## Environment
+
+- OS: ...
+- Architecture: ...
+- Runtime: ...
+- Package manager: ...
+- Affected package: ...
+- Related toolchain/compiler: ...
+
+## Notes
+
+<version split, container/WSL/CI context, or other triage-relevant details>
 EOF
 )"
 ```
@@ -103,7 +129,7 @@ For feature requests use label `enhancement` (GitHub) or `feature` (GitLab). For
 
 If labels don't exist in the repo, omit the `--label` flag rather than erroring.
 
-### 5. Confirm and report
+### 6. Confirm and report
 
 After creation, output the issue URL so the user can navigate to it directly.
 
@@ -116,8 +142,8 @@ After creation, output the issue URL so the user can navigate to it directly.
 
 ## Verification
 
+- [ ] Gathered environment and package/runtime/toolchain version details when relevant
 - [ ] Searched for duplicates with at least two keyword combinations
 - [ ] User confirmed no duplicate exists
 - [ ] User confirmed the issue details before creation
 - [ ] Issue URL returned to user after creation
-
