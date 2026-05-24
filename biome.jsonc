@@ -8,7 +8,7 @@
 		"defaultBranch": "main"
 	},
 	"files": {
-		"includes": ["!**/tests/performant"]
+		"includes": ["!**/tests/performant", "!.agents"]
 	},
 	"formatter": {
 		"enabled": true,
