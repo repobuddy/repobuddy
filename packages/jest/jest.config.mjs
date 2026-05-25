@@ -18,7 +18,6 @@ export default {
 		'(spec|test|unit|accept|integrate|system)\\.node17\\.(js|jtx|cjs|mjs|ts|tsx|cts|mts)$',
 		'(spec|test|unit|accept|integrate|system)\\.node18\\.(js|jtx|cjs|mjs|ts|tsx|cts|mts)$',
 	],
-	extensionsToTreatAsEsm: ['.ts', '.tsx', '.mts'],
 	moduleNameMapper: { '^(\\.{1,2}/.*)\\.js$': '$1' },
 	testEnvironment: 'node',
 	testRegex: [
@@ -33,16 +32,19 @@ export default {
 	transform: {
 		'^.+\\.(ts|tsx|cts|mts)$': [
 			'ts-jest',
-			[
-				{
-					isolatedModules: true,
-					useESM: true,
-					diagnostics: {
-						// https://github.com/kulshekhar/ts-jest/issues/3820
-						ignoreCodes: [151001],
-					},
+			{
+				transpilation: true,
+				tsconfig: {
+					module: 'CommonJS',
+					moduleResolution: 'node',
+					ignoreDeprecations: '6.0',
+					esModuleInterop: true,
 				},
-			],
+				diagnostics: {
+					// https://github.com/kulshekhar/ts-jest/issues/3820
+					ignoreCodes: [151001, 5107],
+				},
+			},
 		],
 		'\\.m?jsx?$': 'jest-esm-transformer-2',
 	},
