@@ -63,7 +63,7 @@ Always apply (no extra confirmation needed after Step 1):
 gh repo edit "$REPO" \
   --delete-branch-on-merge \
   --enable-auto-merge \
-  --no-allow-merge-commit \
+  --enable-merge-commit=false \
   --allow-squash-merge \
   --allow-rebase-merge \
   --allow-update-branch
