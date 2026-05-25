@@ -10,14 +10,25 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { createInterface } from 'node:readline'
+import { parseArgs } from 'node:util'
 
 // --- Args ---
 
-const args = process.argv.slice(2)
-const statePath = args[args.indexOf('--state') + 1] ?? '.github/setup-state.json'
-const workflowsArg = args[args.indexOf('--workflows') + 1]
-const autoYes = args.includes('--yes') || args.includes('-y')
-const verbose = args.includes('--verbose')
+const { values } = parseArgs({
+	options: {
+		state: { type: 'string', default: '.github/setup-state.json' },
+		workflows: { type: 'string' },
+		yes: { type: 'boolean', short: 'y', default: false },
+		verbose: { type: 'boolean', default: false },
+	},
+	allowPositionals: false,
+	strict: true,
+})
+
+const statePath = values.state
+const workflowsArg = values.workflows
+const autoYes = values.yes
+const verbose = values.verbose
 
 function writeResult(result: Record<string, unknown>) {
 	process.stdout.write(`${JSON.stringify(result)}\n`)
