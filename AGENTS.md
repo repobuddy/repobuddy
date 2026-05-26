@@ -40,6 +40,7 @@ pnpm test
 # Run tests for a single package
 pnpm --filter @repobuddy/jest test
 pnpm --filter @repobuddy/typescript test
+pnpm --filter @repobuddy/vitest test
 
 # Run coverage
 pnpm coverage
@@ -54,6 +55,9 @@ pnpm check:fix    # biome check --fix
 
 # Full verify (typecheck + lint + coverage + depcheck + size)
 pnpm verify
+
+# CI verify (same tasks, concurrency=1)
+pnpm verify:ci
 
 # Add a changeset
 pnpm cs           # alias for changeset
@@ -74,8 +78,10 @@ This is a **pnpm monorepo** managed with [Turborepo](https://turbo.build/). It i
 
 **Published packages** (`packages/`):
 - `@repobuddy/jest` — Jest presets and config helpers
+- `@repobuddy/vitest` — Vitest presets and config helpers
 - `@repobuddy/biome` — Predefined Biome configs
 - `@repobuddy/typescript` — TypeScript tools and utilities
+- `@repobuddy/test` — Shared test utilities
 - `repobuddy` — CLI for managing the repository itself
 
 **Public agent skills** (`skills/`) — installed by consumers via `npx skills add repobuddy/repobuddy`:
@@ -83,12 +89,18 @@ This is a **pnpm monorepo** managed with [Turborepo](https://turbo.build/). It i
 - `merge-dep-prs` — merge Dependabot/Renovate PRs, handles CI failures
 - `setup-github-repo` — branch protection, Dependabot, CI setup
 
+**Related skill collections** (separate repos, same install flow):
+- [`repobuddy/agent-changesets`](https://github.com/repobuddy/agent-changesets) — changeset authoring and release setup
+- [`repobuddy/agent-security`](https://github.com/repobuddy/agent-security) — security PR remediation
+
 **Repo-private contributor skills** (`.agents/skills/`) — `metadata: internal: true`, not shipped to consumers:
 - `add-changeset`, `audit-skill`, `create-skill`, `find-awesome-skill`, `fix-security-pr`
 
-**Test cases** live under `testcases/` — these are fixture packages exercised by integration tests.
+**Test cases** live under `testcases/` — fixture packages exercised by integration tests.
 
-**Build pipeline**: Turborepo tasks are declared in `turbo.json`. `coverage` and `test` depend on `@repobuddy/jest#build` and `@repobuddy/vitest#build` first, because the repo dogfoods its own jest config.
+**Documentation site** lives under `website/` (Astro).
+
+**Build pipeline**: Turborepo tasks are declared in `turbo.json`. `coverage` and `test` depend on `@repobuddy/jest#build` and `@repobuddy/vitest#build` first, because the repo dogfoods its own jest/vitest configs.
 
 **Note on initial setup**: Always run `pnpm build` before `pnpm test` on a fresh clone — the jest/vitest packages must be built before they can be used by test runners.
 
