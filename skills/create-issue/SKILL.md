@@ -1,11 +1,13 @@
 ---
 name: create-issue
-description: "Create a bug report or feature request on GitHub, GitLab, or similar platforms. Searches for existing similar issues first to avoid duplicates. Use this skill when asked to 'create an issue', 'file a bug', 'open a feature request', or 'report a problem'."
+description: "Use this skill when creating GitHub or GitLab issues; searches for duplicates before filing."
 ---
 
 # Create Issue
 
 Creates a well-formed bug report or feature request on the appropriate issue tracker, after checking for existing similar issues to avoid duplicates.
+
+Use when asked to create an issue, file a bug, open a feature request, or report a problem.
 
 ## Supported Platforms
 

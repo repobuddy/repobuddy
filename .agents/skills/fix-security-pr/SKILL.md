@@ -1,6 +1,6 @@
 ---
 name: fix-security-pr
-description: "Fix a PR that is failing due to security or vulnerability issues — npm/pnpm/yarn/bun audit failures, CVE alerts, Dependabot merge conflicts, Snyk failures, or GitHub security advisory blocks. Use when asked to 'fix the security PR', 'resolve the vulnerability failure', or 'unblock the Dependabot PR'."
+description: "Use this skill when a PR fails security or vulnerability checks (audit, CVE, Dependabot, Snyk, or advisory blocks)."
 metadata:
   internal: true
 ---
@@ -8,6 +8,8 @@ metadata:
 # Fix Security PR
 
 Diagnose and remediate security/vulnerability failures in a pull request so CI passes.
+
+Covers npm/pnpm/yarn/bun audit failures, CVE alerts, Dependabot merge conflicts, Snyk failures, and GitHub security advisory blocks. Use when asked to fix the security PR, resolve a vulnerability failure, or unblock a Dependabot PR.
 
 ## Step 1 — Identify the PR and failure
 

@@ -1,6 +1,6 @@
 ---
 name: add-changeset
-description: "Add a changeset to the current change. Use when preparing a PR that affects published packages, when asked to 'add a changeset' or `add cs`, or when CI reports a missing changeset. Detects monorepos and selects affected packages automatically."
+description: "Use this skill when a published-package change needs a changeset (monorepos supported)."
 metadata:
   internal: true
 ---
@@ -8,6 +8,8 @@ metadata:
 # Add Changeset
 
 A changeset declares which packages are affected by a change, the semver bump type, and a user-facing summary. It lives as a markdown file in `.changeset/` and is consumed automatically by CI to version and publish packages.
+
+Also use when asked to add a changeset, run `add cs`, or when CI reports a missing changeset. Detects monorepos and selects affected packages automatically.
 
 ## When to Add One
 
