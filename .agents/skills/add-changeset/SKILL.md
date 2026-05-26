@@ -1,6 +1,8 @@
 ---
 name: add-changeset
 description: "Add a changeset to the current change. Use when preparing a PR that affects published packages, when asked to 'add a changeset' or `add cs`, or when CI reports a missing changeset. Detects monorepos and selects affected packages automatically."
+metadata:
+  internal: true
 ---
 
 # Add Changeset
