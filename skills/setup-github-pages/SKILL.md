@@ -27,7 +27,18 @@ REPO=$(gh repo view --json nameWithOwner --jq '.nameWithOwner')
 OWNER=$(echo "$REPO" | cut -d/ -f1)
 REPO_NAME=$(echo "$REPO" | cut -d/ -f2)
 SITE_URL="https://${OWNER}.github.io"
-BASE="/${REPO_NAME}"
+SOURCE_BRANCH=$(gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name')
+SOURCE_PATH="/"
+
+if [ "$REPO_NAME" = "${OWNER}.github.io" ]; then
+  BASE="/"
+  BASE_WITH_TRAILING_SLASH="/"
+  PAGES_URL="${SITE_URL}/"
+else
+  BASE="/${REPO_NAME}"
+  BASE_WITH_TRAILING_SLASH="/${REPO_NAME}/"
+  PAGES_URL="${SITE_URL}/${REPO_NAME}/"
+fi
 ```
 
 ## Step 1 — Locate the static site and detect framework
@@ -58,47 +69,51 @@ If no framework is detected, ask the user for the build command and output direc
 
 Update the framework config to set the canonical site URL and subpath. Skip if already set.
 
+If the repo name is exactly `<OWNER>.github.io`, treat it as a user/org site served from the domain root:
+- use `/` instead of `/<REPO_NAME>` for path-style settings
+- omit the `/<REPO_NAME>` suffix from full URLs such as CRA `homepage` and Hugo `baseURL`
+
 **Astro** (`astro.config.*`) — add inside `defineConfig({`:
 ```js
 site: 'https://<OWNER>.github.io',
-base: '/<REPO_NAME>',
+base: '<BASE>',
 ```
 
 **VitePress** (`.vitepress/config.*`) — add to the config object:
 ```ts
-base: '/<REPO_NAME>/',
+base: '<BASE_WITH_TRAILING_SLASH>',
 ```
 
 **VuePress v2** (`.vuepress/config.*`) — add to the config object:
 ```ts
-base: '/<REPO_NAME>/',
+base: '<BASE_WITH_TRAILING_SLASH>',
 ```
 
 **Vite (plain)** (`vite.config.*`) — add inside `defineConfig({`:
 ```ts
-base: '/<REPO_NAME>/',
+base: '<BASE_WITH_TRAILING_SLASH>',
 ```
 
 **Next.js static** (`next.config.*`) — add to the config object:
 ```js
-basePath: '/<REPO_NAME>',
-assetPrefix: '/<REPO_NAME>/',
+basePath: '<BASE>',
+assetPrefix: '<BASE_WITH_TRAILING_SLASH>',
 ```
 
 **Create React App** (`package.json`) — add top-level field:
 ```json
-"homepage": "https://<OWNER>.github.io/<REPO_NAME>"
+"homepage": "<PAGES_URL>"
 ```
 
 **Jekyll** (`_config.yml`) — add or update:
 ```yaml
-baseurl: "/<REPO_NAME>"
+baseurl: "<BASE>"
 url: "https://<OWNER>.github.io"
 ```
 
 **Hugo** (`hugo.toml` / `config.toml`) — update:
 ```toml
-baseURL = "https://<OWNER>.github.io/<REPO_NAME>/"
+baseURL = "<PAGES_URL>"
 ```
 
 ## Step 3 — Detect package manager and build context
@@ -107,7 +122,7 @@ baseURL = "https://<OWNER>.github.io/<REPO_NAME>/"
 # Check for lock files in order of priority
 [ -f pnpm-lock.yaml ] && PM=pnpm
 [ -f yarn.lock ]      && PM=yarn
-[ -f bun.lockb ]      && PM=bun
+([ -f bun.lockb ] || [ -f bun.lock ]) && PM=bun
 [ -z "$PM" ]          && PM=npm
 ```
 
@@ -180,28 +195,38 @@ Read `engines.node` from `package.json` for the Node version; default to `'22'` 
 Check current state:
 
 ```bash
-gh api "repos/$REPO/pages" 2>/dev/null | jq '{build_type, html_url}'
+gh api "repos/$REPO/pages" 2>/dev/null | jq '{build_type, html_url, source}'
 ```
 
 If Pages is not yet enabled:
 
 ```bash
-gh api "repos/$REPO/pages" --method POST --field build_type=workflow
+gh api "repos/$REPO/pages" \
+  --method POST \
+  --field build_type=workflow \
+  --field "source[branch]=$SOURCE_BRANCH" \
+  --field "source[path]=$SOURCE_PATH"
 ```
 
 If Pages is enabled but using branch source:
 
 ```bash
-gh api "repos/$REPO/pages" --method PUT --field build_type=workflow
+gh api "repos/$REPO/pages" \
+  --method PUT \
+  --field build_type=workflow \
+  --field "source[branch]=$SOURCE_BRANCH" \
+  --field "source[path]=$SOURCE_PATH"
 ```
+
+If Pages is already using `workflow`, leave the source unchanged and continue.
 
 Verify:
 
 ```bash
-gh api "repos/$REPO/pages" --jq '{build_type, html_url, status}'
+gh api "repos/$REPO/pages" --jq '{build_type, html_url, status, source}'
 ```
 
-Expected: `build_type: "workflow"`.
+Expected: `build_type: "workflow"` and `source.branch` / `source.path` matching the repo's default branch and `/`.
 
 ## Step 6 — Summary
 
@@ -216,7 +241,7 @@ Print:
 - [x] GitHub Pages source: workflow
 
 ### Site URL
-https://<OWNER>.github.io/<REPO_NAME>/
+<PAGES_URL>
 
 ### Next step
 Push to <DEFAULT_BRANCH> to trigger the first deploy, or run the workflow manually from the Actions tab.
