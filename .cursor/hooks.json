@@ -1,10 +1,10 @@
 {
-  "version": 1,
-  "hooks": {
-    "sessionStart": [
-      {
-        "command": "npx cyber-skills@0.4.3 hook run --name commit-discipline --extract AGENTS.md --heading 'Commit Discipline'"
-      }
-    ]
-  }
+	"version": 1,
+	"hooks": {
+		"sessionStart": [
+			{
+				"command": "npx cyber-skills@0.4.3 hook run --name commit-discipline --extract AGENTS.md --heading 'Commit Discipline'"
+			}
+		]
+	}
 }
