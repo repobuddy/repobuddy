@@ -1,5 +1,11 @@
 # @unional/jest-presets
 
+## 5.0.1
+
+### Patch Changes
+
+- 6a896c8: Fix self-test Jest config for ts-jest 29.4.4+ compatibility
+
 ## 5.0.0
 
 ### Major Changes
