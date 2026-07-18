@@ -80,8 +80,8 @@
 	"devDependencies": {
 		"@repobuddy/typescript": "workspace:*",
 		"@size-limit/preset-small-lib": "~12.1.0",
-		"@storybook/addon-vitest": "10.5.0",
-		"@storybook/react-vite": "10.5.0",
+		"@storybook/addon-vitest": "10.5.2",
+		"@storybook/react-vite": "10.5.2",
 		"@vitest/browser": "^4.0.15",
 		"@vitest/coverage-v8": "^4.0.15",
 		"depcheck": "~1.4.3",
@@ -90,7 +90,7 @@
 		"react-dom": "^19.1.0",
 		"rimraf": "~6.1.0",
 		"size-limit": "~12.1.0",
-		"storybook": "10.5.0",
+		"storybook": "10.5.2",
 		"storybook-addon-vis": "^4.0.0",
 		"typescript": "^6.0.0",
 		"vitest": "^4.1.4"
