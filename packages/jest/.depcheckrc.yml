@@ -2,6 +2,7 @@ ignores:
   - '@jest/expect' # `expect` augmentation
   - '@size-limit/*'
   - '@types/node'
+  - cross-env # used in npm scripts
   - eslint-plugin-harmony
   - jest
   - jest-*
