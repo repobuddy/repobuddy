@@ -68,7 +68,7 @@
 		"npm-run-all2": "^9.0.0",
 		"rimraf": "~6.1.0",
 		"size-limit": "~12.1.0",
-		"typescript": "^6.0.0",
+		"typescript": "^7.0.0",
 		"vitest": "^4.1.4"
 	}
 }
