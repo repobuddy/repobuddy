@@ -13,7 +13,7 @@
 		"test:watch": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_NO_WARNINGS=1 jest --watch"
 	},
 	"dependencies": {
-		"chalk": "^5.2.0",
+		"chalk": "^6.0.0",
 		"strip-ansi": "^7.0.1",
 		"type-plus": "8.0.0-beta.8",
 		"uuid": "^14.0.0"
