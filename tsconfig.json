@@ -11,7 +11,13 @@
 			"path": "./packages/jest"
 		},
 		{
+			"path": "./packages/test"
+		},
+		{
 			"path": "./packages/typescript"
+		},
+		{
+			"path": "./packages/vitest"
 		}
 	]
 }
