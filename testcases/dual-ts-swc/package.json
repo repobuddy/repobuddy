@@ -24,7 +24,7 @@
 		"@repobuddy/typescript": "workspace:^",
 		"@types/jest": "^30.0.0",
 		"assertron": "^11.0.3",
-		"cross-env": "^7.0.3",
+		"cross-env": "^10.1.0",
 		"dirname-filename-esm": "^1.1.1",
 		"jest": "^30.0.0",
 		"jest-extended": "^7.0.0",
