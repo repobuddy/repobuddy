@@ -14,6 +14,7 @@ describe(`${configSource.name}()`, () => {
 	})
 
 	it('detects source directory', () => {
+		ctx.existsSync = jest.fn(ctx.existsSync).mockImplementation((path) => String(path).endsWith('/ts'))
 		expect(configSource()).toEqual({
 			collectCoverageFrom: ['<rootDir>/ts/**/*.{js,jsx,cjs,mjs,ts,tsx,cts,mts}', '!<rootDir>/ts/**/*.stories.*'],
 			roots: ['<rootDir>/ts'],

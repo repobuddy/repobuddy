@@ -2,8 +2,8 @@
 	"extends": "./tsconfig/monorepo",
 	"compilerOptions": {
 		"outDir": "esm",
-		"rootDir": "ts",
+		"rootDir": "src",
 		"skipLibCheck": true
 	},
-	"include": ["ts", "types"]
+	"include": ["src", "types"]
 }

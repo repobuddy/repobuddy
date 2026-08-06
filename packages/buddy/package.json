@@ -35,7 +35,7 @@
 	"files": [
 		"esm",
 		"template",
-		"ts",
+		"src",
 		"!**/*.{spec,test,unit,accept,integrate,system,perf,stress}.*"
 	],
 	"scripts": {

@@ -5,7 +5,7 @@
 		"//#lint": {},
 		"build": {
 			"dependsOn": ["^build"],
-			"inputs": ["src/**", "ts/**", "package.json", "tsconfig.*"],
+			"inputs": ["src/**", "package.json", "tsconfig.*"],
 			"outputs": ["cjs/**", "dist/**", "esm/**", "tslib/**", "*.tsbuildinfo"]
 		},
 		"build:doc": {
@@ -16,7 +16,7 @@
 		},
 		"coverage": {
 			"dependsOn": ["@repobuddy/jest#build", "@repobuddy/vitest#build", "build"],
-			"inputs": ["src/**", "ts/**", "package.json", "tsconfig.*"],
+			"inputs": ["src/**", "package.json", "tsconfig.*"],
 			"outputs": ["coverage/**"]
 		},
 		"depcheck": {
@@ -30,11 +30,11 @@
 		},
 		"test": {
 			"dependsOn": ["@repobuddy/jest#build", "@repobuddy/vitest#build", "build"],
-			"inputs": ["src/**", "ts/**", "package.json", "tsconfig.*"]
+			"inputs": ["src/**", "package.json", "tsconfig.*"]
 		},
 		"test:list": {
 			"dependsOn": ["build"],
-			"inputs": ["src/**", "ts/**", "package.json"]
+			"inputs": ["src/**", "package.json"]
 		}
 	}
 }

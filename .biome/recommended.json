@@ -3,6 +3,6 @@
 	"extends": ["@repobuddy/biome/recommended.json"],
 	"files": {
 		"ignore": ["cjs", "coverage", "esm", "target"],
-		"include": ["src", "tests", "ts/**/*", "**/*.json", ".swcrc"]
+		"include": ["src", "tests", "**/*.json", ".swcrc"]
 	}
 }

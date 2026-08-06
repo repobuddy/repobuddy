@@ -38,7 +38,7 @@
 	"files": [
 		"esm",
 		"nodejs",
-		"ts",
+		"src",
 		"tsconfig",
 		"!**/*.{spec,unit,test,accept,integrate,learning,system,pref,stress}.*"
 	],

@@ -10,7 +10,7 @@ Turn your config from this:
 
 ```ts
 export default {
-  collectCoverageFrom: ['<rootDir>/ts/**/*.{js,jsx,cjs,mjs,ts,tsx,cts,mts}'],
+  collectCoverageFrom: ['<rootDir>/src/**/*.{js,jsx,cjs,mjs,ts,tsx,cts,mts}'],
   coveragePathIgnorePatterns: [
     /* ... */
   ],
@@ -78,7 +78,7 @@ you may run into the `Cannot use import statement outside a module` error.
 For example:
 
 ```sh
-/home/unional/code/repobuddy/repobuddy/packages/jest/ts/presets/ts-watch/jest-preset.spec.ts:1
+/home/unional/code/repobuddy/repobuddy/packages/jest/src/presets/ts-watch/jest-preset.spec.ts:1
 ({"Object.<anonymous>":function(module,exports,require,__dirname,__filename,jest){import { describe, expect, it } from '@jest/globals';
                                                                                   ^^^^^^
 
@@ -164,17 +164,17 @@ The configurations for specific use cases are exposed and available for you to c
 
 They can be predefined configs:
 
-- [node](./ts/configs/node.ts)
-- [jsdom](./ts/configs/jsdom.ts)
-- [jsCjs](./ts/configs/javascript.ts)
-- [jsEsm](./ts/configs/javascript.ts)
-- [tsCjs](./ts/configs/typescript.ts)
-- [tsEsm](./ts/configs/typescript.ts)
+- [node](./src/configs/node.ts)
+- [jsdom](./src/configs/jsdom.ts)
+- [jsCjs](./src/configs/javascript.ts)
+- [jsEsm](./src/configs/javascript.ts)
+- [tsCjs](./src/configs/typescript.ts)
+- [tsEsm](./src/configs/typescript.ts)
 
 or functions prefixed with `config`:
 
-- [configNode()](./ts/configs/node.ts)
-- [configSource()](./ts/configs/configSource.ts)
+- [configNode()](./src/configs/node.ts)
+- [configSource()](./src/configs/configSource.ts)
 
 ## Fields
 
@@ -182,23 +182,23 @@ Fields are predefined fields or functions about a particular field of the [jest 
 
 They can be `define` functions, which provides type assistants to define the particular field:
 
-- [defineTransform](./ts/fields/transform.ts)
-- [defineWatchPlugins](./ts/fields/watchPlugins.ts)
+- [defineTransform](./src/fields/transform.ts)
+- [defineWatchPlugins](./src/fields/watchPlugins.ts)
 
 They can be `known` configurations, which you can use to build your configuration easily:
 
-- [knownExtensionsToTreatAsEsm](./ts/fields/extensionsToTrestAsEsm.ts)
-- [knownRunners](./ts/fields/runner.ts)
-- [knownTestEnvironments](./ts/fields/testEnvironment.ts)
-- [knownTestEnvironmentOptions](./ts/fields/testEnvironment.ts)
-- [knownTransforms](./ts/fields/transform.ts)
-- [knownWatchPlugins](./ts/fields/watchPlugins.ts)
+- [knownExtensionsToTreatAsEsm](./src/fields/extensionsToTrestAsEsm.ts)
+- [knownRunners](./src/fields/runner.ts)
+- [knownTestEnvironments](./src/fields/testEnvironment.ts)
+- [knownTestEnvironmentOptions](./src/fields/testEnvironment.ts)
+- [knownTransforms](./src/fields/transform.ts)
+- [knownWatchPlugins](./src/fields/watchPlugins.ts)
 
 ## Matchers
 
 There are also matchers which you can use to extend the `expect()` function:
 
-- [toSatisfies](./ts/matchers/toSatisfies.ts): Similar functionality provided by [assertron] and [satisfier]
+- [toSatisfies](./src/matchers/toSatisfies.ts): Similar functionality provided by [assertron] and [satisfier]
 
 Use `expect.extend({ toSatisfier })` to add it to your `expect()` function.
 
@@ -331,7 +331,7 @@ and the `/packages/jest/presets/ts` is needed to work in Windows environment (or
 🤦
 
 [@repobuddy/jest]: https://github.com/repobuddy/jest
-[@repobuddy/jest/resolver]: ./ts/resolver.ts
+[@repobuddy/jest/resolver]: ./src/resolver.ts
 [assertron]: https://github.com/unional/assertron
 [codecov-image]: https://codecov.io/gh/repobuddy/jest/branch/main/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/repobuddy/jest

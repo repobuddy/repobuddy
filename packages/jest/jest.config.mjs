@@ -9,7 +9,7 @@
 
 /** @type {import('jest').Config} */
 export default {
-	collectCoverageFrom: ['<rootDir>/ts/**/*.{js,jsx,cjs,mjs,ts,tsx,cts,mts}'],
+	collectCoverageFrom: ['<rootDir>/src/**/*.{js,jsx,cjs,mjs,ts,tsx,cts,mts}'],
 	coveragePathIgnorePatterns: [
 		'(spec|test|unit|accept|integrate|system)(\\.node)?\\.(js|jsx|cjs|mjs|ts|tsx|cts|mts)$',
 		'(spec|test|unit|accept|integrate|system)\\.node14\\.(js|jtx|cjs|mjs|ts|tsx|cts|mts)$',
@@ -28,7 +28,7 @@ export default {
 		'(spec|test|unit|accept|integrate|system)\\.node17\\.(js|jtx|cjs|mjs|ts|tsx|cts|mts)$',
 		'(spec|test|unit|accept|integrate|system)\\.node18\\.(js|jtx|cjs|mjs|ts|tsx|cts|mts)$',
 	],
-	roots: ['<rootDir>/ts'],
+	roots: ['<rootDir>/src'],
 	transform: {
 		'^.+\\.(ts|tsx|cts|mts)$': [
 			'ts-jest',
