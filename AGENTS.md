@@ -28,10 +28,8 @@ When reading any `SKILL.md` file, always check whether a `SKILL.local.md` exists
 # Install dependencies
 pnpm install
 
-# Initial build (required before first test run — repo dogfoods itself)
-pnpm build
-
 # Build all packages
+# (also required before the first test run — the repo dogfoods its own jest/vitest configs)
 pnpm build
 
 # Run all tests
@@ -87,6 +85,7 @@ This is a **pnpm monorepo** managed with [Turborepo](https://turbo.build/). It i
 **Public agent skills** (`skills/`) — installed by consumers via `npx skills add repobuddy/repobuddy`:
 - `create-issue` — create GitHub/GitLab issues, dedup check first
 - `merge-dep-prs` — merge Dependabot/Renovate PRs, handles CI failures
+- `setup-github-pages` — deploy a static site to GitHub Pages (base path, Actions workflow, Pages source)
 - `setup-github-repo` — branch protection, Dependabot, CI setup
 
 **Related skill collections** (separate repos, same install flow):
@@ -95,6 +94,11 @@ This is a **pnpm monorepo** managed with [Turborepo](https://turbo.build/). It i
 
 **Repo-private contributor skills** (`.agents/skills/`) — `metadata: internal: true`, not shipped to consumers:
 - `add-changeset`, `audit-skill`, `create-skill`, `find-awesome-skill`, `fix-security-pr`
+
+These are *installed* from the related collections above and from
+[`cyberuni/cyber-skills`](https://github.com/cyberuni/cyber-skills), not authored here. `skills-lock.json`
+records each one's source repo, path, and content hash — update them through the Skills CLI rather than
+editing in place, or the lock hash goes stale.
 
 **Test cases** live under `testcases/` — fixture packages exercised by integration tests.
 
@@ -111,6 +115,19 @@ This is a **pnpm monorepo** managed with [Turborepo](https://turbo.build/). It i
 - Never duplicate a skill between `skills/` and `.agents/skills/` without a documented reason.
 - After adding or editing any `.agents/skills/` entry, run `npx cyber-skills@0.4.3 skill repair-private` to ensure metadata is correct.
 - CI validates public skills on PRs touching `skills/` via `npx cyber-skills@0.4.3 audit validate`.
+
+## Dependencies
+
+Renovate manages this repo's dependencies (`.github/renovate.json` extends `github>unional/renovate-preset`).
+
+- **Let Renovate own semver range bumps.** Do not bulk-rewrite ranges in `package.json` — plain `pnpm update -r`
+  rewrites every range to the exact latest and conflicts with the open Renovate PRs. To refresh resolved
+  versions only, use `pnpm update -r --no-save`, which touches the lockfile alone.
+- **`.npmrc` sets `minimumreleaseage=1440`.** Any lockfile entry published within the last 24h fails the
+  supply-chain check in CI with `ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION`. A freshly opened dep PR often fails
+  for this reason alone — re-run the job once the version has aged out rather than debugging it as a real break.
+- `dependabot-automerge.yml` only fires for `dependabot[bot]`, which covers GitHub security updates; regular
+  updates all come through Renovate.
 
 ## Changesets
 
