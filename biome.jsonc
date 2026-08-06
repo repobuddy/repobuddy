@@ -56,6 +56,17 @@
 			"json": {
 				"parser": { "allowComments": true }
 			}
+		},
+		{
+			// Standalone .svg asset files get their accessible name where they are
+			// used (e.g. `<img alt>`), not inside the file. The a11y rule targets
+			// inline SVG elements, so it is a false positive here.
+			"includes": ["**/*.svg"],
+			"linter": {
+				"rules": {
+					"a11y": { "noSvgWithoutTitle": "off" }
+				}
+			}
 		}
 	],
 	"linter": {
