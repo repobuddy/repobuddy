@@ -5,4 +5,68 @@ description: Introduction to repobuddy
 
 Repobuddy provides various tools and presets to help handle the chore of set up and maintain repository.
 
-# Installation
+Each package is installed independently — pick the ones matching the tools your repository already uses.
+
+## Installation
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+<Tabs>
+	<TabItem label="pnpm">
+
+```sh
+pnpm add -D @repobuddy/biome
+```
+
+	</TabItem>
+	<TabItem label="npm">
+
+```sh
+npm install -D @repobuddy/biome
+```
+
+	</TabItem>
+	<TabItem label="yarn">
+
+```sh
+yarn add -D @repobuddy/biome
+```
+
+	</TabItem>
+</Tabs>
+
+Swap `@repobuddy/biome` for whichever package you need:
+
+| Package | Use it for |
+| --- | --- |
+| `@repobuddy/biome` | Predefined [Biome](https://biomejs.dev) configs |
+| `@repobuddy/jest` | [Jest](https://jestjs.io/) presets and config helpers |
+| `@repobuddy/vitest` | [Vitest](https://vitest.dev/) presets and config helpers |
+| `@repobuddy/typescript` | TypeScript configs and utilities |
+| `repobuddy` | CLI for managing your repository |
+
+## Usage
+
+Most packages work by extending a preset. For example, `@repobuddy/biome`:
+
+```jsonc
+// biome.json
+{
+	"extends": ["@repobuddy/biome"]
+}
+```
+
+See each package's readme for the full set of presets and options.
+
+## Agent Skills
+
+Repobuddy also ships [agent skills](https://github.com/vercel-labs/skills) for AI coding assistants such as
+Claude Code and Cursor — creating issues, merging dependency PRs, and setting up a GitHub repo or Pages site.
+
+```sh
+# list what is available
+npx skills add repobuddy/repobuddy --list
+
+# install them all
+npx skills add repobuddy/repobuddy
+```
