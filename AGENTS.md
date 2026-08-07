@@ -87,6 +87,7 @@ This is a **pnpm monorepo** managed with [Turborepo](https://turbo.build/). It i
 - `merge-dep-prs` — merge Dependabot/Renovate PRs, handles CI failures
 - `setup-github-pages` — deploy a static site to GitHub Pages (base path, Actions workflow, Pages source)
 - `setup-github-repo` — branch protection, Dependabot, CI setup
+- `setup-npm-trusted-publishing` — register npm trusted publishers (OIDC) to retire `NPM_TOKEN`; one package, an org, or every org owned
 
 **Related skill collections** (separate repos, same install flow):
 - [`repobuddy/agent-changesets`](https://github.com/repobuddy/agent-changesets) — changeset authoring and release setup
