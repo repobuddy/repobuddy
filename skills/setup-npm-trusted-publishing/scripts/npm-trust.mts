@@ -88,7 +88,7 @@ function resolveRepos(): string[] {
 function listRepos(owner: string): string[] {
 	// Source repos only. Forks are someone else's to publish.
 	const names = sh(
-		`gh repo list ${owner} --source --no-archived --limit 500 --json nameWithOwner --jq ".[].nameWithOwner"`
+		`gh repo list ${owner} --source --no-archived --limit 500 --json nameWithOwner --jq ".[].nameWithOwner"`,
 	)
 	return names ? names.split('\n').filter(Boolean) : []
 }
@@ -172,7 +172,11 @@ function detectCallerWorkflow(repo: string): { workflow: string; confident: bool
 		const body = ghFile(repo, `.github/workflows/${n}`) ?? ''
 		// Alternation must be grouped, or `main|master` matches anywhere in the file.
 		if (!/push:[\s\S]{0,300}?branches:\s*\[?\s*['"]?(main|master)\b/.test(body)) continue
-		if (!/(changeset\s+publish|npm\s+publish|semantic-release|release-changeset|release-semantic|npm-release|yarn2-library-release)/i.test(body))
+		if (
+			!/(changeset\s+publish|npm\s+publish|semantic-release|release-changeset|release-semantic|npm-release|yarn2-library-release)/i.test(
+				body,
+			)
+		)
 			continue
 		let score = 0
 		if (/^release\.ya?ml$/i.test(n)) score += 2
@@ -211,7 +215,7 @@ function doPlan() {
 			repo,
 			workflow: det.workflow,
 			action: isPublished(single) ? 'configure' : 'not-published',
-			...(det.confident ? {} : { note: 'workflow guessed - confirm before applying' })
+			...(det.confident ? {} : { note: 'workflow guessed - confirm before applying' }),
 		})
 	} else {
 		for (const repo of resolveRepos()) {
@@ -228,7 +232,7 @@ function doPlan() {
 					repo,
 					workflow: det.workflow,
 					action: isPublished(p.name) ? 'configure' : 'not-published',
-					...(det.confident ? {} : { note: 'workflow guessed - confirm before applying' })
+					...(det.confident ? {} : { note: 'workflow guessed - confirm before applying' }),
 				})
 			}
 		}
@@ -270,7 +274,7 @@ function doApply() {
 			r.repo,
 			'--allow-publish',
 			'-y',
-			`--otp=${otp}`
+			`--otp=${otp}`,
 		]
 		try {
 			execFileSync('npm', args, { stdio: ['ignore', 'ignore', 'pipe'] })
@@ -282,7 +286,9 @@ function doApply() {
 			failed++
 			// Auth failures hit every package identically; stop rather than burn the list.
 			if (/EOTP|E401|E403|Unauthorized|Forbidden/.test(err)) {
-				process.stdout.write(`${JSON.stringify({ ok: false, configured: ok, failed, stoppedOn: r.package, reason: 'auth' })}\n`)
+				process.stdout.write(
+					`${JSON.stringify({ ok: false, configured: ok, failed, stoppedOn: r.package, reason: 'auth' })}\n`,
+				)
 				process.exit(1)
 			}
 		}
@@ -296,7 +302,9 @@ try {
 	if (mode === 'plan') doPlan()
 	else if (mode === 'apply') doApply()
 	else {
-		process.stderr.write('usage: npm-trust.mts plan|apply [--package|--repo|--org|--all-orgs] [--otp=code] [--verbose]\n')
+		process.stderr.write(
+			'usage: npm-trust.mts plan|apply [--package|--repo|--org|--all-orgs] [--otp=code] [--verbose]\n',
+		)
 		process.exit(2)
 	}
 } catch (e: any) {
