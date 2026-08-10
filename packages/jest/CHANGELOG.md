@@ -1,5 +1,16 @@
 # @unional/jest-presets
 
+## 5.0.1
+
+### Patch Changes
+
+- 6a896c8: Fix self-test Jest config for ts-jest 29.4.4+ compatibility
+- 4e55a09: Rename the `ts` source folder to `src`.
+
+  The published source folder is now `src` instead of `ts`. The public API and all
+  export specifiers are unchanged; only the shipped file paths differ (relevant to
+  JSR consumers, which resolve `./src/...` instead of `./ts/...`).
+
 ## 5.0.0
 
 ### Major Changes
