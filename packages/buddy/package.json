@@ -34,7 +34,7 @@
 	},
 	"files": [
 		"esm",
-		"template",
+		"templates",
 		"src",
 		"!**/*.{spec,test,unit,accept,integrate,system,perf,stress}.*"
 	],
