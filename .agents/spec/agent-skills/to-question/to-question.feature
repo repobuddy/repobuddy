@@ -125,6 +125,21 @@ Feature: to-question — compose a technical question and render it for a target
     And the reply names Slack as the place to paste
 
   @behavior
+  Scenario: reports no clipboard rather than claiming a copy that did not happen
+    Given the user has approved a draft whose target platform is slack
+    And the machine has none of pbcopy, clip.exe, wl-copy or xclip on its PATH
+    When to-question completes the handoff
+    Then the reply states that no clipboard is available
+    And the reply gives the path /tmp/question.md
+    And the reply does not state that the draft was copied to the clipboard
+
+  @behavior
+  Scenario: tells the user to render before pasting when the target is email
+    Given the user has approved a draft whose target platform is email
+    When to-question completes the handoff
+    Then the reply tells the user to render the markdown before pasting
+
+  @behavior
   Scenario: does not copy to the clipboard before approval
     Given to-question has displayed a slack draft for the first time
     And the user has not responded

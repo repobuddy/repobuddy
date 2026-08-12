@@ -31,7 +31,7 @@ GitHub uses **GitHub Flavored Markdown (GFM)**, a superset of CommonMark.
 
 ## Template
 
-```markdown
+````markdown
 ## Summary
 
 One-line summary of the question or proposal.
@@ -76,7 +76,7 @@ Concrete example showing the issue.
 
 - [Title](url) — one-line summary
 - [Title](url) — one-line summary
-```
+````
 
 ## Tips
 

@@ -48,25 +48,40 @@ It stops there, deliberately. It never posts.
 
 ### Known gaps in the shipped behavior
 
-This spec is a backfill of PR #577, and records what the skill does, not what it should do. Three
-places where the shipped instructions genuinely do not determine an outcome:
+This spec is a backfill of PR #577, and records what the skill does, not what it should do.
+Backfilling surfaced three places where the shipped instructions did not determine an outcome. Two
+were defects and are fixed on this branch; one needs a product call and is left open.
 
-1. **Unrecognized format token.** The procedure says "determine target format from user input
-   (default: `slack`)". It does not say what happens when the user names a platform that has no
-   asset — `discord`, `teams`, `notion`. Falling back to `slack` silently and treating the word as
-   part of the topic are both consistent with the text.
+1. **Unrecognized format token — still open.** The procedure says "determine target format from user
+   input (default: `slack`)". It does not say what happens when the user names a platform that has
+   no asset — `discord`, `teams`, `notion`. Falling back to `slack` silently and treating the word
+   as part of the topic are both consistent with the text, and they give the user very different
+   results. No scenario covers this edge, because there is no specified behavior to assert.
    <!-- open: what should to-question do when asked for a platform it has no asset for — refuse, fall back to the closest dialect, or fall back to slack? -->
-2. **Clipboard failure.** Three copy commands are listed, one per OS, with no instruction for
-   choosing between them and no branch for the case where none is available — a headless agent, a
-   Linux box without `xclip`/`wl-copy`, a web session. Since the clipboard is the handoff sink, a
-   silent failure here loses the whole output.
-   <!-- open: what is the fallback sink when no clipboard command is available? -->
-3. **Email is not clipboard-shaped.** `assets/email.md` instructs the user to render the Markdown
-   and paste the *rendered* result as rich text, but the procedure copies raw Markdown to the
-   clipboard. For the `email` target those two steps contradict each other.
+2. **Clipboard failure — fixed.** Three copy commands were listed, one per OS, with no instruction
+   for choosing between them and no branch for the case where none is available (a headless agent, a
+   CI run, a Linux box without `xclip`/`wl-copy`, a web session). Because the clipboard is the
+   handoff sink, that silently lost the output the user had just approved — and the skill still
+   reported success. The skill now probes for a command, adds `wl-copy` for Wayland, and on finding
+   none says so and points at the file instead of claiming a copy happened.
+3. **Email was not clipboard-shaped — fixed.** `assets/email.md` tells the user to render the
+   Markdown and paste the *rendered* result as rich text, but the procedure copied raw Markdown to
+   the clipboard, so for the `email` target the two steps contradicted each other. The handoff step
+   now carries the render-then-paste instruction for that target.
 
-Gaps 2 and 3 are defects rather than open questions, and are addressed on the branch; gap 1 needs a
-product call and is left open.
+4. **The description did not describe a trigger — fixed.** The skill's frontmatter `description` is
+   the surface the harness matches a user's request against, so for a strong-fit skill it is the
+   activation decision's main input. It read as a statement of what the skill does rather than when
+   to use it, while both skills it competes with (`create-issue`, `community-post`) lead with "Use
+   this skill when…" — so on a request the three all plausibly match, this one was the weakest
+   worded. It now leads with the trigger and says *paste*, which is the word that separates it from
+   filing.
+
+Separately, the six template files under `assets/` are unchanged in content, but three of them
+(`github`, `gitlab`, `email`) wrapped a template containing triple-backtick blocks in a
+triple-backtick fence, so the block terminated at the first nested fence and the rest of the
+template read as loose prose. They now use four-backtick fences, the same way the skill's own
+display step does.
 
 ## Use Cases
 
@@ -122,11 +137,19 @@ graph TD
     Q --> R[Display revised draft]
     R --> O
     P -->|Approves| S[Write /tmp/question.md]
-    S --> T[Copy to clipboard via the platform's command]
-    T --> U[Tell the user which platform to paste into]
+    S --> T{Clipboard command<br/>available?}
+    T -->|Yes| U[Copy to clipboard]
+    T -->|No| V[Say no clipboard is available<br/>and point at the file]
+    U --> W{Target is email?}
+    V --> W
+    W -->|Yes| X[Add the render-then-paste instruction]
+    W -->|No| Y[Name the platform to paste into]
 ```
 
 The loop has no iteration cap: it exits only on approval.
+
+The clipboard branch is the capability's failure mode, not a nicety — the clipboard *is* the
+handoff, so reporting a copy that did not happen loses the approved output silently.
 
 ## Scenario map
 
@@ -157,5 +180,7 @@ The loop has no iteration cap: it exits only on approval.
 | Edge | Path (Given) | Scenario |
 |---|---|---|
 | `P -->|Approves| S` | user says the draft is good | `` `writes the approved draft to a file on approval` `` |
-| `T` (copy) | approved draft, target platform slack | `` `copies to the clipboard and names the platform to paste into` `` |
+| `T -->|Yes| U` | approved draft, target platform slack, pbcopy present | `` `copies to the clipboard and names the platform to paste into` `` |
+| `T -->|No| V` | approved draft on a headless box with no clipboard command | `` `reports no clipboard rather than claiming a copy that did not happen` `` |
+| `W -->|Yes| X` | approved draft, target platform email | `` `tells the user to render before pasting when the target is email` `` |
 | `S` (guard) | draft displayed, user has not approved | `` `does not copy to the clipboard before approval` `` |

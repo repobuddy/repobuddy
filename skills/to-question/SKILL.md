@@ -1,6 +1,6 @@
 ---
 name: to-question
-description: Format a technical question or discussion for a platform (slack, asana, jira, github, gitlab, email). Copies to clipboard.
+description: Use this skill when formatting a question or discussion to paste into Slack, Jira, GitHub, GitLab, Asana, or email.
 ---
 
 # Question Formatter
@@ -26,24 +26,35 @@ Format a technical question, design discussion, or decision request for posting 
 4. Structure using the template's pattern and markdown rules
 5. Display the formatted output in the reply (inside a fenced code block with 4 backticks so nested triple-backticks render correctly)
 6. Ask if the user wants any changes — iterate until they're happy
-7. Once approved, write to `/tmp/question.md` and copy to clipboard
+7. Once approved, write to `/tmp/question.md` and hand off (below)
 
-## Clipboard Command
+## Handoff
 
-After the user approves the output, copy to clipboard:
+After the user approves the output, write it to `/tmp/question.md`, then copy it to the clipboard using the first of these that exists on this machine — check with `command -v <cmd>` before running it:
 
 ```bash
 # macOS
 cat /tmp/question.md | pbcopy
 
-# Linux (requires xclip or xsel)
-cat /tmp/question.md | xclip -selection clipboard
-
 # Windows/WSL
 cat /tmp/question.md | clip.exe
+
+# Linux, Wayland
+cat /tmp/question.md | wl-copy
+
+# Linux, X11 (requires xclip or xsel)
+cat /tmp/question.md | xclip -selection clipboard
 ```
 
-Then tell the user: "Copied to clipboard — paste into [platform]."
+On success, tell the user: "Copied to clipboard — paste into [platform]."
+
+**If no clipboard command is available** — a headless agent, a CI run, a container, a web session — say so plainly instead of claiming success:
+
+> No clipboard available here. The formatted question is at `/tmp/question.md`, and it's in the output above to copy from.
+
+Never report "Copied to clipboard" unless a copy command actually ran and succeeded. The clipboard is the handoff, so a silent failure loses the output the user just approved.
+
+**Email is the exception.** The clipboard carries Markdown, but email composers want rich text. For the `email` target, tell the user to render the Markdown first and paste the *rendered* result — see [assets/email.md](./assets/email.md).
 
 ## Content Guidelines
 

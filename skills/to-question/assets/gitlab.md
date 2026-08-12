@@ -23,7 +23,7 @@ GitLab uses **GitLab Flavored Markdown (GLFM)**, based on GFM with extensions.
 
 ## Template
 
-```markdown
+````markdown
 ## Summary
 
 One-line summary of the question or proposal.
@@ -68,7 +68,7 @@ Concrete example showing the issue.
 
 - [Title](url) — one-line summary
 - [Title](url) — one-line summary
-```
+````
 
 ## Tips
 

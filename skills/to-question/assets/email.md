@@ -24,7 +24,7 @@ Email clients (Gmail, Outlook) support **rich text when pasting** from rendered 
 
 ## Template
 
-```markdown
+````markdown
 # Subject: [Question] Clear statement of the question
 
 ## Context
@@ -58,7 +58,7 @@ Concrete example showing the issue.
 
 - [Title](url) — one-line summary
 - [Title](url) — one-line summary
-```
+````
 
 ## Tips
 

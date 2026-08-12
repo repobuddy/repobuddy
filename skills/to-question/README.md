@@ -24,7 +24,9 @@ Format a technical question or discussion for a platform and copy to clipboard.
 1. Takes your question/topic and structures it for the target platform
 2. Formats using platform-specific syntax (mrkdwn, wiki markup, GFM, etc.)
 3. Iterates with you until you're happy with the output
-4. Copies the result to clipboard
+4. Copies the result to your clipboard — or, where no clipboard is available, leaves it at `/tmp/question.md` and says so
+
+It formats for you to paste. It never posts, files, or sends anything — to file an issue, use `create-issue`.
 
 ## Output structure
 
