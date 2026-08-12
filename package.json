@@ -54,7 +54,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.5.7",
-		"@changesets/cli": "^2.26.0",
+		"@changesets/cli": "^3.0.0",
 		"@repobuddy/biome": "workspace:^",
 		"@repobuddy/typescript": "workspace:^",
 		"@types/node": "^24.0.0",
