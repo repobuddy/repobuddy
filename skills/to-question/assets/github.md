@@ -33,6 +33,7 @@ GitHub uses **GitHub Flavored Markdown (GFM)**, a superset of CommonMark.
 
 ````markdown
 ## Summary
+(omit this heading when commenting on an existing item — it already has a title)
 
 One-line summary of the question or proposal.
 

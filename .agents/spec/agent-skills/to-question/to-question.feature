@@ -39,7 +39,7 @@ Feature: to-question — compose a technical question and render it for a target
   @behavior
   Scenario: caps headings at four levels when linear is named
     Given the user says "format this for linear"
-    And the question needs a fifth-level subsection
+    And the question covers three options, each with its own named sub-cases
     When to-question produces the draft
     Then the deepest heading in the draft is four hashes or fewer
 
@@ -57,6 +57,20 @@ Feature: to-question — compose a technical question and render it for a target
     When to-question resolves the target platform
     Then it reads assets/slack.md
     And it does not read assets/markdown.md
+
+  @behavior
+  Scenario: does not fall back to markdown for jira
+    Given the user says "format this for jira"
+    When to-question produces the draft
+    Then the draft uses "h2." for its section headings
+    And the draft contains no markdown heading syntax
+
+  @behavior
+  Scenario: routes linear to the baseline without announcing a fallback
+    Given the user says "format this for linear"
+    When to-question resolves the target platform
+    Then the reply does not describe the target as unsupported
+    And the reply does not say it fell back to the markdown baseline
 
   @behavior
   Scenario: reads the platform asset rather than recalling its syntax
@@ -97,7 +111,7 @@ Feature: to-question — compose a technical question and render it for a target
     When to-question includes a diagram of the state machine
     Then the diagram is enclosed in a fenced code block
 
-  @quality
+  @behavior
   Scenario: renders slack bold as single asterisks, never double
     Given the target platform is slack
     And the draft emphasises the word Options as a section heading

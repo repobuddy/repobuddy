@@ -25,12 +25,13 @@ Format a technical question, design discussion, or decision request for posting 
 ## Procedure
 
 1. Determine target format from user input (default: `slack`)
-2. Load the format template from `assets/<format>.md`. **If the user named a platform with no file of its own** — `discord`, `notion`, `teams`, `reddit`, anything unlisted — load [assets/markdown.md](./assets/markdown.md) and tell the user you fell back to the Markdown baseline. Never fall back silently, and never fall back to Markdown for Slack or Jira, which do not accept it
-3. Take the user's question/topic and any context they provide
-4. Structure using the template's pattern and markdown rules
-5. Display the formatted output in the reply (inside a fenced code block with 4 backticks so nested triple-backticks render correctly)
-6. Ask if the user wants any changes — iterate until they're happy
-7. Once approved, write to `/tmp/question.md` and hand off (below)
+2. Load the format template. `slack`, `asana`, `jira`, `github`, `gitlab` and `email` each have their own `assets/<format>.md`. **`linear` and `markdown` both load [assets/markdown.md](./assets/markdown.md)** — Linear is Markdown-family and its specifics are a row in that file's capability table, not a file of its own. `linear` is a supported target, so loading the baseline for it is normal routing, **not** a fallback: do not announce it as one
+3. **If the user named a platform not in the table at all** — `discord`, `notion`, `teams`, `reddit`, anything unlisted — load `assets/markdown.md` and **tell the user you fell back to the Markdown baseline**. Never fall back silently, and never fall back to Markdown for Slack or Jira, which do not accept it
+4. Take the user's question/topic and any context they provide
+5. Structure using the template's pattern and markdown rules
+6. Display the formatted output in the reply (inside a fenced code block with 4 backticks so nested triple-backticks render correctly)
+7. Ask if the user wants any changes — iterate until they're happy
+8. Once approved, write to `/tmp/question.md` and hand off (below)
 
 ## Handoff
 
@@ -64,8 +65,8 @@ Never report "Copied to clipboard" unless a copy command actually ran and succee
 
 Regardless of format, a good question includes:
 
-- **Title**: Clear statement of the question
-- **Context**: Brief background — what we're building, constraints
+- **Title / Summary**: **only on a target that opens something** — a Slack message, an email subject. **Omit it on the tracker targets** (Jira, Linear, Asana, GitHub, GitLab), where the output is a comment on an item that already has a title. Repeating it there just makes the reader scroll past what they already know
+- **Context**: Brief background — what we're building, constraints. On a comment, this is what the *thread* does not already cover, not a restatement of the item
 - **Use Cases** (if applicable): Concrete scenarios showing expected behavior
 - **Problem/Edge Case**: The specific issue with code/diagrams if helpful
 - **Options**: 2-4 alternatives with tradeoffs (bullet points)

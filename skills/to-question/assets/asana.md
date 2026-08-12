@@ -28,6 +28,7 @@ context, so do not restate it.
 
 ```
 # 📝 Summary
+(omit this heading when commenting on an existing item — it already has a title)
 
 One-line summary of the question or proposal.
 

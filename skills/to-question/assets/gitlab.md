@@ -25,6 +25,7 @@ GitLab uses **GitLab Flavored Markdown (GLFM)**, based on GFM with extensions.
 
 ````markdown
 ## Summary
+(omit this heading when commenting on an existing item — it already has a title)
 
 One-line summary of the question or proposal.
 

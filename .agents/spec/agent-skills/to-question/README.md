@@ -179,8 +179,10 @@ handoff, so reporting a copy that did not happen loses the approved output silen
 | `E -->|No| F` | no platform named anywhere in the request | `` `defaults to slack when no platform is named` `` |
 | `G -->|Yes| G1` | user named jira | `` `renders jira wiki markup when jira is named` `` |
 | `G -->|Yes| G1` | user named linear | `` `caps headings at four levels when linear is named` `` |
-| `G -->|No| G2` | user named notion, which has no dialect file | `` `falls back to the markdown baseline and announces it` `` |
+| `G -->|No| G2` | user named notion, which is not a supported target | `` `falls back to the markdown baseline and announces it` `` |
+| `G -->|Yes| G1` | user named linear, a supported target served by the baseline file | `` `routes linear to the baseline without announcing a fallback` `` |
 | `G -->|Yes| G1` (guard) | user named slack, whose dialect rejects markdown | `` `does not fall back to markdown for slack` `` |
+| `G -->|Yes| G1` (guard) | user named jira, whose dialect rejects markdown | `` `does not fall back to markdown for jira` `` |
 | `H` (asset load) | target platform is slack | `` `reads the platform asset rather than recalling its syntax` `` |
 | `I` (compose) | user supplied only a problem, no options | `` `composes the section template from a half-formed question` `` |
 | `I` (compose) | target is a tracker, so the item already exists | `` `omits a ticket-style title when the target is a comment` `` |
