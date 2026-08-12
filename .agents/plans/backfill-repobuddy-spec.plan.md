@@ -20,16 +20,18 @@ todos:
   - content: 'Explore: initialization — CFG + scenario map + .feature'
     status: completed
   - content: 'Explore: plugin-management/add — CFG + scenario map + .feature'
-    status: pending
+    status: completed
   - content: 'Explore: plugin-management/remove — CFG + scenario map + .feature'
-    status: pending
+    status: completed
   - content: 'Explore: plugin-management/update — CFG + scenario map + .feature'
-    status: pending
+    status: completed
   - content: 'Explore: plugin-management/discovery — CFG + scenario map + .feature'
     status: completed
   - content: 'Explore: plugin-management/plugin-contract — reference subject'
     status: completed
   - content: 'Explore: plugin-management/loading — CFG + scenario map + .feature'
+    status: completed
+  - content: 'Explore: plugin-management/package-manager — CFG + scenario map + .feature'
     status: completed
   - content: 'Explore: workflows — cross-capability seam scenarios'
     status: pending

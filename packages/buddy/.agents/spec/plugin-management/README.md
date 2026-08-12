@@ -14,6 +14,7 @@ Descriptive — this folder holds no scenarios of its own. Each unit below owns 
 | [`remove/`](./remove/README.md) | behavioral | Dropping a plugin: uninstalling it and taking it out of the active list. |
 | [`update/`](./update/README.md) | behavioral | Moving an active plugin to a newer version. |
 | [`discovery/`](./discovery/README.md) | behavioral | The `plugins` command — listing what is active and searching npm for installable plugins. |
+| [`package-manager/`](./package-manager/README.md) | behavioral | Choosing the repository's package manager and running dependency operations through it. |
 | [`loading/`](./loading/README.md) | behavioral | What happens at startup to each plugin the configuration names, including the broken ones. |
 | [`plugin-contract/`](./plugin-contract/README.md) | reference | What a package must do to be a repobuddy plugin. |
 
