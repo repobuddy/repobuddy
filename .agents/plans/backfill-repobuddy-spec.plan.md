@@ -34,7 +34,7 @@ todos:
   - content: 'Explore: plugin-management/package-manager — CFG + scenario map + .feature'
     status: completed
   - content: 'Explore: workflows — cross-capability seam scenarios'
-    status: pending
+    status: completed
   - content: Build-to-learn spikes against non-frozen suite
     status: pending
   - content: Spec gate — judge, freeze, status approved
