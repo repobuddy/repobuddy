@@ -91,8 +91,14 @@ No source CR — a bare prompt.
 - Plugins listed in `config.plugins` are **auto-loaded** by clibuilder. Plugin loading is
   already free; buddy needs no code for it.
 - A `plugins` command (list / search by keyword) is auto-added when `config` or
-  `keywords` is set. Search uses `findByKeywords`, so buddy's missing `keywords` makes
-  search matchless.
+  `keywords` is set. ~~Search uses `findByKeywords`, so buddy's missing `keywords` makes
+  search matchless.~~ **Corrected (read from `clibuilder/ts/state.ts`):** `state()` does
+  `if (config && keywords.length === 0) keywords.push(name)` — with `config: true` the
+  keyword list defaults to `['repobuddy']`. `@repobuddy/typescript` declares the
+  `repobuddy` keyword, so list **and** search already work today. There is no
+  missing-keywords defect.
+- `list` uses `findByKeywords` (installed packages); `search` uses `searchByKeywords`
+  (the npm registry). Different sources, not two spellings of one lookup.
 - `@repobuddy/typescript` is already a working plugin: exports `activate(ctx)`, registers
   a `ts` command with `build` + `copyCJSPackageJson`. Its keywords include `repobuddy`.
 
@@ -124,8 +130,8 @@ clibuilder facts, draw the CFG, write the 1:1 scenario map, author the `.feature
   whether deactivate-without-uninstall is a separate case worth having.
 - `plugin-management/update` — whether a bare `update` with no package named means "every
   active plugin" or is an error.
-- `plugin-management/discovery` — repobuddy passes no `keywords` to `cli()`, so keyword
-  search matches nothing today. The contract has to name the keyword(s) to declare.
+- `plugin-management/discovery` — whether to keep relying on the defaulted `['repobuddy']`
+  keyword or declare the list explicitly. Not a defect either way; a legibility call.
 - `plugin-management/plugin-contract` — the context object's shape, the failure behavior for
   a listed plugin that cannot load, and which of the observed conventions are requirements.
 
@@ -135,4 +141,6 @@ clibuilder facts, draw the CFG, write the 1:1 scenario map, author the `.feature
   not published, so `init`'s copy step would find nothing in an installed package.
 - readme documents `buddy add <plugin>` → `@repobuddy/<plugin>` shorthand, which the settled
   intent rejects. Readme must be corrected.
-- `cli()` receives no `keywords`, so the inherited `plugins` search is matchless.
+
+(The third debt previously listed here — "`cli()` receives no `keywords`" — was **withdrawn**;
+see the corrected clibuilder fact above. Keywords default to the app name.)

@@ -13,11 +13,15 @@ The `plugins` command — seeing what is active in this repository, and searchin
 could be. `clibuilder` adds this command automatically because the app enables configuration, so it
 already exists today; nothing in this package implements it.
 
-Search works by npm keyword: `clibuilder` looks for packages whose keywords match the app's, which
-means the app has to declare keywords for search to return anything. `repobuddy` currently declares
-none in its `cli()` options, so search finds nothing — a gap this node's contract has to close.
-(`@repobuddy/typescript` already lists `repobuddy` among its keywords, so it is discoverable as soon
-as repobuddy searches for the right term.)
+Search works by npm keyword: `clibuilder` looks for packages whose keywords match the app's. The app
+passes no `keywords` option, but that does **not** leave the search matchless — `clibuilder` defaults
+the keyword list to the app's own name when configuration is enabled (`state.ts`:
+`if (config && keywords.length === 0) keywords.push(name)`), so repobuddy searches for `repobuddy`.
+`@repobuddy/typescript` lists `repobuddy` among its keywords, so it is already discoverable today.
+
+The two subcommands search different places, and the distinction is the whole point of having both:
+`list` looks at what is **installed** in this repository, while `search` queries the **npm registry**
+for packages that could be installed.
 
 **Non-goals.** Acting on a discovered plugin — installing, activating, or removing one belongs to
 the sibling units.
