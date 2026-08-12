@@ -37,7 +37,11 @@ todos:
     status: completed
   - content: 'Triage: cut inherited-behavior scenarios, register assumptions'
     status: completed
-  - content: Build-to-learn spikes against non-frozen suite
+  - content: 'Spike: pnpm plugin resolution — risk did not reproduce'
+    status: completed
+  - content: 'Spike: init template publishing — typo fixed, verified'
+    status: completed
+  - content: 'Spike: package-manager detection + command matrix'
     status: pending
   - content: Write the six *.learn.ts boundary guards (impl phase)
     status: pending
@@ -148,27 +152,43 @@ path symlinked into `node_modules/`. `npx gherkin-cli` does not work.
 
 ## NEXT
 
-Two todos remain: **build-to-learn spikes** against the non-frozen suite, then the **spec gate**
-(judge → freeze → `status: approved`).
+**Remaining: one spike, then the spec gate.**
 
-The spikes are the first code of this mission. Targets in priority order, each probing an
-assumption the spec makes that no reading has confirmed:
+### Spike results so far
 
-1. **`add` in a pnpm workspace** — the plugin-contract caution: plugins are imported by bare
-   name resolved from *clibuilder's* location, not the repository's. If a pnpm layout cannot
-   resolve a genuinely installed plugin, `add`'s contract ("install it and it loads next run")
-   is unmet and the `workflows` seam scenarios fail. **Highest-risk assumption in the spec.**
-2. **`package-manager` detection** — the declared-field-over-lockfile-over-npm precedence is a
-   spec proposal, not a user ruling. Confirm one abstraction covers pnpm/yarn/npm uniformly.
-3. **`init` template copying** — confirm the shipped `templates/` reach an installed package
-   once the `files` typo is fixed.
+1. **pnpm plugin resolution — risk retired.** Did not reproduce across four layouts, including a
+   workspace package depending on the published `@repobuddy/typescript`. pnpm's hidden hoist dir
+   sits inside the walk-up chain from clibuilder's real path under `.pnpm`. Two honest limits
+   recorded in `design/inherited-behavior.md`: hoisting could not actually be disabled (config
+   didn't take), and **global install is untested and still a real risk** — local dev-dependency
+   install is therefore a requirement, not a preference.
+2. **Template publishing — real defect, fixed.** `npm pack --dry-run` confirmed `template*`
+   matched **0 files**; `init`'s copy step would have found nothing in an installed package.
+   Fixed to `templates`, re-verified (13 → 14 files, `templates/.editorconfig` present),
+   changeset added. Also confirmed **`.agents/` is excluded from the tarball**, which validates
+   the colocate-don't-hoist decision.
 
-**Implementation debts this spec already commits to fixing** (carry into the impl phase):
+### Remaining spike: package-manager detection
 
-- `package.json` `files` says `"template"`; the directory is `templates/` → templates are
-  not published, so `init`'s copy step would find nothing in an installed package.
-- readme documents `buddy add <plugin>` → `@repobuddy/<plugin>` shorthand, which the settled
-  intent rejects. Readme must be corrected.
+Two things to settle, neither yet verified:
 
-(The third debt previously listed here — "`cli()` receives no `keywords`" — was **withdrawn**;
-see the corrected clibuilder fact above. Keywords default to the app name.)
+- **The precedence** (declared `packageManager` field → lockfile → npm default) is a spec
+  proposal, not a user ruling. Confirm it, or get a ruling.
+- **The command matrix is not uniform**, which the node's CFG currently hides behind "run the
+  operation". npm uses `install` / `uninstall`; pnpm and yarn use `add` / `remove`; and **yarn v1
+  and berry differ on update** (`yarn upgrade` vs `yarn up`). The node needs an explicit per-tool
+  table, and possibly a yarn-major-version branch. Only pnpm is installed in this environment, so
+  anything about npm/yarn must be marked documented-not-verified.
+
+### Then: the spec gate
+
+Judge → freeze → `status: approved`. Note the freeze is per `.feature` file; the triage that cut
+74 → 46 had to happen first, and did.
+
+### Deferred to impl
+
+- The six `*.learn.ts` boundary guards (see the assumptions register).
+- Adding `learn` to the `files` exclusion glob so guards are not published.
+- Correcting the readme's `buddy add <plugin>` → `@repobuddy/<plugin>` shorthand claim.
+- **Upstream to clibuilder, not here:** every rejection path exits 0, and config resolution is
+  name-first rather than nearest-first (suspected bug — deliberately not pinned by any scenario).
