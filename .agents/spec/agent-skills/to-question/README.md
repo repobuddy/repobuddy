@@ -34,9 +34,14 @@ the skill from `create-issue`:
 | Email | the body of an email |
 
 On a tracker the output is **never a new task, issue, or ticket**. The reader already has the item's
-context, so the composed text speaks *into* an existing thread rather than opening one. Anything
-whose only purpose is to open a thread — a ticket-style title, a restatement of what the item is
-about — does not belong in it.
+context, so the composed text speaks *into* an existing thread rather than opening one: it does not
+restate the item's title or re-describe what the item is about.
+
+**This does not mean dropping the question's own headline.** The one-line statement of what is being
+asked is the question's title, not the item's, and a comment needs it as much as anything else does —
+it is what stops the actual question being buried in the last line. The two are easy to conflate and
+mean opposite things here: *the item's* title is redundant on a comment, *the question's* title is
+the point of the skill.
 
 **Key terms**
 
@@ -185,7 +190,7 @@ handoff, so reporting a copy that did not happen loses the approved output silen
 | `G -->|Yes| G1` (guard) | user named jira, whose dialect rejects markdown | `` `does not fall back to markdown for jira` `` |
 | `H` (asset load) | target platform is slack | `` `reads the platform asset rather than recalling its syntax` `` |
 | `I` (compose) | user supplied only a problem, no options | `` `composes the section template from a half-formed question` `` |
-| `I` (compose) | target is a tracker, so the item already exists | `` `omits a ticket-style title when the target is a comment` `` |
+| `I` (compose) | target is a tracker, so the item already exists | `` `states the question but not the item's title when commenting` `` |
 | `J -->|Yes| K` | question is about a state machine | `` `puts an ASCII diagram inside a fenced block` `` |
 | `M` (render) | target platform is slack | `` `renders slack bold as single asterisks, never double` `` |
 | `N` (display) | draft contains a fenced code block | `` `wraps the displayed draft in a 4-backtick fence` `` |

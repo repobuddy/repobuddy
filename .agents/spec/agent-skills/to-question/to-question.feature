@@ -97,12 +97,13 @@ Feature: to-question — compose a technical question and render it for a target
     And the draft scores at or above the threshold
 
   @behavior
-  Scenario: omits a ticket-style title when the target is a comment
+  Scenario: states the question but not the item's title when commenting
     Given the user says "format this for linear"
-    And the question concerns a Linear issue the user already has open
+    And the question concerns a Linear issue titled "Webhook retries drop the final attempt"
     When to-question produces the draft
-    Then the draft opens with the question's context rather than a ticket-style title line
-    And the draft does not restate what the existing issue is about
+    Then the draft states in one line what is being asked
+    And the draft does not repeat the phrase "Webhook retries drop the final attempt"
+    And the draft does not re-describe what the existing issue is about
 
   @behavior
   Scenario: puts an ASCII diagram inside a fenced block

@@ -31,7 +31,7 @@ Jira uses **wiki markup**, not Markdown. Cloud API v3 uses Atlassian Document Fo
 
 ```
 h2. Summary
-(omit this heading when commenting on an existing item — it already has a title)
+(the question's own one-line headline — not the item's title; keep it on comments too)
 
 One-line summary of the question or proposal.
 
