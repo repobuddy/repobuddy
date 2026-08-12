@@ -195,9 +195,16 @@ one scenario for that branch and a `V` node to the CFG (8 scenarios now).
 
 yarn is not installed here, so its rows are marked **documented-not-verified** in the node.
 
-**Still needs your ruling:** the precedence (declared `packageManager` → lockfile → npm). It has
-a real basis — this repo itself declares `packageManager: pnpm@11.21.0` — but it remains a spec
-proposal, not a decision. It is the last thing blocking the gate.
+**Superseded — the precedence question is resolved by delegation.** `package-manager-detector`
+(the library under `@antfu/ni`) already implements exactly the proposed precedence, verified:
+`packageManager: yarn@1.22.22` + `pnpm-lock.yaml` → yarn (field wins); lockfile only → that tool;
+neither → npm. It also handles the yarn v1/berry `upgrade`/`up` split and supports bun.
+
+Adopted in **ADR 0001**. `package-manager/` drops 8 scenarios → 3; detection and command
+construction become assumption **8** in the register. `@antfu/ni` itself was rejected — it is a
+CLI, so using it would mean an install-time requirement or a vendored binary.
+
+**Nothing now blocks the spec gate.**
 
 ### Then: the spec gate
 

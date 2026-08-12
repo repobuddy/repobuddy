@@ -6,7 +6,12 @@ loading — is implemented by clibuilder, not by any code in this package.
 
 This document records what we understand about that behavior, which parts of it our own promises rest
 on, and the rule for deciding what belongs in a capability node's suite. It is descriptive: nothing
-here is tested directly, and no scenario in this spec asserts clibuilder's mechanics.
+here is tested directly, and no scenario in this spec asserts a dependency's mechanics.
+
+The rule below was written for clibuilder, but it is **not clibuilder-specific** — it governs every
+dependency whose behavior a user experiences as ours. It has since been applied to
+`find-installed-packages` (assumption 7) and to `package-manager-detector` (assumption 8, adopted
+deliberately in [ADR 0001](./decisions/0001-delegate-package-manager-detection.md)).
 
 ## The rule
 
@@ -41,8 +46,9 @@ rather than failing a user.
 | 5 | the `plugins` command is added automatically when configuration is enabled | `discovery` — the command exists at all |
 | 6 | the plugin contract is a `activate` export called with a context carrying `addCommand` | `plugin-contract`, and any plugin this project ships |
 | 7 | installed-plugin detection finds packages in this repo's package layout (pnpm workspace) | `initialization` detection, and `discovery` list |
+| 8 | the package-manager detector resolves the repository's tool (declared field over lockfile over npm) and builds the right command for it | `package-manager`, and `add` / `remove` / `update` through it |
 
-Seven guards, not one per inherited behavior. An assumption earns a guard by supporting a promise,
+Eight guards, not one per inherited behavior. An assumption earns a guard by supporting a promise,
 not by being interesting.
 
 ### Why assumption 7 exists, and why it is the strongest argument for this register

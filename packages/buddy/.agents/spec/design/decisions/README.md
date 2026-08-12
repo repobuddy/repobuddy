@@ -9,6 +9,8 @@ One file per decision, named `NNNN-short-title.md`, numbered in the order taken.
 
 ## Log
 
-*(No decisions recorded yet. The decisions settled during this spec's intake — the capability-first
-strategy, the colocated spec location, and the seed intent for `init` and `add` — are recorded in
-the mission plan brief and are transcribed here as the capabilities they govern are specified.)*
+- [0001 — Delegate package manager detection and command construction](./0001-delegate-package-manager-detection.md)
+
+The decisions settled during this spec's intake — the capability-first strategy, the colocated spec
+location, and the seed intent for `init` and `add` — are recorded in the mission plan brief and are
+transcribed here as the capabilities they govern are specified.
