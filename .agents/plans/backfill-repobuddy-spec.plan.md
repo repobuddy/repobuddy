@@ -43,6 +43,8 @@ todos:
     status: completed
   - content: 'Spike: package-manager detection + command matrix'
     status: pending
+  - content: 'Re-verify plugin detection after find-installed-packages 3.2.0 clears the 24h hold'
+    status: pending
   - content: Write the six *.learn.ts boundary guards (impl phase)
     status: pending
   - content: Spec gate — judge, freeze, status approved
@@ -167,6 +169,21 @@ path symlinked into `node_modules/`. `npx gherkin-cli` does not work.
    Fixed to `templates`, re-verified (13 → 14 files, `templates/.editorconfig` present),
    changeset added. Also confirmed **`.agents/` is excluded from the tarball**, which validates
    the colocate-don't-hoist decision.
+
+### Pending upgrade — re-verify, do not block on it
+
+`find-installed-packages@3.2.0` (published 2026-08-12) and `search-packages@2.2.1` are not yet
+pulled; 3.2.0 sits inside the 24-hour `minimumreleaseage` hold. Both are **transitive** deps
+reached via clibuilder, and both drive `plugins list` / `plugins search` and `init`'s plugin
+detection.
+
+Verified working today against **3.1.2** in a pnpm workspace — `plugins list` found
+`@repobuddy/typescript` by keyword — so **the hoisting scenario looks unnecessary** and nothing
+is blocked. Re-verify once the upgrade lands, then let assumption 7's guard carry it.
+
+This produced assumption **7** in the register, and the sharpest argument for keeping one:
+Renovate watches *direct* dependencies, so a behavioral change in a transitive dep arrives with
+no PR that names it. A learning test is the only thing that would catch it.
 
 ### Remaining spike: package-manager detection
 
