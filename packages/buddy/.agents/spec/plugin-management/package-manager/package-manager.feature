@@ -53,3 +53,10 @@ Feature: Package manager operations
     When a dependency operation is run and the tool exits with a failure
     Then the output reports the failure
     And the "plugins" list in the configuration still contains exactly "already-listed"
+
+  @behavior
+  Scenario: an update under yarn uses the verb for its major version
+    Given a repository whose package.json declares the package manager "yarn@1.22.22"
+    When an update operation is run
+    Then the operation is carried out with yarn
+    And the verb used is the one yarn 1 accepts for updating

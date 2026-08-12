@@ -42,7 +42,7 @@ todos:
   - content: 'Spike: init template publishing — typo fixed, verified'
     status: completed
   - content: 'Spike: package-manager detection + command matrix'
-    status: pending
+    status: completed
   - content: 'Re-verify plugin detection after find-installed-packages 3.2.0 clears the 24h hold'
     status: pending
   - content: Write the six *.learn.ts boundary guards (impl phase)
@@ -185,17 +185,19 @@ This produced assumption **7** in the register, and the sharpest argument for ke
 Renovate watches *direct* dependencies, so a behavioral change in a transitive dep arrives with
 no PR that names it. A learning test is the only thing that would catch it.
 
-### Remaining spike: package-manager detection
+### Spike 3 result: package-manager (done)
 
-Two things to settle, neither yet verified:
+**The command vocabulary is far more uniform than feared.** npm accepts `add` and `remove` as
+aliases, so install/uninstall need no per-tool branching at all — verified against npm 12.0.2 and
+pnpm 11.21.0. **Only `update` diverges, and only for yarn** (`upgrade` on v1, `up` on berry), so
+the abstraction needs one conditional keyed on yarn's *major version*, not a command table. Added
+one scenario for that branch and a `V` node to the CFG (8 scenarios now).
 
-- **The precedence** (declared `packageManager` field → lockfile → npm default) is a spec
-  proposal, not a user ruling. Confirm it, or get a ruling.
-- **The command matrix is not uniform**, which the node's CFG currently hides behind "run the
-  operation". npm uses `install` / `uninstall`; pnpm and yarn use `add` / `remove`; and **yarn v1
-  and berry differ on update** (`yarn upgrade` vs `yarn up`). The node needs an explicit per-tool
-  table, and possibly a yarn-major-version branch. Only pnpm is installed in this environment, so
-  anything about npm/yarn must be marked documented-not-verified.
+yarn is not installed here, so its rows are marked **documented-not-verified** in the node.
+
+**Still needs your ruling:** the precedence (declared `packageManager` → lockfile → npm). It has
+a real basis — this repo itself declares `packageManager: pnpm@11.21.0` — but it remains a spec
+proposal, not a decision. It is the last thing blocking the gate.
 
 ### Then: the spec gate
 
