@@ -1,0 +1,73 @@
+# Asana Format
+
+Asana supports markdown shortcuts in the UI. API uses `html_notes` field.
+
+## Syntax
+
+| Format | Syntax |
+|--------|--------|
+| Bold | `**text**` or Cmd+B |
+| Italic | `*text*` or Cmd+I |
+| Strikethrough | `~~text~~` |
+| Inline code | `` `code` `` |
+| Code block | ` ``` ` |
+| Blockquote | `> quote` |
+| Heading 1 | `# Heading` |
+| Heading 2 | `## Heading` |
+| Bullet list | `- item` or `* item` |
+| Numbered list | `1. item` |
+| Link | `[title](url)` |
+
+**Note:** `#` and `##` render as styled text (similar to bold), not true heading hierarchy.
+
+## Template
+
+```
+# 📝 Summary
+
+One-line summary of the question or proposal.
+
+# 🔎 Context
+
+Brief background — what are we building, what constraint exists.
+Use ASCII diagrams in code blocks to visualize architecture, data flow, or relationships.
+
+# 🎯 Use Cases (if applicable)
+
+When proposing a solution or design, show concrete scenarios:
+- User does X → system responds with Y
+- Edge case: when Z happens, we need to handle it by...
+
+# ⚠️ The Problem / Edge Case
+
+Concrete example showing the issue. Use ASCII diagrams in code blocks to illustrate
+state transitions, UI layouts, or edge cases.
+
+# 💡 Options
+
+**Option A: Name**
+- Pro/con
+- Pro/con
+
+**Option B: Name**
+- Pro/con
+- Pro/con
+
+# ✋ Questions
+
+1. Specific question to answer
+2. Another question if needed
+
+# 📚 Research (if applicable)
+
+Links to relevant docs, articles, or prior art:
+- [Title](url) — one-line summary
+- [Title](url) — one-line summary
+```
+
+## Tips
+
+- Asana renders markdown in task descriptions but not in task names
+- Keep descriptions scannable — tasks are often viewed in list/board views
+- Use subtasks for action items that come out of the discussion
+- ASCII diagrams work in code blocks
