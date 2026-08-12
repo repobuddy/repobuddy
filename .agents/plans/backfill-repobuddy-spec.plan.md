@@ -106,52 +106,47 @@ No source CR — a bare prompt.
 - `@repobuddy/typescript` is already a working plugin: exports `activate(ctx)`, registers
   a `ts` command with `build` + `copyCJSPackageJson`. Its keywords include `repobuddy`.
 
-## Spec tree (scaffolded, `status: draft`)
+## Spec tree (all nodes authored, `status: draft`)
 
-Capability-first at `packages/buddy/.agents/spec/`. Root `spec.md` carries `name: repobuddy`
-+ `project-path: packages/buddy`, the placement map (routing table + three tie-breaks), and
-the reserved by-concept index block. `check-spec-state` passes.
+Capability-first at `packages/buddy/.agents/spec/`. 15 nodes, 10 behavioral suites,
+**74 scenarios**. `check-spec-state` and `check-suite` both pass.
 
-- `cli-shell/` behavioral · `configuration/` behavioral · `initialization/` behavioral
-- `plugin-management/` descriptive index → `add` `remove` `update` `discovery` behavioral,
-  `plugin-contract` reference
-- `tooling/` descriptive · `design/` + `design/decisions/` descriptive · `workflows/` behavioral
-- `glossary.md` root file
+- `cli-shell/` 15 · `configuration/` 12 · `initialization/` 8 · `workflows/` 5
+- `plugin-management/` (index) → `add` 5 · `remove` 4 · `update` 6 · `discovery` 7 ·
+  `loading` 5 · `package-manager` 7 · `plugin-contract` (reference, no suite)
+- `tooling/`, `design/`, `design/decisions/` descriptive · `glossary.md` root file
 
-Eight behavioral stubs await explore. Each has its `## What` written (including non-goals);
-none has `## Control Flow`, `## Scenario map`, or a `.feature`.
+**Two units were added during explore that the scaffold missed** — both found by reading
+`clibuilder/ts/plugins.ts`:
+
+- `plugin-management/loading/` — a broken plugin is reported and skipped while the others
+  still load. Real testable behavior a reference artifact cannot hold and no sibling owned.
+- `plugin-management/package-manager/` — tool selection + dependency operations, shared
+  identically by `add` / `remove` / `update`. Specified once rather than three times.
+
+## Running check-suite
+
+`check-suite.mts` imports `validateFeatures` from `gherkin-cli`, which the **published** 0.2.0
+does not export. Use the local unpublished build at
+`~/code/cyberuni/gherkin-cli/packages/gherkin-cli` (0.1.0, has it) — a scratch runner with that
+path symlinked into `node_modules/`. `npx gherkin-cli` does not work.
 
 ## NEXT
 
-Per-unit explore, node by node, in the todo order above. Each node: read the source and the
-clibuilder facts, draw the CFG, write the 1:1 scenario map, author the `.feature`.
+Two todos remain: **build-to-learn spikes** against the non-frozen suite, then the **spec gate**
+(judge → freeze → `status: approved`).
 
-### Decisions settled during explore (do not relitigate)
+The spikes are the first code of this mission. Targets in priority order, each probing an
+assumption the spec makes that no reading has confirmed:
 
-- `initialization` — template conflict = **skip and report**. No `--force`, no prompting.
-  Rationale from the user: an **agentic plugin will later diff and merge** these files, so
-  `init` deliberately stays dumb and non-destructive rather than growing a merge story.
-- `plugin-management/remove` — **always uninstall and deactivate**, the exact mirror of
-  `add`. No `--keep-dependency` flag.
-- `plugin-management/update` — a bare `buddy update` **updates every active plugin**.
-- `plugin-management/plugin-contract` — settled from `clibuilder/ts/plugins.ts`, not by
-  asking: the requirement is exactly `typeof m.activate === 'function'`; the activation
-  context carries exactly one member, `addCommand(command): void`; `activate`'s return value
-  is discarded; the `repobuddy` keyword and the `@repobuddy/` scope are conventions the
-  loader never reads.
-- `plugin-management/discovery` — keep the defaulted `['repobuddy']` keyword. Behavior is
-  identical either way; not worth an explicit option.
-
-**Still open (deliberately out of this mission's scope):**
-
-- **Exit code on a rejected command line.** Every rejection path ends the process with 0, so
-  a script cannot tell `buddy no-such-command` from success. There are **two** rejection
-  sites, not three — `lookupCommand` folds unknown-command and bad-option into one errors
-  array reaching one `showHelp` branch, and config validation is the other. Both sit inside
-  `clibuilder`'s `builder.parse`; repobuddy contributes no code to either, and `clibuilder`
-  constructs a `context.exit` it never calls. **This is a clibuilder defect** (user's read,
-  confirmed against the source) and belongs in `code/clibuilder`, not here. No scenario in
-  `cli-shell` or `configuration` asserts an exit code, so the spec stays honest either way.
+1. **`add` in a pnpm workspace** — the plugin-contract caution: plugins are imported by bare
+   name resolved from *clibuilder's* location, not the repository's. If a pnpm layout cannot
+   resolve a genuinely installed plugin, `add`'s contract ("install it and it loads next run")
+   is unmet and the `workflows` seam scenarios fail. **Highest-risk assumption in the spec.**
+2. **`package-manager` detection** — the declared-field-over-lockfile-over-npm precedence is a
+   spec proposal, not a user ruling. Confirm one abstraction covers pnpm/yarn/npm uniformly.
+3. **`init` template copying** — confirm the shipped `templates/` reach an installed package
+   once the `files` typo is fixed.
 
 **Implementation debts this spec already commits to fixing** (carry into the impl phase):
 
