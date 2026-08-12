@@ -41,7 +41,7 @@ means treat it as the baseline above and tell the user you did.
 
 | Platform | Headings | Tables | Task lists | Code blocks | Notes |
 |---|---|---|---|---|---|
-| `linear` | `#`–`####` **(4 max)** | yes | yes | yes, highlighting undocumented | `>>>` collapsible sections; `@` mentions users/issues/projects; ` ```mermaid ` diagrams; `:emoji:` |
+| `linear` | `#`–`####` **(4 max)** | yes | yes | yes, highlighting undocumented | Target is a **comment on an existing issue**. `>>>` collapsible sections; `@` mentions users/issues/projects; ` ```mermaid ` diagrams; `:emoji:` |
 | `github` | `#`–`######` | yes | yes | yes, 700+ languages | Has its own file — [github.md](./github.md) |
 | `gitlab` | `#`–`######` | yes | yes | yes | Has its own file — [gitlab.md](./gitlab.md) |
 | `asana` | render as styled text, not real headings | no | no | yes | Has its own file — [asana.md](./asana.md) |

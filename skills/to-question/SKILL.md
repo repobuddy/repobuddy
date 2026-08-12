@@ -1,6 +1,6 @@
 ---
 name: to-question
-description: Use this skill when formatting a question to paste into Slack, Jira, Linear, GitHub, GitLab, Asana, or email.
+description: Use this skill when wording a question to post as a comment, message, or email in Jira, Linear, Asana, or Slack.
 ---
 
 # Question Formatter
@@ -9,16 +9,18 @@ Format a technical question, design discussion, or decision request for posting 
 
 ## Supported Formats
 
-| Format | Platform | Default |
-|--------|----------|---------|
-| `slack` | Slack | ✓ |
-| `asana` | Asana tasks |  |
-| `jira` | Jira issues |  |
-| `github` | GitHub Issues/PRs |  |
-| `gitlab` | GitLab Issues/MRs |  |
-| `linear` | Linear issues/projects |  |
-| `email` | Plain text email |  |
-| `markdown` | Markdown baseline, and the fallback for anything unlisted |  |
+| Format | Platform | Pasted as | Default |
+|--------|----------|-----------|---------|
+| `slack` | Slack | a channel or DM message | ✓ |
+| `asana` | Asana | a comment on an existing task | |
+| `jira` | Jira | a comment on an existing issue | |
+| `github` | GitHub | a comment on an existing issue or PR | |
+| `gitlab` | GitLab | a comment on an existing issue or MR | |
+| `linear` | Linear | a comment on an existing issue | |
+| `email` | Email | the body of an email | |
+| `markdown` | Markdown baseline | fallback for anything unlisted | |
+
+**The tracker targets produce a comment on an item that already exists — not a new task, issue, or ticket.** That distinction is the whole boundary with `create-issue`: if the user wants the item to *exist*, that is `create-issue`'s job, and it searches for duplicates first. This skill words what you say *on* an item. So drop title/summary lines that only make sense on a new item, and write the opening so it reads as someone speaking into an existing thread.
 
 ## Procedure
 

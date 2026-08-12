@@ -11,7 +11,7 @@ line that actually separates them is **who puts the text where it is going**.
 
 | Skill | Composes | Delivers | Trigger shape |
 |---|---|---|---|
-| `to-question` | yes — a fixed section template | **no** — stops at the clipboard | "help me word this so I can post it" |
+| `to-question` | yes — a fixed section template | **no** — stops at the clipboard | "help me word this so I can post it" (as a *comment*) |
 | `create-issue` | yes — a bug/feature-request shape | **yes** — `gh` / `glab` creates the issue | "file a bug", "open an issue" |
 | `research-workbench:community-post` | yes — after running `deep-research` | **yes** — files to the chosen venue | "research this and post it" |
 
@@ -21,21 +21,28 @@ cannot post to**: a Slack DM, a Jira instance behind SSO, a mail client the agen
 with. When a human is the delivery mechanism, the useful thing an agent can do is hand them text
 that will render correctly when pasted.
 
-## The one real overlap, and how it resolves
+## The sharper line: new item vs. comment on an existing one
 
-`to-question` accepts `github` and `gitlab` as targets, and for those two venues `create-issue` *can*
-post. So the same request could plausibly reach either skill.
+The apparent overlap is that `to-question` accepts `github`, `gitlab`, `jira`, `linear` and `asana`
+as targets, and `create-issue` also works against trackers. It dissolves once you say what the
+composed text actually *is* on a tracker:
 
-It resolves on the **verb the user used**, because the verb names the sink:
+- **`create-issue` creates an item that does not exist yet** — an issue, a bug, a feature request.
+- **`to-question` writes a comment on an item that already exists** (or a Slack message, or an
+  email). It never opens anything.
 
-- **"file / open / create an issue"** → `create-issue`. The user wants the issue to exist. Dedup
-  search and environment capture are part of that job and `to-question` does neither.
-- **"help me write / word / format this"** → `to-question`. The user is going to paste it themselves,
-  possibly into a comment box rather than a new issue, and wants the wording and the markup right.
+So the two never contend for the same act. They are not two ways to reach a tracker; they are the
+*create* path and the *comment* path, and only one of them can be what the user meant.
 
-Where the request is genuinely ambiguous, the discriminator is **dedup**: filing a new issue without
-checking for duplicates is a real harm, so a request that would create one belongs to `create-issue`.
-Composing text carries no such risk.
+This is also why only `create-issue` needs a **dedup search**: creating a duplicate item is a real
+harm, and commenting on an item the user is already looking at cannot duplicate anything.
+
+The verb usually names it outright — "file/open/create an issue" is `create-issue`; "help me word
+this" is `to-question`. Where the verb is ambiguous, ask whether the thing being written *needs an
+item to exist first*. If it does, it is a comment.
+
+`community-post` separates on a third axis: it is the only one that **researches first**, and it
+files to public venues (discussions, Discord, Reddit) rather than commenting on tracked work.
 
 `community-post` separates on a different axis again — it is the only one that *researches first*.
 A request with no research obligation is not a `community-post` request, however public the venue.

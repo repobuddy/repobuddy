@@ -2,6 +2,10 @@
 
 Asana supports markdown shortcuts in the UI. API uses `html_notes` field.
 
+**Target: a comment on an existing task**, not a new task. Creating the task is `create-issue`'s job.
+Write it as someone speaking into the task's activity feed — the reader already has the task's
+context, so do not restate it.
+
 ## Syntax
 
 | Format | Syntax |
@@ -67,7 +71,7 @@ Links to relevant docs, articles, or prior art:
 
 ## Tips
 
-- Asana renders markdown in task descriptions but not in task names
-- Keep descriptions scannable — tasks are often viewed in list/board views
+- Asana renders markdown in task comments and descriptions, but not in task names
+- Keep it scannable — comments are read in a busy activity feed, often on a phone
 - Use subtasks for action items that come out of the discussion
 - ASCII diagrams work in code blocks

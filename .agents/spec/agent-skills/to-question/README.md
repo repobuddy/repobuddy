@@ -24,6 +24,20 @@ final text off through the clipboard.
 
 It stops there, deliberately. It never posts.
 
+**What the output is, on each kind of target.** This is load-bearing, because it is what separates
+the skill from `create-issue`:
+
+| Target | The composed text is pasted as |
+|---|---|
+| Jira, Linear, Asana, GitHub, GitLab | a **comment on an item that already exists** |
+| Slack | a channel or DM message |
+| Email | the body of an email |
+
+On a tracker the output is **never a new task, issue, or ticket**. The reader already has the item's
+context, so the composed text speaks *into* an existing thread rather than opening one. Anything
+whose only purpose is to open a thread — a ticket-style title, a restatement of what the item is
+about — does not belong in it.
+
 **Key terms**
 
 - **Composition** — turning a half-formed question into the structured sections.
@@ -171,6 +185,7 @@ handoff, so reporting a copy that did not happen loses the approved output silen
 | `G -->|Yes| G1` (guard) | user named slack, whose dialect rejects markdown | `` `does not fall back to markdown for slack` `` |
 | `H` (asset load) | target platform is slack | `` `reads the platform asset rather than recalling its syntax` `` |
 | `I` (compose) | user supplied only a problem, no options | `` `composes the section template from a half-formed question` `` |
+| `I` (compose) | target is a tracker, so the item already exists | `` `omits a ticket-style title when the target is a comment` `` |
 | `J -->|Yes| K` | question is about a state machine | `` `puts an ASCII diagram inside a fenced block` `` |
 | `M` (render) | target platform is slack | `` `renders slack bold as single asterisks, never double` `` |
 | `N` (display) | draft contains a fenced code block | `` `wraps the displayed draft in a 4-backtick fence` `` |

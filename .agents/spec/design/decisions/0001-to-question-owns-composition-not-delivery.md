@@ -33,3 +33,8 @@ grounds.
   per-platform cost low and is why the platform list can grow cheaply.
 - A user who wants the thing *posted* is routed to `create-issue` or `community-post`
   (`design/posting-skill-boundaries.md`), not served here.
+- **On a tracker the output is a comment on an existing item, never a new one** — recorded after the
+  fact, when it became clear the original framing ("Asana tasks", "Linear issues") described the
+  wrong artifact. This is a stronger boundary than the delivery split above: `create-issue` owns the
+  *create* path and `to-question` owns the *comment* path, so the two cannot contend for one act.
+  It also explains why only `create-issue` needs a dedup search — a comment cannot duplicate an item.
