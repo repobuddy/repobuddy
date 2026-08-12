@@ -30,8 +30,8 @@ It stops there, deliberately. It never posts.
 - **Rendering** — expressing those sections in one platform's markup dialect.
 - **Markup dialect** — the syntax a platform accepts. Slack's mrkdwn (`*bold*`) and Jira's wiki
   markup (`h2.`) are not Markdown, and Markdown pasted into them renders as literal punctuation.
-- **Handoff sink** — where the finished text is left: a file at `/tmp/question.md` plus the system
-  clipboard.
+- **Handoff sink** — where the finished text is left: a file at `/tmp/question.md` and, where one is
+  available, the system clipboard.
 
 ### Non-goals
 
@@ -49,7 +49,7 @@ It stops there, deliberately. It never posts.
 ### Known gaps in the shipped behavior
 
 This spec is a backfill of PR #577, and records what the skill does, not what it should do.
-Backfilling surfaced three places where the shipped instructions did not determine an outcome. Two
+Backfilling surfaced four places where the shipped instructions did not determine an outcome. Three
 were defects and are fixed on this branch; one needs a product call and is left open.
 
 1. **Unrecognized format token — still open.** The procedure says "determine target format from user
@@ -68,7 +68,6 @@ were defects and are fixed on this branch; one needs a product call and is left 
    Markdown and paste the *rendered* result as rich text, but the procedure copied raw Markdown to
    the clipboard, so for the `email` target the two steps contradicted each other. The handoff step
    now carries the render-then-paste instruction for that target.
-
 4. **The description did not describe a trigger — fixed.** The skill's frontmatter `description` is
    the surface the harness matches a user's request against, so for a strong-fit skill it is the
    activation decision's main input. It read as a statement of what the skill does rather than when
