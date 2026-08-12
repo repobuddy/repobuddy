@@ -26,9 +26,11 @@ todos:
   - content: 'Explore: plugin-management/update — CFG + scenario map + .feature'
     status: pending
   - content: 'Explore: plugin-management/discovery — CFG + scenario map + .feature'
-    status: pending
+    status: completed
   - content: 'Explore: plugin-management/plugin-contract — reference subject'
-    status: pending
+    status: completed
+  - content: 'Explore: plugin-management/loading — CFG + scenario map + .feature'
+    status: completed
   - content: 'Explore: workflows — cross-capability seam scenarios'
     status: pending
   - content: Build-to-learn spikes against non-frozen suite
