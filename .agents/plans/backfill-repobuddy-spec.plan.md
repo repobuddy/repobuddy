@@ -14,7 +14,7 @@ todos:
   - content: Scaffold spec envelope at packages/buddy/.agents/spec/
     status: completed
   - content: 'Explore: cli-shell — CFG + scenario map + .feature'
-    status: pending
+    status: completed
   - content: 'Explore: configuration — CFG + scenario map + .feature'
     status: pending
   - content: 'Explore: initialization — CFG + scenario map + .feature'
