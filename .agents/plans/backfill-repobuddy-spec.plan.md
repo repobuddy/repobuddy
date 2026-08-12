@@ -12,8 +12,24 @@ todos:
   - content: Grill seed intent for init / add / plugin namespace
     status: completed
   - content: Scaffold spec envelope at packages/buddy/.agents/spec/
+    status: completed
+  - content: 'Explore: cli-shell — CFG + scenario map + .feature'
     status: pending
-  - content: Author node spec.md + repobuddy.feature (behavioral)
+  - content: 'Explore: configuration — CFG + scenario map + .feature'
+    status: pending
+  - content: 'Explore: initialization — CFG + scenario map + .feature'
+    status: pending
+  - content: 'Explore: plugin-management/add — CFG + scenario map + .feature'
+    status: pending
+  - content: 'Explore: plugin-management/remove — CFG + scenario map + .feature'
+    status: pending
+  - content: 'Explore: plugin-management/update — CFG + scenario map + .feature'
+    status: pending
+  - content: 'Explore: plugin-management/discovery — CFG + scenario map + .feature'
+    status: pending
+  - content: 'Explore: plugin-management/plugin-contract — reference subject'
+    status: pending
+  - content: 'Explore: workflows — cross-capability seam scenarios'
     status: pending
   - content: Build-to-learn spikes against non-frozen suite
     status: pending
@@ -80,11 +96,43 @@ No source CR — a bare prompt.
 - `@repobuddy/typescript` is already a working plugin: exports `activate(ctx)`, registers
   a `ts` command with `build` + `copyCJSPackageJson`. Its keywords include `repobuddy`.
 
+## Spec tree (scaffolded, `status: draft`)
+
+Capability-first at `packages/buddy/.agents/spec/`. Root `spec.md` carries `name: repobuddy`
++ `project-path: packages/buddy`, the placement map (routing table + three tie-breaks), and
+the reserved by-concept index block. `check-spec-state` passes.
+
+- `cli-shell/` behavioral · `configuration/` behavioral · `initialization/` behavioral
+- `plugin-management/` descriptive index → `add` `remove` `update` `discovery` behavioral,
+  `plugin-contract` reference
+- `tooling/` descriptive · `design/` + `design/decisions/` descriptive · `workflows/` behavioral
+- `glossary.md` root file
+
+Eight behavioral stubs await explore. Each has its `## What` written (including non-goals);
+none has `## Control Flow`, `## Scenario map`, or a `.feature`.
+
 ## NEXT
 
-Scaffold the spec envelope at `packages/buddy/.agents/spec/` (frontmatter must carry
-`name: repobuddy`), then author the node spec + `.feature` against the seed intent above.
+Per-unit explore, node by node, in the todo order above. Each node: read the source and the
+clibuilder facts, draw the CFG, write the 1:1 scenario map, author the `.feature`.
 
-Open (non-blocking, assume unless told otherwise): `init`'s template-copy conflict
-behavior — assumed **skip existing files and report them**, no overwrite without an
-explicit force flag. Confirm at the spec gate.
+**Open decisions to settle during explore (each is named in its node's `## What`):**
+
+- `initialization` — template-copy conflict behavior. Assumed **skip existing files and
+  report them**, no overwrite without an explicit force flag. Confirm before freeze.
+- `plugin-management/remove` — whether removing always uninstalls *and* deactivates, or
+  whether deactivate-without-uninstall is a separate case worth having.
+- `plugin-management/update` — whether a bare `update` with no package named means "every
+  active plugin" or is an error.
+- `plugin-management/discovery` — repobuddy passes no `keywords` to `cli()`, so keyword
+  search matches nothing today. The contract has to name the keyword(s) to declare.
+- `plugin-management/plugin-contract` — the context object's shape, the failure behavior for
+  a listed plugin that cannot load, and which of the observed conventions are requirements.
+
+**Implementation debts this spec already commits to fixing** (carry into the impl phase):
+
+- `package.json` `files` says `"template"`; the directory is `templates/` → templates are
+  not published, so `init`'s copy step would find nothing in an installed package.
+- readme documents `buddy add <plugin>` → `@repobuddy/<plugin>` shorthand, which the settled
+  intent rejects. Readme must be corrected.
+- `cli()` receives no `keywords`, so the inherited `plugins` search is matchless.
