@@ -35,7 +35,11 @@ todos:
     status: completed
   - content: 'Explore: workflows — cross-capability seam scenarios'
     status: completed
+  - content: 'Triage: cut inherited-behavior scenarios, register assumptions'
+    status: completed
   - content: Build-to-learn spikes against non-frozen suite
+    status: pending
+  - content: Write the six *.learn.ts boundary guards (impl phase)
     status: pending
   - content: Spec gate — judge, freeze, status approved
     status: pending
@@ -106,23 +110,34 @@ No source CR — a bare prompt.
 - `@repobuddy/typescript` is already a working plugin: exports `activate(ctx)`, registers
   a `ts` command with `build` + `copyCJSPackageJson`. Its keywords include `repobuddy`.
 
-## Spec tree (all nodes authored, `status: draft`)
+## Spec tree (`status: draft`)
 
-Capability-first at `packages/buddy/.agents/spec/`. 15 nodes, 10 behavioral suites,
-**74 scenarios**. `check-spec-state` and `check-suite` both pass.
+Capability-first at `packages/buddy/.agents/spec/`. 15 nodes, 10 suites, **46 scenarios**
+after the inherited-behavior triage (was 74). Both checks pass.
 
-- `cli-shell/` 15 · `configuration/` 12 · `initialization/` 8 · `workflows/` 5
-- `plugin-management/` (index) → `add` 5 · `remove` 4 · `update` 6 · `discovery` 7 ·
-  `loading` 5 · `package-manager` 7 · `plugin-contract` (reference, no suite)
-- `tooling/`, `design/`, `design/decisions/` descriptive · `glossary.md` root file
+- `cli-shell/` 3 · `configuration/` 3 · `initialization/` 8 · `workflows/` 5
+- `plugin-management/` → `add` 5 · `remove` 4 · `update` 6 · `discovery` 2 · `loading` 3 ·
+  `package-manager` 7 · `plugin-contract` (reference)
+- `design/inherited-behavior.md` · `design/decisions/` · `tooling/` · `glossary.md`
 
-**Two units were added during explore that the scaffold missed** — both found by reading
-`clibuilder/ts/plugins.ts`:
+### The inherited-behavior rule (settled)
 
-- `plugin-management/loading/` — a broken plugin is reported and skipped while the others
-  still load. Real testable behavior a reference artifact cannot hold and no sibling owned.
-- `plugin-management/package-manager/` — tool selection + dependency operations, shared
-  identically by `add` / `remove` / `update`. Specified once rather than three times.
+**Specify your promise, not their mechanism** — and assert the **weakest form** that
+supports it. Roughly half the first draft asserted clibuilder's mechanics; 28 scenarios
+were cut and ~10 restated at repobuddy's own boundary.
+
+The corollary earned its keep: the draft had pinned clibuilder's name-first config
+precedence as intended behavior. That is a suspected upstream bug, and freezing it would
+have made the upstream *fix* a break here. It is deleted, not weakened.
+
+The cut analysis is preserved as prose + CFGs in `design/inherited-behavior.md`, which
+also carries the **six-assumption register** — the clibuilder facts our promises rest on,
+each to be guarded by a `*.learn.ts` boundary test (a *learning test*, Clean Code ch. 8)
+rather than by a scenario. Guards fail on the Renovate bump PR, which is what makes
+`dependabot-automerge.yml` defensible.
+
+`learn` still needs adding to the `files` exclusion glob in `package.json` so guards are
+not published.
 
 ## Running check-suite
 
