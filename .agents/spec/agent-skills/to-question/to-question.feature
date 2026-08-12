@@ -46,6 +46,28 @@ Feature: to-question — compose a technical question and render it for a target
     And the draft contains no "##" markdown heading
 
   @behavior
+  Scenario: caps headings at four levels when linear is named
+    Given the user says "format this for linear"
+    And the question needs a fifth-level subsection
+    When to-question produces the draft
+    Then the deepest heading in the draft is four hashes or fewer
+
+  @behavior
+  Scenario: falls back to the markdown baseline and announces it
+    Given the user says "format this for notion"
+    And the skill has no dialect file named notion
+    When to-question resolves the target platform
+    Then it reads assets/markdown.md
+    And the reply states that the markdown baseline was used instead
+
+  @behavior
+  Scenario: does not fall back to markdown for slack
+    Given the user says "format this for slack"
+    When to-question resolves the target platform
+    Then it reads assets/slack.md
+    And it does not read assets/markdown.md
+
+  @behavior
   Scenario: reads the platform asset rather than recalling its syntax
     Given the target platform is slack
     When to-question prepares to render the draft

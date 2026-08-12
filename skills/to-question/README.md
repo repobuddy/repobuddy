@@ -17,7 +17,9 @@ Format a technical question or discussion for a platform and copy to clipboard.
 | `jira` | Jira issues | |
 | `github` | GitHub Issues/PRs | |
 | `gitlab` | GitLab Issues/MRs | |
+| `linear` | Linear issues/projects | |
 | `email` | Email (rich text paste) | |
+| `markdown` | Markdown baseline — also the fallback for anything unlisted | |
 
 ## What it does
 

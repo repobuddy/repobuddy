@@ -76,6 +76,24 @@ This also answers the open question the spec records — what to do when someone
 with no asset. Under a capability table there is a sensible default (the Markdown baseline) instead
 of the current undefined behavior.
 
+### Partially delivered on this branch
+
+The Council took the first slice rather than deferring all of it, so `assets/markdown.md` now exists
+and carries both the baseline syntax and the capability table. Two things followed from it:
+
+- **The unrecognized-platform gap is closed.** An unlisted platform resolves to the Markdown baseline
+  and the fallback is **announced**, never silent — the baseline is usually right for a Markdown-family
+  platform and occasionally wrong, and announcing it is what makes being occasionally wrong survivable.
+  Slack and Jira are excluded by name, since neither accepts Markdown at all.
+- **Linear came almost free.** Its editor was verified against Linear's own docs rather than assumed:
+  `**bold**`, `~~strike~~`, checklists, tables, blockquotes, code blocks (syntax highlighting
+  undocumented), plus `>>>` collapsibles, `@` mentions and ` ```mermaid `. The one real constraint is
+  that **headings stop at `####`**, which the capability table records and a scenario asserts.
+
+What remains of #579 is the harder half: folding `github.md` / `gitlab.md` / `asana.md` into the
+capability table and retiring the duplication. Adding Linear as a *row rather than a file* is the
+proof that the shape works.
+
 ---
 
 ## 3. Does this overlap `create-issue` and `research-workbench:community-post`?
@@ -138,7 +156,7 @@ the text.
 | Fork | Issue |
 |---|---|
 | 1 — Content shape as a parameter, starting with the unblock-ping shape | [#578](https://github.com/repobuddy/repobuddy/issues/578) |
-| 2 — Collapse `assets/` into a capability table; scale platforms by row (also settles the unrecognized-platform question) | [#579](https://github.com/repobuddy/repobuddy/issues/579) |
+| 2 — Collapse `assets/` into a capability table; scale platforms by row | [#579](https://github.com/repobuddy/repobuddy/issues/579) — **partially delivered here**: baseline + capability table + Linear + the unrecognized-platform rule. Remaining: fold in `github`/`gitlab`/`asana` |
 | 4 — Portable handoff path instead of hardcoded `/tmp/question.md` | [#580](https://github.com/repobuddy/repobuddy/issues/580) |
 
 Fork 3 (the overlap with `create-issue` and `community-post`) needed no issue — it resolved to

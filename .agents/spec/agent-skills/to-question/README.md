@@ -49,15 +49,17 @@ It stops there, deliberately. It never posts.
 ### Known gaps in the shipped behavior
 
 This spec is a backfill of PR #577, and records what the skill does, not what it should do.
-Backfilling surfaced four places where the shipped instructions did not determine an outcome. Three
-were defects and are fixed on this branch; one needs a product call and is left open.
+Backfilling surfaced four places where the shipped instructions did not determine an outcome. All
+four are now resolved on this branch.
 
-1. **Unrecognized format token — still open.** The procedure says "determine target format from user
-   input (default: `slack`)". It does not say what happens when the user names a platform that has
-   no asset — `discord`, `teams`, `notion`. Falling back to `slack` silently and treating the word
-   as part of the topic are both consistent with the text, and they give the user very different
-   results. No scenario covers this edge, because there is no specified behavior to assert.
-   <!-- open: what should to-question do when asked for a platform it has no asset for — refuse, fall back to the closest dialect, or fall back to slack? -->
+1. **Unrecognized format token — resolved.** The procedure said "determine target format from user
+   input (default: `slack`)" without saying what happens when the user names a platform that has no
+   asset — `discord`, `teams`, `notion`. Falling back to `slack` silently and treating the word as
+   part of the topic were both consistent with the text, and gave very different results.
+   **Settled as: fall back to the Markdown baseline and say so.** Most unlisted candidates are
+   Markdown-family, so the baseline is usually right; and because it can be wrong, the fallback is
+   announced rather than silent. Slack and Jira are excluded from it by name — neither accepts
+   Markdown, so falling back there would produce literal punctuation.
 2. **Clipboard failure — fixed.** Three copy commands were listed, one per OS, with no instruction
    for choosing between them and no branch for the case where none is available (a headless agent, a
    CI run, a Linux box without `xclip`/`wl-copy`, a web session). Because the clipboard is the
@@ -110,9 +112,12 @@ graph TD
     B -->|User asked for research-backed post| D[Defer to community-post]
     B -->|User asked for wording/formatting| E{Platform named?}
     E -->|No| F[Resolve format to slack]
-    E -->|Yes, one of the six| G[Resolve format to the named platform]
+    E -->|Yes| G{Has a dialect file?}
+    G -->|Yes| G1[Resolve to that platform]
+    G -->|No| G2[Resolve to the Markdown baseline<br/>and announce the fallback]
     F --> H[Load assets/format.md]
-    G --> H
+    G1 --> H
+    G2 --> H
     H --> I[Compose content into the section template]
     I --> J{Would a diagram<br/>beat prose?}
     J -->|Yes| K[Add ASCII diagram inside a fenced block]
@@ -160,7 +165,10 @@ handoff, so reporting a copy that did not happen loses the approved output silen
 | `B -->|file/open an issue| C` | same repo, user says "file a bug" | `` `stays out when the user asks to file an issue` `` |
 | `B -->|research-backed post| D` | user wants prior art gathered first | `` `stays out when the user asks for a researched post` `` |
 | `E -->|No| F` | no platform named anywhere in the request | `` `defaults to slack when no platform is named` `` |
-| `E -->|Yes| G` | user named jira | `` `renders jira wiki markup when jira is named` `` |
+| `G -->|Yes| G1` | user named jira | `` `renders jira wiki markup when jira is named` `` |
+| `G -->|Yes| G1` | user named linear | `` `caps headings at four levels when linear is named` `` |
+| `G -->|No| G2` | user named notion, which has no dialect file | `` `falls back to the markdown baseline and announces it` `` |
+| `G -->|Yes| G1` (guard) | user named slack, whose dialect rejects markdown | `` `does not fall back to markdown for slack` `` |
 | `H` (asset load) | target platform is slack | `` `reads the platform asset rather than recalling its syntax` `` |
 | `I` (compose) | user supplied only a problem, no options | `` `composes the section template from a half-formed question` `` |
 | `J -->|Yes| K` | question is about a state machine | `` `puts an ASCII diagram inside a fenced block` `` |

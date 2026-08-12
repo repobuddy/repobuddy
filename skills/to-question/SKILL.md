@@ -1,6 +1,6 @@
 ---
 name: to-question
-description: Use this skill when formatting a question or discussion to paste into Slack, Jira, GitHub, GitLab, Asana, or email.
+description: Use this skill when formatting a question to paste into Slack, Jira, Linear, GitHub, GitLab, Asana, or email.
 ---
 
 # Question Formatter
@@ -16,12 +16,14 @@ Format a technical question, design discussion, or decision request for posting 
 | `jira` | Jira issues |  |
 | `github` | GitHub Issues/PRs |  |
 | `gitlab` | GitLab Issues/MRs |  |
+| `linear` | Linear issues/projects |  |
 | `email` | Plain text email |  |
+| `markdown` | Markdown baseline, and the fallback for anything unlisted |  |
 
 ## Procedure
 
 1. Determine target format from user input (default: `slack`)
-2. Load the format template from `assets/<format>.md`
+2. Load the format template from `assets/<format>.md`. **If the user named a platform with no file of its own** — `discord`, `notion`, `teams`, `reddit`, anything unlisted — load [assets/markdown.md](./assets/markdown.md) and tell the user you fell back to the Markdown baseline. Never fall back silently, and never fall back to Markdown for Slack or Jira, which do not accept it
 3. Take the user's question/topic and any context they provide
 4. Structure using the template's pattern and markdown rules
 5. Display the formatted output in the reply (inside a fenced code block with 4 backticks so nested triple-backticks render correctly)
@@ -80,3 +82,4 @@ Format-specific templates with markdown rules and examples:
 - [assets/github.md](./assets/github.md) — GitHub Issues/PRs
 - [assets/gitlab.md](./assets/gitlab.md) — GitLab Issues/MRs
 - [assets/email.md](./assets/email.md) — Plain text email
+- [assets/markdown.md](./assets/markdown.md) — Markdown baseline + per-platform capability table (covers `linear`); the fallback for any unlisted platform
