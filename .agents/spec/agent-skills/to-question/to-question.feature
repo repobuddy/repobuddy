@@ -97,11 +97,12 @@ Feature: to-question — compose a technical question and render it for a target
     And the draft scores at or above the threshold
 
   @behavior
-  Scenario: states the question but not the item's title when commenting
+  Scenario: opens by asking the question, unlabelled, without the item's title
     Given the user says "format this for linear"
     And the question concerns a Linear issue titled "Webhook retries drop the final attempt"
     When to-question produces the draft
-    Then the draft states in one line what is being asked
+    Then the draft's first line states in one line what is being asked
+    And that first line carries no "Title", "Summary" or "Ask" label in front of it
     And the draft does not repeat the phrase "Webhook retries drop the final attempt"
     And the draft does not re-describe what the existing issue is about
 

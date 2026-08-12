@@ -20,7 +20,7 @@ Format a technical question, design discussion, or decision request for posting 
 | `email` | Email | the body of an email | |
 | `markdown` | Markdown baseline | fallback for anything unlisted | |
 
-**The tracker targets produce a comment on an item that already exists — not a new task, issue, or ticket.** That distinction is the whole boundary with `create-issue`: if the user wants the item to *exist*, that is `create-issue`'s job, and it searches for duplicates first. This skill words what you say *on* an item. So write the opening as someone speaking into an existing thread: **do not restate the item's own title or re-describe what it is about**, since the reader is already looking at it. Still lead with a clear one-line statement of *the question* — that is the question's headline, not the item's, and a comment needs it just as much.
+**The tracker targets produce a comment on an item that already exists — not a new task, issue, or ticket.** That distinction is the whole boundary with `create-issue`: if the user wants the item to *exist*, that is `create-issue`'s job, and it searches for duplicates first. This skill words what you say *on* an item. So write the opening as someone speaking into an existing thread: **do not restate the item's own title or re-describe what it is about**, since the reader is already looking at it. Still open by **asking the question directly in one line** — that is the question, not the item's title, and a comment needs it just as much.
 
 ## Procedure
 
@@ -65,7 +65,7 @@ Never report "Copied to clipboard" unless a copy command actually ran and succee
 
 Regardless of format, a good question includes:
 
-- **Title**: Clear statement of the question — the one line that says what is being asked. **This is the question's own headline, and every target wants it**, comments included; it is what stops the actual question being buried. It is *not* the tracker item's title or the email's subject line, and it never restates either
+- **The question, first and unlabelled**: open by asking it directly, in one line. Do not put a `Title:`, `Summary`, or `Ask:` label in front of it — the line *is* the question, and a label just adds a word the reader has to skip. This opening line is what stops the actual question being buried at the bottom, so every target gets it, comments included. (Email is the one place a subject line exists — that is a real mail field, not a section label.)
 - **Context**: Brief background — what we're building, constraints. On a comment, this is what the *thread* does not already cover, not a restatement of the item
 - **Use Cases** (if applicable): Concrete scenarios showing expected behavior
 - **Problem/Edge Case**: The specific issue with code/diagrams if helpful

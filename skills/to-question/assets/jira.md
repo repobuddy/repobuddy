@@ -30,10 +30,7 @@ Jira uses **wiki markup**, not Markdown. Cloud API v3 uses Atlassian Document Fo
 ## Template
 
 ```
-h2. Summary
-(the question's own one-line headline — not the item's title; keep it on comments too)
-
-One-line summary of the question or proposal.
+Ask the question directly, in one line. No heading, no label.
 
 h2. Context
 

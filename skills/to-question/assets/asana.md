@@ -27,10 +27,7 @@ context, so do not restate it.
 ## Template
 
 ```
-# 📝 Summary
-(the question's own one-line headline — not the item's title; keep it on comments too)
-
-One-line summary of the question or proposal.
+Ask the question directly, in one line. No heading, no label.
 
 # 🔎 Context
 

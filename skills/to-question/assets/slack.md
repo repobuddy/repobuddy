@@ -19,7 +19,7 @@ Slack uses **mrkdwn** (proprietary syntax), not standard Markdown.
 ## Template
 
 ```
-*Title: Clear statement of the question*
+*Ask the question directly, in one line. No label.*
 
 🔎 *Context*
 

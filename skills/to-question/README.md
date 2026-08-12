@@ -32,7 +32,7 @@ It formats for you to paste. It never posts, files, or sends anything — to fil
 
 ## Output structure
 
-- **Title/Summary**: Clear statement of the question
+- **The question**: asked directly in the opening line, unlabelled
 - **Context**: Brief background with ASCII diagrams if helpful
 - **Use Cases**: Concrete scenarios (if applicable)
 - **Problem/Edge Case**: The specific issue with code examples
