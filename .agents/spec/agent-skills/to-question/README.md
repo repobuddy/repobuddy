@@ -175,9 +175,7 @@ handoff, so reporting a copy that did not happen loses the approved output silen
 
 | Edge | Path (Given) | Scenario |
 |---|---|---|
-| `B -->|wording/formatting| E` | user has a half-formed technical question | `` `composes when asked to word a question for posting` `` |
-| `B -->|file/open an issue| C` | same repo, user says "file a bug" | `` `stays out when the user asks to file an issue` `` |
-| `B -->|research-backed post| D` | user wants prior art gathered first | `` `stays out when the user asks for a researched post` `` |
+| `B` (the routing decision, all three branches) | a repo where create-issue and community-post are also installed | `` `engages to word a question, not to file an item or research a post` `` |
 | `E -->|No| F` | no platform named anywhere in the request | `` `defaults to slack when no platform is named` `` |
 | `G -->|Yes| G1` | user named jira | `` `renders jira wiki markup when jira is named` `` |
 | `G -->|Yes| G1` | user named linear | `` `caps headings at four levels when linear is named` `` |

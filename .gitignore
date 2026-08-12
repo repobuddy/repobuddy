@@ -59,3 +59,4 @@ node_modules
 # storybook-addon-vis
 **/__vis__/**/__results__
 **/__vis__/**/__diffs__
+.agents/aced/results/

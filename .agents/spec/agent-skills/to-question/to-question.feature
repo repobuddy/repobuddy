@@ -7,29 +7,20 @@ Feature: to-question — compose a technical question and render it for a target
   # ── Use cases 1–2 — compose for a platform ──
 
   @trigger
-  Scenario: composes when asked to word a question for posting
-    Given a developer has been stuck on whether to retry failed webhook deliveries with a fixed
-      delay or an exponential backoff
-    And they say "help me word this for the team so someone can weigh in"
-    When the harness matches the request against the installed skills
-    Then to-question is the skill selected
+  Scenario Outline: engages to word a question, not to file an item or research a post
+    Given a developer in a repo where create-issue and community-post are also installed
+    And the developer has been weighing fixed-delay against exponential backoff for webhook retries
+    When the developer says "<query>"
+    Then to-question being selected is <should_trigger>
 
-  @trigger
-  Scenario: stays out when the user asks to file an issue
-    Given a developer is in a repo whose origin remote is a GitHub URL
-    And they say "file a bug about the webhook retries dropping the last attempt"
-    When the harness matches the request against the installed skills
-    Then create-issue is the skill selected
-    And to-question is not selected
-
-  @trigger
-  Scenario: stays out when the user asks for a researched post
-    Given a developer wants to raise webhook retry semantics with the upstream project
-    And they say "research what the community has already said about this, then draft a post for
-      the discussion board"
-    When the harness matches the request against the installed skills
-    Then community-post is the skill selected
-    And to-question is not selected
+    Examples:
+      | query                                                                       | should_trigger |
+      | help me word this retry-backoff question for the team                       | yes            |
+      | format this for linear so I can comment on the ticket                       | yes            |
+      | draft this question for the jira ticket, I'll paste it myself               | yes            |
+      | file a bug about the webhook retries dropping the last attempt              | no             |
+      | create a task in asana for the retry work                                   | no             |
+      | research what the community has said, then post it to the discussion board  | no             |
 
   @behavior
   Scenario: defaults to slack when no platform is named
