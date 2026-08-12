@@ -10,6 +10,8 @@ folder performs it.
 
 - [`decisions/`](./decisions/README.md) — the decision log: what was decided, what the alternatives
   were, and why one won.
+- [`inherited-behavior.md`](./inherited-behavior.md) — what clibuilder does on our behalf, which of
+  our promises rest on it, and the rule for deciding what a capability suite may assert.
 
 Model documents (the plugin lifecycle, the configuration resolution model) are added here as the
 capabilities that need them are specified.
