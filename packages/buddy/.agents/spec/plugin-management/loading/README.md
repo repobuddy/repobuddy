@@ -40,9 +40,9 @@ graph TD
     C1 --> F
 ```
 
-Note that the two rejection edges converge: an import failure is *also* reported as an invalid
-plugin, because the failed import yields nothing for the validity check to accept. A user whose
-plugin fails to import therefore sees both messages.
+The two rejection edges converge — a failed import is *also* reported as an invalid plugin, so a
+user sees two messages. That detail is clibuilder's and is recorded in the design note; the promise
+asserted here is only that the failure is **reported** and that the other plugins **still load**.
 
 ## Use Cases
 
@@ -56,8 +56,6 @@ plugin fails to import therefore sees both messages.
 
 | Edge | Path (Given) | Scenario |
 |---|---|---|
-| `D → attach` | the named plugin imports and exports activate | `a valid plugin's commands become available` |
-| `C → no` | the named plugin imports but exports no activate | `a package that is not a plugin is reported and skipped` |
-| `B → no` | the named plugin cannot be imported at all | `a plugin that cannot be imported is reported` |
-| `B1 → carry on` | one named plugin cannot be imported, another is valid | `a broken plugin does not stop the others from loading` |
-| `A → for each` | the configuration names no plugins | `a configuration naming no plugins registers no extra commands` |
+| `D → attach` | the named plugin imports and exports activate | `a listed plugin's commands become available` |
+| `B1 → carry on` | one named plugin is broken, another is valid | `a broken plugin is reported and does not stop the others` |
+| `A → for each` | the configuration names no plugins | `a configuration naming no plugins still runs` |
