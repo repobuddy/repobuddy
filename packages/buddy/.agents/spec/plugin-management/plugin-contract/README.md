@@ -71,10 +71,14 @@ export function activate(cli: PluginActivationContext) {
 Only plugins named in the configuration's `plugins` list are loaded, and `clibuilder` loads them
 automatically — no code in this package is involved. Being installed as a dependency is not enough.
 
-**A caution for plugin authors and for this project's own implementation:** repobuddy imports a
-plugin by bare package name, resolved the way Node resolves any import *from `clibuilder`'s own
-location* — the repository's working directory is passed along but used only in the error message,
-not in resolution. In a layout where a plugin is installed somewhere `clibuilder` cannot resolve
-it from — a pnpm workspace being the case to watch — the import fails even though the package is
-genuinely installed. The failure is reported and survivable ([`../loading/`](../loading/README.md)),
-but it is a real constraint on how `add` may install a plugin ([`../add/`](../add/README.md)).
+**A constraint worth knowing:** repobuddy imports a plugin by bare package name, resolved the way
+Node resolves any import *from `clibuilder`'s own location* — the repository's working directory is
+passed along but used only in the error message, not in resolution.
+
+This was expected to break under pnpm; it does not. A spike confirmed plugins load in pnpm single
+package and workspace layouts, including from the registry, because pnpm's hidden hoist directory
+lies inside the resolution walk-up. See the spike result in
+[`../../design/inherited-behavior.md`](../../design/inherited-behavior.md).
+
+What remains untested is **global installation**, where clibuilder would have no path back to the
+project's `node_modules`. Install repobuddy as a local dev dependency, as the readme documents.

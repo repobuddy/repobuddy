@@ -111,10 +111,38 @@ produces **two** warnings. Validity is literally `m && typeof m.activate === 'fu
 is called with `{ addCommand }` and its return value is discarded.
 
 Plugins are imported by **bare package name, resolved from clibuilder's own location** — the
-repository's working directory is passed along but used only in the error message. A layout where a
-plugin is installed somewhere clibuilder cannot resolve from (**a pnpm workspace being the case to
-watch**) will fail to load a genuinely installed plugin. This is an open risk against `add`'s
-contract and is the first build-to-learn spike.
+repository's working directory is passed along but used only in the error message.
+
+### Spike result: pnpm resolution (2026-08-12)
+
+This was flagged as the highest risk in the spec, on the theory that a pnpm layout would hide a
+genuinely installed plugin from clibuilder. **The risk did not reproduce.** Plugin loading succeeded
+end-to-end in every layout constructed:
+
+| Layout | Plugin | Result |
+|---|---|---|
+| single package, pnpm defaults | local `file:` dep | loads |
+| single package, `hoist=false` | local `file:` dep | loads |
+| workspace, package depends on sibling | `workspace:*` link | loads |
+| workspace, package depends on registry | real `@repobuddy/typescript` | loads (`ts` command appears) |
+
+**The mechanism** is that pnpm's hidden hoist directory sits *inside* the walk-up chain. clibuilder's
+real path is `<root>/node_modules/.pnpm/clibuilder@9.1.0/node_modules/clibuilder`, so Node's search
+for a bare specifier walks up through `<root>/node_modules/.pnpm/node_modules/` — which pnpm
+populates with symlinks to every installed package — before reaching `<root>/node_modules/`.
+Confirmed directly: resolving `@repobuddy/typescript` from clibuilder's own directory *finds* the
+package (it fails only later, on `require` conditions the ESM-only package does not provide).
+
+**Two honest limits on this result:**
+
+- Attempts to disable hoisting did not take effect (`pnpm config get hoist-pattern` returned
+  `undefined`), so a genuinely un-hoisted layout was **not** tested. The conclusion is "not
+  reproduced in realistic layouts", not "proven impossible".
+- **Global installation is untested and remains a real risk.** Installed globally, clibuilder would
+  live in a global store with no path back to the project's `node_modules`, and a locally installed
+  plugin should not resolve. The readme documents `npm install -D repobuddy` — a local dev
+  dependency — and that documented path is the one shown to work. Treat local installation as a
+  requirement rather than a preference until tested.
 
 ## Naming
 
