@@ -69,6 +69,13 @@ graph TD
 The three stopping edges — `C1`, `D1`, `E1` — are why an unusable command line never reaches a
 command: the shell answers, prints, and stops rather than running anything with partial input.
 
+**Open decision — the exit code on a rejected command line.** `clibuilder` exposes an `exit` function
+on its context but never calls it, so today every one of the three stopping edges ends the process
+with exit code **0**. A script running `buddy no-such-command` therefore cannot tell success from a
+typo. No scenario above asserts an exit code, because asserting either value would settle this by
+default. Settle it before this node freezes; if the answer is a non-zero code on `D1`, that is
+authored behavior repobuddy has to add rather than inherited behavior it can rely on.
+
 ## Scenario map
 
 ### Start the CLI

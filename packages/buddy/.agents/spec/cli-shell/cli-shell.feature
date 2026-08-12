@@ -71,7 +71,7 @@ Feature: CLI shell
     Given the repobuddy CLI
     When it is run with the command name "no-such-command"
     Then the output contains the usage line for repobuddy
-    And the exit code is not zero
+    And the output does not contain the version
 
   @behavior
   Scenario: an unrecognized option prints help
