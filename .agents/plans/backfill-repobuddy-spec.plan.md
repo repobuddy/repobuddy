@@ -18,7 +18,7 @@ todos:
   - content: 'Explore: configuration — CFG + scenario map + .feature'
     status: completed
   - content: 'Explore: initialization — CFG + scenario map + .feature'
-    status: pending
+    status: completed
   - content: 'Explore: plugin-management/add — CFG + scenario map + .feature'
     status: pending
   - content: 'Explore: plugin-management/remove — CFG + scenario map + .feature'
@@ -124,18 +124,32 @@ none has `## Control Flow`, `## Scenario map`, or a `.feature`.
 Per-unit explore, node by node, in the todo order above. Each node: read the source and the
 clibuilder facts, draw the CFG, write the 1:1 scenario map, author the `.feature`.
 
-**Open decisions to settle during explore (each is named in its node's `## What`):**
+### Decisions settled during explore (do not relitigate)
 
-- `initialization` — template-copy conflict behavior. Assumed **skip existing files and
-  report them**, no overwrite without an explicit force flag. Confirm before freeze.
-- `plugin-management/remove` — whether removing always uninstalls *and* deactivates, or
-  whether deactivate-without-uninstall is a separate case worth having.
-- `plugin-management/update` — whether a bare `update` with no package named means "every
-  active plugin" or is an error.
-- `plugin-management/discovery` — whether to keep relying on the defaulted `['repobuddy']`
-  keyword or declare the list explicitly. Not a defect either way; a legibility call.
-- `plugin-management/plugin-contract` — the context object's shape, the failure behavior for
-  a listed plugin that cannot load, and which of the observed conventions are requirements.
+- `initialization` — template conflict = **skip and report**. No `--force`, no prompting.
+  Rationale from the user: an **agentic plugin will later diff and merge** these files, so
+  `init` deliberately stays dumb and non-destructive rather than growing a merge story.
+- `plugin-management/remove` — **always uninstall and deactivate**, the exact mirror of
+  `add`. No `--keep-dependency` flag.
+- `plugin-management/update` — a bare `buddy update` **updates every active plugin**.
+- `plugin-management/plugin-contract` — settled from `clibuilder/ts/plugins.ts`, not by
+  asking: the requirement is exactly `typeof m.activate === 'function'`; the activation
+  context carries exactly one member, `addCommand(command): void`; `activate`'s return value
+  is discarded; the `repobuddy` keyword and the `@repobuddy/` scope are conventions the
+  loader never reads.
+- `plugin-management/discovery` — keep the defaulted `['repobuddy']` keyword. Behavior is
+  identical either way; not worth an explicit option.
+
+**Still open (deliberately out of this mission's scope):**
+
+- **Exit code on a rejected command line.** Every rejection path ends the process with 0, so
+  a script cannot tell `buddy no-such-command` from success. There are **two** rejection
+  sites, not three — `lookupCommand` folds unknown-command and bad-option into one errors
+  array reaching one `showHelp` branch, and config validation is the other. Both sit inside
+  `clibuilder`'s `builder.parse`; repobuddy contributes no code to either, and `clibuilder`
+  constructs a `context.exit` it never calls. **This is a clibuilder defect** (user's read,
+  confirmed against the source) and belongs in `code/clibuilder`, not here. No scenario in
+  `cli-shell` or `configuration` asserts an exit code, so the spec stays honest either way.
 
 **Implementation debts this spec already commits to fixing** (carry into the impl phase):
 
