@@ -25,10 +25,12 @@ Feature: to-question — compose a technical question and render it for a target
       | write up the retry problem as a new jira ticket                             | no             |
 
   @behavior
-  Scenario: defaults to slack when no platform is named
+  Scenario: defaults to slack when no platform is named, and says so
     Given the user says "help me word this question about retry backoff for the team"
-    When to-question resolves the target platform
-    Then the target platform is slack
+    When to-question produces the draft
+    Then the draft uses slack mrkdwn
+    And the reply states at the end that slack was used as the default
+    And the reply names the other platforms the user could ask for instead
 
   @behavior
   Scenario: renders jira wiki markup when jira is named
@@ -82,7 +84,8 @@ Feature: to-question — compose a technical question and render it for a target
 
   @quality @rubric
   Scenario: composes the section template from a half-formed question
-    Given the user supplies one paragraph describing that webhook retries drop the final attempt
+    Given the user says "help me word this for the team" and names no platform, so the target is slack
+    And the user supplies one paragraph describing that webhook retries drop the final attempt
     And the user supplies no alternatives and no explicit question
     When to-question produces the draft
     Then the draft is graded:

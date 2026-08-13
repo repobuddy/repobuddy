@@ -137,7 +137,7 @@ graph TD
     B -->|User asked to file/open an issue| C[Defer to create-issue]
     B -->|User asked for research-backed post| D[Defer to community-post]
     B -->|User asked for wording/formatting| E{Platform named?}
-    E -->|No| F[Resolve format to slack]
+    E -->|No| F[Resolve format to slack<br/>and say so at the end of the reply]
     E -->|Yes| G{Has a dialect file?}
     G -->|Yes| G1[Resolve to that platform]
     G -->|No| G2[Resolve to the Markdown baseline<br/>and announce the fallback]
@@ -157,6 +157,19 @@ graph TD
 The 4-backtick fence at display is not cosmetic: every template contains triple-backtick blocks, so
 a triple-backtick wrapper would terminate at the first nested block and the rest of the draft would
 render as loose text.
+
+**Announce a guess, not a certainty.** The skill resolves the platform three ways, and whether it
+speaks up follows from whether it *chose* rather than from how the code branched:
+
+| Resolution | Announce? |
+|---|---|
+| User named nothing → `slack` | **yes** — a default is a guess about the reader's venue |
+| User named an unlisted platform → Markdown baseline | **yes** — the dialect may be wrong |
+| User named `linear` → the baseline file | **no** — `linear` is a supported target; the shared file is an implementation detail |
+
+The reason a wrong guess must be said out loud is that it is **invisible at the point it matters**: a
+Slack-mrkdwn draft looks entirely correct until it is pasted into Jira, where it renders as literal
+punctuation. Announcing costs one sentence; not announcing costs the user a bad paste.
 
 ### Review loop (use cases 3, 4)
 
@@ -188,7 +201,7 @@ handoff, so reporting a copy that did not happen loses the approved output silen
 | Edge | Path (Given) | Scenario |
 |---|---|---|
 | `B` (the routing decision, all three branches) | a repo where create-issue and community-post are also installed | `` `engages to word a question, not to file an item or research a post` `` |
-| `E -->|No| F` | no platform named anywhere in the request | `` `defaults to slack when no platform is named` `` |
+| `E -->|No| F` | no platform named anywhere in the request | `` `defaults to slack when no platform is named, and says so` `` |
 | `G -->|Yes| G1` | user named jira | `` `renders jira wiki markup when jira is named` `` |
 | `G -->|Yes| G1` | user named linear | `` `caps headings at four levels when linear is named` `` |
 | `G -->|No| G2` | user named notion, which is not a supported target | `` `falls back to the markdown baseline and announces it` `` |

@@ -24,7 +24,7 @@ Format a technical question, design discussion, or decision request for posting 
 
 ## Procedure
 
-1. Determine target format from user input (default: `slack`)
+1. Determine target format from user input. **If the user named no platform, use `slack`** — and say so at the **end of your reply**: "Formatted for Slack (the default) — say the word if you want Jira, Linear, Asana, GitHub, GitLab or email instead." Choosing for the user is fine; choosing silently is not, because a draft in the wrong dialect looks correct right up until it is pasted
 2. Load the format template. `slack`, `asana`, `jira`, `github`, `gitlab` and `email` each have their own `assets/<format>.md`. **`linear` and `markdown` both load [assets/markdown.md](./assets/markdown.md)** — Linear is Markdown-family and its specifics are a row in that file's capability table, not a file of its own. `linear` is a supported target, so loading the baseline for it is normal routing, **not** a fallback: do not announce it as one
 3. **If the user named a platform not in the table at all** — `discord`, `notion`, `teams`, `reddit`, anything unlisted — load `assets/markdown.md` and **tell the user you fell back to the Markdown baseline**. Never fall back silently, and never fall back to Markdown for Slack or Jira, which do not accept it
 4. Take the user's question/topic and any context they provide
