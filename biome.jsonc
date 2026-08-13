@@ -19,7 +19,7 @@
 	"overrides": [
 		{
 			// Repo maintenance CLIs: printing is their output, and they read their own env config.
-			"includes": ["scripts/**"],
+			"includes": ["**/scripts/**"],
 			"linter": {
 				"rules": {
 					"suspicious": {

@@ -148,7 +148,7 @@ graph TD
     I --> J{Would a diagram<br/>beat prose?}
     J -->|Yes| K[Add ASCII diagram inside a fenced block]
     J -->|No| L[Prose only]
-    K --> M[Render in the dialect's markup]
+    K --> M[Render in the dialect's markup,<br/>then run check-format.mjs and fix findings]
     L --> M
     M --> N[Display inside a 4-backtick fence]
     N --> O[Ask for changes]
@@ -214,6 +214,7 @@ handoff, so reporting a copy that did not happen loses the approved output silen
 | `I` (compose) | target is email, which has a subject field outside the body | `` `keeps the email subject out of the pasted body` `` |
 | `J -->|Yes| K` | question is about a state machine | `` `puts an ASCII diagram inside a fenced block` `` |
 | `M` (render) | target platform is slack | `` `renders slack bold as single asterisks, never double` `` |
+| `M` (render, verify) | target is jira, draft ready to display | `` `checks the markup before showing the draft` `` |
 | `N` (display) | draft contains a fenced code block | `` `wraps the displayed draft in a 4-backtick fence` `` |
 
 ### Use case 3 — revise the draft

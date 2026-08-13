@@ -21,6 +21,19 @@ Format a technical question or discussion for a platform and copy to clipboard.
 | `email` | Email (rich text paste) | |
 | `markdown` | Markdown baseline — also the fallback for anything unlisted | |
 
+## Checking the markup yourself
+
+The skill runs this before showing you a draft, and you can run it on anything:
+
+```bash
+node scripts/check-format.mjs <target> draft.md          # readable
+node scripts/check-format.mjs <target> draft.md --json    # parseable
+```
+
+It flags markup that will not survive the paste — Markdown bold in Slack, `##` headings in Jira,
+headings past `####` in Linear, a subject line inside an email body — and skips fenced blocks, so
+diagrams and code samples are never flagged. Exit code 0 means clean.
+
 ## What it does
 
 1. Takes your question/topic and structures it for the target platform

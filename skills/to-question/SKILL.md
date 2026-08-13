@@ -29,9 +29,16 @@ Format a technical question, design discussion, or decision request for posting 
 3. **If the user named a platform not in the table at all** — `discord`, `notion`, `teams`, `reddit`, anything unlisted — load `assets/markdown.md` and **tell the user you fell back to the Markdown baseline**. Never fall back silently, and never fall back to Markdown for Slack or Jira, which do not accept it
 4. Take the user's question/topic and any context they provide
 5. Structure using the template's pattern and markdown rules
-6. Display the formatted output in the reply (inside a fenced code block with 4 backticks so nested triple-backticks render correctly)
-7. Ask if the user wants any changes — iterate until they're happy
-8. Once approved, write to `/tmp/question.md` and hand off (below)
+6. **Check the markup before showing it.** Write the draft to a temp file and run the bundled checker — it catches dialect mistakes that look fine in your reply and only break on paste:
+
+   ```bash
+   node scripts/check-format.mjs <target> /tmp/question.md
+   ```
+
+   Fix anything it reports, then re-run until clean. It knows the per-target rules (Slack's single-asterisk bold and `•` bullets, Jira's `h2.` headings and `[text|url]` links, Linear's four-level heading cap, email's subject-outside-the-body) and it skips fenced blocks, so diagrams and code samples are never flagged
+7. Display the formatted output in the reply (inside a fenced code block with 4 backticks so nested triple-backticks render correctly)
+8. Ask if the user wants any changes — iterate until they're happy
+9. Once approved, keep `/tmp/question.md` in sync with the final draft and hand off (below)
 
 ## Handoff
 

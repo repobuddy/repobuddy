@@ -135,6 +135,13 @@ Feature: to-question — compose a technical question and render it for a target
     And the draft contains no double-asterisk emphasis
 
   @behavior
+  Scenario: checks the markup before showing the draft
+    Given the user says "format this for jira"
+    When to-question has a draft ready to display
+    Then it runs scripts/check-format.mjs against the draft with the jira target
+    And the draft it displays produces no findings from that check
+
+  @behavior
   Scenario: wraps the displayed draft in a 4-backtick fence
     Given the draft for slack contains a triple-backtick code block holding an ASCII diagram
     When to-question displays the draft in its reply
