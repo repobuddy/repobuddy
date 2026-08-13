@@ -45,7 +45,8 @@
 		"verify:ci": "turbo run check lint coverage depcheck size --concurrency=1",
 		"version": "changeset version",
 		"vt": "pnpm --filter ./packages/vitest",
-		"web": "pnpm --filter ./website"
+		"web": "pnpm --filter ./website",
+		"check:skill": "node scripts/validate-skill.mjs"
 	},
 	"dependencies": {
 		"@types/react": "^19.1.3",
