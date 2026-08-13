@@ -261,6 +261,7 @@ function doApply() {
 
 	let ok = 0
 	let failed = 0
+	let already = 0
 	for (const r of todo) {
 		// --otp=VALUE must use the equals form: `npm trust github` takes a positional
 		// package name, so a space-separated value is consumed as that positional.
@@ -282,6 +283,22 @@ function doApply() {
 			ok++
 		} catch (e: any) {
 			const err = String(e.stderr ?? e.message ?? '')
+			// `npm trust github` POSTs to /-/package/<name>/trust, so a 409 means a
+			// trusted publisher already exists for that package — the desired end
+			// state, not a failure. Planning cannot tell these apart beforehand:
+			// reading the current trust config needs `npm trust list`, which requires
+			// an OTP, and `plan` deliberately takes none. So every already-trusted
+			// package surfaces here rather than as `already-configured` in the plan.
+			//
+			// Reported, not silent: a pre-existing entry may point at a different repo
+			// or workflow than the plan intends, and that only shows up at publish time
+			// as an auth failure. Verify with `npm trust list <package> --otp=<code>`.
+			if (/E409|409 Conflict/.test(err)) {
+				log(`EXISTS  ${r.package} (trusted publisher already registered; verify it matches ${r.repo}/${r.workflow})`)
+				already++
+				Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 2000)
+				continue
+			}
 			process.stderr.write(`FAILED  ${r.package}: ${err.split('\n').find((l) => /npm error/.test(l)) ?? err}\n`)
 			failed++
 			// Auth failures hit every package identically; stop rather than burn the list.
@@ -295,7 +312,7 @@ function doApply() {
 		Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 2000) // rate limit
 	}
 
-	process.stdout.write(`${JSON.stringify({ ok: failed === 0, configured: ok, failed })}\n`)
+	process.stdout.write(`${JSON.stringify({ ok: failed === 0, configured: ok, alreadyConfigured: already, failed })}\n`)
 }
 
 try {
