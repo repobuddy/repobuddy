@@ -198,6 +198,7 @@ handoff, so reporting a copy that did not happen loses the approved output silen
 | `H` (asset load) | target platform is slack | `` `reads the platform asset rather than recalling its syntax` `` |
 | `I` (compose) | user supplied only a problem, no options | `` `composes the section template from a half-formed question` `` |
 | `I` (compose) | target is a tracker, so the item already exists | `` `opens by asking the question, unlabelled, without the item's title` `` |
+| `I` (compose) | target is email, which has a subject field outside the body | `` `keeps the email subject out of the pasted body` `` |
 | `J -->|Yes| K` | question is about a state machine | `` `puts an ASCII diagram inside a fenced block` `` |
 | `M` (render) | target platform is slack | `` `renders slack bold as single asterisks, never double` `` |
 | `N` (display) | draft contains a fenced code block | `` `wraps the displayed draft in a 4-backtick fence` `` |

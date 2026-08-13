@@ -21,6 +21,8 @@ Feature: to-question — compose a technical question and render it for a target
       | file a bug about the webhook retries dropping the last attempt              | no             |
       | create a task in asana for the retry work                                   | no             |
       | research what the community has said, then post it to the discussion board  | no             |
+      | write up the retry problem for the existing jira ticket                     | yes            |
+      | write up the retry problem as a new jira ticket                             | no             |
 
   @behavior
   Scenario: defaults to slack when no platform is named
@@ -105,6 +107,14 @@ Feature: to-question — compose a technical question and render it for a target
     And that first line carries no "Title", "Summary" or "Ask" label in front of it
     And the draft does not repeat the phrase "Webhook retries drop the final attempt"
     And the draft does not re-describe what the existing issue is about
+
+  @behavior
+  Scenario: keeps the email subject out of the pasted body
+    Given the user says "format this for email"
+    When to-question produces the draft
+    Then the body opens by stating in one line what is being asked
+    And the body's first line is not a heading
+    And the subject is given as a separate line to type into the client's Subject field
 
   @behavior
   Scenario: puts an ASCII diagram inside a fenced block

@@ -40,12 +40,12 @@ state transitions, UI layouts, or edge cases — visuals often communicate faste
 💡 *Options*
 
 *Option A: Name*
-• Pro/con
-• Pro/con
+• What it gains
+• What it costs
 
 *Option B: Name*
-• Pro/con
-• Pro/con
+• What it gains
+• What it costs
 
 ✋ *Questions*
 1. Specific question to answer

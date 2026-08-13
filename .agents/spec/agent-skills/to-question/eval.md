@@ -54,12 +54,18 @@ Negative-execution assertions are the weakest of these: a transcript cannot esta
 behaviors are real and worth keeping, but verifying them needs an **execution harness**, not a judge —
 tracked as its own issue. Until then, treat their passes as unproven rather than as evidence.
 
-**The trigger bar was not stressed.** All six Examples rows resolved unanimously across three runs,
-but the three negatives are lexically obvious ("file a bug", "create a task", "research… then post").
-No row sits genuinely near the line, so accuracy 1.00 measures an easy set, not a sharp boundary. The
-suite needs a near-miss whose wording does *not* give the answer away — for example a request to
-"write up the retry problem for the tracker", which could legitimately be either skill.
+**The trigger bar was under-stressed** — addressed, not yet re-measured. The first six Examples rows
+resolved unanimously across two independent runs (36 verdicts, zero disagreement), because the three
+negatives are lexically obvious: "file a bug", "create a task", "research… then post". That measures
+an easy set, not a boundary. Two near-boundary rows have since been added which differ by one word —
+*"write up the retry problem for the **existing** jira ticket"* (yes) against *"…as a **new** jira
+ticket"* (no). They sit exactly on the create-vs-comment line, which is the distinction the skill
+actually has to make. Whether they discriminate is unknown until the next run.
 
-**The one `@rubric` scenario cleared by exactly zero margin** (7/9 against `threshold: 7`), losing a
-point on both graded dimensions and scoring full marks only on the easiest. It is one run from
-failing, which makes it a coin-flip rather than a bar.
+**The one `@rubric` scenario was a coin flip, and flipped.** The first run scored it 7/9 against
+`threshold: 7` — clearing by zero. Re-run over five samples it scored 5, 7, 5, 6, 8: **mean 6.2,
+passing two times in five**. The cause was a genuine subject gap rather than a harsh rubric: nothing
+in the skill told the agent to *derive* options when the user brings none, and "alternatives with
+tradeoffs" is not "each option names a cost". Both are now fixed in the skill and its templates. The
+lesson generalises — **a scenario that clears by zero margin has not passed, it has been lucky**, and
+is worth re-running at higher N before it is believed.

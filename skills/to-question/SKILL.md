@@ -65,11 +65,11 @@ Never report "Copied to clipboard" unless a copy command actually ran and succee
 
 Regardless of format, a good question includes:
 
-- **The question, first and unlabelled**: open by asking it directly, in one line. Do not put a `Title:`, `Summary`, or `Ask:` label in front of it — the line *is* the question, and a label just adds a word the reader has to skip. This opening line is what stops the actual question being buried at the bottom, so every target gets it, comments included. (Email is the one place a subject line exists — that is a real mail field, not a section label.)
+- **The question, first and unlabelled**: open by asking it directly, in one line. Do not put a `Title:`, `Summary:`, or `Ask:` label in front of it — the line *is* the question, and a label just adds a word the reader has to skip. This opening line is what stops the actual question being buried at the bottom, and **every target gets it, with no exceptions** — comments and email alike. Email's subject is handed to the user as a separate line to type into the client's Subject field; it never appears inside the pasted body, where it would be a heading duplicating what the reader can already see
 - **Context**: Brief background — what we're building, constraints. On a comment, this is what the *thread* does not already cover, not a restatement of the item
 - **Use Cases** (if applicable): Concrete scenarios showing expected behavior
 - **Problem/Edge Case**: The specific issue with code/diagrams if helpful
-- **Options**: 2-4 alternatives with tradeoffs (bullet points)
+- **Options**: 2-4 alternatives. **Derive them yourself when the user brings none** — arriving with a problem and no alternatives is the normal case, not a reason to skip this section, and proposing the candidates is most of the value the skill adds. Give every option a concrete **cost it incurs**, not only what it gains: a list where every entry is upside has not been thought through, and gives the reader nothing to weigh
 - **Questions**: Numbered list of specific questions to answer
 - **Research** (if applicable): Links to relevant docs or prior art
 

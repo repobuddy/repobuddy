@@ -22,10 +22,21 @@ Email clients (Gmail, Outlook) support **rich text when pasting** from rendered 
 | Inline code | `` `code` `` |
 | Code block | ` ``` ` (may lose formatting — keep short) |
 
+## Subject line — typed into the client, not pasted
+
+The subject goes in the mail client's own **Subject field**. Give it to the user as a separate line
+to type there; it is **not** part of the body and must not appear inside the pasted text, where it
+would render as a heading and duplicate the field the reader can already see.
+
+Make it searchable: `[Question] <the question, shortened>` or `[RFC] <topic>`.
+
 ## Template
 
+The body below is what gets rendered and pasted. Like every other target, it opens by asking the
+question directly — no heading, no label.
+
 ````markdown
-# Subject: [Question] Clear statement of the question
+Ask the question directly, in one line. No heading, no label.
 
 ## Context
 
@@ -42,12 +53,12 @@ Concrete example showing the issue.
 ## Options
 
 **Option A: Name**
-- Pro/con
-- Pro/con
+- What it gains
+- What it costs
 
 **Option B: Name**
-- Pro/con
-- Pro/con
+- What it gains
+- What it costs
 
 ## Questions
 
@@ -65,6 +76,6 @@ Concrete example showing the issue.
 - Write markdown → render → copy rendered → paste into email
 - Gmail preserves most formatting; Outlook may strip some
 - Code blocks may not paste well — keep them short or use inline code
-- Subject line should be searchable: `[Question] Topic` or `[RFC] Topic`
+- Give the subject as a separate line to type into the Subject field — never inside the pasted body
 - Put the most important question at the top
 - Consider who needs To: vs CC:
