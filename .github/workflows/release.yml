@@ -5,17 +5,17 @@ on:
 
 jobs:
   code:
-    uses: repobuddy/.github/.github/workflows/pnpm-verify.yml@main
+    uses: repobuddy/.github/.github/workflows/pnpm-verify.yml@v2
     with:
       os: '["ubuntu-latest"]'
 
   release:
-    uses: repobuddy/.github/.github/workflows/pnpm-release-changeset.yml@main
+    uses: repobuddy/.github/.github/workflows/pnpm-release-changeset.yml@v2
     needs: code
     secrets: inherit
 
   docgen:
-    uses: repobuddy/.github/.github/workflows/pnpm-docs.yml@main
+    uses: repobuddy/.github/.github/workflows/pnpm-docs.yml@v2
     needs: release
     with:
       publish-dir: ./website/dist
