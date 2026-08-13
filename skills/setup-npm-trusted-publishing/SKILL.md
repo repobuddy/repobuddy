@@ -79,6 +79,24 @@ $RUN "$SKILL_DIR/scripts/npm-trust.mts" apply --otp=<6-digit code> --verbose
 
 The script stops on the first `EOTP`/`E401`/`E403` rather than repeating an auth failure across the list. On `EOTP`, get a fresh code and re-run — completed rows are skipped.
 
+### `E409` is not a failure
+
+`npm trust github` POSTs to `/-/package/<name>/trust`, so **`E409` means a trusted publisher already exists for that package** — the desired end state. The script reports these as `EXISTS` and counts them in `alreadyConfigured`, not `failed`.
+
+`plan` cannot pre-detect this and will always say `configure`: reading the current config needs `npm trust list`, which requires an OTP, and `plan` deliberately takes none. So a partly-configured set surfaces as a burst of `E409`s on the first apply. Expect it; do not treat it as broken.
+
+What it does *not* tell you is whether the existing entry matches what you intended. A publisher pointing at a different repo or workflow filename still returns `E409`, and the mismatch only appears at publish time as an auth failure. Verify before trusting it:
+
+```bash
+npm trust list <package> --otp=<6-digit code>
+```
+
+To repoint an existing entry, revoke first — registering does not update in place:
+
+```bash
+npm trust revoke <package> --id=<trust-id> --otp=<code>
+```
+
 If npm answers with a browser URL rather than accepting `--otp`, the account uses web-based 2FA. Run one `npm trust github …` directly in an interactive terminal, authenticate in the browser to open the window, then re-run apply.
 
 ## Step 5 — Verify
