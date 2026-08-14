@@ -26,10 +26,10 @@ todos:
   - content: Rebase onto main (branch is 21 behind) before it can land
     status: completed
   - content: 'Decide PR scope: land #577 whole, or split spec-backfill from tooling'
-    status: pending
+    status: completed
   - content: Human review + merge of PR #577
     status: pending
-  - content: 'Run the spec gate to freeze the suite — deliberately deferred, see NEXT'
+  - content: 'Run the spec gate to freeze the suite — blocked on #585 by decision, see NEXT'
     status: pending
 ---
 
@@ -54,20 +54,11 @@ Mission against PR #577, which added `skills/to-question` implementation-first w
    result to anyone. It fails on a stale or failing run by design.
 4. Then it is a human review call. Everything else is green.
 
-**Blocking decisions — resolve, do not rediscover.**
+**Blocking decisions — one left.**
 
-- **PR scope.** The mission brief said keep #577 reviewable and route new capability to issues. The
-  Council later overrode that and folded Linear in, and it grew from there (comment reframing, format
-  checker, repo tooling). It is now well beyond "backfill a spec". Either land it whole, or split:
-  spec backfill + defect fixes as one PR, and Linear (`e8e5d75`) + the format checker (`ce50011`) +
-  `scripts/validate-skill.mjs` (`c47c6bb`) as a second. Both commits are cleanly separable.
-- **The spec gate is deliberately not run.** `status: draft`, zero open markers, so it *could* go.
-  It is held because five suite scenarios assert filesystem state or that a command did not run —
-  things a narrated transcript cannot settle (issue #585). Freezing now certifies a contract whose
-  most important guarantee, the clipboard-honesty branch, is guarded by a scenario incapable of
-  failing. Resolve #585 first, or accept the weakness knowingly.
 - **Issue #582** (public posting: Stack Overflow, X, Telegram, Facebook) needs a keep-or-cut call
   before anyone builds it. It may belong to `research-workbench:community-post` rather than here.
+  Not blocking this PR.
 
 **Findings the commits will not show.**
 
@@ -113,6 +104,17 @@ chosen-vs-rejected forks in `.agents/spec/agent-skills/to-question/to-question.s
   of its own, and this repo already has three skills competing on overlapping triggers.
 - **X/Bluesky was cut** from the dialect work: no markup plus a 280-character limit is a different
   composition problem, not a dialect. It resurfaces as part of #582's public-posting category.
+- **#577 lands whole, not split** (Council, 2026-08-14). It is a large review surface, and the split
+  was available — spec backfill + defect fixes, then Linear (`e8e5d75`) + the format checker
+  (`ce50011`) + `scripts/validate-skill.mjs` (`c47c6bb`). It was declined because the pieces
+  interlock: the checker and the validator both exist *because* the spec backfill exposed the
+  defects they guard, and separating them would ship each half without its reason.
+- **The spec gate is held until #585 is resolved** (Council, 2026-08-14). The suite is `status:
+  draft` with zero open markers, so freezing is legal — it is declined rather than blocked. Six
+  scenarios assert filesystem state or that a command did *not* run, which a narrated transcript
+  cannot settle; freezing now would certify a contract whose most important guarantee, the
+  clipboard-honesty branch, is guarded by a scenario incapable of failing. The suite stays unfrozen
+  until an execution harness exists. Landing #577 does **not** wait on this.
 
 ## State
 
@@ -123,7 +125,8 @@ chosen-vs-rejected forks in `.agents/spec/agent-skills/to-question/to-question.s
 - **Trigger:** the near-boundary row pair added this session ("for the existing jira ticket" vs "as a
   new jira ticket") produced the only trigger error in 24 runs — a real boundary, not another easy
   pair.
-- **PR #577:** `mergeStateStatus: BLOCKED` pending review; no `reviewDecision` yet.
+- **PR #577:** `mergeStateStatus: CLEAN` (the `main` merge cleared it), 29 files, +2265/-1. No
+  `reviewDecision` yet — human review is the only thing left in front of it.
 
 ## Issues opened by this mission
 
