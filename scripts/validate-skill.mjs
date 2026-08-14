@@ -159,7 +159,7 @@ if (runs.length === 0) {
 	}
 
 	if (result) {
-		const runAt = new Date(result.timestamp ?? statSync(latestPath).mtime)
+		const runAt = parseRunTimestamp(result.timestamp, latestPath)
 
 		// Staleness is the check that matters most: every edit after the run makes the
 		// result describe a subject that no longer exists.
@@ -231,6 +231,24 @@ if (deep) {
 }
 
 report()
+
+/**
+ * ACED writes ISO 8601 *basic* timestamps (`20260814T140000Z`), which `new Date()`
+ * rejects — and a comparison against an Invalid Date is always false, so the
+ * staleness check silently passed everything. Normalise to extended form, and if
+ * the value still will not parse, fail loudly rather than quietly trusting it: a
+ * guard that cannot tell the time must not report "current".
+ */
+function parseRunTimestamp(raw, path) {
+	if (typeof raw === 'string') {
+		const basic = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(?:\.(\d+))?Z$/.exec(raw)
+		const normalised = basic ? `${basic[1]}-${basic[2]}-${basic[3]}T${basic[4]}:${basic[5]}:${basic[6]}Z` : raw
+		const parsed = new Date(normalised)
+		if (!Number.isNaN(parsed.getTime())) return parsed
+		fail(`result timestamp "${raw}" is unparseable — cannot tell whether it is stale`)
+	}
+	return new Date(statSync(path).mtime)
+}
 
 function report() {
 	const line = '─'.repeat(60)

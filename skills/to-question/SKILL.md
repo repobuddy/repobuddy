@@ -32,8 +32,10 @@ Format a technical question, design discussion, or decision request for posting 
 6. **Check the markup before showing it.** Write the draft to a temp file and run the bundled checker — it catches dialect mistakes that look fine in your reply and only break on paste:
 
    ```bash
-   node scripts/check-format.mjs <target> /tmp/question.md
+   node <this-skill-dir>/scripts/check-format.mjs <target> /tmp/question.md
    ```
+
+   `<this-skill-dir>` is the directory holding this SKILL.md — **not** your current working directory. A bare `scripts/check-format.mjs` resolves against wherever you happen to be and will fail. Use the absolute path.
 
    Fix anything it reports, then re-run until clean. It knows the per-target rules (Slack's single-asterisk bold and `•` bullets, Jira's `h2.` headings and `[text|url]` links, Linear's four-level heading cap, email's subject-outside-the-body) and it skips fenced blocks, so diagrams and code samples are never flagged
 7. Display the formatted output in the reply (inside a fenced code block with 4 backticks so nested triple-backticks render correctly)

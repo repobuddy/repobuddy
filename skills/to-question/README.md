@@ -26,8 +26,9 @@ Format a technical question or discussion for a platform and copy to clipboard.
 The skill runs this before showing you a draft, and you can run it on anything:
 
 ```bash
-node scripts/check-format.mjs <target> draft.md          # readable
-node scripts/check-format.mjs <target> draft.md --json    # parseable
+# paths are relative to this skill's directory, not your cwd
+node ./scripts/check-format.mjs <target> draft.md          # readable
+node ./scripts/check-format.mjs <target> draft.md --json    # parseable
 ```
 
 It flags markup that will not survive the paste — Markdown bold in Slack, `##` headings in Jira,

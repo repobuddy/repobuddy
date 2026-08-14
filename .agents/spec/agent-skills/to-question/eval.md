@@ -32,6 +32,27 @@ defect in the suite.
 **`default_threshold: 4` is the fallback only.** The one `@rubric` scenario carries its own inline
 `threshold: 7` against a max of 9, which overrides it.
 
+## Two ways something unmeasured can look measured
+
+Both surfaced in the third run (2026-08-14) and they are the same failure in different layers.
+
+**The scenario cannot see whether the checker ran.** `checks the markup before showing the draft`
+asserts that the skill runs `scripts/check-format.mjs`, but a narrated transcript settles that by the
+simulator saying it did. It passed — while the command in the skill was `MODULE_NOT_FOUND` from the
+repo root, because the path was written relative to the caller's working directory rather than to the
+skill. A green scenario sat on top of a step that could not execute. The path is fixed; the blind
+spot is not, and it belongs to the same family as the five below.
+
+**The runner cannot see whether the judge judged.** One case-judge in that run terminated with a
+deliberation sentence and no verdict. Because a scenario collapses to score-vs-threshold, a *missing*
+score is indistinguishable from a low one unless something explicitly parses for its absence — so any
+runner treating "agent completed" as "case measured" banks the non-verdict as a result. This is a
+harness defect rather than a suite or subject one, but it is recorded here because it silently
+weakens every number this file reports.
+
+The general rule both cases teach: **an assertion that something happened needs an artifact that
+exists only if it did.** Absence of evidence arrives looking exactly like evidence of absence.
+
 ## Known weaknesses in this suite
 
 Recorded from the first ACED run (2026-08-12), which passed 19/19 — a result the judge itself said
