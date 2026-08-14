@@ -1,44 +1,17 @@
 Feature: Package manager operations
 
-  Choosing the tool the repository actually uses, and reporting honestly when
-  it fails.
+  Running dependency operations through whichever package manager the
+  repository uses. Which tool that is, and what its commands are called, is
+  package-manager-detector's job — see design/decisions/0001.
 
   # ── Run a dependency operation ──
 
   @behavior
-  Scenario: a declared package manager wins over the lockfile
-    Given a repository whose package.json declares the package manager "yarn"
-    And that repository contains a file named "pnpm-lock.yaml"
-    When a dependency operation is run
-    Then the operation is carried out with yarn
-
-  @behavior
-  Scenario: a pnpm lockfile selects pnpm
-    Given a repository whose package.json declares no package manager
-    And that repository contains a file named "pnpm-lock.yaml"
+  Scenario: an operation runs through the repository's own package manager
+    Given a repository whose package.json declares the package manager "pnpm"
     When a dependency operation is run
     Then the operation is carried out with pnpm
-
-  @behavior
-  Scenario: a yarn lockfile selects yarn
-    Given a repository whose package.json declares no package manager
-    And that repository contains a file named "yarn.lock"
-    When a dependency operation is run
-    Then the operation is carried out with yarn
-
-  @behavior
-  Scenario: an npm lockfile selects npm
-    Given a repository whose package.json declares no package manager
-    And that repository contains a file named "package-lock.json"
-    When a dependency operation is run
-    Then the operation is carried out with npm
-
-  @behavior
-  Scenario: npm is used when nothing indicates otherwise
-    Given a repository whose package.json declares no package manager
-    And that repository contains no lockfile
-    When a dependency operation is run
-    Then the operation is carried out with npm
+    And npm is not invoked
 
   @behavior
   Scenario: a successful operation is reported

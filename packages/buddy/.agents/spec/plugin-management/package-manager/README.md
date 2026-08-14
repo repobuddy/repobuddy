@@ -6,28 +6,31 @@ spec-type: behavioral
 
 ## What
 
-Adding, removing, and upgrading dependencies on the repository's behalf — and first, working out
-*which* tool to do it with. `add`, `remove`, and `update` all need this, so it is specified once here
-rather than three times over.
+Adding, removing, and upgrading dependencies on the repository's behalf. `add`, `remove`, and
+`update` all need this, so it is specified once here rather than three times over.
 
-repobuddy never assumes npm. It reads the repository to decide, preferring what the repository
-**declares** over what it can be inferred to use: a `packageManager` field in `package.json` is an
-explicit statement by the project and wins outright. Only when there is no such field does repobuddy
-fall back to reading which lockfile is present, and only when there is no lockfile either does it
-default to npm.
+**repobuddy does not work out which package manager to use, and does not build the commands.** Both
+are delegated to [`package-manager-detector`](https://www.npmjs.com/package/package-manager-detector)
+— see [ADR 0001](../../design/decisions/0001-delegate-package-manager-detection.md). It resolves the
+tool from the repository (a declared `packageManager` field wins over the lockfile, and npm is the
+fallback) and produces the right command for it, including yarn's split between `upgrade` on v1 and
+`up` on berry, and bun.
 
-The other decision here is what happens when the tool fails — a package that does not exist, a
-network that is down, a registry that refuses. **A failed dependency operation changes nothing
-else.** The command reports what went wrong and stops before touching the configuration, so a
-repository is never left listing a plugin it does not have.
+That leaves this node with two promises of its own, and they are the parts that actually belong to
+repobuddy:
 
-**Open decision.** The precedence above (declared field, then lockfile, then npm) is this spec's
-proposal rather than a user ruling. It follows corepack's model, where the `packageManager` field is
-authoritative. Confirm before this node freezes.
+1. **Operations go through the repository's own tool** — never a hardcoded npm.
+2. **A failed operation changes nothing else.** The command reports what went wrong and stops before
+   touching the configuration, so a repository is never left listing a plugin it does not have.
+
+The detector's precedence and command table are *its* behavior, not ours. By the rule in
+[`../../design/inherited-behavior.md`](../../design/inherited-behavior.md) they are recorded as
+assumption 8 and guarded by a learning test, rather than asserted by scenarios here.
 
 **Non-goals.** Which package a given command operates on, and what the configuration should say
-afterward — those belong to the sibling command units. Installing anything during first-time setup:
-`init` deliberately installs nothing (`../../initialization/`).
+afterward — the sibling command units. Choosing between package managers, or knowing their command
+vocabularies — the detector's job. Installing anything during first-time setup: `init` deliberately
+installs nothing (`../../initialization/`).
 
 ## Use Cases
 
@@ -39,22 +42,16 @@ afterward — those belong to the sibling command units. Installing anything dur
 
 ```mermaid
 graph TD
-    A[a dependency operation is requested] --> B{does package.json declare a packageManager?}
-    B -->|yes| B1[use the tool it names]
-    B -->|no| C{which lockfile is present?}
-    C -->|pnpm-lock.yaml| C1[use pnpm]
-    C -->|yarn.lock| C2[use yarn]
-    C -->|package-lock.json| C3[use npm]
-    C -->|none| C4[use npm as the default]
-    B1 --> D[run the operation]
-    C1 --> D
-    C2 --> D
-    C3 --> D
-    C4 --> D
+    A[a dependency operation is requested] --> B[ask the detector which tool this repository uses]
+    B --> C[ask the detector for that tool's command]
+    C --> D[run it]
     D --> E{did it succeed?}
     E -->|yes| E1[report success]
     E -->|no| E2[report the failure and change nothing else]
 ```
+
+Both decisions the old version of this graph drew — which tool, and which verb — have moved inside
+`B` and `C`, where they are someone else's to get right.
 
 ## Scenario map
 
@@ -62,10 +59,6 @@ graph TD
 
 | Edge | Path (Given) | Scenario |
 |---|---|---|
-| `B → yes` | package.json declares a tool and a different tool's lockfile is present | `a declared package manager wins over the lockfile` |
-| `C → pnpm-lock.yaml` | no declared tool, a pnpm lockfile present | `a pnpm lockfile selects pnpm` |
-| `C → yarn.lock` | no declared tool, a yarn lockfile present | `a yarn lockfile selects yarn` |
-| `C → package-lock.json` | no declared tool, an npm lockfile present | `an npm lockfile selects npm` |
-| `C → none` | no declared tool and no lockfile | `npm is used when nothing indicates otherwise` |
-| `E → yes` | the operation is accepted by the tool | `a successful operation is reported` |
+| `B → detector` | a repository whose package manager is not npm | `an operation runs through the repository's own package manager` |
+| `E → yes` | the tool accepts the operation | `a successful operation is reported` |
 | `E → no` | the tool exits with a failure | `a failed operation is reported and changes nothing else` |

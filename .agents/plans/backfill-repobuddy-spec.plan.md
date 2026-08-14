@@ -42,6 +42,8 @@ todos:
   - content: 'Spike: init template publishing — typo fixed, verified'
     status: completed
   - content: 'Spike: package-manager detection + command matrix'
+    status: completed
+  - content: 'Re-verify plugin detection after find-installed-packages 3.2.0 clears the 24h hold'
     status: pending
   - content: Write the six *.learn.ts boundary guards (impl phase)
     status: pending
@@ -168,17 +170,41 @@ path symlinked into `node_modules/`. `npx gherkin-cli` does not work.
    changeset added. Also confirmed **`.agents/` is excluded from the tarball**, which validates
    the colocate-don't-hoist decision.
 
-### Remaining spike: package-manager detection
+### Pending upgrade — re-verify, do not block on it
 
-Two things to settle, neither yet verified:
+`find-installed-packages@3.2.0` (published 2026-08-12) and `search-packages@2.2.1` are not yet
+pulled; 3.2.0 sits inside the 24-hour `minimumreleaseage` hold. Both are **transitive** deps
+reached via clibuilder, and both drive `plugins list` / `plugins search` and `init`'s plugin
+detection.
 
-- **The precedence** (declared `packageManager` field → lockfile → npm default) is a spec
-  proposal, not a user ruling. Confirm it, or get a ruling.
-- **The command matrix is not uniform**, which the node's CFG currently hides behind "run the
-  operation". npm uses `install` / `uninstall`; pnpm and yarn use `add` / `remove`; and **yarn v1
-  and berry differ on update** (`yarn upgrade` vs `yarn up`). The node needs an explicit per-tool
-  table, and possibly a yarn-major-version branch. Only pnpm is installed in this environment, so
-  anything about npm/yarn must be marked documented-not-verified.
+Verified working today against **3.1.2** in a pnpm workspace — `plugins list` found
+`@repobuddy/typescript` by keyword — so **the hoisting scenario looks unnecessary** and nothing
+is blocked. Re-verify once the upgrade lands, then let assumption 7's guard carry it.
+
+This produced assumption **7** in the register, and the sharpest argument for keeping one:
+Renovate watches *direct* dependencies, so a behavioral change in a transitive dep arrives with
+no PR that names it. A learning test is the only thing that would catch it.
+
+### Spike 3 result: package-manager (done)
+
+**The command vocabulary is far more uniform than feared.** npm accepts `add` and `remove` as
+aliases, so install/uninstall need no per-tool branching at all — verified against npm 12.0.2 and
+pnpm 11.21.0. **Only `update` diverges, and only for yarn** (`upgrade` on v1, `up` on berry), so
+the abstraction needs one conditional keyed on yarn's *major version*, not a command table. Added
+one scenario for that branch and a `V` node to the CFG (8 scenarios now).
+
+yarn is not installed here, so its rows are marked **documented-not-verified** in the node.
+
+**Superseded — the precedence question is resolved by delegation.** `package-manager-detector`
+(the library under `@antfu/ni`) already implements exactly the proposed precedence, verified:
+`packageManager: yarn@1.22.22` + `pnpm-lock.yaml` → yarn (field wins); lockfile only → that tool;
+neither → npm. It also handles the yarn v1/berry `upgrade`/`up` split and supports bun.
+
+Adopted in **ADR 0001**. `package-manager/` drops 8 scenarios → 3; detection and command
+construction become assumption **8** in the register. `@antfu/ni` itself was rejected — it is a
+CLI, so using it would mean an install-time requirement or a vendored binary.
+
+**Nothing now blocks the spec gate.**
 
 ### Then: the spec gate
 

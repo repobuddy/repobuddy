@@ -6,7 +6,12 @@ loading — is implemented by clibuilder, not by any code in this package.
 
 This document records what we understand about that behavior, which parts of it our own promises rest
 on, and the rule for deciding what belongs in a capability node's suite. It is descriptive: nothing
-here is tested directly, and no scenario in this spec asserts clibuilder's mechanics.
+here is tested directly, and no scenario in this spec asserts a dependency's mechanics.
+
+The rule below was written for clibuilder, but it is **not clibuilder-specific** — it governs every
+dependency whose behavior a user experiences as ours. It has since been applied to
+`find-installed-packages` (assumption 7) and to `package-manager-detector` (assumption 8, adopted
+deliberately in [ADR 0001](./decisions/0001-delegate-package-manager-detection.md)).
 
 ## The rule
 
@@ -40,9 +45,28 @@ rather than failing a user.
 | 4 | `keywords` defaults to the app's own name when configuration is enabled | `initialization` plugin detection, and `discovery` |
 | 5 | the `plugins` command is added automatically when configuration is enabled | `discovery` — the command exists at all |
 | 6 | the plugin contract is a `activate` export called with a context carrying `addCommand` | `plugin-contract`, and any plugin this project ships |
+| 7 | installed-plugin detection finds packages in this repo's package layout (pnpm workspace) | `initialization` detection, and `discovery` list |
+| 8 | the package-manager detector resolves the repository's tool (declared field over lockfile over npm) and builds the right command for it | `package-manager`, and `add` / `remove` / `update` through it |
 
-Six guards, not one per inherited behavior. An assumption earns a guard by supporting a promise, not
-by being interesting.
+Eight guards, not one per inherited behavior. An assumption earns a guard by supporting a promise,
+not by being interesting.
+
+### Why assumption 7 exists, and why it is the strongest argument for this register
+
+Assumptions 1–6 are clibuilder's own behavior. Assumption 7 is not: package detection is performed by
+`find-installed-packages`, a **transitive** dependency reached through clibuilder, and scanning a pnpm
+layout is exactly the kind of thing that changes between its releases.
+
+That matters because of how it would reach us. Renovate watches this package's **direct**
+dependencies; a behavioral change in a transitive dependency arrives silently, through a clibuilder
+release or an ordinary lockfile refresh, with no PR title mentioning it. **A learning test is the only
+thing in the pipeline that would notice.**
+
+This is not hypothetical. As of 2026-08-12, `find-installed-packages` had just published 3.2.0 and
+`search-packages` 2.2.1, neither yet pulled — 3.2.0 is inside the 24-hour `minimumreleaseage` hold in
+the repo's `.npmrc`. Detection was verified working against **3.1.2** in a pnpm workspace
+(`plugins list` found `@repobuddy/typescript` by keyword), so nothing is broken today. **Re-verify
+after the upgrade lands**, and let the guard carry it from then on.
 
 ## What we know about the mechanics
 
