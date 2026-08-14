@@ -24,7 +24,7 @@ todos:
   - content: 'Re-run ACED after the check-format path fix (0db6b52) — that change is unmeasured'
     status: in_progress
   - content: Rebase onto main (branch is 21 behind) before it can land
-    status: pending
+    status: completed
   - content: 'Decide PR scope: land #577 whole, or split spec-backfill from tooling'
     status: pending
   - content: Human review + merge of PR #577
@@ -40,10 +40,12 @@ Mission against PR #577, which added `skills/to-question` implementation-first w
 
 ## NEXT — resume here
 
-**Do this first.** The branch is 21 commits behind `main` and one change is unmeasured. In order:
+**Do this first.** One change is unmeasured. In order:
 
-1. `git fetch origin main && git rebase origin/main` — do **not** rebase while an ACED run is in
-   flight; it rewrites the subject files under the judge and invalidates the result.
+1. ~~Catch up to `main`~~ — **done**. `316f530` merged `main` in; `origin/main` (`5b41104`) is an
+   ancestor of HEAD, 0 behind / 19 ahead. It landed as a merge, not a rebase; that is fine for a
+   squash-merged PR. Do **not** rewrite history while an ACED run is in flight — it rewrites the
+   subject files under the judge and invalidates the result.
 2. Re-run ACED against `skills/to-question` (spawn the `aced:aced-impl-judge` agent; policy is in
    `.agents/spec/agent-skills/to-question/eval.md`). Commit `0db6b52` fixed the `check-format.mjs`
    invocation path *after* the last run, so it is unmeasured — and it is exactly the class of change
