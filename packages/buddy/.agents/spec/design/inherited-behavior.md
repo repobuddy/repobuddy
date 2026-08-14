@@ -45,7 +45,7 @@ rather than failing a user.
 | 4 | `keywords` defaults to the app's own name when configuration is enabled | `initialization` plugin detection, and `discovery` |
 | 5 | the `plugins` command is added automatically when configuration is enabled | `discovery` — the command exists at all |
 | 6 | the plugin contract is a `activate` export called with a context carrying `addCommand` | `plugin-contract`, and any plugin this project ships |
-| 7 | installed-plugin detection finds packages in this repo's package layout (pnpm workspace) | `initialization` detection, and `discovery` list |
+| 7 | installed-plugin detection finds packages in this repo's package layout (pnpm workspace) **when run from the package root** | `initialization` detection, and `discovery` list |
 | 8 | the package-manager detector resolves the repository's tool (declared field over lockfile over npm) and builds the right command for it | `package-manager`, and `add` / `remove` / `update` through it |
 
 Eight guards, not one per inherited behavior. An assumption earns a guard by supporting a promise,
@@ -67,6 +67,48 @@ This is not hypothetical. As of 2026-08-12, `find-installed-packages` had just p
 the repo's `.npmrc`. Detection was verified working against **3.1.2** in a pnpm workspace
 (`plugins list` found `@repobuddy/typescript` by keyword), so nothing is broken today. **Re-verify
 after the upgrade lands**, and let the guard carry it from then on.
+
+### Detection does not walk up — config resolution does
+
+A behavioral asymmetry worth knowing, because it is easy to assume both work the same way:
+
+| | Walks up the directory tree? |
+|---|---|
+| **Configuration resolution** (find-up) | **Yes** — a config at the repo root is found from any depth |
+| **Installed-plugin detection** (`find-installed-packages`) | **No** — it scans relative to the working directory |
+
+Verified 2026-08-12: from a package root, `plugins list` reports `@repobuddy/typescript`; from
+`sub/deep` two levels down, the same command reports *nothing* — while the configuration still
+resolves correctly from that same directory. Confirmed identical on clibuilder 9 and 10, so this is
+**long-standing behavior, not a regression**.
+
+**The consequence lands on `init`.** Run `buddy init` from a subdirectory and it detects no plugins,
+writing an empty list even in a repository that has them. The merge-don't-overwrite decision
+(`../initialization/`) contains the damage — a re-run from the package root fills the list in, and
+nothing is destroyed — but a *first* `init` from the wrong directory produces a silently useless
+result. `init` should either resolve to the package root before detecting, or say plainly that it
+detected nothing and where it looked.
+
+## Verification against clibuilder 10 (2026-08-12)
+
+The mechanics above were originally read from v9's source. The dependency has since been moved to
+`^10.0.0`; every assumption in the register was re-checked against it.
+
+| Assumption | v10 |
+|---|---|
+| 1 — config resolves from a subdirectory | holds |
+| 2 — listed plugins auto-load | holds (`ts` command present) |
+| 3 — a broken plugin is reported and skipped, others load | holds (two warnings, `ts` still loaded) |
+| 4 — keywords default to the app name | holds |
+| 5 — the `plugins` command is added automatically | holds |
+| 6 — the plugin contract is `activate` + `addCommand` | holds |
+| 7 — detection finds installed plugins from the package root | holds |
+
+`pnpm --filter repobuddy build` also passes against v10.
+
+**Still not fixed in v10: every rejection path exits 0.** Re-checked directly — `no-such-command`
+still exits `0`. The upstream issue stands, and no scenario here asserts an exit code in either
+direction.
 
 ## What we know about the mechanics
 
@@ -107,7 +149,9 @@ Accepted names are generated from the app name — the bare name, then `.cjs`, `
 anywhere up the tree, a `repobuddy` key in `package.json` is used. Contents are parsed as JSON, then
 YAML, then imported as a module.
 
-**The search is name-first, not directory-first** — and this is the trap:
+### The precedence bug — and why not pinning it paid off
+
+In **clibuilder 9.0.0** the search was **name-first, not directory-first**:
 
 ```js
 for (const filename of filenames) {
@@ -116,16 +160,27 @@ for (const filename of filenames) {
 }
 ```
 
-The whole directory chain is walked once **per name**, rather than every name being tried once per
-directory. Because `repobuddy.json` sorts before `.repobuddy.json`, a `repobuddy.json` at the
-repository root beats a `.repobuddy.json` in the directory you are standing in. Verified empirically
-against the real `loadConfig`, not only read.
+The whole directory chain was walked once *per name* rather than every name once per directory, so
+because `repobuddy.json` sorts before `.repobuddy.json`, a `repobuddy.json` at the repository root
+beat a `.repobuddy.json` in the directory you were standing in.
 
-> **Do not pin this.** It is almost certainly a clibuilder bug — every comparable tool resolves
-> nearest-first. An earlier draft of this spec asserted it as intended behavior; had that frozen,
-> *fixing* it upstream would have become a breaking change here. Assumption 1 above is deliberately
-> stated in its weakest useful form ("resolves from a subdirectory"), which holds under both the
-> current behavior and the corrected behavior.
+**It is fixed.** Bisected 2026-08-12 with identical fixtures (`prec/repobuddy.json` = ROOT,
+`prec/sub/.repobuddy.json` = SUB, cwd = `prec/sub`):
+
+| clibuilder | winner |
+|---|---|
+| 9.0.0 | `ROOT-undotted` — name-first |
+| **9.1.0** | `SUB-dotted` — nearest-first |
+| 9.2.0, 10.1.0 | `SUB-dotted` |
+
+> **The lesson, and it is sharper than expected.** An early draft of this spec asserted name-first as
+> intended behavior. Had it frozen, the upstream *fix* would have become a failing scenario here.
+>
+> And the fix did not arrive in the major, where someone would be reading release notes — it shipped
+> in **9.1.0, a minor**, which under our `^9.0.0` range lands automatically on any routine lockfile
+> refresh. The accident we declined to pin was corrected by the least-scrutinized kind of update
+> there is. Assumption 1 is stated in its weakest useful form ("resolves from a subdirectory"), which
+> held true across every version above.
 
 ### Plugin loading (`plugins.ts`)
 

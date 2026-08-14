@@ -9,3 +9,6 @@ allowBuilds:
   fsevents: true
   sharp: true
   unrs-resolver: true
+minimumReleaseAgeExclude:
+  - clibuilder@10.0.0
+  - find-installed-packages@4.0.0

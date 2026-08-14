@@ -83,8 +83,8 @@ importers:
   packages/buddy:
     dependencies:
       clibuilder:
-        specifier: ^9.0.0
-        version: 9.0.0
+        specifier: ^10.0.0
+        version: 10.0.0
     devDependencies:
       '@jest/globals':
         specifier: ^30.0.0
@@ -3694,6 +3694,10 @@ packages:
     resolution: {integrity: sha512-ouuZd4/dm2Sw5Gmqy6bGyNNNe1qt9RpmxveLSO7KcgsTnU7RXfsw+/bukWGo1abgBiMAic068rclZsO4IWmmxQ==}
     engines: {node: '>= 12'}
 
+  clibuilder@10.0.0:
+    resolution: {integrity: sha512-02P1MgRRfwVe1UcWEPwsK667lwANULr7ACu11Fy8dgM/xwg0DE/p/kJL71YMnRtz2GsvVVnnxGx+PMbftiVy1g==}
+    engines: {node: '>= 20.19'}
+
   clibuilder@9.0.0:
     resolution: {integrity: sha512-uRo4hMAlvcc16OB2GlYRIG+UGm1OqT3SB/CPv/a1nGGrKb/GIfu0shjMt39H+NkhbZWG/mvZ7uGMOeOoZIET1w==}
     engines: {node: '>= 8'}
@@ -4214,6 +4218,10 @@ packages:
   find-installed-packages@3.1.1:
     resolution: {integrity: sha512-aFA7JbUCysD/ACS89o2hrEdgMtXV5mm+AJBxySQXGLe7Z+TzFw5YDFlI+6WAOSTKRqbkC5v105ToO0/krRn+4A==}
     engines: {bun: '>=1.0', node: '>=14'}
+
+  find-installed-packages@4.0.0:
+    resolution: {integrity: sha512-PKkQCxMpOrW1cHEE9oQOTvDOMD++Bw0HT+nQpWrhXQrairaQA4m+cDdosQjAmNGQ0lCkkGWuuPrksDXE9B7Cug==}
+    engines: {bun: '>=1.0', node: '>=20.19'}
 
   find-up@4.1.0:
     resolution: {integrity: sha512-PpOwAdQ/YlXQ2vj8a3h8IipDuYRi3wceVQQGYWxNINccq40Anw7BlsEXCMbt1Zt+OLA6Fq9suIpIWD0OsnISlw==}
@@ -6054,6 +6062,10 @@ packages:
 
   search-packages@2.1.0:
     resolution: {integrity: sha512-UtiuizI/dm68NnKGbV/gN/vAyqggq9RwtNtl1367yWP2YW8IHfYUt7gBQWg7IoeDYjP4PxQSOqni2uc2/0szJg==}
+
+  search-packages@2.2.1:
+    resolution: {integrity: sha512-ejUjMEDITHiKzfAgtpcIUXAliJK+jLb7DMyUaqVoyY1uwKuDajnccvx8o8woEuKvsDjH3j3mLhy6Uyc8v1UCHA==}
+    engines: {node: '>= 18'}
 
   semver-compare@1.0.0:
     resolution: {integrity: sha512-YM3/ITh2MJ5MtzaM429anh+x2jiLVjqILF4m4oyQB18W7Ggea7BfqdH/wGMK7dDiMghv/6WG7znWMwUDzJiXow==}
@@ -9948,6 +9960,21 @@ snapshots:
 
   cli-width@4.1.0: {}
 
+  clibuilder@10.0.0:
+    dependencies:
+      find-installed-packages: 4.0.0
+      js-yaml: 4.3.1
+      jsonc-parser: 3.3.1
+      pad-right: 0.2.2
+      search-packages: 2.2.1
+      standard-log: 12.1.2
+      standard-log-color: 12.1.2(standard-log@12.1.2)
+      tmp: 0.2.7
+      tslib: 2.8.1
+      type-plus: 7.6.2
+      wordwrap: 1.0.0
+      zod: 3.25.76
+
   clibuilder@9.0.0:
     dependencies:
       find-installed-packages: 3.1.1
@@ -10529,6 +10556,12 @@ snapshots:
 
   find-installed-packages@3.1.1:
     dependencies:
+      temp: 0.9.4
+      unpartial: 1.0.5
+
+  find-installed-packages@4.0.0:
+    dependencies:
+      package-manager-detector: 1.8.0
       temp: 0.9.4
       unpartial: 1.0.5
 
@@ -13083,6 +13116,8 @@ snapshots:
   scheduler@0.27.0: {}
 
   search-packages@2.1.0: {}
+
+  search-packages@2.2.1: {}
 
   semver-compare@1.0.0: {}
 

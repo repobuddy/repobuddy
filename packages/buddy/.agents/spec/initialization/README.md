@@ -25,6 +25,13 @@ it and says so. There is no `--force` and no prompting — deliberately. Reconci
 a repository's own edits is a diff-and-merge problem, and that job belongs to a future agentic plugin
 that can do it properly. `init` stays non-destructive rather than growing half a merge story.
 
+**Detection is sensitive to where the command is run.** The underlying lookup scans the working
+directory rather than walking up the way configuration resolution does, so `buddy init` run from a
+subdirectory detects nothing and writes an empty list. Being safe to repeat contains the damage — a
+later run from the package root fills the list in without destroying anything — but `init` should
+either resolve to the package root before detecting, or report plainly that it found no plugins and
+where it looked. See [`../design/inherited-behavior.md`](../design/inherited-behavior.md).
+
 **Non-goals.** Installing anything — `init` records and copies, it never adds a dependency (that is
 `../plugin-management/add/`); reading or validating an existing configuration (`../configuration/`);
 and merging a template into a file the repository has already customized, per the paragraph above.
