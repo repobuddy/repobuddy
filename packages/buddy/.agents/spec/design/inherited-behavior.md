@@ -47,8 +47,9 @@ rather than failing a user.
 | 6 | the plugin contract is a `activate` export called with a context carrying `addCommand` | `plugin-contract`, and any plugin this project ships |
 | 7 | installed-plugin detection finds packages in this repo's package layout (pnpm workspace) **when run from the package root** | `initialization` detection, and `discovery` list |
 | 8 | the package-manager detector resolves the repository's tool (declared field over lockfile over npm) and builds the right command for it | `package-manager`, and `add` / `remove` / `update` through it |
+| 9 | a rejected command line exits non-zero (clibuilder >= 10.1.0) | `cli-shell` — a script being able to detect a typo |
 
-Eight guards, not one per inherited behavior. An assumption earns a guard by supporting a promise,
+Nine guards, not one per inherited behavior. An assumption earns a guard by supporting a promise,
 not by being interesting.
 
 ### Why assumption 7 exists, and why it is the strongest argument for this register
@@ -135,12 +136,25 @@ graph TD
 Notable: the version flag is answered **before** the line is checked for errors, so
 `buddy --version no-such-command` prints a version rather than an error.
 
-Also notable: **every rejection path exits 0.** clibuilder builds a `context.exit` and never calls
-it, so a script cannot distinguish `buddy no-such-command` from success. There are two rejection
-sites, not three — `lookupCommand` folds unknown-command and bad-option into one errors array
-reaching one `showHelp` branch, and configuration validation is the other. Both sit inside
-clibuilder; nothing in this package can fix it without reimplementing the decision that was just
-made. **Raise upstream rather than working around it here.**
+**The exit-code defect — fixed in 10.1.0.** Through clibuilder 10.0.0, *every* rejection path exited
+`0`: `context.exit` was built and never called, so a script could not distinguish
+`buddy no-such-command` from success. There were two rejection sites, not three — `lookupCommand`
+folds unknown-command and bad-option into one errors array reaching one `showHelp` branch, and
+configuration validation is the other.
+
+It is now fixed. Verified 2026-08-12 with identical probes:
+
+| clibuilder | unknown command | bad option | success |
+|---|---|---|---|
+| 10.0.0 | `0` | `0` | `0` |
+| **10.1.0** | `2` | `2` | `0` |
+
+The message improved too — `unexpected argument: no-such-command` rather than bare help. This is the
+second upstream defect recorded here that was fixed within days of being written down, and the second
+time declining to pin it was what let the fix land without breaking the spec.
+
+`cli-shell` now asserts a **non-zero** exit on a rejected command line — deliberately not `2`, since
+the specific value is clibuilder's to choose.
 
 ### Configuration resolution (`config.ts` → `loadConfig`)
 

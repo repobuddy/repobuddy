@@ -17,6 +17,14 @@ Feature: CLI shell
     Given the repobuddy CLI
     When it is run with no command and no options
     Then the output names repobuddy
+    And the exit code is zero
+
+  @behavior
+  Scenario: an unrecognized command line exits with a non-zero code
+    Given the repobuddy CLI
+    When it is run with the command name "no-such-command"
+    Then the exit code is not zero
+    And the output names the argument it did not understand
 
   # ── Report the version ──
 

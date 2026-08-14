@@ -83,8 +83,8 @@ importers:
   packages/buddy:
     dependencies:
       clibuilder:
-        specifier: ^10.0.0
-        version: 10.0.0
+        specifier: ^10.1.0
+        version: 10.1.0
     devDependencies:
       '@jest/globals':
         specifier: ^30.0.0
@@ -3694,8 +3694,8 @@ packages:
     resolution: {integrity: sha512-ouuZd4/dm2Sw5Gmqy6bGyNNNe1qt9RpmxveLSO7KcgsTnU7RXfsw+/bukWGo1abgBiMAic068rclZsO4IWmmxQ==}
     engines: {node: '>= 12'}
 
-  clibuilder@10.0.0:
-    resolution: {integrity: sha512-02P1MgRRfwVe1UcWEPwsK667lwANULr7ACu11Fy8dgM/xwg0DE/p/kJL71YMnRtz2GsvVVnnxGx+PMbftiVy1g==}
+  clibuilder@10.1.0:
+    resolution: {integrity: sha512-JbaMzimIyASNqVPbnWbS8eUroy9HlRQBsD0GN74/B2bqkg+lx3PiGyjkpdqkxvjz1pBXfGFEBT3BW9eoq8cKBw==}
     engines: {node: '>= 20.19'}
 
   clibuilder@9.0.0:
@@ -9960,7 +9960,7 @@ snapshots:
 
   cli-width@4.1.0: {}
 
-  clibuilder@10.0.0:
+  clibuilder@10.1.0:
     dependencies:
       find-installed-packages: 4.0.0
       js-yaml: 4.3.1

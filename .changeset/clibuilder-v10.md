@@ -2,4 +2,4 @@
 'repobuddy': patch
 ---
 
-Move to `clibuilder` v10. All seven inherited-behavior assumptions were re-verified against it, and the build passes.
+Move to `clibuilder` v10.1.0. An unrecognized command or option now exits with a non-zero code, so scripts can distinguish a typo from success — through v10.0.0 every rejection path exited 0.
