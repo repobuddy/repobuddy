@@ -173,11 +173,30 @@ if (runs.length === 0) {
 			note(`ACED result ${basename(latestPath)} is current`)
 		}
 
-		if (result.implementation_pass === false) {
-			fail('latest ACED run has implementation_pass: false — do not present it as passing')
+		// An aborted run has no failures, so every "did anything fail?" check passes it.
+		// Establish that the run finished and measured something BEFORE reading its verdict.
+		if (result.run_in_progress || /in[ _]progress/i.test(String(result.status ?? ''))) {
+			fail('latest ACED run is marked in-progress — it was cut short and measured nothing conclusive')
 		}
 
+		const unmeasured = result.unmeasured_scenarios ?? []
+		if (unmeasured.length > 0) {
+			fail(`${unmeasured.length} scenario(s) recorded as unmeasured — the run did not cover the suite`)
+		}
+
+		const passing = result.scenarios_passing ?? []
 		const failing = result.scenarios_failing ?? []
+		if (passing.length === 0 && failing.length === 0) {
+			fail('latest ACED run recorded no scenario outcomes at all — nothing was measured')
+		}
+
+		if (result.implementation_pass !== true) {
+			fail(
+				`latest ACED run does not record implementation_pass: true (got ${JSON.stringify(result.implementation_pass)}` +
+					`${result.implementation_pass_reason ? ` — ${result.implementation_pass_reason}` : ''}) — do not present it as passing`
+			)
+		}
+
 		if (failing.length > 0) fail(`${failing.length} failing scenario(s) in the latest run`)
 
 		// A pass the judge itself would not stand behind must not be counted as evidence.
