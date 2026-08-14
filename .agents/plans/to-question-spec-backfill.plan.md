@@ -46,10 +46,20 @@ Mission against PR #577, which added `skills/to-question` implementation-first w
    ancestor of HEAD, 0 behind / 19 ahead. It landed as a merge, not a rebase; that is fine for a
    squash-merged PR. Do **not** rewrite history while an ACED run is in flight — it rewrites the
    subject files under the judge and invalidates the result.
-2. Re-run ACED against `skills/to-question` (spawn the `aced:aced-impl-judge` agent; policy is in
-   `.agents/spec/agent-skills/to-question/eval.md`). Commit `0db6b52` fixed the `check-format.mjs`
-   invocation path *after* the last run, so it is unmeasured — and it is exactly the class of change
-   that already proved able to hide behind a green scenario.
+2. **Re-run ACED — still the live frontier.** Attempted 2026-08-14 and it **died mid-fan-out on an
+   account session limit**, not on anything about the subject. Every case-judge and the impl-judge
+   parent terminated with `API error: session limit`. **No result file was written and the tree
+   stayed clean**, so there is nothing partial to unpick — just re-dispatch when quota allows.
+   Spawn the `aced:aced-impl-judge` agent; policy is in
+   `.agents/spec/agent-skills/to-question/eval.md`; pass `@rubric` sample count **5** explicitly (it
+   is still not in the policy — a known defect, `owner: scenario-writer`). Commit `0db6b52` fixed
+   the `check-format.mjs` invocation path *after* the last run, so it is unmeasured — and it is
+   exactly the class of change that already proved able to hide behind a green scenario.
+
+   *The guard held under this failure.* With no new result on disk, `validate-skill.mjs` still fails
+   `STALE` rather than reporting the old green as current — which is the correct answer for a run
+   that never happened. A dead fan-out is a fourth way something unmeasured could look measured, and
+   the one the staleness check already covers for free.
 3. `node scripts/validate-skill.mjs to-question` must come back with no errors before reporting the
    result to anyone. It fails on a stale or failing run by design.
 4. Then it is a human review call. Everything else is green.
