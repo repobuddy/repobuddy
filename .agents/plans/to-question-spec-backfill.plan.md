@@ -87,6 +87,20 @@ Mission against PR #577, which added `skills/to-question` implementation-first w
   measured" will bank as a result. Budget for re-dispatches.
 - A fan-out parent looks idle by design — its children hold the work. Do not use parent output-file
   size or mtime as a liveness signal; a live run was killed that way this session.
+- **The ACED fan-out over-spawns unless the brief pins it down**, and that is what exhausts the
+  session limit. Two rules, both in the contract but neither self-enforcing:
+  - **Exactly one impl-judge per run.** Do not split the suite by layer across two judges to fit a
+    budget — `IMPLEMENTATION_PASS` is one verdict over every frozen scenario, and two judges each
+    holding half the suite cannot produce it. (Proposed once here; it is wrong.)
+  - **One case-judge invocation per case**, where a case is one non-trigger scenario, one `Examples`
+    row, or one `@rubric` sample. That single invocation covers *both* the blind-simulation and the
+    scoring pass. The dead 2026-08-14 run spawned case-judges labelled "corroboration A"/"corroboration
+    B" against the single scenario `opens by asking the question, unlabelled, without the item's
+    title` — a second judge to confirm a verdict already returned. That is not in the contract. When a
+    verdict is unusable, **re-dispatch that one case** and log it in `harness_incidents`; do not add a
+    corroborator beside it.
+  - Correct size for this suite: 20 non-trigger scenarios + 8 trigger rows x 3 runs + 5 rubric
+    samples. A plan implying materially more is mis-shaped — check before spawning, not after.
 
 **Do not relearn — see `## Resolved decisions` below**, and the design record in
 `.agents/spec/design/posting-skill-boundaries.md`, ADR
