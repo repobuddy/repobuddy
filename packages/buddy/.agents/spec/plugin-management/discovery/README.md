@@ -1,5 +1,6 @@
 ---
 spec-type: behavioral
+concept: [plugin-registry, invocation]
 ---
 
 # Plugin discovery

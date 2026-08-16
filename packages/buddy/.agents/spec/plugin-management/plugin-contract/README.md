@@ -1,5 +1,6 @@
 ---
 spec-type: reference
+concept: plugin-activation
 ---
 
 # Plugin contract

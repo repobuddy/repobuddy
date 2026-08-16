@@ -1,5 +1,6 @@
 ---
 spec-type: behavioral
+concept: [plugin-registry, package-manager]
 ---
 
 # Remove a plugin

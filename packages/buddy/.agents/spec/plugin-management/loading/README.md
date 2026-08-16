@@ -1,5 +1,6 @@
 ---
 spec-type: behavioral
+concept: plugin-activation
 ---
 
 # Plugin loading

@@ -1,5 +1,6 @@
 ---
 spec-type: behavioral
+concept: [configuration, plugin-registry, scaffolding]
 ---
 
 # Initialization

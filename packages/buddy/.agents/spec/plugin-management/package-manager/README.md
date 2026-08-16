@@ -1,5 +1,6 @@
 ---
 spec-type: behavioral
+concept: package-manager
 ---
 
 # Package manager operations
