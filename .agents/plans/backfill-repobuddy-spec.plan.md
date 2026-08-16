@@ -43,11 +43,17 @@ todos:
     status: completed
   - content: 'Spike: package-manager detection + command matrix'
     status: completed
-  - content: 'Re-verify plugin detection after find-installed-packages 3.2.0 clears the 24h hold'
+  - content: 'Re-verify the assumptions after the clibuilder v10 / find-installed-packages 4 upgrade'
+    status: completed
+  - content: Tag every node with its concept; reconcile the assumptions register
+    status: completed
+  - content: 'Re-derive every node''s ## Use Cases actor-first, with extensions stated'
     status: pending
-  - content: Write the six *.learn.ts boundary guards (impl phase)
+  - content: 'Fix section order in plugin-management/loading (Control Flow precedes Use Cases)'
     status: pending
   - content: Spec gate — judge, freeze, status approved
+    status: pending
+  - content: Write the nine *.learn.ts boundary guards (deferred to a later impl mission)
     status: pending
 ---
 
@@ -97,7 +103,9 @@ No source CR — a bare prompt.
   (holding one `.editorconfig`). Typo in the allowlist — the templates are currently
   **not shipped**. Fixing it is in this mission's scope.
 
-## clibuilder v9 facts that constrain the spec
+## clibuilder facts that constrain the spec
+
+(Read from v9 during explore; every one re-verified against v10 — see the assumptions register.)
 
 - `config: true` + `name: repobuddy` resolves `repobuddy{,.json,.yml,rc,...}` and the
   dotted `.repobuddy.*` variants via find-up, plus a `repobuddy` key in `package.json`.
@@ -118,12 +126,12 @@ No source CR — a bare prompt.
 
 ## Spec tree (`status: draft`)
 
-Capability-first at `packages/buddy/.agents/spec/`. 15 nodes, 10 suites, **46 scenarios**
+Capability-first at `packages/buddy/.agents/spec/`. 15 nodes, 10 suites, **43 scenarios**
 after the inherited-behavior triage (was 74). Both checks pass.
 
-- `cli-shell/` 3 · `configuration/` 3 · `initialization/` 8 · `workflows/` 5
+- `cli-shell/` 4 · `configuration/` 3 · `initialization/` 8 · `workflows/` 5
 - `plugin-management/` → `add` 5 · `remove` 4 · `update` 6 · `discovery` 2 · `loading` 3 ·
-  `package-manager` 7 · `plugin-contract` (reference)
+  `package-manager` 3 · `plugin-contract` (reference)
 - `design/inherited-behavior.md` · `design/decisions/` · `tooling/` · `glossary.md`
 
 ### The inherited-behavior rule (settled)
@@ -137,7 +145,7 @@ precedence as intended behavior. That is a suspected upstream bug, and freezing 
 have made the upstream *fix* a break here. It is deleted, not weakened.
 
 The cut analysis is preserved as prose + CFGs in `design/inherited-behavior.md`, which
-also carries the **six-assumption register** — the clibuilder facts our promises rest on,
+also carries the **nine-assumption register** — the clibuilder facts our promises rest on,
 each to be guarded by a `*.learn.ts` boundary test (a *learning test*, Clean Code ch. 8)
 rather than by a scenario. Guards fail on the Renovate bump PR, which is what makes
 `dependabot-automerge.yml` defensible.
@@ -145,16 +153,60 @@ rather than by a scenario. Guards fail on the Renovate bump PR, which is what ma
 `learn` still needs adding to the `files` exclusion glob in `package.json` so guards are
 not published.
 
-## Running check-suite
+## Running the checks
 
-`check-suite.mts` imports `validateFeatures` from `gherkin-cli`, which the **published** 0.2.0
-does not export. Use the local unpublished build at
-`~/code/cyberuni/gherkin-cli/packages/gherkin-cli` (0.1.0, has it) — a scratch runner with that
-path symlinked into `node_modules/`. `npx gherkin-cli` does not work.
+`node <sdd-skills>/check-project-specs/scripts/check-project-specs.mts --root .` from
+`packages/buddy` runs all six (spec-state, suite, concept-index, spec-structure, align-spec,
+scenario-overlap). This now works directly — the earlier `gherkin-cli` export problem that needed a
+symlinked local build is gone.
 
 ## NEXT
 
-**Remaining: one spike, then the spec gate.**
+**Paused before the spec gate, on a producer-alignment problem. Read this before writing anything.**
+
+The mechanical checks are all green and the three spikes are done, but green checks clear no
+alignment question — the bars are judged, not linted.
+
+### What went wrong
+
+The spec-judge was dispatched and **blocked at its pre-flight**: the conductor forwarded an empty
+producer governance declaration. That was accurate — this segment edited spec artifacts (the v10
+correction, the concept tags, the register reconciliation) **without loading the spec-gate bars
+first**, and what earlier segments loaded is unrecorded and cannot be vouched for.
+
+The bars were then loaded and **two standing violations surfaced immediately**, which is evidence
+against alignment, not for it. Re-declaring after the fact would have gamed a pre-flight that
+cannot distinguish a claim from evidence, so the declaration was withheld.
+
+### The two findings (unfixed — this is the next segment's work)
+
+1. **Every behavioral node enumerates use cases from the entry point.** All ten carry a
+   `| Use case | Trigger | Inputs | Outcome |` table. The bar requires **actor / goal**, the entry
+   point, **and extensions**, derived *from a listed set of actors*. Entry-point-first enumeration
+   can only return the use cases the interface already implies — structurally blind to the use case
+   nobody has built yet, which in a spec whose whole subject is **unbuilt** commands is the
+   expensive version of this mistake, not the cosmetic one.
+2. **`plugin-management/loading/` orders its sections wrongly** — `## Control Flow` sits before
+   `## Use Cases`. The four sections are ordered.
+
+### How to resume
+
+**Load the seven spec-gate governances *before* touching any spec file** — spec-format,
+suite-format, lifecycle, gate-validation, oracle-spec, builder-spec, architect-spec. Then re-derive
+every node's `## Use Cases` actor-first and fix the section order.
+
+Expect the re-derivation to **surface gaps, not just reformat**: an actor-first enumeration is meant
+to find goals with no entry point (a missing way in, or a use case belonging to another node) and
+entry points serving no listed actor (surface nobody asked for). New scenarios and CFG edges are a
+likely outcome, so treat the 43-scenario count and the CFGs as provisional again.
+
+Only then re-dispatch the judge, forwarding a declaration that is **true of the segment that wrote
+the artifacts**.
+
+Untouched by all this: the nine `*.learn.ts` guards and the other impl items below stay **deferred
+to a later mission** — this CR lands the spec, not the build.
+
+### History (kept for context)
 
 ### Spike results so far
 
@@ -209,7 +261,7 @@ CLI, so using it would mean an install-time requirement or a vendored binary.
 ### Then: the spec gate
 
 Judge → freeze → `status: approved`. Note the freeze is per `.feature` file; the triage that cut
-74 → 46 had to happen first, and did.
+74 → 43 had to happen first, and did.
 
 ### Deferred to impl
 

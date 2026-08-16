@@ -1,0 +1,1 @@
+{"kind":"leash","cr-ref":"backfill-repobuddy-spec","leash":"auto-spec","by":"derived","approach":["backfill a project spec for an unbuilt CLI; no shipped behavior is narrowed","spec-only diff at the spec gate: no source file changes, so blast radius is documentation","impl deferred to a later mission; the six boundary guards ride the follow-up machinery"]}
