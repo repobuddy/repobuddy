@@ -63,11 +63,12 @@ dependencies; a behavioral change in a transitive dependency arrives silently, t
 release or an ordinary lockfile refresh, with no PR title mentioning it. **A learning test is the only
 thing in the pipeline that would notice.**
 
-This is not hypothetical. As of 2026-08-12, `find-installed-packages` had just published 3.2.0 and
-`search-packages` 2.2.1, neither yet pulled — 3.2.0 is inside the 24-hour `minimumreleaseage` hold in
-the repo's `.npmrc`. Detection was verified working against **3.1.2** in a pnpm workspace
-(`plugins list` found `@repobuddy/typescript` by keyword), so nothing is broken today. **Re-verify
-after the upgrade lands**, and let the guard carry it from then on.
+This is not hypothetical. Detection was first verified against `find-installed-packages` **3.1.2** in
+a pnpm workspace (`plugins list` found `@repobuddy/typescript` by keyword). The clibuilder v10 move
+then pulled **4.0.0** — a major version of a transitive dependency, arriving under a PR titled for
+clibuilder and naming it nowhere — and detection was re-verified as still holding (see the v10 table
+below). That is precisely the arrival path this register exists to catch, and from here the guard
+carries it.
 
 ### Detection does not walk up — config resolution does
 
@@ -93,7 +94,9 @@ detected nothing and where it looked.
 ## Verification against clibuilder 10 (2026-08-12)
 
 The mechanics above were originally read from v9's source. The dependency has since been moved to
-`^10.0.0`; every assumption in the register was re-checked against it.
+v10; every clibuilder assumption in the register (1–7) was re-checked against it. Assumption 8 is
+`package-manager-detector`, not clibuilder, and is unaffected; assumption 9 did not exist yet — it
+became assertable only with the 10.1.0 exit-code fix recorded below.
 
 | Assumption | v10 |
 |---|---|
@@ -107,9 +110,8 @@ The mechanics above were originally read from v9's source. The dependency has si
 
 `pnpm --filter repobuddy build` also passes against v10.
 
-**Still not fixed in v10: every rejection path exits 0.** Re-checked directly — `no-such-command`
-still exits `0`. The upstream issue stands, and no scenario here asserts an exit code in either
-direction.
+The exit-code defect was still open at **10.0.0** and was fixed in **10.1.0**, which the package now
+depends on — see the worked record below.
 
 ## What we know about the mechanics
 
