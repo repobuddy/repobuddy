@@ -1,5 +1,27 @@
 # repobuddy
 
+## 1.4.0
+
+### Minor Changes
+
+- 3e8fae7: Ship the public agent skills as a universal plugin.
+  
+  The five public skills (`create-issue`, `merge-dep-prs`, `setup-github-pages`, `setup-github-repo`,
+  `setup-npm-trusted-publishing`) move from the repository root into this package and are now published
+  in the npm tarball, alongside a canonical `plugin.json` on the Agent Plugins Specification v1.0.0 and
+  derived manifests for Claude Code, Cursor, and Codex. Copilot CLI reads the canonical manifest directly.
+- 0bdd5fc: Add the `to-question` skill.
+  
+  It words a technical question, design discussion, or decision request for the platform you are about
+  to paste it into — Slack, Jira, Linear, Asana, GitHub, GitLab, email, or a Markdown baseline for
+  anything unlisted — and runs a bundled checker over the draft so dialect mistakes surface before the
+  paste, not after. It composes and hands off; filing the item itself stays with `create-issue`.
+- 42e0417: Add the `code-review` skill. Reviews a change set through three named engineering lenses — Linus, Uncle Bob, and Fowler — running each pass independently and reporting where the verdicts split rather than averaging them into one score.
+
+### Patch Changes
+
+- cf42353: Publish the `templates` directory. The `files` allowlist named `template` (singular), which matched nothing on disk, so no template file was included in the published package.
+
 ## 1.3.2
 
 ### Patch Changes
