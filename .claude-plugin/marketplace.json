@@ -1,6 +1,10 @@
 {
   "name": "repobuddy",
-  "owner": "Homa Wong (unional)",
+  "owner": {
+    "name": "Homa Wong (unional)",
+    "email": "homawong@gmail.com"
+  },
+  "description": "Local marketplace for installing repobuddy's agent skills straight from this repository.",
   "plugins": [
     {
       "name": "repobuddy",
@@ -8,10 +12,7 @@
       "description": "Agent skills for managing a repository — issues, dependency PRs, GitHub Pages, repo setup, and npm trusted publishing.",
       "version": "1.3.2",
       "homepage": "https://github.com/repobuddy/repobuddy",
-      "repository": {
-        "type": "git",
-        "url": "https://github.com/repobuddy/repobuddy.git"
-      },
+      "repository": "https://github.com/repobuddy/repobuddy.git",
       "license": "MIT",
       "keywords": [
         "agent-skills",
