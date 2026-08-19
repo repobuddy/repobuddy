@@ -48,6 +48,37 @@ npm install repobuddy
 npx skills experimental_sync
 ```
 
+### Installing as a Plugin
+
+This repository is also a plugin marketplace — `.claude-plugin/marketplace.json` lists the
+`repobuddy` plugin, and every runtime below reads that catalog.
+
+**Claude Code**
+
+```
+/plugin marketplace add repobuddy/repobuddy
+/plugin install repobuddy@repobuddy
+```
+
+**Codex**
+
+```sh
+codex plugin marketplace add repobuddy/repobuddy
+codex plugin add repobuddy@repobuddy
+```
+
+**GitHub Copilot CLI**
+
+```sh
+copilot plugin marketplace add repobuddy/repobuddy
+copilot plugin install repobuddy@repobuddy
+```
+
+Start a new session before using the plugin.
+
+Cursor has no command-line install; a workspace admin imports the catalog from
+Dashboard → Plugins → Team Marketplaces → Add Marketplace → Import from Repo.
+
 **Via Claude Code** — ask Claude to find and install a skill:
 
 ```
