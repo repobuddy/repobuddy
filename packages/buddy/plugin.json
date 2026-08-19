@@ -8,10 +8,7 @@
 		"email": "homawong@gmail.com"
 	},
 	"homepage": "https://github.com/repobuddy/repobuddy",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/repobuddy/repobuddy.git"
-	},
+	"repository": "https://github.com/repobuddy/repobuddy.git",
 	"license": "MIT",
 	"keywords": ["agent-skills", "repository", "github", "automation", "cli"],
 	"extensions": {
