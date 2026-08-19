@@ -7,7 +7,7 @@
 
 ## Agent Skills
 
-`repobuddy` provides [agent skills] for AI coding assistants (Claude Code, Cursor, etc.) to help manage your repository. Skills live in [`skills/`](./skills/) and are installed with the [Skills CLI].
+`repobuddy` provides [agent skills] for AI coding assistants (Claude Code, Cursor, etc.) to help manage your repository. Skills live in [`packages/buddy/skills/`](./packages/buddy/skills/), ship inside the [`repobuddy`] npm package, and are installed with the [Skills CLI].
 
 ### Available Skills
 
@@ -36,6 +36,16 @@ npx skills add repobuddy/repobuddy
 
 ```sh
 npx skills add repobuddy/repobuddy --skill create-issue --skill setup-github-repo
+```
+
+**Install from npm:**
+
+The skills also ship inside the [`repobuddy`] package as a [universal plugin], so installing the
+package makes them available to Claude Code, Cursor, Codex, and GitHub Copilot CLI:
+
+```sh
+npm install repobuddy
+npx skills experimental_sync
 ```
 
 **Via Claude Code** — ask Claude to find and install a skill:
@@ -109,10 +119,11 @@ npx skills add repobuddy/agent-changesets
 [repobuddy]: ./packages/buddy/readme.md
 [agent skills]: https://github.com/vercel-labs/skills
 [Skills CLI]: https://github.com/vercel-labs/skills
-[`create-issue`]: ./skills/create-issue/SKILL.md
-[`merge-dep-prs`]: ./skills/merge-dep-prs/SKILL.md
-[`setup-github-pages`]: ./skills/setup-github-pages/SKILL.md
-[`setup-github-repo`]: ./skills/setup-github-repo/SKILL.md
+[universal plugin]: https://github.com/agentplugins/agent-plugins-spec
+[`create-issue`]: ./packages/buddy/skills/create-issue/SKILL.md
+[`merge-dep-prs`]: ./packages/buddy/skills/merge-dep-prs/SKILL.md
+[`setup-github-pages`]: ./packages/buddy/skills/setup-github-pages/SKILL.md
+[`setup-github-repo`]: ./packages/buddy/skills/setup-github-repo/SKILL.md
 [`repobuddy/agent-changesets`]: https://github.com/repobuddy/agent-changesets
 [`repobuddy/agent-security`]: https://github.com/repobuddy/agent-security
 [biome]: https://biomejs.dev/

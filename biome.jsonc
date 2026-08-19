@@ -8,7 +8,9 @@
 		"defaultBranch": "main"
 	},
 	"files": {
-		"includes": ["!**/tests/performant", "!.agents"]
+		// The vendor plugin manifests are build output of `universal-plugin plugin build`.
+		// Formatting them here would fight the generator on every build.
+		"includes": ["!**/tests/performant", "!.agents", "!**/.claude-plugin", "!**/.cursor-plugin", "!**/.codex-plugin"]
 	},
 	"formatter": {
 		"enabled": true,

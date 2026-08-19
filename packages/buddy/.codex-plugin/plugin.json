@@ -1,0 +1,27 @@
+{
+	"name": "repobuddy",
+	"version": "1.3.2",
+	"description": "Agent skills for managing a repository — issues, dependency PRs, GitHub Pages, repo setup, and npm trusted publishing.",
+	"author": {
+		"name": "Homa Wong (unional)",
+		"email": "homawong@gmail.com"
+	},
+	"homepage": "https://github.com/repobuddy/repobuddy",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/repobuddy/repobuddy.git"
+	},
+	"license": "MIT",
+	"keywords": [
+		"agent-skills",
+		"repository",
+		"github",
+		"automation",
+		"cli"
+	],
+	"skills": "./skills/",
+	"interface": {
+		"displayName": "Repobuddy",
+		"category": "productivity"
+	}
+}

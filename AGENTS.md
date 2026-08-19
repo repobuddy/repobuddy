@@ -82,7 +82,7 @@ This is a **pnpm monorepo** managed with [Turborepo](https://turbo.build/). It i
 - `@repobuddy/test` — Shared test utilities
 - `repobuddy` — CLI for managing the repository itself
 
-**Public agent skills** (`skills/`) — installed by consumers via `npx skills add repobuddy/repobuddy`:
+**Public agent skills** (`packages/buddy/skills/`) — shipped as a universal plugin inside the `repobuddy` npm package, and installed by consumers via `npx skills add repobuddy/repobuddy`:
 - `create-issue` — create GitHub/GitLab issues, dedup check first
 - `merge-dep-prs` — merge Dependabot/Renovate PRs, handles CI failures
 - `setup-github-pages` — deploy a static site to GitHub Pages (base path, Actions workflow, Pages source)
@@ -103,6 +103,12 @@ editing in place, or the lock hash goes stale.
 
 **Test cases** live under `testcases/` — fixture packages exercised by integration tests.
 
+**Universal plugin**: `packages/buddy/plugin.json` is the canonical manifest (Agent Plugins Specification v1.0.0). The
+`.claude-plugin/`, `.cursor-plugin/`, and `.codex-plugin/` manifests beside it are **generated** by
+`npx universal-plugin plugin build` — never hand-edit them. Copilot CLI reads the canonical `plugin.json` directly, so
+nothing is derived for it. The plugin `version` mirrors the package version via `packagePath: "."`; move it with
+`/universal-plugin:version`, never by hand.
+
 **Documentation site** lives under `website/` (Astro).
 
 **Build pipeline**: Turborepo tasks are declared in `turbo.json`. `coverage` and `test` depend on `@repobuddy/jest#build` and `@repobuddy/vitest#build` first, because the repo dogfoods its own jest/vitest configs.
@@ -111,11 +117,11 @@ editing in place, or the lock hash goes stale.
 
 ## Skill Repo Conventions
 
-- Public skills live in `skills/<name>/SKILL.md`. The `name` in frontmatter must match the directory name.
+- Public skills live in `packages/buddy/skills/<name>/SKILL.md`. The `name` in frontmatter must match the directory name.
 - Repo-private skills live in `.agents/skills/<name>/SKILL.md` and **must** include `metadata: internal: true` in frontmatter.
-- Never duplicate a skill between `skills/` and `.agents/skills/` without a documented reason.
+- Never duplicate a skill between `packages/buddy/skills/` and `.agents/skills/` without a documented reason.
 - After adding or editing any `.agents/skills/` entry, run `npx cyber-skills@0.4.3 skill repair-private` to ensure metadata is correct.
-- CI validates public skills on PRs touching `skills/` via `npx cyber-skills@0.4.3 audit validate`.
+- CI validates public skills on PRs touching `packages/buddy/skills/` via `npx cyber-skills@0.4.3 audit validate`.
 
 ## Dependencies
 
