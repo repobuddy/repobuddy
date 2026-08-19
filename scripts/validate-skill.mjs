@@ -31,7 +31,7 @@ if (!skill) {
 	process.exit(2)
 }
 
-const skillDir = join('skills', skill)
+const skillDir = join('packages', 'buddy', 'skills', skill)
 const specDir = join('.agents', 'spec', 'agent-skills', skill)
 const resultsDir = join('.agents', 'aced', 'results', `skills-${skill}`)
 
@@ -193,7 +193,7 @@ if (runs.length === 0) {
 		if (result.implementation_pass !== true) {
 			fail(
 				`latest ACED run does not record implementation_pass: true (got ${JSON.stringify(result.implementation_pass)}` +
-					`${result.implementation_pass_reason ? ` — ${result.implementation_pass_reason}` : ''}) — do not present it as passing`
+					`${result.implementation_pass_reason ? ` — ${result.implementation_pass_reason}` : ''}) — do not present it as passing`,
 			)
 		}
 

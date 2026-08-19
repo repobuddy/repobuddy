@@ -1,6 +1,6 @@
 ---
 cr-ref: to-question-spec-backfill
-target: skills/to-question
+target: packages/buddy/skills/to-question
 status: in-progress
 todos:
   - content: Backfill the SDD spec node for to-question (README + suite)
@@ -35,7 +35,7 @@ todos:
 
 # CR: backfill the `to-question` spec, and widen its use cases
 
-Mission against PR #577, which added `skills/to-question` implementation-first with no spec. Branch
+Mission against PR #577, which added `packages/buddy/skills/to-question` implementation-first with no spec. Branch
 `feat/to-question-skill`. Seventeen commits, `030784e` (the original PR) through `0db6b52`.
 
 ## NEXT — resume here

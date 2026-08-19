@@ -1,5 +1,5 @@
 ---
-subject: skills/to-question/SKILL.md
+subject: packages/buddy/skills/to-question/SKILL.md
 eval:
   layers: [trigger, behavior, quality]
   judge:
@@ -12,7 +12,7 @@ eval:
 
 # to-question — measurement policy
 
-The subject is `skills/to-question/SKILL.md` together with the `assets/` files it loads at runtime;
+The subject is `packages/buddy/skills/to-question/SKILL.md` together with the `assets/` files it loads at runtime;
 the judge reads the SKILL.md and follows its references.
 
 **All three layers carry signal**, because the fit tier is `strong`

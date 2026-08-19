@@ -1,7 +1,7 @@
 # 0001 — `to-question` owns composition and rendering, not delivery
 
 **Status:** accepted (recorded at backfill, 2026-08-12)
-**Context:** backfilling a spec for `skills/to-question` after it shipped in PR #577
+**Context:** backfilling a spec for `packages/buddy/skills/to-question` after it shipped in PR #577
 
 ## Decision
 

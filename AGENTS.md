@@ -88,6 +88,7 @@ This is a **pnpm monorepo** managed with [Turborepo](https://turbo.build/). It i
 - `setup-github-pages` — deploy a static site to GitHub Pages (base path, Actions workflow, Pages source)
 - `setup-github-repo` — branch protection, Dependabot, CI setup
 - `setup-npm-trusted-publishing` — register npm trusted publishers (OIDC) to retire `NPM_TOKEN`; one package, an org, or every org owned
+- `to-question` — word a question for a platform (Slack, Jira, Linear, Asana, GitHub, GitLab, email); composes, never posts
 
 **Related skill collections** (separate repos, same install flow):
 - [`repobuddy/agent-changesets`](https://github.com/repobuddy/agent-changesets) — changeset authoring and release setup
@@ -118,6 +119,7 @@ nothing is derived for it. The plugin `version` mirrors the package version via 
 ## Skill Repo Conventions
 
 - Public skills live in `packages/buddy/skills/<name>/SKILL.md`. The `name` in frontmatter must match the directory name.
+- Every skill ships a `README.md` beside its `SKILL.md`. `SKILL.md` instructs the agent; the `README.md` explains to a person what the skill does, how to invoke it, and what it produces.
 - Repo-private skills live in `.agents/skills/<name>/SKILL.md` and **must** include `metadata: internal: true` in frontmatter.
 - Never duplicate a skill between `packages/buddy/skills/` and `.agents/skills/` without a documented reason.
 - After adding or editing any `.agents/skills/` entry, run `npx cyber-skills@0.4.3 skill repair-private` to ensure metadata is correct.
