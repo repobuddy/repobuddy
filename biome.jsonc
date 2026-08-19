@@ -18,6 +18,18 @@
 	},
 	"overrides": [
 		{
+			// Repo maintenance CLIs: printing is their output, and they read their own env config.
+			"includes": ["**/scripts/**"],
+			"linter": {
+				"rules": {
+					"suspicious": {
+						"noConsole": "off",
+						"noUndeclaredEnvVars": "off"
+					}
+				}
+			}
+		},
+		{
 			"includes": ["**/tests/performant/**"],
 			"javascript": {
 				"formatter": {

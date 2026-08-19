@@ -1,0 +1,27 @@
+{
+	"sdd-plugins": [
+		{
+			"name": "aced",
+			"version": "0.1.0",
+			"squads": [
+				{
+					"artifact-types": ["skill", "subagent", "command", "agents-section"],
+					"roles": {
+						"spec-producer": "aced-scenario-writer",
+						"solution-producer": null,
+						"spec-judge": "aced-spec-validator",
+						"impl-producer": null,
+						"impl-judge": "aced-impl-judge"
+					},
+					"governances": {
+						"oracle-spec": null,
+						"builder-spec": "aced-builder-spec",
+						"builder-impl": "aced-builder-impl",
+						"architect-spec": null,
+						"architect-impl": null
+					}
+				}
+			]
+		}
+	]
+}

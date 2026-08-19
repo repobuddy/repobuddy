@@ -17,6 +17,7 @@
 | [`merge-dep-prs`] | Merge pending dependency update PRs — diagnoses CI failures, never merges release PRs |
 | [`setup-github-pages`] | Deploy a static site to GitHub Pages — base path, Actions workflow, and Pages source |
 | [`setup-github-repo`] | Set up a GitHub repo with branch protection, Dependabot, and CI |
+| [`to-question`] | Word a question for Slack, Jira, Linear, Asana, GitHub, GitLab, or email — checks the markup before you paste |
 
 ### Installing Skills
 
@@ -155,6 +156,7 @@ npx skills add repobuddy/agent-changesets
 [`merge-dep-prs`]: ./packages/buddy/skills/merge-dep-prs/SKILL.md
 [`setup-github-pages`]: ./packages/buddy/skills/setup-github-pages/SKILL.md
 [`setup-github-repo`]: ./packages/buddy/skills/setup-github-repo/SKILL.md
+[`to-question`]: ./packages/buddy/skills/to-question/SKILL.md
 [`repobuddy/agent-changesets`]: https://github.com/repobuddy/agent-changesets
 [`repobuddy/agent-security`]: https://github.com/repobuddy/agent-security
 [biome]: https://biomejs.dev/
