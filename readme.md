@@ -15,6 +15,7 @@
 | --- | --- |
 | [`create-issue`] | Create a bug report or feature request — searches for duplicates first |
 | [`merge-dep-prs`] | Merge pending dependency update PRs — diagnoses CI failures, never merges release PRs |
+| [`review-permissions`] | Audit what your agents are allowed to do — risk-rank every grant, then tighten and consolidate it |
 | [`setup-github-pages`] | Deploy a static site to GitHub Pages — base path, Actions workflow, and Pages source |
 | [`setup-github-repo`] | Set up a GitHub repo with branch protection, Dependabot, and CI |
 | [`to-question`] | Word a question for Slack, Jira, Linear, Asana, GitHub, GitLab, or email — checks the markup before you paste |
@@ -154,6 +155,7 @@ npx skills add repobuddy/agent-changesets
 [universal plugin]: https://github.com/agentplugins/agent-plugins-spec
 [`create-issue`]: ./packages/buddy/skills/create-issue/SKILL.md
 [`merge-dep-prs`]: ./packages/buddy/skills/merge-dep-prs/SKILL.md
+[`review-permissions`]: ./packages/buddy/skills/review-permissions/SKILL.md
 [`setup-github-pages`]: ./packages/buddy/skills/setup-github-pages/SKILL.md
 [`setup-github-repo`]: ./packages/buddy/skills/setup-github-repo/SKILL.md
 [`to-question`]: ./packages/buddy/skills/to-question/SKILL.md
