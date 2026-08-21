@@ -102,17 +102,27 @@ const parseJson = (text, file) => {
 	}
 }
 
+/** Brackets balance across whatever has been accumulated so far. */
+const balanced = (text) => (text.match(/\[/g) ?? []).length === (text.match(/\]/g) ?? []).length
+
 /**
  * A deliberately small TOML reader: enough to pull top-level scalars, the keys of
  * [table] headers, and scalars inside a named table. Codex's config.toml is the only
  * TOML source and only a handful of its keys carry permissions.
+ *
+ * Every line it cannot read is counted and reported, never dropped in silence: a
+ * permission this reader skips would otherwise read to the user as a permission they
+ * do not have.
  */
-const parseTomlLite = (text) => {
+const parseTomlLite = (text, file) => {
 	const top = {}
 	const tables = {}
+	const skipped = []
 	let current = null
-	for (const line of text.split('\n')) {
-		const trimmed = line.replace(/(^|\s)#.*$/, '').trim()
+	const lines = text.split('\n')
+	const strip = (line) => line.replace(/(^|\s)#.*$/, '').trim()
+	for (let i = 0; i < lines.length; i++) {
+		const trimmed = strip(lines[i])
 		if (!trimmed) continue
 		const header = /^\[\[?([^\]]+)\]\]?$/.exec(trimmed)
 		if (header) {
@@ -121,12 +131,21 @@ const parseTomlLite = (text) => {
 			continue
 		}
 		const kv = /^([A-Za-z_][\w.-]*|"[^"]*")\s*=\s*(.+)$/.exec(trimmed)
-		if (!kv) continue
+		if (!kv) {
+			skipped.push(i + 1)
+			continue
+		}
 		const key = kv[1].replace(/^"|"$/g, '')
 		let value = kv[2].trim()
+		// An array may span lines. Keep consuming until the brackets balance, or the
+		// value is the opening bracket alone and every element silently disappears.
+		if (value.startsWith('[') && !balanced(value)) {
+			while (i + 1 < lines.length && !balanced(value)) value += ` ${strip(lines[++i])}`
+			if (!balanced(value)) skipped.push(i + 1)
+		}
 		if (/^".*"$/.test(value)) value = value.slice(1, -1)
 		else if (value === 'true' || value === 'false') value = value === 'true'
-		else if (/^\[.*\]$/.test(value))
+		else if (/^\[[\s\S]*\]$/.test(value))
 			value = value
 				.slice(1, -1)
 				.split(',')
@@ -135,6 +154,10 @@ const parseTomlLite = (text) => {
 		if (current) tables[current][key] = value
 		else top[key] = value
 	}
+	if (skipped.length)
+		notes.push(
+			`${file}: ${skipped.length} line(s) the built-in TOML reader could not parse (line ${skipped.join(', ')}) — read them by hand, they may carry permissions this report is missing`,
+		)
 	return { top, tables }
 }
 
@@ -543,7 +566,13 @@ function analyzeConsolidation() {
 				fix: 'Keep the one at the broadest scope that should hold it and delete the rest — a rule in two places is a rule that only gets narrowed in one.',
 			})
 
-	// subsumption: a broader open-ended rule already covers a narrower one
+	// subsumption: a broader open-ended rule already covers a narrower one.
+	// The prefix has to land on a token boundary — plain `startsWith` reads
+	// `git committish foo` as covered by `git commit *`, and advising deletion of a
+	// rule that was never covered is the one mistake this section must not make.
+	const covers = (arg, prefix) =>
+		arg === prefix || arg.startsWith(`${prefix} `) || (/\W$/.test(prefix) && arg.startsWith(prefix))
+
 	for (const r of allows) {
 		if (!WILDCARD_TAIL.test(r.arg)) continue
 		const prefix = r.arg.replace(/[*:]\s*$/, '').trim()
@@ -551,7 +580,7 @@ function analyzeConsolidation() {
 		for (const other of allows) {
 			if (other === r || other.tool !== r.tool || other.harness !== r.harness) continue
 			if (other.raw === r.raw) continue
-			if (other.arg.startsWith(prefix))
+			if (covers(other.arg, prefix))
 				consolidation.push({
 					kind: 'subsumed',
 					rule: other.raw,
@@ -637,7 +666,7 @@ for (const src of SOURCES) {
 		notes.push(`could not read ${src.file}: ${e.message}`)
 		continue
 	}
-	const parsed = src.format === 'toml' ? parseTomlLite(text) : parseJson(text, src.file)
+	const parsed = src.format === 'toml' ? parseTomlLite(text, src.file) : parseJson(text, src.file)
 	if (!parsed) continue
 	scanned.push({ harness: src.harness, scope: src.scope, file: src.file })
 	extractors[src.harness]?.(src, parsed)
