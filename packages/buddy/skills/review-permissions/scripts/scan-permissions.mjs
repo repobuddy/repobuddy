@@ -566,7 +566,13 @@ function analyzeConsolidation() {
 				fix: 'Keep the one at the broadest scope that should hold it and delete the rest — a rule in two places is a rule that only gets narrowed in one.',
 			})
 
-	// subsumption: a broader open-ended rule already covers a narrower one
+	// subsumption: a broader open-ended rule already covers a narrower one.
+	// The prefix has to land on a token boundary — plain `startsWith` reads
+	// `git committish foo` as covered by `git commit *`, and advising deletion of a
+	// rule that was never covered is the one mistake this section must not make.
+	const covers = (arg, prefix) =>
+		arg === prefix || arg.startsWith(`${prefix} `) || (/\W$/.test(prefix) && arg.startsWith(prefix))
+
 	for (const r of allows) {
 		if (!WILDCARD_TAIL.test(r.arg)) continue
 		const prefix = r.arg.replace(/[*:]\s*$/, '').trim()
@@ -574,7 +580,7 @@ function analyzeConsolidation() {
 		for (const other of allows) {
 			if (other === r || other.tool !== r.tool || other.harness !== r.harness) continue
 			if (other.raw === r.raw) continue
-			if (other.arg.startsWith(prefix))
+			if (covers(other.arg, prefix))
 				consolidation.push({
 					kind: 'subsumed',
 					rule: other.raw,
