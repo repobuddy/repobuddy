@@ -1,4 +1,4 @@
-import type { ViteUserConfig } from 'vitest/config'
+import type { Plugin, ViteUserConfig } from 'vitest/config'
 import { buddyConfigDefaults } from './buddy_config_defaults.ts'
 import type { PresetOptions } from './types.ts'
 
@@ -12,10 +12,10 @@ interface NodePresetOptions extends PresetOptions {
  * @param options.environment - The test environment to use (default: 'node')
  * @returns A Vite plugin object
  */
-export function nodeTestPreset(options?: NodePresetOptions | undefined) {
+export function nodeTestPreset(options?: NodePresetOptions | undefined): Plugin {
 	return {
 		name: '@repobuddy/vitest/node-preset',
-		config(_userConfig?: ViteUserConfig | undefined): any {
+		config(_userConfig?: ViteUserConfig | undefined) {
 			// set timezone to GMT so that the test will generate the same result everywhere
 			process.env['TZ'] = process.env['TZ'] ?? 'GMT'
 			const include = [...buddyConfigDefaults.include.testNode]
