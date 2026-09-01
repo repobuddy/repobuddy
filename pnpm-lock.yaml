@@ -379,8 +379,8 @@ importers:
         specifier: ^7.0.1
         version: 7.2.0
       type-plus:
-        specifier: 8.0.0-beta.8
-        version: 8.0.0-beta.8(typescript@6.0.3)
+        specifier: ^7.6.2
+        version: 7.6.2
       uuid:
         specifier: ^14.0.0
         version: 14.0.1
@@ -446,8 +446,8 @@ importers:
         specifier: ^7.0.1
         version: 7.2.0
       type-plus:
-        specifier: 8.0.0-beta.8
-        version: 8.0.0-beta.8(typescript@6.0.3)
+        specifier: ^7.6.2
+        version: 7.6.2
       uuid:
         specifier: ^14.0.0
         version: 14.0.1
@@ -13919,12 +13919,6 @@ snapshots:
   type-plus@7.6.2:
     dependencies:
       tersify: 3.12.1
-      unpartial: 1.0.5
-
-  type-plus@8.0.0-beta.8(typescript@6.0.3):
-    dependencies:
-      tersify: 3.12.1
-      typescript: 6.0.3
       unpartial: 1.0.5
 
   type-plus@8.0.0-beta.8(typescript@7.0.2):
