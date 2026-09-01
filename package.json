@@ -54,7 +54,7 @@
 		"playwright": "^1.53.2"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.5.10",
+		"@biomejs/biome": "2.5.11",
 		"@changesets/cli": "^3.0.0",
 		"@repobuddy/biome": "workspace:^",
 		"@repobuddy/typescript": "workspace:^",
