@@ -1,3 +1,33 @@
 {
-	"extends": ["github>unional/renovate-preset"]
+	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+	"extends": ["github>unional/renovate-preset"],
+	"dependencyDashboard": true,
+	"ignoreUnstable": true,
+	"minimumReleaseAge": "1 day",
+	"internalChecksFilter": "strict",
+	"platformAutomerge": true,
+	"packageRules": [
+		{
+			"description": "Dev-only updates merge themselves once CI is green.",
+			"matchDepTypes": ["devDependencies", "packageManager"],
+			"matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+			"automerge": true
+		},
+		{
+			"description": "GitHub Actions minor/patch updates merge themselves.",
+			"matchManagers": ["github-actions"],
+			"matchUpdateTypes": ["minor", "patch", "digest"],
+			"automerge": true
+		},
+		{
+			"description": "Runtime dependencies of published packages stay manual: the bump ships to consumers and needs a patch changeset.",
+			"matchDepTypes": ["dependencies", "peerDependencies"],
+			"automerge": false
+		},
+		{
+			"description": "Majors stay manual regardless of dep type.",
+			"matchUpdateTypes": ["major"],
+			"automerge": false
+		}
+	]
 }
