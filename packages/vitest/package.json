@@ -1,6 +1,6 @@
 {
 	"name": "@repobuddy/vitest",
-	"version": "2.1.3",
+	"version": "2.1.4",
 	"description": "Your repository buddy for Vitest",
 	"keywords": [
 		"repobuddy",
