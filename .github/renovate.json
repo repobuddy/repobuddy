@@ -8,6 +8,11 @@
 	"platformAutomerge": true,
 	"packageRules": [
 		{
+			"description": "type-plus 8.x is an in-progress major rewrite published only to the `beta` dist-tag; `latest` is 7.x. `ignoreUnstable` alone does not cover this once something is already pinned to a prerelease, so bound it explicitly.",
+			"matchPackageNames": ["type-plus"],
+			"allowedVersions": "<8.0.0-0"
+		},
+		{
 			"description": "Dev-only updates merge themselves once CI is green.",
 			"matchDepTypes": ["devDependencies", "packageManager"],
 			"matchUpdateTypes": ["minor", "patch", "pin", "digest"],
