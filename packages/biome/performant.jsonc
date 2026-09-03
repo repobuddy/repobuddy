@@ -1,4 +1,10 @@
 {
+	"files": {
+		// Kept identical to `recommended`. See the note there: two presets that
+		// disagree about which files they lint is a defect in its own right, and
+		// the Markdown exclusion guards against frontmatter corruption.
+		"includes": ["**", "!**/.vscode/**/*.txt", "!**/*.md"]
+	},
 	"formatter": {
 		"enabled": true,
 		"indentStyle": "tab",
