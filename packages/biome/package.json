@@ -38,9 +38,11 @@
 		"recommended.jsonc"
 	],
 	"scripts": {
+		"check:preset": "biome lint tests/recommended --config-path=tests/.config/recommended --error-on-warnings && biome lint tests/performant --config-path=tests/.config/performant --error-on-warnings",
 		"publish:jsr": "pnpm dlx jsr publish"
 	},
 	"devDependencies": {
+		"@biomejs/biome": "2.5.11",
 		"@repobuddy/typescript": "workspace:*",
 		"@types/react": "^19.0.0",
 		"react": "^19.0.0"
