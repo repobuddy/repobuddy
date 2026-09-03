@@ -59,11 +59,10 @@ importers:
         version: link:../../packages/biome
 
   packages/biome:
-    dependencies:
-      '@biomejs/biome':
-        specifier: '>= 2'
-        version: 2.5.7
     devDependencies:
+      '@biomejs/biome':
+        specifier: 2.5.11
+        version: 2.5.11
       '@repobuddy/typescript':
         specifier: workspace:*
         version: link:../typescript
