@@ -72,7 +72,16 @@ const config: KnipConfig = {
 		},
 		'packages/test': { entry: [...testEntry, '**/*.stories.tsx'] },
 		'packages/typescript': { entry: testEntry },
-		'packages/vitest': { entry: [...testEntry, '**/*.stories.tsx'] },
+		'packages/vitest': {
+			entry: [...testEntry, '**/*.stories.tsx'],
+			ignoreDependencies: [
+				// Deliberately an *optional* peer: only consumers running browser
+				// tests need it. src/config/browser_test_preset.ts imports it, which
+				// knip reports as "referenced optional peerDependency" — that is the
+				// intended arrangement here, not a defect.
+				'@vitest/browser-playwright',
+			],
+		},
 		'testcases/*': {
 			// Fixture packages: the test files *are* the product. A runner executes
 			// them; nothing imports them.
