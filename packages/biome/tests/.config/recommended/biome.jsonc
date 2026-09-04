@@ -1,0 +1,7 @@
+{
+	"$schema": "../../../../../node_modules/@biomejs/biome/configuration_schema.json",
+	// Applies the published `recommended` preset to `tests/recommended` exactly as a
+	// consumer receives it, with none of this repo's own root config mixed in.
+	// Used through `--config-path` by the `check:preset` script.
+	"extends": ["../../../recommended.jsonc"]
+}

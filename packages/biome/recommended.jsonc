@@ -1,5 +1,11 @@
 {
 	"files": {
+		// Markdown is excluded because biome 2.4.15 reformatted YAML frontmatter as
+		// markdown headings, corrupting every file that carries it (SKILL.md,
+		// Astro content, anything with a `---` block). Biome 2.5.11 does not handle
+		// `.md` at all — it rejects a `markdown` config key and reports `.md` paths
+		// as ignored — so this is currently inert, and it stays as a guard for when
+		// Markdown support returns. `performant` carries the identical list.
 		"includes": ["**", "!**/.vscode/**/*.txt", "!**/*.md"]
 	},
 	"formatter": {
@@ -58,6 +64,10 @@
 				"useSingleVarDeclarator": "error",
 				"noUnusedTemplateLiteral": "error",
 				"useNumberNamespace": "error",
+				// Biome ships this rule at `info`, which does not fail `biome check`.
+				// A bare `import 'path'` resolves to a userland package if one exists,
+				// so the `node:` prefix is a correctness guard, not a style preference.
+				"useNodejsImportProtocol": "error",
 				"noInferrableTypes": "error",
 				"noUselessElse": "error"
 			},

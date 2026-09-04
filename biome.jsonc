@@ -10,7 +10,14 @@
 	"files": {
 		// The vendor plugin manifests are build output of `universal-plugin plugin build`.
 		// Formatting them here would fight the generator on every build.
-		"includes": ["!**/tests/performant", "!.agents", "!**/.claude-plugin", "!**/.cursor-plugin", "!**/.codex-plugin"]
+		"includes": [
+			"!**/tests/performant",
+			"!**/tests/.config",
+			"!.agents",
+			"!**/.claude-plugin",
+			"!**/.cursor-plugin",
+			"!**/.codex-plugin"
+		]
 	},
 	"formatter": {
 		"enabled": true,
@@ -25,42 +32,6 @@
 					"suspicious": {
 						"noConsole": "off",
 						"noUndeclaredEnvVars": "off"
-					}
-				}
-			}
-		},
-		{
-			"includes": ["**/tests/performant/**"],
-			"javascript": {
-				"formatter": {
-					"quoteStyle": "single",
-					"semicolons": "asNeeded",
-					"trailingCommas": "none"
-				}
-			},
-			"linter": {
-				"enabled": true,
-				"rules": {
-					"recommended": true,
-					"complexity": {
-						"noForEach": "off",
-						"useLiteralKeys": "off",
-						"noCommaOperator": "off"
-					},
-					"correctness": {
-						"noInnerDeclarations": "warn",
-						"noUnusedVariables": "error",
-						"useExhaustiveDependencies": "off"
-					},
-					"style": {
-						"noNonNullAssertion": "off",
-						"noParameterAssign": "off",
-						"useTemplate": "off"
-					},
-					"suspicious": {
-						"noAssignInExpressions": "off",
-						"noExplicitAny": "off",
-						"noVar": "off"
 					}
 				}
 			}

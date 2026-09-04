@@ -12,7 +12,8 @@ When reading any `SKILL.md` file, always check whether a `SKILL.local.md` exists
 
 **Unit of work:** one coherent, independently revertable change — one domain's refactor, one feature, one bugfix, one test suite expansion for one concern, one config change. Never two unrelated concerns in the same commit. A TDD red-green-refactor cycle alone is not a commit boundary; commit when the full intended change is complete and tests pass. If the working tree has unrelated changes, leave them unstaged — commit the current unit first, then continue.
 
-- Conventional Commits: `feat:`, `fix:`, `refactor:`, `test:`, `docs:`, `chore:`
+- Conventional Commits: `feat:`, `fix:`, `refactor:`, `test:`, `docs:`, `chore:` — enforced by commitlint
+  through the `.husky/commit-msg` hook, so a non-conforming message is rejected at commit time
 - One concern per commit; never batch unrelated changes
 - Stage only files for this unit: `git add <files>`, then verify with `git diff --cached`
 - Never use `git add .`, `git add -A`, or `git add -p` (interactive commands agents cannot run)
@@ -44,14 +45,22 @@ pnpm --filter @repobuddy/vitest test
 pnpm coverage
 
 # Lint and format check
-pnpm check        # biome check
-pnpm lint         # eslint
+pnpm check        # biome check (formatting + lint, whole repo)
+pnpm lint         # eslint — YAML only; biome has no YAML linter
+
+# Assert the published biome presets still behave as documented.
+# Each fixture under packages/biome/tests carries a `biome-ignore` for the rule
+# it exercises, so a rule that stops firing leaves an unused suppression. That
+# is only a *warning*, hence `--error-on-warnings` in the script.
+pnpm --filter @repobuddy/biome check:preset
 
 # Fix formatting
 pnpm format       # biome format --write
 pnpm check:fix    # biome check --fix
 
-# Full verify (typecheck + lint + coverage + depcheck + size)
+# Full verify (check + check:preset + lint + coverage + depcheck + size)
+# There is no separate `typecheck` task: every package builds with `tsc`, and
+# `coverage`/`size` depend on `build`, so a type error fails `verify`.
 pnpm verify
 
 # CI verify (same tasks, concurrency=1)
@@ -133,11 +142,14 @@ Renovate manages this repo's dependencies (`.github/renovate.json` extends `gith
 - **Let Renovate own semver range bumps.** Do not bulk-rewrite ranges in `package.json` — plain `pnpm update -r`
   rewrites every range to the exact latest and conflicts with the open Renovate PRs. To refresh resolved
   versions only, use `pnpm update -r --no-save`, which touches the lockfile alone.
-- **`.npmrc` sets `minimumreleaseage=1440`.** Any lockfile entry published within the last 24h fails the
-  supply-chain check in CI with `ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION`. A freshly opened dep PR often fails
+- **`pnpm-workspace.yaml` sets `minimumReleaseAge: 1440` and `minimumReleaseAgeStrict: true`.** Any lockfile
+  entry published within the last 24h fails the supply-chain check in CI. A freshly opened dep PR often fails
   for this reason alone — re-run the job once the version has aged out rather than debugging it as a real break.
-- `dependabot-automerge.yml` only fires for `dependabot[bot]`, which covers GitHub security updates; regular
-  updates all come through Renovate.
+  This belongs in `pnpm-workspace.yaml`, **not** `.npmrc`: pnpm 11 does not read `minimumReleaseAge` from
+  `.npmrc` at all, and a repo that puts it there silently runs pnpm's built-in default instead. Confirm with
+  `pnpm config get minimumReleaseAge` — it must print `1440`, not `undefined`.
+- There is no Dependabot automerge workflow; every dependency update comes through Renovate, which merges the
+  automergeable ones itself (see the `packageRules` in `.github/renovate.json`).
 
 ## Changesets
 

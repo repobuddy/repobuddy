@@ -1,4 +1,10 @@
 {
+	"files": {
+		// Kept identical to `recommended`. See the note there: two presets that
+		// disagree about which files they lint is a defect in its own right, and
+		// the Markdown exclusion guards against frontmatter corruption.
+		"includes": ["**", "!**/.vscode/**/*.txt", "!**/*.md"]
+	},
 	"formatter": {
 		"enabled": true,
 		"indentStyle": "tab",
@@ -43,6 +49,10 @@
 				"useSingleVarDeclarator": "error",
 				"noUnusedTemplateLiteral": "error",
 				"useNumberNamespace": "error",
+				// Biome ships this rule at `info`, which does not fail `biome check`.
+				// A bare `import 'path'` resolves to a userland package if one exists,
+				// so the `node:` prefix is a correctness guard, not a style preference.
+				"useNodejsImportProtocol": "error",
 				"noInferrableTypes": "error",
 				"noUselessElse": "error"
 			},
