@@ -2,6 +2,19 @@
 	"$schema": "https://turborepo.org/schema.json",
 	"tasks": {
 		"//#check": {},
+		// knip reads each package's `exports` map, and the jest testcases' configs
+		// resolve `@repobuddy/jest` through its built `cjs/` output, so the
+		// workspace has to be built first — same reason the old `depcheck` task
+		// depended on `build`.
+		"//#knip": {
+			"dependsOn": [
+				"@repobuddy/jest#build",
+				"@repobuddy/test#build",
+				"@repobuddy/typescript#build",
+				"@repobuddy/vitest#build",
+				"repobuddy#build"
+			]
+		},
 		"//#lint": {},
 		"build": {
 			"dependsOn": ["^build"],
@@ -18,9 +31,6 @@
 			"dependsOn": ["@repobuddy/jest#build", "@repobuddy/vitest#build", "build"],
 			"inputs": ["src/**", "package.json", "tsconfig.*"],
 			"outputs": ["coverage/**"]
-		},
-		"depcheck": {
-			"dependsOn": ["build"]
 		},
 		"dev": {
 			"cache": false
