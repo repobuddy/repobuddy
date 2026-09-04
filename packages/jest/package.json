@@ -394,7 +394,6 @@
 		"matchers",
 		"presets",
 		"src",
-		"config.mjs",
 		"!**/*.{spec,unit,test,accept,integrate,learning,system,perf,stress}.*"
 	],
 	"scripts": {
