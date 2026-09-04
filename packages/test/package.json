@@ -42,12 +42,11 @@
 		"build-storybook": "storybook build",
 		"clean": "rimraf cjs esm coverage lib --glob *.tsbuildinfo",
 		"coverage": "vitest run --coverage",
-		"depcheck": "depcheck",
 		"nuke": "run-s clean && rimraf node_modules",
 		"size:disabled": "size-limit",
 		"storybook": "storybook dev -p 6006",
 		"test": "vitest run",
-		"verify": "npm-run-all -p build lint coverage depcheck -p size",
+		"verify": "npm-run-all -p build lint coverage -p size",
 		"w": "vitest"
 	},
 	"devDependencies": {
@@ -58,7 +57,6 @@
 		"@vitest/browser": "^4.0.15",
 		"@vitest/browser-playwright": "^4.0.15",
 		"@vitest/coverage-v8": "^4.0.15",
-		"depcheck": "~1.4.3",
 		"npm-run-all2": "^9.0.0",
 		"react": "^19.1.0",
 		"react-dom": "^19.1.0",

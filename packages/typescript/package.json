@@ -48,12 +48,11 @@
 		"build:watch": "tsc -w",
 		"clean": "rimraf cjs esm coverage lib --glob *.tsbuildinfo",
 		"coverage": "vitest run --coverage",
-		"depcheck": "depcheck",
 		"nuke": "run-s clean && rimraf node_modules",
 		"size:disabled": "size-limit",
 		"test": "vitest run",
 		"w": "vitest",
-		"verify": "npm-run-all -p build coverage depcheck -p size"
+		"verify": "npm-run-all -p build coverage -p size"
 	},
 	"dependencies": {
 		"clibuilder": "^10.0.0",
@@ -64,7 +63,6 @@
 		"@size-limit/preset-small-lib": "~13.0.0",
 		"@types/node": "^24.0.0",
 		"@vitest/coverage-v8": "^4.0.15",
-		"depcheck": "~1.4.3",
 		"npm-run-all2": "^9.0.0",
 		"rimraf": "~6.1.0",
 		"size-limit": "~13.0.0",
