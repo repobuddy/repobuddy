@@ -13,7 +13,7 @@
 		"buddy": "pnpm --filter ./packages/buddy",
 		"build": "turbo run build",
 		"build:doc": "pnpm build",
-		"check": "biome check .",
+		"check": "biome check . --error-on-warnings",
 		"check:fix": "biome check . --fix",
 		"clean": "turbo run clean",
 		"coverage": "turbo run coverage",
