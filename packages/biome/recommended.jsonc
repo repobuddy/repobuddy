@@ -59,7 +59,12 @@
 				"noUnusedTemplateLiteral": "error",
 				"useNumberNamespace": "error",
 				"noInferrableTypes": "error",
-				"noUselessElse": "error"
+				"noUselessElse": "error",
+				// Biome ships this at `info`, which reports the finding and still exits 0 -
+				// the rule reads as enforced in a config review while gating nothing. The
+				// `node:` prefix is what distinguishes a builtin from a same-named package
+				// on the registry, so this is a supply-chain signal, not only a style one.
+				"useNodejsImportProtocol": "error"
 			},
 			"suspicious": {
 				"noAssignInExpressions": "off",
