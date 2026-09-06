@@ -100,6 +100,17 @@ label.
   one design and gathers prior art), a code-review comment is the wrong scale by an order of
   magnitude, and a status update is a different genre. See
   [the solution record](./to-question.solution.md) for each call.
+- **Public venues.** Stack Overflow, X/Bluesky, Reddit, Discord, Telegram and Facebook/LinkedIn are
+  out of scope, and the skill routes them to `research-workbench:community-post` rather than
+  composing them. Every supported target writes to an audience that already has the context; a
+  public audience has none, which changes what the text must contain — and the two obligations that
+  follow (cite prior art, do not repeat an answered question) are two of this skill's own non-goals
+  above. The routing holds whatever shape was resolved: a public venue is out of scope because its
+  readers lack the context, and no shape supplies that. Stack Overflow specifically was considered
+  and rejected — the `question` shape composes a decision request whose Options section is exactly
+  what Stack Overflow closes as opinion-based. Decided in
+  [#582](https://github.com/repobuddy/repobuddy/issues/582); the boundary is
+  [posting-skill-boundaries](../../design/posting-skill-boundaries.md).
 
 ### Known gaps in the shipped behavior
 
@@ -114,7 +125,11 @@ four are now resolved on this branch.
    **Settled as: fall back to the Markdown baseline and say so.** Most unlisted candidates are
    Markdown-family, so the baseline is usually right; and because it can be wrong, the fallback is
    announced rather than silent. Slack and Jira are excluded from it by name — neither accepts
-   Markdown, so falling back there would produce literal punctuation.
+   Markdown, so falling back there would produce literal punctuation. #582 later split this rule in
+   two: the fallback covers unlisted **private** venues (`teams`, `notion`), while an unlisted
+   **public** venue (`discord`, `reddit`, `x`) is routed to `research-workbench:community-post`
+   instead — there the baseline is not an imperfect answer but a wrong one, because the gap is the
+   composition rather than the markup.
 2. **Clipboard failure — fixed.** Three copy commands were listed, one per OS, with no instruction
    for choosing between them and no branch for the case where none is available (a headless agent, a
    CI run, a Linux box without `xclip`/`wl-copy`, a web session). Because the clipboard is the
@@ -208,7 +223,9 @@ graph TD
     E -->|No| F[Resolve format to slack<br/>and say so at the end of the reply]
     E -->|Yes| G{Is it a supported target?}
     G -->|Yes| G1[Resolve to that platform]
-    G -->|No| G2[Resolve to the Markdown baseline<br/>and announce the fallback]
+    G -->|No| G0{Public venue?}
+    G0 -->|Yes| D
+    G0 -->|No| G2[Resolve to the Markdown baseline<br/>and announce the fallback]
     F --> H[Load the dialect reference for its family]
     G1 --> H
     G2 --> H
@@ -232,7 +249,8 @@ and whether it speaks up follows from whether it *chose* rather than from how th
 | Resolution | Announce? |
 |---|---|
 | User named nothing → `slack` | **yes** — a default is a guess about the reader's venue |
-| User named an unlisted platform → Markdown baseline | **yes** — the dialect may be wrong |
+| User named an unlisted *private* platform → Markdown baseline | **yes** — the dialect may be wrong |
+| User named a *public* venue → `community-post` | **yes** — but as a routing answer, not a fallback; no dialect file would fix it |
 | User named a Markdown-family target (`github`, `gitlab`, `linear`, `asana`) → the shared file | **no** — each is a supported target; which file carries its row is an implementation detail |
 | User said they are blocked → `unblock` shape | **yes** — the skill restructured the draft on its own reading of the request |
 | User named nothing → `question` shape | **no** — it is the status quo, and the draft in front of the user shows its own sections |
@@ -279,7 +297,8 @@ handoff, so reporting a copy that did not happen loses the approved output silen
 | `E -->|No| F` | no platform named anywhere in the request | `` `defaults to slack when no platform is named, and says so` `` |
 | `G -->|Yes| G1` | user named jira | `` `renders jira wiki markup when jira is named` `` |
 | `G -->|Yes| G1` | user named linear | `` `caps headings at four levels when linear is named` `` |
-| `G -->|No| G2` | user named notion, which is not a supported target | `` `falls back to the markdown baseline and announces it` `` |
+| `G -->|No| G0 -->|No| G2` | user named notion, an unlisted private venue | `` `falls back to the markdown baseline and announces it` `` |
+| `G -->|No| G0 -->|Yes| D` | user named stack overflow, reddit, discord or x — unlisted public venues | `` `routes an unlisted public venue to community-post instead of falling back` `` |
 | `G -->|Yes| G1` | user named a Markdown-family target served by the shared file | `` `routes a markdown-family target to the shared reference without announcing a fallback` `` |
 | `H` (asset load) | user named github or gitlab, whose dialects are rows, not files | `` `loads one markdown-family reference for github and gitlab alike` `` |
 | `M` (render) | user named asana, whose row says tables do not render | `` `drops to bullet lists when the capability table says tables do not render` `` |
