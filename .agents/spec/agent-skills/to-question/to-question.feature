@@ -155,6 +155,21 @@ Feature: to-question — compose a technical question and render it for a target
     And the headings are the unblock shape's sections, not Context and Options
 
   @behavior
+  Scenario: keeps the unblock shape inside the target's capability limits
+    Given the user says "format this unblock ping for asana"
+    And asana renders headings as styled text and supports no tables
+    When to-question produces the draft
+    Then the draft contains no markdown table
+    And the already-tried entries are a list rather than a table
+
+  @behavior
+  Scenario: caps the unblock shape's headings at four levels on linear
+    Given the user says "format this unblock ping for linear"
+    And the already-tried section breaks down into named sub-attempts
+    When to-question produces the draft
+    Then the deepest heading in the draft is four hashes or fewer
+
+  @behavior
   Scenario: reads the platform asset rather than recalling its syntax
     Given the target platform is slack
     When to-question prepares to render the draft

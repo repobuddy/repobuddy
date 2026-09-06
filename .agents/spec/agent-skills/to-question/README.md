@@ -291,6 +291,8 @@ handoff, so reporting a copy that did not happen loses the approved output silen
 | `I` (compose, unblock) | user gave no deadline and no named person | `` `asks who and by when rather than drafting an unnamed ask` `` |
 | `I` (compose, unblock guard) | unblock request in a domain with plausible alternatives | `` `does not manufacture options in the unblock shape` `` |
 | `M` (render, unblock × jira) | unblock shape, target is jira | `` `renders the unblock shape in the target's dialect` `` |
+| `M` (render, unblock × asana) | unblock shape, target has no tables | `` `keeps the unblock shape inside the target's capability limits` `` |
+| `M` (render, unblock × linear) | unblock shape, target caps headings at four | `` `caps the unblock shape's headings at four levels on linear` `` |
 | `H` (asset load) | target platform is slack | `` `reads the platform asset rather than recalling its syntax` `` |
 | `I` (compose) | user supplied only a problem, no options | `` `composes the section template from a half-formed question` `` |
 | `I` (compose) | target is a tracker, so the item already exists | `` `opens by asking the question, unlabelled, without the item's title` `` |
