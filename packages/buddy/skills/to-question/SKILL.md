@@ -1,6 +1,6 @@
 ---
 name: to-question
-description: Use this skill when wording a question to post as a comment, message, or email in Jira, Linear, Asana, or Slack.
+description: Use this skill when wording a question or an unblock ping to paste into Jira, Linear, Asana, Slack, or email.
 ---
 
 # Question Formatter
@@ -22,14 +22,35 @@ Format a technical question, design discussion, or decision request for posting 
 
 **The tracker targets produce a comment on an item that already exists — not a new task, issue, or ticket.** That distinction is the whole boundary with `create-issue`: if the user wants the item to *exist*, that is `create-issue`'s job, and it searches for duplicates first. This skill words what you say *on* an item. So write the opening as someone speaking into an existing thread: **do not restate the item's own title or re-describe what it is about**, since the reader is already looking at it. Still open by **asking the question directly in one line** — that is the question, not the item's title, and a comment needs it just as much.
 
+## Supported Shapes
+
+Two things are chosen independently: the **content shape** (which sections the draft has) and the
+**dialect** (which markup it is rendered in). The table above is the dialect; this one is the shape.
+
+| Shape | Use when | Sections | Default |
+|-------|----------|----------|---------|
+| `question` | The user is undecided between alternatives and wants input | Context → Use Cases → Problem → Options → Questions | ✓ |
+| `unblock` | The user is stuck and needs a named person to do a named thing | Blocked on → Already tried → **What I need from you** → By when | |
+
+`question` is the default, so a request that names no shape composes exactly as it always has. Pick
+`unblock` when the user's own words say they are blocked — *blocked*, *stuck*, *waiting on*, *can't
+proceed until*, *need access to*, or a request that already carries a deadline.
+
+**The two shapes are not interchangeable, and the wrong one fails quietly.** Composing a blocked
+person's ping into the `question` shape makes the agent manufacture an Options section for a request
+that has no options, and leaves the ask and the deadline — the two things that make a ping work —
+with nowhere to go.
+
 ## Procedure
 
-1. Determine target format from user input. **If the user named no platform, use `slack`** — and say so at the **end of your reply**: "Formatted for Slack (the default) — say the word if you want Jira, Linear, Asana, GitHub, GitLab or email instead." Choosing for the user is fine; choosing silently is not, because a draft in the wrong dialect looks correct right up until it is pasted
-2. Load the dialect reference. Assets are sorted by **dialect family, not by platform name**: `slack` and `jira` have their own files because neither accepts Markdown at all, and `email` has one because it is pasted as rich text. **Every Markdown-family target — `github`, `gitlab`, `asana`, `linear`, `markdown` — loads [assets/markdown.md](./assets/markdown.md)** and takes its specifics from that file's capability table and platform notes. A platform served by the shared file is a supported target, so loading the baseline for it is normal routing, **not** a fallback: do not announce it as one
-3. **If the user named a platform not in the table at all** — `discord`, `notion`, `teams`, `reddit`, anything unlisted — load `assets/markdown.md`, treat the capability table's `anything else` row as unverified, and **tell the user you fell back to the Markdown baseline**. Never fall back silently, and never fall back to Markdown for Slack or Jira, which do not accept it
-4. Take the user's question/topic and any context they provide
-5. Structure using the template's pattern and markdown rules
-6. **Check the markup before showing it.** Write the draft to a temp file and run the bundled checker — it catches dialect mistakes that look fine in your reply and only break on paste:
+1. **Determine the content shape.** Default to `question`; choose `unblock` when the user says they are blocked, stuck, or waiting on someone. **If you chose `unblock` rather than being told to, say so in one line at the end of your reply** — "Shaped as an unblock ping rather than a question, since you're waiting on someone; say the word if you'd rather present it as options." The `question` default needs no announcement: it is the status quo, and the draft in front of the user already shows its own sections
+2. Load the shape file — [shapes/question.md](./shapes/question.md) or [shapes/unblock.md](./shapes/unblock.md). It names the sections and the rules that go with them; the dialect file names the markup
+3. Determine target format from user input. **If the user named no platform, use `slack`** — and say so at the **end of your reply**: "Formatted for Slack (the default) — say the word if you want Jira, Linear, Asana, GitHub, GitLab or email instead." Choosing for the user is fine; choosing silently is not, because a draft in the wrong dialect looks correct right up until it is pasted
+4. Load the dialect reference. Assets are sorted by **dialect family, not by platform name**: `slack` and `jira` have their own files because neither accepts Markdown at all, and `email` has one because it is pasted as rich text. **Every Markdown-family target — `github`, `gitlab`, `asana`, `linear`, `markdown` — loads [assets/markdown.md](./assets/markdown.md)** and takes its specifics from that file's capability table and platform notes. A platform served by the shared file is a supported target, so loading the baseline for it is normal routing, **not** a fallback: do not announce it as one
+5. **If the user named a platform not in the table at all** — `discord`, `notion`, `teams`, `reddit`, anything unlisted — load `assets/markdown.md`, treat the capability table's `anything else` row as unverified, and **tell the user you fell back to the Markdown baseline**. Never fall back silently, and never fall back to Markdown for Slack or Jira, which do not accept it
+6. Take the user's question/topic and any context they provide
+7. Structure the content into the shape's sections, rendered with the dialect's markup rules
+8. **Check the markup before showing it.** Write the draft to a temp file and run the bundled checker — it catches dialect mistakes that look fine in your reply and only break on paste:
 
    ```bash
    QUESTION_FILE=$(node <this-skill-dir>/scripts/question-path.mjs)
@@ -46,13 +67,13 @@ Format a technical question, design discussion, or decision request for posting 
    `<this-skill-dir>` is the directory holding this SKILL.md — **not** your current working directory. A bare `scripts/check-format.mjs` resolves against wherever you happen to be and will fail. Use the absolute path.
 
    Fix anything it reports, then re-run until clean. It knows the per-target rules (Slack's single-asterisk bold and `•` bullets, Jira's `h2.` headings and `[text|url]` links, Linear's four-level heading cap, email's subject-outside-the-body) and it skips fenced blocks, so diagrams and code samples are never flagged
-7. Display the formatted output in the reply (inside a fenced code block with 4 backticks so nested triple-backticks render correctly)
-8. Ask if the user wants any changes — iterate until they're happy
-9. Once approved, keep `$QUESTION_FILE` in sync with the final draft and hand off (below)
+9. Display the formatted output in the reply (inside a fenced code block with 4 backticks so nested triple-backticks render correctly)
+10. Ask if the user wants any changes — iterate until they're happy
+11. Once approved, keep `$QUESTION_FILE` in sync with the final draft and hand off (below)
 
 ## Handoff
 
-After the user approves the output, write it to `$QUESTION_FILE` (the path derived in step 6), then copy it to the clipboard using the first of these that exists on this machine — check with `command -v <cmd>` before running it:
+After the user approves the output, write it to `$QUESTION_FILE` (the path derived in step 8), then copy it to the clipboard using the first of these that exists on this machine — check with `command -v <cmd>` before running it:
 
 ```bash
 # macOS
@@ -82,6 +103,11 @@ Never report "Copied to clipboard" unless a copy command actually ran and succee
 
 ## Content Guidelines
 
+The sections below are the **`question`** shape — the default. For the `unblock` shape, its sections
+and its two load-bearing rules (the ask names a person and one action; the deadline is stated even
+when there is none) are in [shapes/unblock.md](./shapes/unblock.md). The unlabelled opening line and
+the ASCII-diagram guidance below apply to both shapes.
+
 Regardless of format, a good question includes:
 
 - **The question, first and unlabelled**: open by asking it directly, in one line. Do not put a `Title:`, `Summary:`, or `Ask:` label in front of it — the line *is* the question, and a label just adds a word the reader has to skip. This opening line is what stops the actual question being buried at the bottom, and **every target gets it, with no exceptions** — comments and email alike. Email's subject is handed to the user as a separate line to type into the client's Subject field; it never appears inside the pasted body, where it would be a heading duplicating what the reader can already see
@@ -95,6 +121,11 @@ Regardless of format, a good question includes:
 Use ASCII diagrams in code blocks to visualize architecture, data flow, state transitions, or UI layouts — visuals communicate faster than prose.
 
 ## References
+
+Content shapes — which sections the draft has:
+
+- [shapes/question.md](./shapes/question.md) — the question shape (default)
+- [shapes/unblock.md](./shapes/unblock.md) — the unblock-ping shape, with the named-ask slot
 
 Dialect references, with markup rules, templates and examples. One file per **dialect family**, not per platform:
 
