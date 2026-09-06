@@ -10,16 +10,22 @@ Format a technical question or discussion for a platform and copy to clipboard.
 
 ## Supported Formats
 
-| Format | Platform | Default |
-|--------|----------|---------|
-| `slack` | Slack | ✓ |
-| `asana` | Asana tasks | |
-| `jira` | Jira issues | |
-| `github` | GitHub Issues/PRs | |
-| `gitlab` | GitLab Issues/MRs | |
-| `linear` | Linear issues/projects | |
-| `email` | Email (rich text paste) | |
-| `markdown` | Markdown baseline — also the fallback for anything unlisted | |
+| Format | Platform | Dialect | Default |
+|--------|----------|---------|---------|
+| `slack` | Slack | Slack mrkdwn | ✓ |
+| `jira` | Jira issues | Jira wiki markup | |
+| `email` | Email (rich text paste) | plain text / rich text | |
+| `github` | GitHub Issues/PRs | Markdown family | |
+| `gitlab` | GitLab Issues/MRs | Markdown family | |
+| `linear` | Linear issues/projects | Markdown family | |
+| `asana` | Asana tasks | Markdown family | |
+| `markdown` | Markdown baseline — also the fallback for anything unlisted | Markdown family | |
+
+The references under `assets/` are sorted by **dialect, not by platform name**. The whole Markdown
+family shares one file with a per-platform capability table (headings, tables, task lists,
+strikethrough, alerts), so a new Markdown-family platform costs a row rather than another
+near-duplicate file. Slack, Jira and email keep their own files because their dialects genuinely
+diverge. A platform nobody has verified falls back to the Markdown baseline, and the skill says so.
 
 ## Checking the markup yourself
 
