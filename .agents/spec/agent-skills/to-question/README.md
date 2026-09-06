@@ -56,8 +56,9 @@ label.
 - **Rendering** — expressing those sections in one platform's markup dialect.
 - **Markup dialect** — the syntax a platform accepts. Slack's mrkdwn (`*bold*`) and Jira's wiki
   markup (`h2.`) are not Markdown, and Markdown pasted into them renders as literal punctuation.
-- **Handoff sink** — where the finished text is left: a file at `/tmp/question.md` and, where one is
-  available, the system clipboard.
+- **Handoff sink** — where the finished text is left: a file in a per-session private temp directory
+  (derived from the OS temp location, never a hardcoded path) and, where one is available, the system
+  clipboard.
 
 ### Non-goals
 
@@ -154,7 +155,7 @@ the same vocabulary — and its composition step is judgment, not mechanism.
 | 1 | **Compose for the default platform** | User asks for help wording/formatting a technical question and names no platform | The question plus whatever context they gave | A Slack-mrkdwn draft, displayed for review |
 | 2 | **Compose for a named platform** | User names one of the six supported platforms | The question, context, and the platform name | A draft in that platform's dialect, displayed for review |
 | 3 | **Revise the draft** | User responds to a displayed draft asking for a change | The change they asked for | A revised draft, displayed again for review |
-| 4 | **Hand off the approved draft** | User signals the draft is good | The approved draft | Written to `/tmp/question.md`, copied to the clipboard, and the user told which platform to paste into |
+| 4 | **Hand off the approved draft** | User signals the draft is good | The approved draft | Written to the derived temp path, copied to the clipboard, and the user told which platform to paste into |
 
 Use cases 1 and 2 enter the same composition sub-graph and differ only at the format-resolution
 edge. Use cases 3 and 4 are the two exits from the review loop.
@@ -211,7 +212,7 @@ graph TD
     P -->|Asks for a change| Q[Revise the draft]
     Q --> R[Display revised draft]
     R --> O
-    P -->|Approves| S[Write /tmp/question.md]
+    P -->|Approves| S[Write the derived temp file]
     S --> T{Clipboard command<br/>available?}
     T -->|Yes| U[Copy to clipboard]
     T -->|No| V[Say no clipboard is available<br/>and point at the file]

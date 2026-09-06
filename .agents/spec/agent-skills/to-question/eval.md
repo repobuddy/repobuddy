@@ -67,7 +67,7 @@ from a simulator that executes nothing, so an assertion about filesystem state o
 |---|---|
 | `reads the platform asset rather than recalling its syntax` | that a file was read |
 | `does not fall back to markdown for slack` | that a file was *not* read |
-| `writes the approved draft to a file on approval` | that `/tmp/question.md` exists |
+| `writes the approved draft to a file on approval` | that the handoff file exists |
 | `does not copy to the clipboard before approval` | that no command ran |
 | `keeps inviting changes rather than handing off unprompted` | that no file was written |
 
