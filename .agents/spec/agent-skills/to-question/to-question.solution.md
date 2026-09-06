@@ -144,9 +144,11 @@ Worth noting that the *displayed* draft is already a fallback of sorts — the t
 regardless, so nothing is ever truly unrecoverable. That is why this is a correctness-of-reporting
 problem rather than a data-loss one, and why the fix is small.
 
-**Deferred:** the sink path is hardcoded to `/tmp/question.md`, which is wrong on native Windows
+**Deferred:** the sink path was hardcoded to `/tmp/question.md`, which is wrong on native Windows
 (the `clip.exe` line implies WSL, but nothing enforces that) and is a poor choice on a shared
-machine. **Keep** as a small issue.
+machine. **Kept** as a small issue, and **now delivered**: `scripts/question-path.mjs` resolves the OS
+temp directory (honoring `TMPDIR`/`TEMP`) and mints a fresh private `mkdtemp` directory per session, so
+the path is portable and two sessions can neither collide nor read each other's draft.
 
 **Cut:** anything more elaborate — opening an editor, an OSC-52 terminal escape, a local HTTP handoff.
 Each adds a failure mode to a skill whose value is that it is simple, and the reply already carries
@@ -160,7 +162,7 @@ the text.
 |---|---|
 | 1 — Content shape as a parameter, starting with the unblock-ping shape | [#578](https://github.com/repobuddy/repobuddy/issues/578) |
 | 2 — Collapse `assets/` into a capability table; scale platforms by row | [#579](https://github.com/repobuddy/repobuddy/issues/579) — **delivered**: baseline + capability table + Linear + the unrecognized-platform rule here, then `github`/`gitlab`/`asana` folded in under the issue |
-| 4 — Portable handoff path instead of hardcoded `/tmp/question.md` | [#580](https://github.com/repobuddy/repobuddy/issues/580) |
+| 4 — Portable handoff path instead of hardcoded `/tmp/question.md` | [#580](https://github.com/repobuddy/repobuddy/issues/580) — **delivered** |
 
 Fork 3 (the overlap with `create-issue` and `community-post`) needed no issue — it resolved to
 "no duplication, boundary undocumented", and the boundary is now documented and enforced by the

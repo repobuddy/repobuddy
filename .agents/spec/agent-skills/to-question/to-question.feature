@@ -186,7 +186,7 @@ Feature: to-question — compose a technical question and render it for a target
     And the user has not said the draft is good
     When to-question responds
     Then it asks the user whether they want further changes
-    And no file is written to /tmp/question.md
+    And no file is written to the handoff path
 
   # ── Use case 4 — hand off the approved draft ──
 
@@ -195,14 +195,14 @@ Feature: to-question — compose a technical question and render it for a target
     Given to-question has displayed a slack draft
     And the user says "that's good, ship it"
     When to-question responds
-    Then /tmp/question.md exists
+    Then the handoff file exists at a path derived from the OS temp directory
     And its contents are the displayed draft
 
   @behavior
   Scenario: copies to the clipboard and names the platform to paste into
     Given the user has approved a draft whose target platform is slack
     When to-question completes the handoff
-    Then a clipboard copy command is run against /tmp/question.md
+    Then a clipboard copy command is run against the handoff file
     And the reply names Slack as the place to paste
 
   @behavior
@@ -211,7 +211,7 @@ Feature: to-question — compose a technical question and render it for a target
     And the machine has none of pbcopy, clip.exe, wl-copy or xclip on its PATH
     When to-question completes the handoff
     Then the reply states that no clipboard is available
-    And the reply gives the path /tmp/question.md
+    And the reply gives the handoff file's path
     And the reply does not state that the draft was copied to the clipboard
 
   @behavior

@@ -32,39 +32,49 @@ Format a technical question, design discussion, or decision request for posting 
 6. **Check the markup before showing it.** Write the draft to a temp file and run the bundled checker — it catches dialect mistakes that look fine in your reply and only break on paste:
 
    ```bash
-   node <this-skill-dir>/scripts/check-format.mjs <target> /tmp/question.md
+   QUESTION_FILE=$(node <this-skill-dir>/scripts/question-path.mjs)
+   # ...write the draft to "$QUESTION_FILE"...
+   node <this-skill-dir>/scripts/check-format.mjs <target> "$QUESTION_FILE"
    ```
+
+   **Derive the path with `question-path.mjs`; never hardcode `/tmp/question.md`.** The script resolves the
+   OS temp directory (honoring `TMPDIR`/`TEMP`, so it is right on Linux, macOS, WSL and native Windows) and
+   puts the file in a fresh private directory with a random name, so two sessions on a shared machine cannot
+   collide or read each other's draft. Run it **once** and reuse that path for the rest of the session — each
+   run makes a new directory.
 
    `<this-skill-dir>` is the directory holding this SKILL.md — **not** your current working directory. A bare `scripts/check-format.mjs` resolves against wherever you happen to be and will fail. Use the absolute path.
 
    Fix anything it reports, then re-run until clean. It knows the per-target rules (Slack's single-asterisk bold and `•` bullets, Jira's `h2.` headings and `[text|url]` links, Linear's four-level heading cap, email's subject-outside-the-body) and it skips fenced blocks, so diagrams and code samples are never flagged
 7. Display the formatted output in the reply (inside a fenced code block with 4 backticks so nested triple-backticks render correctly)
 8. Ask if the user wants any changes — iterate until they're happy
-9. Once approved, keep `/tmp/question.md` in sync with the final draft and hand off (below)
+9. Once approved, keep `$QUESTION_FILE` in sync with the final draft and hand off (below)
 
 ## Handoff
 
-After the user approves the output, write it to `/tmp/question.md`, then copy it to the clipboard using the first of these that exists on this machine — check with `command -v <cmd>` before running it:
+After the user approves the output, write it to `$QUESTION_FILE` (the path derived in step 6), then copy it to the clipboard using the first of these that exists on this machine — check with `command -v <cmd>` before running it:
 
 ```bash
 # macOS
-cat /tmp/question.md | pbcopy
+cat "$QUESTION_FILE" | pbcopy
 
 # Windows/WSL
-cat /tmp/question.md | clip.exe
+cat "$QUESTION_FILE" | clip.exe
 
 # Linux, Wayland
-cat /tmp/question.md | wl-copy
+cat "$QUESTION_FILE" | wl-copy
 
 # Linux, X11 (requires xclip or xsel)
-cat /tmp/question.md | xclip -selection clipboard
+cat "$QUESTION_FILE" | xclip -selection clipboard
 ```
 
 On success, tell the user: "Copied to clipboard — paste into [platform]."
 
 **If no clipboard command is available** — a headless agent, a CI run, a container, a web session — say so plainly instead of claiming success:
 
-> No clipboard available here. The formatted question is at `/tmp/question.md`, and it's in the output above to copy from.
+> No clipboard available here. The formatted question is at `<the derived path>`, and it's in the output above to copy from.
+
+Give the real path, not the placeholder — the user cannot open a file whose name they were not told.
 
 Never report "Copied to clipboard" unless a copy command actually ran and succeeded. The clipboard is the handoff, so a silent failure loses the output the user just approved.
 
