@@ -1,10 +1,13 @@
 Feature: to-question — compose a technical question and render it for a target platform
 
-  The skill composes a half-formed question into a fixed section shape, renders it in the
+  The skill composes a half-formed question into a named content shape, renders it in the
   target platform's markup dialect, iterates with the user, and hands off through the
   clipboard. It never posts.
 
-  # ── Use cases 1–2 — compose for a platform ──
+  Shape and dialect are independent parameters. `question` is the default shape; `unblock`
+  is for a user who is stuck and needs a named person to do a named thing.
+
+  # ── Use cases 1–2, 5 — compose for a shape and a platform ──
 
   @trigger
   Scenario Outline: engages to word a question, not to file an item or research a post
@@ -14,15 +17,17 @@ Feature: to-question — compose a technical question and render it for a target
     Then to-question being selected is <should_trigger>
 
     Examples:
-      | query                                                                       | should_trigger |
-      | help me word this retry-backoff question for the team                       | yes            |
-      | format this for linear so I can comment on the ticket                       | yes            |
-      | draft this question for the jira ticket, I'll paste it myself               | yes            |
-      | file a bug about the webhook retries dropping the last attempt              | no             |
-      | create a task in asana for the retry work                                   | no             |
-      | research what the community has said, then post it to the discussion board  | no             |
-      | write up the retry problem for the existing jira ticket                     | yes            |
-      | write up the retry problem as a new jira ticket                             | no             |
+      | query                                                                      | should_trigger |
+      | help me word this retry-backoff question for the team                      | yes            |
+      | format this for linear so I can comment on the ticket                      | yes            |
+      | draft this question for the jira ticket, I'll paste it myself              | yes            |
+      | file a bug about the webhook retries dropping the last attempt             | no             |
+      | create a task in asana for the retry work                                  | no             |
+      | research what the community has said, then post it to the discussion board | no             |
+      | write up the retry problem for the existing jira ticket                    | yes            |
+      | write up the retry problem as a new jira ticket                            | no             |
+      | help me word a slack ping, I'm blocked on the staging IAM role             | yes            |
+      | word this for the team — I need a review by thursday and nobody has looked | yes            |
 
   @behavior
   Scenario: defaults to slack when no platform is named, and says so
@@ -101,6 +106,55 @@ Feature: to-question — compose a technical question and render it for a target
     And the compared options are given as a bullet list
 
   @behavior
+  Scenario: defaults to the question shape and does not announce it
+    Given the user says "help me word this question about retry backoff for the team"
+    And the request says nothing about being blocked and names no shape
+    When to-question produces the draft
+    Then the draft carries an Options section
+    And the reply does not name the content shape it used
+
+  @behavior
+  Scenario: composes an unblock ping when the user says they are blocked
+    Given the user says "help me word this for the team — I'm blocked on the staging IAM role"
+    And the user says a prod-admin has to add the CI principal to the trust policy by thursday
+    When to-question produces the draft
+    Then the draft states what is blocked
+    And the draft states what has already been tried
+    And the draft names who is being asked and one action they can take
+    And the draft states when it is needed by
+
+  @behavior
+  Scenario: says the unblock shape was chosen when it inferred it
+    Given the user says "word this for the team — I'm stuck waiting on the staging IAM role"
+    And the user never says the word shape or the word unblock
+    When to-question produces the draft
+    Then the reply states that it shaped the draft as an unblock ping rather than a question
+    And the reply offers the question shape instead
+
+  @behavior
+  Scenario: does not manufacture options in the unblock shape
+    Given the user says "I'm blocked on the staging IAM role, help me word a ping"
+    And the block could plausibly be worked around three different ways
+    When to-question produces the draft
+    Then the draft contains no Options section
+    And the draft does not present alternatives for the reader to choose between
+
+  @behavior
+  Scenario: asks who and by when rather than drafting an unnamed ask
+    Given the user says "help me word an unblock ping, the deploy is stuck"
+    And the user names nobody to ask and gives no deadline
+    When to-question responds
+    Then it asks the user who should act and by when
+    And it does not display a draft whose ask is "any help appreciated"
+
+  @behavior
+  Scenario: renders the unblock shape in the target's dialect
+    Given the user says "format this unblock ping for jira"
+    When to-question produces the draft
+    Then the draft's section headings use "h2."
+    And the headings are the unblock shape's sections, not Context and Options
+
+  @behavior
   Scenario: reads the platform asset rather than recalling its syntax
     Given the target platform is slack
     When to-question prepares to render the draft
@@ -121,6 +175,25 @@ Feature: to-question — compose a technical question and render it for a target
                                    # one of a stated set, rather than inviting open commentary
         option_cost: 3          # each listed alternative names a concrete cost it incurs, not only
                                 # what it gains
+      threshold: 7
+      """
+    And the draft scores at or above the threshold
+
+  @quality @rubric
+  Scenario: composes an unblock ping the reader can act on
+    Given the user says "help me word a ping for the team, I'm blocked" and names no platform, so the target is slack
+    And the user supplies one paragraph saying the deploy cannot assume the staging IAM role
+    And the user says dana has prod-admin and that the release notes slip after thursday
+    When to-question produces the draft
+    Then the draft is graded:
+      """
+      dimensions:
+        ask_namedness: 3        # the ask names a person, role or team and one concrete action they
+                                # can take, rather than inviting help in general
+        tried_specificity: 3    # each already-tried entry says what was attempted and what it
+                                # produced, so the reader does not re-suggest it
+        deadline_consequence: 3 # the by-when states a time and what slips if it is missed, rather
+                                # than saying the work is urgent
       threshold: 7
       """
     And the draft scores at or above the threshold

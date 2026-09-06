@@ -10,7 +10,8 @@ should *not* grow in an obvious-looking direction.
 
 ## 1. The section template is fixed at one content shape
 
-`to-question` composes into exactly one shape: Context → Use Cases → Problem → Options → Questions.
+*As written, `to-question` composed into exactly one shape* — Context → Use Cases → Problem →
+Options → Questions — *and the fork below is what came of that; see Delivered for what shipped.*
 That shape encodes an assumption — that the user is **undecided between alternatives and wants
 input**. Where that assumption holds, the template is genuinely good. Where it does not, it misfires,
 and the misfire is quiet: the agent will dutifully manufacture an "Options" section for a request
@@ -24,7 +25,7 @@ Tested against five other things a person might want to post:
 | **RFC / design proposal** | Partly. Motivation → Alternatives → Unresolved questions maps well. The gap is that an RFC *advocates one design*, while this template presents options neutrally. | **Cut for now** — the advocacy shape is `research-workbench:community-post`'s, which additionally gathers prior art. Revisit only if someone wants an RFC without research. |
 | **Code-review comment** | No. Wrong scale by an order of magnitude — a review comment is one to three sentences anchored to a line. Five ceremonial sections would be absurd. | **Cut** — not a near-miss, a different genre. |
 | **Status update** | No. Done / Next / Blockers. No problem, no options, no questions. | **Cut** — different genre again; `asana-standup` covers the internal case. |
-| **"Can someone unblock me" ping** | **Nearly.** Same *situation* as a question — stuck, needs a human — but a different shape: what I'm blocked on, what I've already tried, what I need from you, by when. The template has no slot for the ask or the urgency, which are the two things that make a ping work. | **Keep** — see issue below. |
+| **"Can someone unblock me" ping** | **Nearly.** Same *situation* as a question — stuck, needs a human — but a different shape: what I'm blocked on, what I've already tried, what I need from you, by when. The template has no slot for the ask or the urgency, which are the two things that make a ping work. | **Keep** — delivered as the `unblock` shape (#578). |
 
 ### The fork: more templates, a parameter, or two skills?
 
@@ -38,10 +39,28 @@ would add a skill with no trigger of its own, and this repo already has three sk
 overlapping triggers. A fourth that fires on nothing is worse than the coupling it removes.
 
 **Chosen: make the content shape an explicit parameter, as the platform already is.** The real model
-is a matrix — **shape × dialect** — of which only the `question` row exists today. Adding the
-`unblock` row costs one file and no new trigger surface, and it makes the fixed assumption visible
-instead of implicit. The renderer stays shared, which is the actual benefit the two-skill split was
-reaching for, without the cost.
+is a matrix — **shape × dialect**. Adding the `unblock` row costs one file and no new trigger
+surface, and it makes the fixed assumption visible instead of implicit. The renderer stays shared,
+which is the actual benefit the two-skill split was reaching for, without the cost.
+
+### Delivered (#578)
+
+Two shapes now ship as files under `shapes/`, chosen independently of the dialect. `question` is the
+default, so a request naming no shape composes exactly as it did before. Three calls made while
+building it, each of which could have gone the other way:
+
+- **The inferred shape is announced; the default is not.** A draft shows its own sections, so the
+  user can see which shape they got — but not that a different one was available and was chosen
+  against their phrasing. Announcing the inferred `unblock` makes that reversible in one reply.
+  Announcing the `question` default would be noise on the status quo, and the acceptance criterion
+  was that current behavior is unchanged.
+- **The ask is a required slot, and a missing one stops the draft.** If the user has not said who
+  should act or by when, the skill asks rather than composing around the gap. A ping whose ask is
+  "any help appreciated" looks finished and does nothing, which is the exact failure the shape was
+  added to prevent — so producing one would be worse than pausing.
+- **The frontmatter description gained "unblock ping".** The description is the surface the harness
+  matches against; without the word, the shape would exist and never be reached on a request like
+  "I'm blocked on the staging role". Two near-boundary trigger rows were added with it.
 
 ---
 
@@ -160,7 +179,7 @@ the text.
 
 | Fork | Issue |
 |---|---|
-| 1 — Content shape as a parameter, starting with the unblock-ping shape | [#578](https://github.com/repobuddy/repobuddy/issues/578) |
+| 1 — Content shape as a parameter, starting with the unblock-ping shape | [#578](https://github.com/repobuddy/repobuddy/issues/578) — **delivered**: `shapes/question.md` + `shapes/unblock.md`, shape resolution, and the scenarios behind them |
 | 2 — Collapse `assets/` into a capability table; scale platforms by row | [#579](https://github.com/repobuddy/repobuddy/issues/579) — **delivered**: baseline + capability table + Linear + the unrecognized-platform rule here, then `github`/`gitlab`/`asana` folded in under the issue |
 | 4 — Portable handoff path instead of hardcoded `/tmp/question.md` | [#580](https://github.com/repobuddy/repobuddy/issues/580) — **delivered** |
 

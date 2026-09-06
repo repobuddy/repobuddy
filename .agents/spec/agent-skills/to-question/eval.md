@@ -13,7 +13,8 @@ eval:
 # to-question — measurement policy
 
 The subject is `packages/buddy/skills/to-question/SKILL.md` together with the `assets/` files it loads at runtime;
-the judge reads the SKILL.md and follows its references.
+the judge reads the SKILL.md and follows its references — which since #578 include the shape files
+under `shapes/`, since the sections a draft is graded on come from there rather than from SKILL.md.
 
 **All three layers carry signal**, because the fit tier is `strong`
 ([README.md](./README.md) `## Use Cases`):
@@ -29,8 +30,8 @@ correctly against two near-identical siblings should not clear its trigger bar a
 This is a deliberately demanding bar on first run, and a fail here is information rather than a
 defect in the suite.
 
-**`default_threshold: 4` is the fallback only.** The one `@rubric` scenario carries its own inline
-`threshold: 7` against a max of 9, which overrides it.
+**`default_threshold: 4` is the fallback only.** Both `@rubric` scenarios — one per content shape —
+carry their own inline `threshold: 7` against a max of 9, which overrides it.
 
 ## Two ways something unmeasured can look measured
 
@@ -83,10 +84,14 @@ an easy set, not a boundary. Two near-boundary rows have since been added which 
 ticket"* (no). They sit exactly on the create-vs-comment line, which is the distinction the skill
 actually has to make. Whether they discriminate is unknown until the next run.
 
-**The one `@rubric` scenario was a coin flip, and flipped.** The first run scored it 7/9 against
+**The `question` `@rubric` scenario was a coin flip, and flipped.** The first run scored it 7/9 against
 `threshold: 7` — clearing by zero. Re-run over five samples it scored 5, 7, 5, 6, 8: **mean 6.2,
 passing two times in five**. The cause was a genuine subject gap rather than a harsh rubric: nothing
 in the skill told the agent to *derive* options when the user brings none, and "alternatives with
 tradeoffs" is not "each option names a cost". Both are now fixed in the skill and its templates. The
 lesson generalises — **a scenario that clears by zero margin has not passed, it has been lucky**, and
 is worth re-running at higher N before it is believed.
+
+**The `unblock` rubric has never been run.** It was added with the shape in #578 and carries the
+same `threshold: 7` as the older one, chosen for symmetry rather than from measurement. Treat its
+first result as calibration data for the rubric, not as a verdict on the shape.
