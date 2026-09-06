@@ -104,11 +104,43 @@ four are now resolved on this branch.
    worded. It now leads with the trigger and says *paste*, which is the word that separates it from
    filing.
 
-Separately, the six template files under `assets/` are unchanged in content, but three of them
-(`github`, `gitlab`, `email`) wrapped a template containing triple-backtick blocks in a
-triple-backtick fence, so the block terminated at the first nested fence and the rest of the
+Separately, the template files under `assets/` wrapped a template containing triple-backtick blocks
+in a triple-backtick fence, so the block terminated at the first nested fence and the rest of the
 template read as loose prose. They now use four-backtick fences, the same way the skill's own
 display step does.
+
+## How the dialect references are organised
+
+`assets/` is sorted by **dialect family, not by platform name**. One file per family, and a platform
+is a row inside it:
+
+| Family | File | Platforms |
+|---|---|---|
+| Markdown | `assets/markdown.md` | `github`, `gitlab`, `linear`, `asana`, `markdown`, and any unlisted platform |
+| Slack mrkdwn | `assets/slack.md` | `slack` |
+| Jira wiki markup | `assets/jira.md` | `jira` |
+| Plain text / rich-text paste | `assets/email.md` | `email` |
+
+The alternative — one file per platform — was what the skill shipped first, and it duplicated rather
+than scaled: `github.md` and `gitlab.md` were near-copies, and `gitlab.md`'s own tips said "nearly
+identical to GitHub markdown". Every copy was a place the syntax table could drift independently,
+and the platforms most likely to be added next (Discord, Reddit, Stack Overflow, Notion, Teams) are
+*all* Markdown-family, so each one would have multiplied the duplication.
+
+The Markdown file therefore carries three things: the baseline subset that works everywhere in the
+family, a **capability table** saying per platform which features actually render (headings, tables,
+task lists, strikethrough, alerts, code blocks), and short **platform notes** for the quirks that
+change what gets written — Linear's four-level heading cap, Asana's styled-text headings and absent
+tables, GitHub's alert blocks. A new Markdown-family platform costs a row.
+
+Only Slack, Jira and email keep files of their own, and for one reason each: Markdown does not work
+in Slack or Jira at all, and email is not pasted as Markdown. Divergence, not headcount, is what
+earns a file.
+
+**X and Bluesky are out of scope, deliberately.** They are not a dialect variation — they carry no
+markup at all plus a hard 280/300-character limit, so the section template cannot fit. Supporting
+them means composing something else entirely (a hook plus a link), which is a different content
+shape, not a row. Shipping an `assets/x.md` would imply the template works there when it does not.
 
 ## Use Cases
 
@@ -138,10 +170,10 @@ graph TD
     B -->|User asked for research-backed post| D[Defer to community-post]
     B -->|User asked for wording/formatting| E{Platform named?}
     E -->|No| F[Resolve format to slack<br/>and say so at the end of the reply]
-    E -->|Yes| G{Has a dialect file?}
+    E -->|Yes| G{Is it a supported target?}
     G -->|Yes| G1[Resolve to that platform]
     G -->|No| G2[Resolve to the Markdown baseline<br/>and announce the fallback]
-    F --> H[Load assets/format.md]
+    F --> H[Load the dialect reference for its family]
     G1 --> H
     G2 --> H
     H --> I[Compose content into the section template]
@@ -165,7 +197,7 @@ speaks up follows from whether it *chose* rather than from how the code branched
 |---|---|
 | User named nothing → `slack` | **yes** — a default is a guess about the reader's venue |
 | User named an unlisted platform → Markdown baseline | **yes** — the dialect may be wrong |
-| User named `linear` → the baseline file | **no** — `linear` is a supported target; the shared file is an implementation detail |
+| User named a Markdown-family target (`github`, `gitlab`, `linear`, `asana`) → the shared file | **no** — each is a supported target; which file carries its row is an implementation detail |
 
 The reason a wrong guess must be said out loud is that it is **invisible at the point it matters**: a
 Slack-mrkdwn draft looks entirely correct until it is pasted into Jira, where it renders as literal
@@ -205,7 +237,9 @@ handoff, so reporting a copy that did not happen loses the approved output silen
 | `G -->|Yes| G1` | user named jira | `` `renders jira wiki markup when jira is named` `` |
 | `G -->|Yes| G1` | user named linear | `` `caps headings at four levels when linear is named` `` |
 | `G -->|No| G2` | user named notion, which is not a supported target | `` `falls back to the markdown baseline and announces it` `` |
-| `G -->|Yes| G1` | user named linear, a supported target served by the baseline file | `` `routes linear to the baseline without announcing a fallback` `` |
+| `G -->|Yes| G1` | user named a Markdown-family target served by the shared file | `` `routes a markdown-family target to the shared reference without announcing a fallback` `` |
+| `H` (asset load) | user named github or gitlab, whose dialects are rows, not files | `` `loads one markdown-family reference for github and gitlab alike` `` |
+| `M` (render) | user named asana, whose row says tables do not render | `` `drops to bullet lists when the capability table says tables do not render` `` |
 | `G -->|Yes| G1` (guard) | user named slack, whose dialect rejects markdown | `` `does not fall back to markdown for slack` `` |
 | `G -->|Yes| G1` (guard) | user named jira, whose dialect rejects markdown | `` `does not fall back to markdown for jira` `` |
 | `H` (asset load) | target platform is slack | `` `reads the platform asset rather than recalling its syntax` `` |

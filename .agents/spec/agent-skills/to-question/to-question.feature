@@ -70,11 +70,35 @@ Feature: to-question — compose a technical question and render it for a target
     And the draft contains no markdown heading syntax
 
   @behavior
-  Scenario: routes linear to the baseline without announcing a fallback
-    Given the user says "format this for linear"
+  Scenario Outline: routes a markdown-family target to the shared reference without announcing a fallback
+    Given the user says "format this for <platform>"
     When to-question resolves the target platform
-    Then the reply does not describe the target as unsupported
+    Then it reads assets/markdown.md
+    And the reply does not describe the target as unsupported
     And the reply does not say it fell back to the markdown baseline
+
+    Examples:
+      | platform |
+      | linear   |
+      | github   |
+      | gitlab   |
+      | asana    |
+
+  @behavior
+  Scenario: loads one markdown-family reference for github and gitlab alike
+    Given the user says "format this for gitlab"
+    When to-question resolves the target platform
+    Then it reads assets/markdown.md
+    And there is no assets/gitlab.md to read
+    And there is no assets/github.md to read
+
+  @behavior
+  Scenario: drops to bullet lists when the capability table says tables do not render
+    Given the user says "format this for asana"
+    And the question compares three options across two criteria
+    When to-question produces the draft
+    Then the draft contains no markdown table
+    And the compared options are given as a bullet list
 
   @behavior
   Scenario: reads the platform asset rather than recalling its syntax

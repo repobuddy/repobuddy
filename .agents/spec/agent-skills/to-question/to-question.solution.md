@@ -76,10 +76,10 @@ This also answers the open question the spec records — what to do when someone
 with no asset. Under a capability table there is a sensible default (the Markdown baseline) instead
 of the current undefined behavior.
 
-### Partially delivered on this branch
+### Delivered
 
-The Council took the first slice rather than deferring all of it, so `assets/markdown.md` now exists
-and carries both the baseline syntax and the capability table. Two things followed from it:
+The Council took the first slice on the backfill branch, so `assets/markdown.md` came into existence
+carrying both the baseline syntax and the capability table. Two things followed from it:
 
 - **The unrecognized-platform gap is closed.** An unlisted platform resolves to the Markdown baseline
   and the fallback is **announced**, never silent — the baseline is usually right for a Markdown-family
@@ -90,9 +90,12 @@ and carries both the baseline syntax and the capability table. Two things follow
   undocumented), plus `>>>` collapsibles, `@` mentions and ` ```mermaid `. The one real constraint is
   that **headings stop at `####`**, which the capability table records and a scenario asserts.
 
-What remains of #579 is the harder half: folding `github.md` / `gitlab.md` / `asana.md` into the
-capability table and retiring the duplication. Adding Linear as a *row rather than a file* is the
-proof that the shape works.
+The harder half followed in [#579](https://github.com/repobuddy/repobuddy/issues/579) itself:
+`github.md`, `gitlab.md` and `asana.md` are folded into the capability table and platform notes, and
+the files are retired. `assets/` now holds exactly four files, one per dialect family — Markdown,
+Slack mrkdwn, Jira wiki markup, and email's plain-text-pasted-as-rich-text — and a Markdown-family
+platform costs a row. Adding Linear as a *row rather than a file* was the proof that the shape
+works; GitHub, GitLab and Asana moving onto it is the shape being used.
 
 ---
 
@@ -156,7 +159,7 @@ the text.
 | Fork | Issue |
 |---|---|
 | 1 — Content shape as a parameter, starting with the unblock-ping shape | [#578](https://github.com/repobuddy/repobuddy/issues/578) |
-| 2 — Collapse `assets/` into a capability table; scale platforms by row | [#579](https://github.com/repobuddy/repobuddy/issues/579) — **partially delivered here**: baseline + capability table + Linear + the unrecognized-platform rule. Remaining: fold in `github`/`gitlab`/`asana` |
+| 2 — Collapse `assets/` into a capability table; scale platforms by row | [#579](https://github.com/repobuddy/repobuddy/issues/579) — **delivered**: baseline + capability table + Linear + the unrecognized-platform rule here, then `github`/`gitlab`/`asana` folded in under the issue |
 | 4 — Portable handoff path instead of hardcoded `/tmp/question.md` | [#580](https://github.com/repobuddy/repobuddy/issues/580) |
 
 Fork 3 (the overlap with `create-issue` and `community-post`) needed no issue — it resolved to

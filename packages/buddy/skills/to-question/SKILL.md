@@ -9,24 +9,24 @@ Format a technical question, design discussion, or decision request for posting 
 
 ## Supported Formats
 
-| Format | Platform | Pasted as | Default |
-|--------|----------|-----------|---------|
-| `slack` | Slack | a channel or DM message | ✓ |
-| `asana` | Asana | a comment on an existing task | |
-| `jira` | Jira | a comment on an existing issue | |
-| `github` | GitHub | a comment on an existing issue or PR | |
-| `gitlab` | GitLab | a comment on an existing issue or MR | |
-| `linear` | Linear | a comment on an existing issue | |
-| `email` | Email | the body of an email | |
-| `markdown` | Markdown baseline | fallback for anything unlisted | |
+| Format | Platform | Pasted as | Dialect reference | Default |
+|--------|----------|-----------|-------------------|---------|
+| `slack` | Slack | a channel or DM message | `assets/slack.md` | ✓ |
+| `asana` | Asana | a comment on an existing task | `assets/markdown.md` | |
+| `jira` | Jira | a comment on an existing issue | `assets/jira.md` | |
+| `github` | GitHub | a comment on an existing issue or PR | `assets/markdown.md` | |
+| `gitlab` | GitLab | a comment on an existing issue or MR | `assets/markdown.md` | |
+| `linear` | Linear | a comment on an existing issue | `assets/markdown.md` | |
+| `email` | Email | the body of an email | `assets/email.md` | |
+| `markdown` | Markdown baseline | fallback for anything unlisted | `assets/markdown.md` | |
 
 **The tracker targets produce a comment on an item that already exists — not a new task, issue, or ticket.** That distinction is the whole boundary with `create-issue`: if the user wants the item to *exist*, that is `create-issue`'s job, and it searches for duplicates first. This skill words what you say *on* an item. So write the opening as someone speaking into an existing thread: **do not restate the item's own title or re-describe what it is about**, since the reader is already looking at it. Still open by **asking the question directly in one line** — that is the question, not the item's title, and a comment needs it just as much.
 
 ## Procedure
 
 1. Determine target format from user input. **If the user named no platform, use `slack`** — and say so at the **end of your reply**: "Formatted for Slack (the default) — say the word if you want Jira, Linear, Asana, GitHub, GitLab or email instead." Choosing for the user is fine; choosing silently is not, because a draft in the wrong dialect looks correct right up until it is pasted
-2. Load the format template. `slack`, `asana`, `jira`, `github`, `gitlab` and `email` each have their own `assets/<format>.md`. **`linear` and `markdown` both load [assets/markdown.md](./assets/markdown.md)** — Linear is Markdown-family and its specifics are a row in that file's capability table, not a file of its own. `linear` is a supported target, so loading the baseline for it is normal routing, **not** a fallback: do not announce it as one
-3. **If the user named a platform not in the table at all** — `discord`, `notion`, `teams`, `reddit`, anything unlisted — load `assets/markdown.md` and **tell the user you fell back to the Markdown baseline**. Never fall back silently, and never fall back to Markdown for Slack or Jira, which do not accept it
+2. Load the dialect reference. Assets are sorted by **dialect family, not by platform name**: `slack` and `jira` have their own files because neither accepts Markdown at all, and `email` has one because it is pasted as rich text. **Every Markdown-family target — `github`, `gitlab`, `asana`, `linear`, `markdown` — loads [assets/markdown.md](./assets/markdown.md)** and takes its specifics from that file's capability table and platform notes. A platform served by the shared file is a supported target, so loading the baseline for it is normal routing, **not** a fallback: do not announce it as one
+3. **If the user named a platform not in the table at all** — `discord`, `notion`, `teams`, `reddit`, anything unlisted — load `assets/markdown.md`, treat the capability table's `anything else` row as unverified, and **tell the user you fell back to the Markdown baseline**. Never fall back silently, and never fall back to Markdown for Slack or Jira, which do not accept it
 4. Take the user's question/topic and any context they provide
 5. Structure using the template's pattern and markdown rules
 6. **Check the markup before showing it.** Write the draft to a temp file and run the bundled checker — it catches dialect mistakes that look fine in your reply and only break on paste:
@@ -86,12 +86,12 @@ Use ASCII diagrams in code blocks to visualize architecture, data flow, state tr
 
 ## References
 
-Format-specific templates with markdown rules and examples:
+Dialect references, with markup rules, templates and examples. One file per **dialect family**, not per platform:
 
-- [assets/slack.md](./assets/slack.md) — Slack formatting (default)
-- [assets/asana.md](./assets/asana.md) — Asana task descriptions
+- [assets/markdown.md](./assets/markdown.md) — the Markdown family: baseline syntax, a per-platform capability table and platform notes covering `github`, `gitlab`, `asana` and `linear`; also the fallback for any unlisted platform
+- [assets/slack.md](./assets/slack.md) — Slack mrkdwn (default)
 - [assets/jira.md](./assets/jira.md) — Jira wiki markup
-- [assets/github.md](./assets/github.md) — GitHub Issues/PRs
-- [assets/gitlab.md](./assets/gitlab.md) — GitLab Issues/MRs
-- [assets/email.md](./assets/email.md) — Plain text email
-- [assets/markdown.md](./assets/markdown.md) — Markdown baseline + per-platform capability table (covers `linear`); the fallback for any unlisted platform
+- [assets/email.md](./assets/email.md) — Plain text email, pasted as rich text
+
+Slack, Jira and email keep their own files because their dialects genuinely diverge — Markdown does
+not work in the first two, and the third is not pasted as Markdown at all. Everything else is a row.
