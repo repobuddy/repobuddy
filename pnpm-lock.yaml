@@ -483,9 +483,9 @@ importers:
       jest-watch-suspend:
         specifier: ^1.1.2
         version: 1.1.2(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))
-      jest-watch-toggle-config-2:
-        specifier: ^2.1.0
-        version: 2.1.0(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))
+      jest-watch-toggle-config:
+        specifier: ^3.0.0
+        version: 3.0.0(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))
       jest-watch-typeahead:
         specifier: ^3.0.0
         version: 3.0.1(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))
@@ -541,9 +541,9 @@ importers:
       jest-watch-suspend:
         specifier: ^1.1.2
         version: 1.1.2(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))
-      jest-watch-toggle-config-2:
-        specifier: ^2.1.0
-        version: 2.1.0(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))
+      jest-watch-toggle-config:
+        specifier: ^3.0.0
+        version: 3.0.0(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))
       jest-watch-typeahead:
         specifier: ^3.0.0
         version: 3.0.1(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))
@@ -574,9 +574,9 @@ importers:
       jest-watch-suspend:
         specifier: ^1.1.2
         version: 1.1.2(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))
-      jest-watch-toggle-config-2:
-        specifier: ^2.1.0
-        version: 2.1.0(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))
+      jest-watch-toggle-config:
+        specifier: ^3.0.0
+        version: 3.0.0(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))
       jest-watch-typeahead:
         specifier: ^3.0.0
         version: 3.0.1(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))
@@ -604,9 +604,9 @@ importers:
       jest-watch-suspend:
         specifier: ^1.1.2
         version: 1.1.2(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))
-      jest-watch-toggle-config-2:
-        specifier: ^2.1.0
-        version: 2.1.0(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))
+      jest-watch-toggle-config:
+        specifier: ^3.0.0
+        version: 3.0.0(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))
       jest-watch-typeahead:
         specifier: ^3.0.0
         version: 3.0.1(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))
@@ -637,9 +637,9 @@ importers:
       jest-watch-suspend:
         specifier: ^1.1.2
         version: 1.1.2(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))
-      jest-watch-toggle-config-2:
-        specifier: ^2.1.0
-        version: 2.1.0(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))
+      jest-watch-toggle-config:
+        specifier: ^3.0.0
+        version: 3.0.0(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))
       jest-watch-typeahead:
         specifier: ^3.0.0
         version: 3.0.1(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))
@@ -677,9 +677,9 @@ importers:
       jest-watch-suspend:
         specifier: ^1.1.2
         version: 1.1.2(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))
-      jest-watch-toggle-config-2:
-        specifier: ^2.1.0
-        version: 2.1.0(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))
+      jest-watch-toggle-config:
+        specifier: ^3.0.0
+        version: 3.0.0(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))
       jest-watch-typeahead:
         specifier: ^3.0.0
         version: 3.0.1(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))
@@ -728,9 +728,9 @@ importers:
       jest-watch-suspend:
         specifier: ^1.1.2
         version: 1.1.2(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))
-      jest-watch-toggle-config-2:
-        specifier: ^2.1.0
-        version: 2.1.0(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))
+      jest-watch-toggle-config:
+        specifier: ^3.0.0
+        version: 3.0.0(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))
       jest-watch-typeahead:
         specifier: ^3.0.0
         version: 3.0.1(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))
@@ -767,9 +767,9 @@ importers:
       jest-watch-suspend:
         specifier: ^1.1.2
         version: 1.1.2(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))
-      jest-watch-toggle-config-2:
-        specifier: ^2.1.0
-        version: 2.1.0(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))
+      jest-watch-toggle-config:
+        specifier: ^3.0.0
+        version: 3.0.0(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))
       jest-watch-typeahead:
         specifier: ^3.0.0
         version: 3.0.1(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))
@@ -800,9 +800,9 @@ importers:
       jest-watch-suspend:
         specifier: ^1.1.2
         version: 1.1.2(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))
-      jest-watch-toggle-config-2:
-        specifier: ^2.1.0
-        version: 2.1.0(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))
+      jest-watch-toggle-config:
+        specifier: ^3.0.0
+        version: 3.0.0(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))
       jest-watch-typeahead:
         specifier: ^3.0.0
         version: 3.0.1(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))
@@ -5117,12 +5117,6 @@ packages:
     resolution: {integrity: sha512-sJRE+xj+jBvCdFhjFzJWFh9bg15v1YbSgmpvSCIR5ttg/Cn+608yfRjtLCDQx3ZVcIYlvorgsWIzW+lDFAhMrQ==}
     peerDependencies:
       jest: '>=23'
-
-  jest-watch-toggle-config-2@2.1.0:
-    resolution: {integrity: sha512-z4B6FbVu4+8IVMLsecetm7chL8meA4WhCv4CoY0/zydYbpk2qlAbPileU0E3CU4IhoWU73h4Ui3qg0JCP9+vJA==}
-    engines: {node: '>= 10'}
-    peerDependencies:
-      jest: '>= 23.4.1'
 
   jest-watch-toggle-config@3.0.0:
     resolution: {integrity: sha512-7gXl1roZ2ctq24X1cNJsSJ3vX2TktPHsK9QKN+p+WeyTAwwiifjxMP8jiO0zhpnOlycvLn+6LWboi38/FBLVzg==}
@@ -11791,11 +11785,6 @@ snapshots:
       chalk: 2.4.2
       jest: 30.4.2(@types/node@24.13.3)(supports-color@8.1.1)
       unpartial: 0.6.4
-
-  jest-watch-toggle-config-2@2.1.0(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1)):
-    dependencies:
-      chalk: 4.1.2
-      jest: 30.4.2(@types/node@24.13.3)(supports-color@8.1.1)
 
   jest-watch-toggle-config@3.0.0(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1)):
     dependencies:
