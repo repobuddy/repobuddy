@@ -30,17 +30,17 @@ Signals for this shape: *blocked*, *stuck*, *waiting on*, *can't proceed until*,
   release notes" rather than dropping the section — a missing "by when" reads as *not urgent*, and
   the reader schedules it accordingly.
 - **No Options section.** If you find yourself deriving alternatives for the reader to choose
-  between, this is the wrong shape — that is [question.md](./question.md).
+  between, this is the wrong shape — that is [shape-question.md](./shape-question.md).
 - **Keep it short.** A ping is scanned, not read. If "already tried" runs past four bullets, the
   reader is being asked to debug rather than to act.
 
 ## Rendering
 
-The sections above are the shape; the markup is the target's. Load the dialect file in `../assets/`
+The sections above are the shape; the markup is the target's. Load the dialect file beside this one
 for the target platform and render the section headers its way — `*bold*` with an emoji for Slack,
 `## Heading` for the Markdown family, `h2.` for Jira. Then run the format checker as usual.
 
-The Markdown family's per-platform limits are rows in `assets/markdown.md`'s capability table, and
+The Markdown family's per-platform limits are rows in [markdown.md](./markdown.md)'s capability table, and
 two of them bite this shape in particular: **Asana has no tables and no real heading hierarchy**, so
 "already tried" is a list there and the section headers are styled text; **Linear caps headings at
 `####`**, so sub-attempts cannot nest past it.

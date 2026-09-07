@@ -202,7 +202,7 @@ graph TD
     B -->|User asked for wording/formatting| S1{Shape named or<br/>user says blocked?}
     S1 -->|Says blocked / names unblock| S2[Resolve shape to unblock<br/>and say so if it was inferred]
     S1 -->|Neither| S3[Resolve shape to question<br/>the default, silently]
-    S2 --> S4[Load shapes/shape.md]
+    S2 --> S4[Load assets/shape-name.md]
     S3 --> S4
     S4 --> E{Platform named?}
     E -->|No| F[Resolve format to slack<br/>and say so at the end of the reply]

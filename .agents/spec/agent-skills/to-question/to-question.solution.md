@@ -45,7 +45,8 @@ which is the actual benefit the two-skill split was reaching for, without the co
 
 ### Delivered (#578)
 
-Two shapes now ship as files under `shapes/`, chosen independently of the dialect. `question` is the
+Two shapes now ship as `assets/shape-question.md` and `assets/shape-unblock.md`, chosen
+independently of the dialect. `question` is the
 default, so a request naming no shape composes exactly as it did before. Three calls made while
 building it, each of which could have gone the other way:
 
@@ -179,7 +180,7 @@ the text.
 
 | Fork | Issue |
 |---|---|
-| 1 — Content shape as a parameter, starting with the unblock-ping shape | [#578](https://github.com/repobuddy/repobuddy/issues/578) — **delivered**: `shapes/question.md` + `shapes/unblock.md`, shape resolution, and the scenarios behind them |
+| 1 — Content shape as a parameter, starting with the unblock-ping shape | [#578](https://github.com/repobuddy/repobuddy/issues/578) — **delivered**: `assets/shape-question.md` + `assets/shape-unblock.md`, shape resolution, and the scenarios behind them |
 | 2 — Collapse `assets/` into a capability table; scale platforms by row | [#579](https://github.com/repobuddy/repobuddy/issues/579) — **delivered**: baseline + capability table + Linear + the unrecognized-platform rule here, then `github`/`gitlab`/`asana` folded in under the issue |
 | 4 — Portable handoff path instead of hardcoded `/tmp/question.md` | [#580](https://github.com/repobuddy/repobuddy/issues/580) — **delivered** |
 

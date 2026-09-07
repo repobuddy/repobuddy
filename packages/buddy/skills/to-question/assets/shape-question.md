@@ -23,11 +23,12 @@ stays the default.
   most of the value this shape adds.
 - A list where every entry is upside has not been thought through. Every option names its cost.
 - If the user is **not** choosing between alternatives — they are stuck and need a named person to
-  do a named thing — this is the wrong shape. Use [unblock.md](./unblock.md) rather than
+  do a named thing — this is the wrong shape. Use [shape-unblock.md](./shape-unblock.md) rather than
   manufacturing an Options section that has no options in it.
 
 ## Rendering
 
-Each dialect file in `../assets/` carries this shape already rendered in its own markup — the
-`## Template` block in `assets/markdown.md`, `assets/slack.md`, `assets/jira.md` and
-`assets/email.md`, one per dialect family. Load the target's dialect file and follow its template.
+Each dialect file beside this one carries the shape already rendered in its own markup — the
+`## Template` block in [markdown.md](./markdown.md), [slack.md](./slack.md), [jira.md](./jira.md)
+and [email.md](./email.md), one per dialect family. Load the target's dialect file and follow its
+template.

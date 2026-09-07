@@ -44,7 +44,7 @@ with nowhere to go.
 ## Procedure
 
 1. **Determine the content shape.** Default to `question`; choose `unblock` when the user says they are blocked, stuck, or waiting on someone. **If you chose `unblock` rather than being told to, say so in one line at the end of your reply** — "Shaped as an unblock ping rather than a question, since you're waiting on someone; say the word if you'd rather present it as options." The `question` default needs no announcement: it is the status quo, and the draft in front of the user already shows its own sections
-2. Load the shape file — [shapes/question.md](./shapes/question.md) or [shapes/unblock.md](./shapes/unblock.md). It names the sections and the rules that go with them; the dialect file names the markup
+2. Load the shape file — [assets/shape-question.md](./assets/shape-question.md) or [assets/shape-unblock.md](./assets/shape-unblock.md). It names the sections and the rules that go with them; the dialect file names the markup
 3. Determine target format from user input. **If the user named no platform, use `slack`** — and say so at the **end of your reply**: "Formatted for Slack (the default) — say the word if you want Jira, Linear, Asana, GitHub, GitLab or email instead." Choosing for the user is fine; choosing silently is not, because a draft in the wrong dialect looks correct right up until it is pasted
 4. Load the dialect reference. Assets are sorted by **dialect family, not by platform name**: `slack` and `jira` have their own files because neither accepts Markdown at all, and `email` has one because it is pasted as rich text. **Every Markdown-family target — `github`, `gitlab`, `asana`, `linear`, `markdown` — loads [assets/markdown.md](./assets/markdown.md)** and takes its specifics from that file's capability table and platform notes. A platform served by the shared file is a supported target, so loading the baseline for it is normal routing, **not** a fallback: do not announce it as one
 5. **If the user named a platform not in the table at all** — `discord`, `notion`, `teams`, `reddit`, anything unlisted — load `assets/markdown.md`, treat the capability table's `anything else` row as unverified, and **tell the user you fell back to the Markdown baseline**. Never fall back silently, and never fall back to Markdown for Slack or Jira, which do not accept it
@@ -105,7 +105,7 @@ Never report "Copied to clipboard" unless a copy command actually ran and succee
 
 The sections below are the **`question`** shape — the default. For the `unblock` shape, its sections
 and its two load-bearing rules (the ask names a person and one action; the deadline is stated even
-when there is none) are in [shapes/unblock.md](./shapes/unblock.md). The unlabelled opening line and
+when there is none) are in [assets/shape-unblock.md](./assets/shape-unblock.md). The unlabelled opening line and
 the ASCII-diagram guidance below apply to both shapes.
 
 Regardless of format, a good question includes:
@@ -124,8 +124,8 @@ Use ASCII diagrams in code blocks to visualize architecture, data flow, state tr
 
 Content shapes — which sections the draft has:
 
-- [shapes/question.md](./shapes/question.md) — the question shape (default)
-- [shapes/unblock.md](./shapes/unblock.md) — the unblock-ping shape, with the named-ask slot
+- [assets/shape-question.md](./assets/shape-question.md) — the question shape (default)
+- [assets/shape-unblock.md](./assets/shape-unblock.md) — the unblock-ping shape, with the named-ask slot
 
 Dialect references, with markup rules, templates and examples. One file per **dialect family**, not per platform:
 
