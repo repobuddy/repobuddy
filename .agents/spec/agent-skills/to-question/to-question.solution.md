@@ -45,7 +45,7 @@ which is the actual benefit the two-skill split was reaching for, without the co
 
 ### Delivered (#578)
 
-Two shapes now ship as `assets/shape-question.md` and `assets/shape-unblock.md`, chosen
+Two shapes now ship as `references/shape-question.md` and `references/shape-unblock.md`, chosen
 independently of the dialect. `question` is the
 default, so a request naming no shape composes exactly as it did before. Three calls made while
 building it, each of which could have gone the other way:
@@ -65,7 +65,7 @@ building it, each of which could have gone the other way:
 
 ---
 
-## 2. Platform coverage — is `assets/` the right way to scale?
+## 2. Platform coverage — is `references/` the right way to scale?
 
 Candidates raised: Discord, Reddit, Stack Overflow, X/Bluesky, Linear, Notion, Teams.
 
@@ -79,9 +79,9 @@ Sorting them by **dialect** rather than by name is what settles it:
 **Cut X/Bluesky.** This is not a dialect variation; it is a different composition problem. The
 template cannot fit in 280 characters, so supporting X would mean composing something else entirely
 (a hook plus a link). That is a different content shape *and* a different medium, and adding it as
-an `assets/x.md` would imply the template works there when it cannot.
+a `references/x.md` would imply the template works there when it cannot.
 
-**The `assets/` pattern is already showing the strain.** `github.md` and `gitlab.md` are near-copies
+**The `references/` pattern is already showing the strain.** `github.md` and `gitlab.md` are near-copies
 of each other — `gitlab.md`'s own tips section says "nearly identical to GitHub markdown". Adding six
 more Markdown-family files multiplies that duplication, and each copy is a place the syntax table can
 drift out of date independently.
@@ -98,7 +98,7 @@ of the current undefined behavior.
 
 ### Delivered
 
-The Council took the first slice on the backfill branch, so `assets/markdown.md` came into existence
+The Council took the first slice on the backfill branch, so `references/markdown.md` came into existence
 carrying both the baseline syntax and the capability table. Two things followed from it:
 
 - **The unrecognized-platform gap is closed.** An unlisted platform resolves to the Markdown baseline
@@ -112,10 +112,22 @@ carrying both the baseline syntax and the capability table. Two things followed 
 
 The harder half followed in [#579](https://github.com/repobuddy/repobuddy/issues/579) itself:
 `github.md`, `gitlab.md` and `asana.md` are folded into the capability table and platform notes, and
-the files are retired. `assets/` now holds exactly four files, one per dialect family — Markdown,
-Slack mrkdwn, Jira wiki markup, and email's plain-text-pasted-as-rich-text — and a Markdown-family
+the files are retired. `references/` now holds four dialect files, one per family — Markdown, Slack
+mrkdwn, Jira wiki markup, and email's plain-text-pasted-as-rich-text — and a Markdown-family
 platform costs a row. Adding Linear as a *row rather than a file* was the proof that the shape
 works; GitHub, GitLab and Asana moving onto it is the shape being used.
+
+### The directory is `references/`, not `assets/`
+
+Everything above says `references/` throughout, including where it describes work done while the
+directory was called `assets/`. The rename came last, from the agentskills layout: a skill may carry
+`scripts/`, `references/` and `assets/`, and the two are distinguished by kind rather than by topic.
+`assets/` is for static resources — templates, images, data files — while **documentation the agent
+reads under a stated condition belongs in `references/`**, which is exactly what a dialect file and
+a shape file are. Neither is copied into the output; both are read to inform it.
+
+The skill's own validator was widened to check either directory rather than `assets/` alone, so a
+skill that legitimately ships static resources is not forced into the wrong one.
 
 ---
 
@@ -180,8 +192,8 @@ the text.
 
 | Fork | Issue |
 |---|---|
-| 1 — Content shape as a parameter, starting with the unblock-ping shape | [#578](https://github.com/repobuddy/repobuddy/issues/578) — **delivered**: `assets/shape-question.md` + `assets/shape-unblock.md`, shape resolution, and the scenarios behind them |
-| 2 — Collapse `assets/` into a capability table; scale platforms by row | [#579](https://github.com/repobuddy/repobuddy/issues/579) — **delivered**: baseline + capability table + Linear + the unrecognized-platform rule here, then `github`/`gitlab`/`asana` folded in under the issue |
+| 1 — Content shape as a parameter, starting with the unblock-ping shape | [#578](https://github.com/repobuddy/repobuddy/issues/578) — **delivered**: `references/shape-question.md` + `references/shape-unblock.md`, shape resolution, and the scenarios behind them |
+| 2 — Collapse `references/` into a capability table; scale platforms by row | [#579](https://github.com/repobuddy/repobuddy/issues/579) — **delivered**: baseline + capability table + Linear + the unrecognized-platform rule here, then `github`/`gitlab`/`asana` folded in under the issue |
 | 4 — Portable handoff path instead of hardcoded `/tmp/question.md` | [#580](https://github.com/repobuddy/repobuddy/issues/580) — **delivered** |
 
 Fork 3 (the overlap with `create-issue` and `community-post`) needed no issue — it resolved to

@@ -12,9 +12,9 @@ eval:
 
 # to-question — measurement policy
 
-The subject is `packages/buddy/skills/to-question/SKILL.md` together with the `assets/` files it loads at runtime;
+The subject is `packages/buddy/skills/to-question/SKILL.md` together with the `references/` files it loads at runtime;
 the judge reads the SKILL.md and follows its references — which since #578 include the shape
-files `assets/shape-question.md` and `assets/shape-unblock.md`, since the sections a draft is
+files `references/shape-question.md` and `references/shape-unblock.md`, since the sections a draft is
 graded on come from there rather than from SKILL.md.
 
 **All three layers carry signal**, because the fit tier is `strong`

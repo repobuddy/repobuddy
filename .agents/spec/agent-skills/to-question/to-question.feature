@@ -57,15 +57,15 @@ Feature: to-question — compose a technical question and render it for a target
     Given the user says "format this for notion"
     And the skill has no dialect file named notion
     When to-question resolves the target platform
-    Then it reads assets/markdown.md
+    Then it reads references/markdown.md
     And the reply states that the markdown baseline was used instead
 
   @behavior
   Scenario: does not fall back to markdown for slack
     Given the user says "format this for slack"
     When to-question resolves the target platform
-    Then it reads assets/slack.md
-    And it does not read assets/markdown.md
+    Then it reads references/slack.md
+    And it does not read references/markdown.md
 
   @behavior
   Scenario: does not fall back to markdown for jira
@@ -78,7 +78,7 @@ Feature: to-question — compose a technical question and render it for a target
   Scenario Outline: routes a markdown-family target to the shared reference without announcing a fallback
     Given the user says "format this for <platform>"
     When to-question resolves the target platform
-    Then it reads assets/markdown.md
+    Then it reads references/markdown.md
     And the reply does not describe the target as unsupported
     And the reply does not say it fell back to the markdown baseline
 
@@ -93,9 +93,9 @@ Feature: to-question — compose a technical question and render it for a target
   Scenario: loads one markdown-family reference for github and gitlab alike
     Given the user says "format this for gitlab"
     When to-question resolves the target platform
-    Then it reads assets/markdown.md
-    And there is no assets/gitlab.md to read
-    And there is no assets/github.md to read
+    Then it reads references/markdown.md
+    And there is no references/gitlab.md to read
+    And there is no references/github.md to read
 
   @behavior
   Scenario: drops to bullet lists when the capability table says tables do not render
@@ -173,7 +173,7 @@ Feature: to-question — compose a technical question and render it for a target
   Scenario: reads the platform asset rather than recalling its syntax
     Given the target platform is slack
     When to-question prepares to render the draft
-    Then it reads assets/slack.md
+    Then it reads references/slack.md
 
   @quality @rubric
   Scenario: composes the section template from a half-formed question

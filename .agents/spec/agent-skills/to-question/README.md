@@ -121,7 +121,7 @@ four are now resolved on this branch.
    handoff sink, that silently lost the output the user had just approved — and the skill still
    reported success. The skill now probes for a command, adds `wl-copy` for Wayland, and on finding
    none says so and points at the file instead of claiming a copy happened.
-3. **Email was not clipboard-shaped — fixed.** `assets/email.md` tells the user to render the
+3. **Email was not clipboard-shaped — fixed.** `references/email.md` tells the user to render the
    Markdown and paste the *rendered* result as rich text, but the procedure copied raw Markdown to
    the clipboard, so for the `email` target the two steps contradicted each other. The handoff step
    now carries the render-then-paste instruction for that target.
@@ -133,22 +133,22 @@ four are now resolved on this branch.
    worded. It now leads with the trigger and says *paste*, which is the word that separates it from
    filing.
 
-Separately, the template files under `assets/` wrapped a template containing triple-backtick blocks
+Separately, the template files under `references/` wrapped a template containing triple-backtick blocks
 in a triple-backtick fence, so the block terminated at the first nested fence and the rest of the
 template read as loose prose. They now use four-backtick fences, the same way the skill's own
 display step does.
 
 ## How the dialect references are organised
 
-`assets/` is sorted by **dialect family, not by platform name**. One file per family, and a platform
+`references/` is sorted by **dialect family, not by platform name**. One file per family, and a platform
 is a row inside it:
 
 | Family | File | Platforms |
 |---|---|---|
-| Markdown | `assets/markdown.md` | `github`, `gitlab`, `linear`, `asana`, `markdown`, and any unlisted platform |
-| Slack mrkdwn | `assets/slack.md` | `slack` |
-| Jira wiki markup | `assets/jira.md` | `jira` |
-| Plain text / rich-text paste | `assets/email.md` | `email` |
+| Markdown | `references/markdown.md` | `github`, `gitlab`, `linear`, `asana`, `markdown`, and any unlisted platform |
+| Slack mrkdwn | `references/slack.md` | `slack` |
+| Jira wiki markup | `references/jira.md` | `jira` |
+| Plain text / rich-text paste | `references/email.md` | `email` |
 
 The alternative — one file per platform — was what the skill shipped first, and it duplicated rather
 than scaled: `github.md` and `gitlab.md` were near-copies, and `gitlab.md`'s own tips said "nearly
@@ -169,7 +169,7 @@ earns a file.
 **X and Bluesky are out of scope, deliberately.** They are not a dialect variation — they carry no
 markup at all plus a hard 280/300-character limit, so the section template cannot fit. Supporting
 them means composing something else entirely (a hook plus a link), which is a different content
-shape, not a row. Shipping an `assets/x.md` would imply the template works there when it does not.
+shape, not a row. Shipping an `references/x.md` would imply the template works there when it does not.
 
 ## Use Cases
 
@@ -202,7 +202,7 @@ graph TD
     B -->|User asked for wording/formatting| S1{Shape named or<br/>user says blocked?}
     S1 -->|Says blocked / names unblock| S2[Resolve shape to unblock<br/>and say so if it was inferred]
     S1 -->|Neither| S3[Resolve shape to question<br/>the default, silently]
-    S2 --> S4[Load assets/shape-name.md]
+    S2 --> S4[Load references/shape-name.md]
     S3 --> S4
     S4 --> E{Platform named?}
     E -->|No| F[Resolve format to slack<br/>and say so at the end of the reply]

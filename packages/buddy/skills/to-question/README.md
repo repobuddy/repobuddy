@@ -21,7 +21,7 @@ Format a technical question or discussion for a platform and copy to clipboard.
 | `asana` | Asana tasks | Markdown family | |
 | `markdown` | Markdown baseline — also the fallback for anything unlisted | Markdown family | |
 
-The references under `assets/` are sorted by **dialect, not by platform name**. The whole Markdown
+The references under `references/` are sorted by **dialect, not by platform name**. The whole Markdown
 family shares one file with a per-platform capability table (headings, tables, task lists,
 strikethrough, alerts), so a new Markdown-family platform costs a row rather than another
 near-duplicate file. Slack, Jira and email keep their own files because their dialects genuinely
