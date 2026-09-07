@@ -3,16 +3,16 @@ import { configDefaults as vitestConfigDefaults } from 'vitest/config'
 export const buddyConfigDefaults = {
 	include: {
 		vitestDefault: vitestConfigDefaults.include,
-		source: ['{src,source,code,ts}/**/*.{js,mjs,cjs,ts,jsx,tsx,cts,mts}'],
+		source: ['{src,source,code}/**/*.{js,mjs,cjs,ts,jsx,tsx,cts,mts}'],
 		testGeneral: [
-			'{src,source,code,ts,tests}/**/*.{spec,test,unit,accept,integrate,system,perf,stress,study}.{js,cjs,mjs,ts,cts,mts}',
+			'{src,source,code,tests}/**/*.{spec,test,unit,accept,integrate,system,perf,stress,study}.{js,cjs,mjs,ts,cts,mts}',
 		],
 		testNode: [
-			'{src,source,code,ts,tests}/**/*.{spec,test,unit,accept,integrate,system,perf,stress,study}.node*.{js,cjs,mjs,ts,cts,mts}',
+			'{src,source,code,tests}/**/*.{spec,test,unit,accept,integrate,system,perf,stress,study}.node*.{js,cjs,mjs,ts,cts,mts}',
 		],
 		testBrowser: [
-			'{src,source,code,ts,tests}/**/*.{spec,test,unit,accept,integrate,system,perf,stress,study}.{jsx,tsx}',
-			'{src,source,code,ts,tests}/**/*.{spec,test,unit,accept,integrate,system,perf,stress,study}.browser*.{js,jsx,cjs,mjs,ts,tsx,cts,mts}',
+			'{src,source,code,tests}/**/*.{spec,test,unit,accept,integrate,system,perf,stress,study}.{jsx,tsx}',
+			'{src,source,code,tests}/**/*.{spec,test,unit,accept,integrate,system,perf,stress,study}.browser*.{js,jsx,cjs,mjs,ts,tsx,cts,mts}',
 		],
 	},
 	exclude: {
