@@ -15,7 +15,7 @@
 		"@repobuddy/jest": "workspace:^",
 		"@repobuddy/typescript": "workspace:^",
 		"@types/jest": "^30.0.0",
-		"assertron": "^11.0.3",
+		"assertron": "^11.6.0",
 		"chalk": "^6.0.0",
 		"jest": "^30.0.0",
 		"jest-watch-suspend": "^1.1.2",
