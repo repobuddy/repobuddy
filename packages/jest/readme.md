@@ -39,8 +39,8 @@ export default {
   transformIgnorePatterns: [],
   watchPlugins: [
     'jest-watch-suspend',
-    ['jest-watch-toggle-config-2', { setting: 'collectCoverage' }],
-    ['jest-watch-toggle-config-2', { setting: 'verbose' }],
+    ['jest-watch-toggle-config', { setting: 'collectCoverage' }],
+    ['jest-watch-toggle-config', { setting: 'verbose' }],
     'jest-watch-typeahead/filename',
     'jest-watch-typeahead/testname'
   ]
@@ -125,7 +125,7 @@ Here are some highlights:
 - `ts` uses [ts-jest] with `isolatedModule: true`.
 - `watch` uses these plugins by default:
   - [jest-watch-suspend]
-  - [jest-watch-toggle-config-2]
+  - [jest-watch-toggle-config]
   - [jest-watch-typeahead]
 
 Since your project will only use a specific config,
@@ -338,7 +338,7 @@ and the `/packages/jest/presets/ts` is needed to work in Windows environment (or
 [downloads-image]: https://img.shields.io/npm/dm/@repobuddy/jest.svg?style=flat
 [jest-esm-transformer-2]: https://www.npmjs.com/package/jest-esm-transformer-2
 [jest-watch-suspend]: https://www.npmjs.com/package/jest-watch-suspend
-[jest-watch-toggle-config-2]: https://www.npmjs.com/package/jest-watch-toggle-config-2
+[jest-watch-toggle-config]: https://www.npmjs.com/package/jest-watch-toggle-config
 [jest-watch-typeahead]: https://www.npmjs.com/package/jest-watch-typeahead
 [jest]: https://jestjs.io
 [npm-image]: https://img.shields.io/npm/v/@repobuddy/jest.svg?style=flat

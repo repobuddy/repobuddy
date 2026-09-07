@@ -27,7 +27,7 @@ export const knownWatchPlugins = {
 		return optionize('jest-watch-typeahead/testname', options)
 	},
 	toggleConfig(options?: WatchPlugins.ToggleConfig) {
-		return optionize('jest-watch-toggle-config-2', options)
+		return optionize('jest-watch-toggle-config', options)
 	},
 }
 
