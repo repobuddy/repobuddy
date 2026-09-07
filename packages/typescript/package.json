@@ -55,7 +55,7 @@
 		"verify": "npm-run-all -p build coverage -p size"
 	},
 	"dependencies": {
-		"clibuilder": "^10.1.0",
+		"clibuilder": "^11.0.0",
 		"dirname-filename-esm": "^1.1.1",
 		"execa": "^10.0.0"
 	},
