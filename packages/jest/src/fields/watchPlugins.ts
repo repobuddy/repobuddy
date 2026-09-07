@@ -1,8 +1,7 @@
 import type { Config } from 'jest'
-import type { NonUndefined } from 'type-plus'
 import { optionize } from '../utils/index.js'
 
-export type WatchPlugins = NonUndefined<Config['watchPlugins']>
+export type WatchPlugins = Exclude<Config['watchPlugins'], undefined>
 
 export namespace WatchPlugins {
 	export type BaseOptions = {

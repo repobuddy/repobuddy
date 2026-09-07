@@ -15,14 +15,14 @@
 	"dependencies": {
 		"chalk": "^6.0.0",
 		"strip-ansi": "^7.0.1",
-		"type-plus": "^7.6.2",
+		"type-plus": "8.0.0-beta.10",
 		"uuid": "^14.0.0"
 	},
 	"devDependencies": {
 		"@repobuddy/jest": "workspace:^",
 		"@repobuddy/typescript": "workspace:^",
 		"@types/jest": "^30.0.0",
-		"assertron": "^11.0.3",
+		"assertron": "^11.6.0",
 		"cross-env": "^10.1.0",
 		"dirname-filename-esm": "^1.1.1",
 		"jest": "^30.0.0",
