@@ -84,6 +84,7 @@ This is a **pnpm monorepo** managed with [Turborepo](https://turbo.build/). It i
 
 **Public agent skills** (`packages/buddy/skills/`) — shipped as a universal plugin inside the `repobuddy` npm package, and installed by consumers via `npx skills add repobuddy/repobuddy`:
 - `create-issue` — create GitHub/GitLab issues, dedup check first
+- `llms-txt` — publish an `llms.txt` generated from the project's public surface; decides whether one is warranted, wires the drift check, reports the documentation gap
 - `merge-dep-prs` — merge Dependabot/Renovate PRs, handles CI failures
 - `review-permissions` — audit harness permissions (Claude Code, Cursor, Codex, Copilot, Gemini): risk, tightening, consolidation
 - `setup-github-pages` — deploy a static site to GitHub Pages (base path, Actions workflow, Pages source)
