@@ -14,6 +14,7 @@
 | Skill | Description |
 | --- | --- |
 | [`create-issue`] | Create a bug report or feature request — searches for duplicates first |
+| [`llms-txt`] | Publish an `llms.txt` generated from a project's real public surface, with a CI drift check |
 | [`merge-dep-prs`] | Merge pending dependency update PRs — diagnoses CI failures, never merges release PRs |
 | [`review-permissions`] | Audit what your agents are allowed to do — risk-rank every grant, then tighten and consolidate it |
 | [`setup-github-pages`] | Deploy a static site to GitHub Pages — base path, Actions workflow, and Pages source |
@@ -154,6 +155,7 @@ npx skills add repobuddy/agent-changesets
 [Skills CLI]: https://github.com/vercel-labs/skills
 [universal plugin]: https://github.com/agentplugins/agent-plugins-spec
 [`create-issue`]: ./packages/buddy/skills/create-issue/SKILL.md
+[`llms-txt`]: ./packages/buddy/skills/llms-txt/SKILL.md
 [`merge-dep-prs`]: ./packages/buddy/skills/merge-dep-prs/SKILL.md
 [`review-permissions`]: ./packages/buddy/skills/review-permissions/SKILL.md
 [`setup-github-pages`]: ./packages/buddy/skills/setup-github-pages/SKILL.md
