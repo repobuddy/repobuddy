@@ -1,5 +1,12 @@
 # @repobuddy/typescript
 
+## 2.1.3
+
+### Patch Changes
+
+- e3026f9: Bump `clibuilder` to the latest published `^10.1.0` (in-range, non-breaking) picked up
+  while sweeping `type-plus` across the estate. No source change needed.
+
 ## 2.1.2
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
 	"name": "@repobuddy/jest",
-	"version": "5.0.2",
+	"version": "6.0.0",
 	"description": "Your jest buddy",
 	"keywords": [
 		"jest",
