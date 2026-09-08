@@ -71,16 +71,23 @@ if (!fmDescription) {
 	note(`description ${fmDescription.length}/${DESCRIPTION_MAX} chars`)
 }
 
-// ── asset fences ────────────────────────────────────────────────────────────
+// ── bundled-file fences ─────────────────────────────────────────────────────
 // A template containing ``` blocks must be wrapped in a longer fence, or it
 // terminates early and the rest of the file reads as loose prose. This shipped
 // broken in three files, so it is checked rather than trusted.
 
-const assetsDir = join(skillDir, 'assets')
-const assets = existsSync(assetsDir) ? readdirSync(assetsDir).filter((f) => f.endsWith('.md')) : []
+// Both bundled-file directories the agentskills spec allows for markdown are
+// checked: `references/` is where documentation the agent loads at runtime
+// belongs, `assets/` where static resources do. A skill may use either.
+const bundleDirs = ['references', 'assets'].filter((d) => existsSync(join(skillDir, d)))
+const bundled = bundleDirs.flatMap((dir) =>
+	readdirSync(join(skillDir, dir))
+		.filter((f) => f.endsWith('.md'))
+		.map((file) => ({ dir, file, ref: `${dir}/${file}` })),
+)
 
-for (const asset of assets) {
-	const lines = readFileSync(join(assetsDir, asset), 'utf8').split('\n')
+for (const { dir, file, ref } of bundled) {
+	const lines = readFileSync(join(skillDir, dir, file), 'utf8').split('\n')
 	let openLen = null
 	let openLine = 0
 	for (const [i, line] of lines.entries()) {
@@ -94,18 +101,19 @@ for (const asset of assets) {
 			openLen = null
 		}
 	}
-	if (openLen !== null) fail(`${asset}: unterminated code fence opened at line ${openLine}`)
+	if (openLen !== null) fail(`${ref}: unterminated code fence opened at line ${openLine}`)
 }
 
-// ── asset cross-references ──────────────────────────────────────────────────
-// An asset the skill never references is dead weight; a reference to a missing
-// file sends the agent to read something that is not there.
+// ── bundled-file cross-references ───────────────────────────────────────────
+// A bundled file the skill never references is dead weight; a reference to a
+// missing file sends the agent to read something that is not there.
 
-for (const asset of assets) {
-	if (!skillText.includes(`assets/${asset}`)) warn(`${asset} exists but SKILL.md never references it`)
+for (const { ref } of bundled) {
+	if (!skillText.includes(ref)) warn(`${ref} exists but SKILL.md never references it`)
 }
-for (const ref of skillText.matchAll(/assets\/([\w.-]+\.md)/g)) {
-	if (!assets.includes(ref[1])) fail(`SKILL.md references assets/${ref[1]}, which does not exist`)
+const bundledRefs = new Set(bundled.map((b) => b.ref))
+for (const match of skillText.matchAll(/(?:references|assets)\/[\w.-]+\.md/g)) {
+	if (!bundledRefs.has(match[0])) fail(`SKILL.md references ${match[0]}, which does not exist`)
 }
 
 // ── the spec node ───────────────────────────────────────────────────────────
@@ -139,7 +147,9 @@ if (!existsSync(specDir)) {
 // The important question is not "did it pass" but "does this result still describe
 // the files on disk, and did anything pass for a reason that does not count".
 
-const subjectFiles = [skillMd, ...assets.map((a) => join(assetsDir, a)), featurePath].filter((p) => existsSync(p))
+const subjectFiles = [skillMd, ...bundled.map((b) => join(skillDir, b.dir, b.file)), featurePath].filter((p) =>
+	existsSync(p),
+)
 
 const runs = existsSync(resultsDir)
 	? readdirSync(resultsDir)

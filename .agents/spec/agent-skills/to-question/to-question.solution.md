@@ -10,7 +10,8 @@ should *not* grow in an obvious-looking direction.
 
 ## 1. The section template is fixed at one content shape
 
-`to-question` composes into exactly one shape: Context → Use Cases → Problem → Options → Questions.
+*As written, `to-question` composed into exactly one shape* — Context → Use Cases → Problem →
+Options → Questions — *and the fork below is what came of that; see Delivered for what shipped.*
 That shape encodes an assumption — that the user is **undecided between alternatives and wants
 input**. Where that assumption holds, the template is genuinely good. Where it does not, it misfires,
 and the misfire is quiet: the agent will dutifully manufacture an "Options" section for a request
@@ -24,7 +25,7 @@ Tested against five other things a person might want to post:
 | **RFC / design proposal** | Partly. Motivation → Alternatives → Unresolved questions maps well. The gap is that an RFC *advocates one design*, while this template presents options neutrally. | **Cut for now** — the advocacy shape is `research-workbench:community-post`'s, which additionally gathers prior art. Revisit only if someone wants an RFC without research. |
 | **Code-review comment** | No. Wrong scale by an order of magnitude — a review comment is one to three sentences anchored to a line. Five ceremonial sections would be absurd. | **Cut** — not a near-miss, a different genre. |
 | **Status update** | No. Done / Next / Blockers. No problem, no options, no questions. | **Cut** — different genre again; `asana-standup` covers the internal case. |
-| **"Can someone unblock me" ping** | **Nearly.** Same *situation* as a question — stuck, needs a human — but a different shape: what I'm blocked on, what I've already tried, what I need from you, by when. The template has no slot for the ask or the urgency, which are the two things that make a ping work. | **Keep** — see issue below. |
+| **"Can someone unblock me" ping** | **Nearly.** Same *situation* as a question — stuck, needs a human — but a different shape: what I'm blocked on, what I've already tried, what I need from you, by when. The template has no slot for the ask or the urgency, which are the two things that make a ping work. | **Keep** — delivered as the `unblock` shape (#578). |
 
 ### The fork: more templates, a parameter, or two skills?
 
@@ -38,14 +39,33 @@ would add a skill with no trigger of its own, and this repo already has three sk
 overlapping triggers. A fourth that fires on nothing is worse than the coupling it removes.
 
 **Chosen: make the content shape an explicit parameter, as the platform already is.** The real model
-is a matrix — **shape × dialect** — of which only the `question` row exists today. Adding the
-`unblock` row costs one file and no new trigger surface, and it makes the fixed assumption visible
-instead of implicit. The renderer stays shared, which is the actual benefit the two-skill split was
-reaching for, without the cost.
+is a matrix — **shape × dialect**. Adding the `unblock` row costs one file and no new trigger
+surface, and it makes the fixed assumption visible instead of implicit. The renderer stays shared,
+which is the actual benefit the two-skill split was reaching for, without the cost.
+
+### Delivered (#578)
+
+Two shapes now ship as `references/shape-question.md` and `references/shape-unblock.md`, chosen
+independently of the dialect. `question` is the
+default, so a request naming no shape composes exactly as it did before. Three calls made while
+building it, each of which could have gone the other way:
+
+- **The inferred shape is announced; the default is not.** A draft shows its own sections, so the
+  user can see which shape they got — but not that a different one was available and was chosen
+  against their phrasing. Announcing the inferred `unblock` makes that reversible in one reply.
+  Announcing the `question` default would be noise on the status quo, and the acceptance criterion
+  was that current behavior is unchanged.
+- **The ask is a required slot, and a missing one stops the draft.** If the user has not said who
+  should act or by when, the skill asks rather than composing around the gap. A ping whose ask is
+  "any help appreciated" looks finished and does nothing, which is the exact failure the shape was
+  added to prevent — so producing one would be worse than pausing.
+- **The frontmatter description gained "unblock ping".** The description is the surface the harness
+  matches against; without the word, the shape would exist and never be reached on a request like
+  "I'm blocked on the staging role". Two near-boundary trigger rows were added with it.
 
 ---
 
-## 2. Platform coverage — is `assets/` the right way to scale?
+## 2. Platform coverage — is `references/` the right way to scale?
 
 Candidates raised: Discord, Reddit, Stack Overflow, X/Bluesky, Linear, Notion, Teams.
 
@@ -59,9 +79,9 @@ Sorting them by **dialect** rather than by name is what settles it:
 **Cut X/Bluesky.** This is not a dialect variation; it is a different composition problem. The
 template cannot fit in 280 characters, so supporting X would mean composing something else entirely
 (a hook plus a link). That is a different content shape *and* a different medium, and adding it as
-an `assets/x.md` would imply the template works there when it cannot.
+a `references/x.md` would imply the template works there when it cannot.
 
-**The `assets/` pattern is already showing the strain.** `github.md` and `gitlab.md` are near-copies
+**The `references/` pattern is already showing the strain.** `github.md` and `gitlab.md` are near-copies
 of each other — `gitlab.md`'s own tips section says "nearly identical to GitHub markdown". Adding six
 more Markdown-family files multiplies that duplication, and each copy is a place the syntax table can
 drift out of date independently.
@@ -78,7 +98,7 @@ of the current undefined behavior.
 
 ### Delivered
 
-The Council took the first slice on the backfill branch, so `assets/markdown.md` came into existence
+The Council took the first slice on the backfill branch, so `references/markdown.md` came into existence
 carrying both the baseline syntax and the capability table. Two things followed from it:
 
 - **The unrecognized-platform gap is closed.** An unlisted platform resolves to the Markdown baseline
@@ -92,10 +112,22 @@ carrying both the baseline syntax and the capability table. Two things followed 
 
 The harder half followed in [#579](https://github.com/repobuddy/repobuddy/issues/579) itself:
 `github.md`, `gitlab.md` and `asana.md` are folded into the capability table and platform notes, and
-the files are retired. `assets/` now holds exactly four files, one per dialect family — Markdown,
-Slack mrkdwn, Jira wiki markup, and email's plain-text-pasted-as-rich-text — and a Markdown-family
+the files are retired. `references/` now holds four dialect files, one per family — Markdown, Slack
+mrkdwn, Jira wiki markup, and email's plain-text-pasted-as-rich-text — and a Markdown-family
 platform costs a row. Adding Linear as a *row rather than a file* was the proof that the shape
 works; GitHub, GitLab and Asana moving onto it is the shape being used.
+
+### The directory is `references/`, not `assets/`
+
+Everything above says `references/` throughout, including where it describes work done while the
+directory was called `assets/`. The rename came last, from the agentskills layout: a skill may carry
+`scripts/`, `references/` and `assets/`, and the two are distinguished by kind rather than by topic.
+`assets/` is for static resources — templates, images, data files — while **documentation the agent
+reads under a stated condition belongs in `references/`**, which is exactly what a dialect file and
+a shape file are. Neither is copied into the output; both are read to inform it.
+
+The skill's own validator was widened to check either directory rather than `assets/` alone, so a
+skill that legitimately ships static resources is not forced into the wrong one.
 
 ---
 
@@ -160,8 +192,8 @@ the text.
 
 | Fork | Issue |
 |---|---|
-| 1 — Content shape as a parameter, starting with the unblock-ping shape | [#578](https://github.com/repobuddy/repobuddy/issues/578) |
-| 2 — Collapse `assets/` into a capability table; scale platforms by row | [#579](https://github.com/repobuddy/repobuddy/issues/579) — **delivered**: baseline + capability table + Linear + the unrecognized-platform rule here, then `github`/`gitlab`/`asana` folded in under the issue |
+| 1 — Content shape as a parameter, starting with the unblock-ping shape | [#578](https://github.com/repobuddy/repobuddy/issues/578) — **delivered**: `references/shape-question.md` + `references/shape-unblock.md`, shape resolution, and the scenarios behind them |
+| 2 — Collapse `references/` into a capability table; scale platforms by row | [#579](https://github.com/repobuddy/repobuddy/issues/579) — **delivered**: baseline + capability table + Linear + the unrecognized-platform rule here, then `github`/`gitlab`/`asana` folded in under the issue |
 | 4 — Portable handoff path instead of hardcoded `/tmp/question.md` | [#580](https://github.com/repobuddy/repobuddy/issues/580) — **delivered** |
 
 Fork 3 (the overlap with `create-issue` and `community-post`) needed no issue — it resolved to

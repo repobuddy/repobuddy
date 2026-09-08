@@ -53,7 +53,7 @@ level.
 | Build, CI, packaging, dependency policy | `tooling/` |
 | A load-bearing term | `glossary.md` |
 
-**Tie-breaks.** A skill's *platform syntax reference* (`assets/*.md`) is part of the skill's unit,
+**Tie-breaks.** A skill's *platform syntax reference* (`references/*.md`) is part of the skill's unit,
 not a `design/` doc — it is shipped material the skill loads at runtime, not a rule about the repo.
 A rule about *how skills are authored* is `design/`, because it binds every skill and belongs to no
 one of them.
