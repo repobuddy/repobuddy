@@ -2,21 +2,24 @@
 
 /**
  * Scaffolds GitHub Actions workflow files based on detected repo state.
- * Reads .github/setup-state.json produced by detect-state.mts.
+ * Reads the state artifact produced by detect-state.mts. Defaults to the same temp path
+ * detect-state writes to; pass --state to point at another one.
  * Skips files that already exist.
- * Usage: npx tsx scaffold-workflows.mts --state .github/setup-state.json [--workflows pull-request,release,dependabot-automerge,codeql] [--yes] [--verbose]
+ * Usage: npx tsx scaffold-workflows.mts [--state <path>] [--workflows pull-request,release,dependabot-automerge,codeql] [--yes] [--verbose]
  */
 
+import { execSync } from 'node:child_process'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { createInterface } from 'node:readline'
 import { parseArgs } from 'node:util'
+import { stateArtifactPath } from './state-path.mts'
 
 // --- Args ---
 
 const { values } = parseArgs({
 	options: {
-		state: { type: 'string', default: '.github/setup-state.json' },
+		state: { type: 'string' },
 		workflows: { type: 'string' },
 		yes: { type: 'boolean', short: 'y', default: false },
 		verbose: { type: 'boolean', default: false },
@@ -25,13 +28,20 @@ const { values } = parseArgs({
 	strict: true,
 })
 
-const statePath = values.state
+const statePath = values.state || defaultStatePath()
 const workflowsArg = values.workflows
 const autoYes = values.yes
 const verbose = values.verbose
 
 function writeResult(result: Record<string, unknown>) {
 	process.stdout.write(`${JSON.stringify(result)}\n`)
+}
+
+function defaultStatePath(): string {
+	const nameWithOwner = execSync('gh repo view --json nameWithOwner --jq .nameWithOwner', {
+		encoding: 'utf8',
+	}).trim()
+	return stateArtifactPath(nameWithOwner)
 }
 
 if (!existsSync(statePath)) {

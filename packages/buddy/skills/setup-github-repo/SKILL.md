@@ -40,17 +40,24 @@ Run the detect script from the repo root:
 node_major=$(node -e "process.stdout.write(String(process.versions.node.split('.')[0]))")
 SKILL_DIR=$(npx skills path setup-github-repo 2>/dev/null || echo "$HOME/.agents/skills/setup-github-repo")
 if [ "$node_major" -ge 23 ]; then
-  node "$SKILL_DIR/scripts/detect-state.mts"
+  ACK=$(node "$SKILL_DIR/scripts/detect-state.mts")
 else
-  npx tsx "$SKILL_DIR/scripts/detect-state.mts"
+  ACK=$(npx tsx "$SKILL_DIR/scripts/detect-state.mts")
 fi
+STATE=$(printf '%s' "$ACK" | jq -r .artifact)
 ```
 
-The script writes `.github/setup-state.json` and prints a small JSON ack to stdout. **Do not parse stdout for state** — read the artifact file instead:
+The script writes the state artifact **outside the repo tree** — under the OS temp dir, at the
+path the ack reports as `artifact`. Never write it into the repo: it is a scratch snapshot, and a
+copy left in the working tree reads like a statement of the repo's settings policy long after the
+run made it stale. Capture the path as `$STATE` (above) and pass it to every later step.
+
+The ack carries only the artifact path and a count. **Do not parse stdout for state** — read the
+artifact file instead:
 
 ```bash
-jq '[.rows[] | select(.action | startswith("will"))]' .github/setup-state.json
-jq '{repo, defaultBranch, detected}' .github/setup-state.json
+jq '[.rows[] | select(.action | startswith("will"))]' "$STATE"
+jq '{repo, defaultBranch, detected}' "$STATE"
 ```
 
 Summarize pending changes for the user and confirm before applying any changes. Add `--verbose` to the detect command for a human-readable table on stderr (debugging only).
@@ -155,9 +162,9 @@ The scaffold script detects which workflows to offer based on filesystem signals
 ```bash
 SKILL_DIR=$(npx skills path setup-github-repo 2>/dev/null || echo "$HOME/.agents/skills/setup-github-repo")
 if [ "$node_major" -ge 23 ]; then
-  node "$SKILL_DIR/scripts/scaffold-workflows.mts" --state .github/setup-state.json --yes
+  node "$SKILL_DIR/scripts/scaffold-workflows.mts" --state "$STATE" --yes
 else
-  npx tsx "$SKILL_DIR/scripts/scaffold-workflows.mts" --state .github/setup-state.json --yes
+  npx tsx "$SKILL_DIR/scripts/scaffold-workflows.mts" --state "$STATE" --yes
 fi
 ```
 
@@ -231,6 +238,12 @@ Print a final table:
 ## Notes
 
 - **Idempotency**: re-running on a fully configured repo should produce no changes.
+- **The state artifact is scratch**: it lives in the OS temp dir, is keyed by `owner/repo`, and is
+  stale the moment Steps 2–5 apply the plan it holds. Nothing reads it after the run. Leave it for
+  the OS to reap, or delete it — either is fine, and neither touches the repo. Do not commit it, do
+  not copy it into the repo, and do not add it to `.gitignore`; it never appears in `git status`.
+  Earlier versions of this skill wrote it to `.github/setup-state.json`; the detect script deletes
+  that leftover if it finds one.
 - **No org assumptions**: generated workflows are standalone — no reusable workflow references from any specific org. If your org has shared workflows, replace the generated file contents manually.
 - **Bypass actor IDs**: role IDs `5` (Administrators) and `2` (Maintainers) are standard GitHub built-in roles. Do not substitute org-specific team IDs.
 - **`--enable-auto-merge`**: enables the feature on the repo but does not auto-merge individual PRs; branch protection rules must still be satisfied per PR.
