@@ -1,5 +1,56 @@
 # repobuddy
 
+## 1.6.0
+
+### Minor Changes
+
+- 2bcf2a0: Bump `clibuilder` from `^10.1.0` to `^11.0.0`. The prior `^10.1.0` range could never
+  cross into the published `11.0.0` major (a caret cannot span majors), which meant every
+  consumer of `@repobuddy/typescript` — roughly 46 repos in the estate use it as a
+  devDependency — kept resolving `clibuilder@10.1.0` and, through it, a stale `type-plus`
+  and `tersify` major in their tree even after those packages published current majors.
+  
+  `clibuilder@11.0.0`'s own major came from a `type-plus@8` pin (its emitted `.d.ts` now
+  requires TypeScript `>= 5.6.0`), not from an API change — the `PluginActivationContext`
+  shape `@repobuddy/typescript` re-exports is unchanged, so this is not a breaking change
+  for consumers on TypeScript `>= 5.6` (this repo already requires `^7.0.0`/`^6.0.0`).
+  Shipping it as `minor` here lets the ~46 consumers of `@repobuddy/typescript` pick up
+  the fix and drop the stale transitive `type-plus`/`tersify` majors without a forced
+  major bump of their own.
+- ed7323a: Add the `llms-txt` skill.
+  
+  `llms.txt` is the orientation file an agent reads before using a package or site: what the project
+  is, the conventions that govern its whole surface, and where the per-item detail lives. The skill
+  generates it from the project's real public surface rather than hand-writing it — a hand-written one
+  rots into describing an API that was removed two releases ago — wires a drift check into the command
+  CI already runs, and reports the documentation gap that generating from the real surface exposes
+  instead of trying to fill it in the same change.
+  
+  It also draws the audience boundary against `AGENTS.md`: `llms.txt` addresses whoever consumes the
+  published thing, `AGENTS.md` whoever changes the repo. A project with no public surface needs only
+  the second, and the skill says so rather than generating a file with no reader.
+
+## 1.5.2
+
+### Patch Changes
+
+- e3026f9: Bump `clibuilder` to the latest published `^10.1.0` (in-range, non-breaking) picked up
+  while sweeping `type-plus` across the estate. No source change needed.
+- d967c8a: `to-question`: sort dialect references by family instead of by platform name.
+  
+  `assets/github.md`, `assets/gitlab.md` and `assets/asana.md` are folded into `assets/markdown.md`,
+  which now carries the Markdown baseline, a per-platform capability table (headings, tables, task
+  lists, strikethrough, alerts, code blocks) and short platform notes for the quirks that change what
+  gets written. `assets/` holds one file per dialect family — Markdown, Slack mrkdwn, Jira wiki
+  markup, and email — so a new Markdown-family platform costs a row rather than another near-duplicate
+  file. A platform the skill has no row for falls back to the Markdown baseline and says so.
+- 25da932: `to-question`: derive the handoff file path instead of hardcoding `/tmp/question.md`.
+  
+  The new bundled `scripts/question-path.mjs` resolves the OS temp directory (honoring `TMPDIR`/`TEMP`,
+  so it is correct on Linux, macOS, WSL and native Windows) and mints a fresh private `mkdtemp`
+  directory per session. Two users or two concurrent sessions on a shared machine can no longer collide
+  on the same world-readable filename.
+
 ## 1.5.1
 
 ### Patch Changes

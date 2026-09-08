@@ -1,6 +1,6 @@
 {
 	"name": "@repobuddy/jest",
-	"version": "5.0.2",
+	"version": "7.0.0",
 	"description": "Your jest buddy",
 	"keywords": [
 		"jest",
@@ -432,7 +432,7 @@
 		"jest": "^30.0.0",
 		"jest-esm-transformer-2": "^1.0.0",
 		"jest-watch-suspend": "^1.1.2",
-		"jest-watch-toggle-config-2": "^2.1.0",
+		"jest-watch-toggle-config": "^3.0.0",
 		"jest-watch-typeahead": "^3.0.0",
 		"ncp": "^2.0.0",
 		"npm-run-all2": "^9.0.0",
@@ -447,7 +447,7 @@
 		"jest": ">=29.5.0",
 		"jest-esm-transformer-2": "^1",
 		"jest-watch-suspend": "^1",
-		"jest-watch-toggle-config-2": "^2",
+		"jest-watch-toggle-config": "^3",
 		"jest-watch-typeahead": "^3.0.0",
 		"ts-jest": "^29"
 	},
@@ -461,7 +461,7 @@
 		"jest-watch-suspend": {
 			"optional": true
 		},
-		"jest-watch-toggle-config-2": {
+		"jest-watch-toggle-config": {
 			"optional": true
 		},
 		"jest-watch-typeahead": {

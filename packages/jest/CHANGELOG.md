@@ -1,5 +1,47 @@
 # @unional/jest-presets
 
+## 7.0.0
+
+### Major Changes
+
+- 2748090: Use `jest-watch-toggle-config` instead of the `jest-watch-toggle-config-2` fork.
+  
+  The fork existed because the original looked unmaintained — specifically it carried a
+  pointless `jest-validate` peer dependency, raised as jest-community/jest-watch-toggle-config#19.
+  Upstream 3.0.0 (April 2023) dropped that peer and closed the issue, and it has been
+  `"type": "module"` since the same release. Verified against a real jest 30.5.1 install:
+  the original loads, constructs, and toggles correctly with no flags.
+  
+  **Breaking:** `knownWatchPlugins.toggleConfig()` now emits `'jest-watch-toggle-config'`.
+  The optional peer changed name accordingly. If you use `defineWatchPlugins()` or
+  `toggleConfig()`, swap the devDependency:
+  
+  ```
+  pnpm remove jest-watch-toggle-config-2
+  pnpm add -D jest-watch-toggle-config
+  ```
+  
+  Consumers who never enabled the toggle-config plugin are unaffected.
+
+## 6.0.0
+
+### Major Changes
+
+- 10720a2: Pin `type-plus` to the exact `8.0.0-beta.10`, part of an estate-wide sweep off type-plus 7.
+  
+  `AnyRecord` appears in this package's emitted declarations (`src/fields/transform.ts`), so
+  consumers resolve type-plus's own `.d.ts` and inherit its new `typescript >= 5.6.0` peer
+  dependency — type-plus 5, 6 and 7 declared no typescript peer at all. Hence `major`.
+  
+  `NonUndefined` was removed in type-plus 8; `src/fields/transform.ts` and
+  `src/fields/watchPlugins.ts` now use `Exclude<T, undefined>`, the direct equivalent.
+  
+  Pinned rather than caret-ranged: `^8.0.0-beta.10` would also admit every later 8.0.0
+  prerelease plus `8.0.0` and `8.1.0`, and this is a prerelease line where breaking changes
+  land between betas (beta.10 -> beta.11 changed `Equal`'s signature and removed `isType.f`).
+  An exact version makes each bump a reviewable PR rather than something a lockfile refresh
+  can do silently.
+
 ## 5.0.2
 
 ### Patch Changes

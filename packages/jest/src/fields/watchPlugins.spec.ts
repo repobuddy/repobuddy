@@ -6,8 +6,8 @@ describe(`${defineWatchPlugins.name}()`, () => {
 		expect(defineWatchPlugins()).toEqual({
 			watchPlugins: [
 				'jest-watch-suspend',
-				['jest-watch-toggle-config-2', { setting: 'collectCoverage' }],
-				['jest-watch-toggle-config-2', { setting: 'verbose' }],
+				['jest-watch-toggle-config', { setting: 'collectCoverage' }],
+				['jest-watch-toggle-config', { setting: 'verbose' }],
 				'jest-watch-typeahead/filename',
 				'jest-watch-typeahead/testname',
 			],
