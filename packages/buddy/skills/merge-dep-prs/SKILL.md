@@ -147,17 +147,20 @@ radius. The gate is satisfied; go to Step 4.
 
 **Cross-repo.** Do **not** rely on `gh search code` — it misses org-internal matches (it returned
 nothing for a workflow name that 30 repos in the same org referenced). Loop the repo list and read
-each repo's workflow file instead; this took ~90s across three orgs:
+each repo's workflow files instead; this took ~90s across three orgs:
 
 ```bash
 for r in $(gh repo list <org> --limit 100 --json name,isArchived \
              --jq '.[]|select(.isArchived|not)|.name'); do
-  gh api repos/<org>/$r/contents/.github/workflows/release.yml --jq .content 2>/dev/null \
-    | base64 -d | grep -q "<workflow-name>" && echo "$r"
+  for f in $(gh api repos/<org>/$r/contents/.github/workflows --jq '.[].name' 2>/dev/null); do
+    gh api "repos/<org>/$r/contents/.github/workflows/$f" --jq .content 2>/dev/null \
+      | base64 -d | grep -q "<workflow-name>" && { echo "$r ($f)"; break; }
+  done
 done
 ```
 
-Repeat per org that could consume it.
+Read **every** workflow file, not just `release.yml` — a consumer that calls the workflow from
+`ci.yml` is still a consumer. Repeat per org that could consume it.
 
 **In-repo.** Run the **full** graph rather than the affected subset:
 
