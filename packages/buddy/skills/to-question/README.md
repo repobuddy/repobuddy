@@ -19,13 +19,21 @@ Format a technical question or discussion for a platform and copy to clipboard.
 | `gitlab` | GitLab Issues/MRs | Markdown family | |
 | `linear` | Linear issues/projects | Markdown family | |
 | `asana` | Asana tasks | Markdown family | |
-| `markdown` | Markdown baseline — also the fallback for anything unlisted | Markdown family | |
+| `markdown` | Markdown baseline — also the fallback for any unlisted *private* platform | Markdown family | |
 
 The references under `references/` are sorted by **dialect, not by platform name**. The whole Markdown
 family shares one file with a per-platform capability table (headings, tables, task lists,
 strikethrough, alerts), so a new Markdown-family platform costs a row rather than another
 near-duplicate file. Slack, Jira and email keep their own files because their dialects genuinely
-diverge. A platform nobody has verified falls back to the Markdown baseline, and the skill says so.
+diverge. An unlisted *private* platform — Notion, Teams — falls back to the Markdown baseline, and
+the skill says so.
+
+**Public venues are out of scope.** Stack Overflow, X/Bluesky, Reddit, Discord, Telegram and
+Facebook/LinkedIn are not unlisted dialects — they are a different job. Every target above writes to
+an audience that already has the context: people on the item, in your channel, or named on the mail.
+A public audience has none, so the post has to restate the context, cite prior art, and not repeat a
+question already answered — none of which this skill does. Ask for one of those venues and it points
+you at `research-workbench:community-post`, which researches first.
 
 ## Supported Shapes
 
@@ -61,7 +69,7 @@ diagrams and code samples are never flagged. Exit code 0 means clean.
 3. Iterates with you until you're happy with the output
 4. Copies the result to your clipboard — or, where no clipboard is available, leaves it in a private temp file and tells you the path
 
-It formats for you to paste. It never posts, files, or sends anything — to file an issue, use `create-issue`.
+It formats for you to paste. It never posts, files, or sends anything — to file an issue, use `create-issue`; to post somewhere public, use `research-workbench:community-post`.
 
 ## Output structure
 

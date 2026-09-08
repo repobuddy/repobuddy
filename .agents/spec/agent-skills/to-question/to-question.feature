@@ -28,6 +28,8 @@ Feature: to-question — compose a technical question and render it for a target
       | write up the retry problem as a new jira ticket                            | no             |
       | help me word a slack ping, I'm blocked on the staging IAM role             | yes            |
       | word this for the team — I need a review by thursday and nobody has looked | yes            |
+      | word this retry-backoff question for stack overflow                        | no             |
+      | draft a post about the retry problem for x, I'll paste it myself           | no             |
 
   @behavior
   Scenario: defaults to slack when no platform is named, and says so
@@ -56,9 +58,26 @@ Feature: to-question — compose a technical question and render it for a target
   Scenario: falls back to the markdown baseline and announces it
     Given the user says "format this for notion"
     And the skill has no dialect file named notion
+    And notion is a private venue whose readers are already on the item
     When to-question resolves the target platform
     Then it reads references/markdown.md
     And the reply states that the markdown baseline was used instead
+
+  @behavior
+  Scenario Outline: routes an unlisted public venue to community-post instead of falling back
+    Given the user says "format this for <venue>"
+    And the skill has no dialect file named <venue>
+    And <venue> is a public venue whose readers have no prior context
+    When to-question resolves the target platform
+    Then the reply names research-workbench:community-post as the skill for that venue
+    And the reply does not present the markdown baseline as the answer
+
+    Examples:
+      | venue          |
+      | stack overflow |
+      | reddit         |
+      | discord        |
+      | x              |
 
   @behavior
   Scenario: does not fall back to markdown for slack

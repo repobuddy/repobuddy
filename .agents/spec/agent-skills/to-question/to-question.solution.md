@@ -104,7 +104,10 @@ carrying both the baseline syntax and the capability table. Two things followed 
 - **The unrecognized-platform gap is closed.** An unlisted platform resolves to the Markdown baseline
   and the fallback is **announced**, never silent — the baseline is usually right for a Markdown-family
   platform and occasionally wrong, and announcing it is what makes being occasionally wrong survivable.
-  Slack and Jira are excluded by name, since neither accepts Markdown at all.
+  Slack and Jira are excluded by name, since neither accepts Markdown at all. **#582 narrowed this to
+  unlisted *private* platforms.** An unlisted *public* venue is not a dialect this skill has yet to
+  learn, so the baseline is not an imperfect answer there but a wrong one; those route to
+  `community-post` — see §3.
 - **Linear came almost free.** Its editor was verified against Linear's own docs rather than assumed:
   `**bold**`, `~~strike~~`, checklists, tables, blockquotes, code blocks (syntax highlighting
   undocumented), plus `>>>` collapsibles, `@` mentions and ` ```mermaid `. The one real constraint is
@@ -148,6 +151,17 @@ The three partition on **delivery**, not on content:
 that this is a real niche rather than an omission: **Slack, Jira and email are precisely the venues
 an agent usually cannot post to** — a DM, an SSO-gated tracker, a mail client it has no session with.
 Where the human is the delivery mechanism, handing them correctly-rendered text is the whole job.
+
+**Public venues went to `community-post` (#582).** The delivery axis above settles `create-issue`
+cleanly, but it does *not* settle a public venue, because `community-post` also stops at a human
+paste for Discord, Reddit and X — on those venues neither skill delivers, so "who delivers" cannot
+tell them apart. The axis that does is **whether the audience already has the context**, and every
+`to-question` target is an audience that does. Two consequences make this structural rather than a
+matter of adding rows: the template's Options section is a decision request, which is the shape
+Stack Overflow closes as opinion-based; and a public post owes prior art and a check for an existing
+answer, which are two of this skill's own stated non-goals. Stack-Overflow-only was considered and
+rejected on those grounds; X/Bluesky were separately cut in #579 for having no markup and a
+280/300-character cap.
 
 **The one real overlap** is that `to-question` accepts `github`/`gitlab`, where `create-issue` can
 post. **Keep both**, because they serve different acts: `create-issue` makes an issue *exist*

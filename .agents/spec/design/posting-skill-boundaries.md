@@ -42,10 +42,52 @@ this" is `to-question`. Where the verb is ambiguous, ask whether the thing being
 item to exist first*. If it does, it is a comment.
 
 `community-post` separates on a third axis: it is the only one that **researches first**, and it
-files to public venues (discussions, Discord, Reddit) rather than commenting on tracked work.
+posts to public venues (discussions, Discord, Reddit) rather than commenting on tracked work. A
+request with no research obligation is not a `community-post` request, however public the venue.
 
-`community-post` separates on a different axis again — it is the only one that *researches first*.
-A request with no research obligation is not a `community-post` request, however public the venue.
+## Public venues are `community-post`'s, not `to-question`'s
+
+The delivery line above answers "who puts the text where it is going". It does **not** answer "which
+skill owns a public venue", because on public venues delivery stops discriminating: `community-post`
+files to GitHub and Asana through an API, but for Discord, Reddit and X it drafts the body and leaves
+the human to paste it — the same handoff `to-question` uses everywhere. Two skills whose outputs are
+both pasted by hand cannot be told apart by who does the pasting.
+
+What separates them there is **whether the audience already has the context**:
+
+| Audience | Example venues | Skill |
+|---|---|---|
+| Already on the item, in the channel, or named on the mail | Jira, Linear, Asana, GitHub and GitLab comments; Slack; email | `to-question` |
+| Has no prior context and did not ask | Stack Overflow, X/Bluesky, Reddit, Discord, Telegram, Facebook/LinkedIn | `community-post` |
+
+Every `to-question` target is a private or semi-private audience that is already looking at the
+thing. That is not an accident of which platforms got implemented first — it is what the composition
+assumes. The template opens by asking the question directly *because* the reader already knows what
+it is about, and Context is explicitly "what the thread does not already cover". Point that at
+strangers and the composed text is missing the half a stranger needs.
+
+Adding public venues to `to-question` was considered in full and rejected
+([#582](https://github.com/repobuddy/repobuddy/issues/582)). Two reasons, both structural rather
+than a matter of unwritten dialects:
+
+- **The section shape is the wrong shape.** `to-question` composes a *decision request* — a design
+  fork, an edge case, "which of these three do we do" — and Options is the section carrying most of
+  its value. Public Q&A venues close exactly that shape: on Stack Overflow it is opinion-based or too
+  broad. The subset of public questions `to-question` could serve well is the subset where its
+  headline section has to be suppressed.
+- **Public venues impose the two obligations this skill declines.** Posting cold to a public venue
+  requires searching for an existing answer and citing prior art. Both are named non-goals here:
+  `to-question` does not dedup and does not research. Bolting them on would not extend the skill; it
+  would rebuild `community-post` inside it, worse.
+
+So a public venue is **not a fallback case**. An unlisted *private* venue — Notion, Teams — is a
+genuine unknown dialect, and falling back to the Markdown baseline with a warning is the right
+answer. An unlisted *public* venue is a known wrong answer, and the skill routes it to
+`community-post` instead of composing something the venue will reject.
+
+Short-form feeds fail a second test besides. X and Bluesky were also examined as markup dialects and
+cut ([#579](https://github.com/repobuddy/repobuddy/issues/579)): they accept no markup at all and cap
+at 280/300 characters, so the section template cannot fit regardless of who owns them.
 
 ## Consequence for the suites
 
