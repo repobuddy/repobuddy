@@ -16,7 +16,7 @@ todos:
   - content: Impl gate — cold judge against the frozen suite
     status: completed
   - content: Open the PR linking issue 594
-    status: in_progress
+    status: completed
 ---
 
 # CR github-594: gate dep-PR merges on verification reach covering blast radius
@@ -39,7 +39,7 @@ skill (classification, CI triage, fix recipes, changesets) stays unspecified and
 
 ## NEXT — landed
 
-Delivered on branch `cyberlegion/unit-dfe3c501a323810d`. The spec node is backfilled for the merge
+Delivered in repobuddy/repobuddy#652. The spec node is backfilled for the merge
 gate and its suite is `@frozen`; the shipped skill carries the gate, a `What NOT to do` section, and
 the README it had been missing.
 
