@@ -6,6 +6,8 @@ skill has never been pointed at.
 Use this when:
 
 - the target is a Markdown-family platform — `github`, `gitlab`, `asana`, `linear`, `markdown` — or
+- the target is `bugzilla` **and the user has said the instance renders Markdown** (it does not by
+  default; see [plaintext.md](./plaintext.md) for the default and the mode question), or
 - the user names a platform this skill has no dialect reference for (`discord`, `notion`, `teams`,
   `reddit`, …).
 
@@ -53,6 +55,7 @@ as the baseline above and tell the user you did.
 | `gitlab` | `#`–`######` | yes | yes | `~~text~~` | no — use a blockquote | yes |
 | `linear` | `#`–`####` **(4 max)** | yes | yes | `~~text~~` | no — `>>>` collapsible instead | yes, highlighting undocumented |
 | `asana` | `#` / `##` render as **styled text**, not real headings | **no** | **no** | `~~text~~` | no | yes |
+| `bugzilla` (Markdown mode only) | `#`–`######` | yes | yes | `~~text~~` | no | yes, fenced |
 | anything else | unverified | unverified | unverified | unverified | unverified | unverified |
 
 Where a cell says no, drop to the baseline for that one feature — a table that does not render is
@@ -84,9 +87,19 @@ comment skimmable. Tables and task lists do not render — use bullet lists. Mar
 comments and descriptions but **not** in task names, and follow-up action items belong in subtasks
 rather than in the comment.
 
+**`bugzilla`** — target is a **comment on an existing bug**, and this row applies **only when the
+user has confirmed Markdown mode**: Bugzilla's default is plain text, chosen per user preference and
+per comment, so the skill assumes [plaintext.md](./plaintext.md) unless told otherwise. In Markdown
+mode it is GFM **minus inline images and minus inline HTML** — both are stripped, so a
+`<details><summary>` block and an `![alt](url)` image are lost rather than rendered. Bugzilla's own
+auto-linkification survives either mode: bare URLs, `bug 12345`, `comment 5` and `attachment 7`
+become links on their own and need no `[text](url)` wrapping.
+
 **Not in this family:** Slack ([slack.md](./slack.md)) uses mrkdwn and Jira ([jira.md](./jira.md))
 uses wiki markup. Markdown does not work in either — never fall back to this file for them. Email
-([email.md](./email.md)) is composed as Markdown but pasted as rich text.
+([email.md](./email.md)) is composed as Markdown but pasted as rich text. Redmine
+([textile.md](./textile.md)) and Trac ([trac.md](./trac.md)) each have their own non-Markdown
+dialect, and Bugzilla ([plaintext.md](./plaintext.md)) accepts no markup at all by default.
 
 ## Template
 
@@ -144,3 +157,4 @@ option names in place of `###`, and bullet lists wherever the template would hav
 - ASCII diagrams belong in code blocks so they keep a monospace font
 - Cap headings at `####` on `linear`; use `#`/`##` plus bold on `asana`
 - When you fall back to this file for an unlisted platform, name the assumption in your reply
+- On `bugzilla`, drop inline images and inline HTML, and only use this file once Markdown mode is confirmed

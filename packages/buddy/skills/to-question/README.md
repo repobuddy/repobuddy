@@ -19,14 +19,28 @@ Format a technical question or discussion for a platform and copy to clipboard.
 | `gitlab` | GitLab Issues/MRs | Markdown family | |
 | `linear` | Linear issues/projects | Markdown family | |
 | `asana` | Asana tasks | Markdown family | |
+| `bugzilla` | Bugzilla bugs | plain text (default) — Markdown family if your instance renders it | |
+| `redmine` | Redmine issues | Textile (default) — Markdown family if your instance is on CommonMark | |
+| `trac` | Trac tickets | Trac wiki markup | |
 | `markdown` | Markdown baseline — also the fallback for any unlisted *private* platform | Markdown family | |
 
 The references under `references/` are sorted by **dialect, not by platform name**. The whole Markdown
 family shares one file with a per-platform capability table (headings, tables, task lists,
 strikethrough, alerts), so a new Markdown-family platform costs a row rather than another
-near-duplicate file. Slack, Jira and email keep their own files because their dialects genuinely
-diverge. An unlisted *private* platform — Notion, Teams — falls back to the Markdown baseline, and
-the skill says so.
+near-duplicate file. Slack, Jira, Redmine, Trac, plain-text Bugzilla and email keep their own files
+because their dialects genuinely diverge. An unlisted *private* platform — Notion, Teams — falls back
+to the Markdown baseline, and the skill says so.
+
+**Bugzilla and Redmine have a mode, not just a dialect.** Bugzilla comments are plain text by
+default, with Markdown switchable per user preference *and* per comment; Redmine is Textile by
+default, with CommonMark set instance-wide by an administrator. Nothing in your request tells the
+skill which, so it composes for the product default and tells you which one it assumed, with the
+one-line switch — say the word and it redoes the draft in the other mode. Trac has one fixed dialect
+and nothing to assume.
+
+Plain text is the one target where the *composition* changes and not only the markup: with no
+headings and no code fences, sections become blank lines and CAPITALISED labels, and an ASCII diagram
+loses its monospace guarantee, so the skill keeps it narrow and says in words what it shows.
 
 **Public venues are out of scope.** Stack Overflow, X/Bluesky, Reddit, Discord, Telegram and
 Facebook/LinkedIn are not unlisted dialects — they are a different job. Every target above writes to
@@ -59,8 +73,14 @@ node ./scripts/check-format.mjs <target> draft.md --json    # parseable
 ```
 
 It flags markup that will not survive the paste — Markdown bold in Slack, `##` headings in Jira,
-headings past `####` in Linear, a subject line inside an email body — and skips fenced blocks, so
-diagrams and code samples are never flagged. Exit code 0 means clean.
+headings past `####` in Linear, a subject line inside an email body, any markup at all in a
+plain-text Bugzilla comment — and skips each dialect's own verbatim regions (a ``` fence, Jira's
+`{code}`, Redmine's `<pre>`, Trac's `{{{ }}}`, a four-space indent in plain text), so diagrams and
+code samples are never flagged. Exit code 0 means clean.
+
+Targets are `slack`, `jira`, `linear`, `github`, `gitlab`, `asana`, `markdown`, `email`, `bugzilla`,
+`bugzilla-markdown`, `redmine` and `trac`. Bugzilla's two modes are two targets because they enforce
+opposite rules.
 
 ## What it does
 
