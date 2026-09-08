@@ -77,6 +77,14 @@ Negative-execution assertions are the weakest of these: a transcript cannot esta
 behaviors are real and worth keeping, but verifying them needs an **execution harness**, not a judge —
 tracked as its own issue. Until then, treat their passes as unproven rather than as evidence.
 
+**#598 added more of the same class, deliberately.** The non-Markdown tracker scenarios assert which
+dialect reference was read (`renders plain text with no markup at all when bugzilla is named`,
+`does not fall back to markdown for a tracker that does not render it`, `checks each tracker dialect
+before showing the draft`), and those reads are as unobservable to a judged transcript as the five
+above. They are paired with an assertion about the *draft itself* wherever one exists — the absence
+of markdown headings, the presence of `h2.` or `= Heading =` — which a transcript can settle. Read
+the file-read half as unproven and the draft half as measured.
+
 **The trigger bar was under-stressed** — addressed, not yet re-measured. The first six Examples rows
 resolved unanimously across two independent runs (36 verdicts, zero disagreement), because the three
 negatives are lexically obvious: "file a bug", "create a task", "research… then post". That measures

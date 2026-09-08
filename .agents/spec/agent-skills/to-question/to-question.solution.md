@@ -202,6 +202,91 @@ the text.
 
 ---
 
+---
+
+## 5. The markup family with no owner — Bugzilla, Redmine, Trac
+
+Fork 2 sorted the candidate platforms by dialect and found three families: Markdown, Slack mrkdwn,
+Jira wiki markup, plus email's rich-text paste. Sorting the *remaining* candidates the same way
+turned up a fourth with nobody claiming it — the non-Markdown trackers.
+
+| Family | Platforms | Claimed by |
+|---|---|---|
+| Markdown + capability table | Discord, Teams, Notion, Reddit, Stack Overflow, Linear | #579 |
+| Public venues (content shape, not dialect) | X, Telegram, Stack Overflow | #582 |
+| Slack mrkdwn | Slack | shipped |
+| Jira wiki markup | Jira | shipped |
+| Rich-text paste | Email | shipped |
+| **Non-Markdown trackers** | **Bugzilla, Redmine, Trac** | **nobody, until #598** |
+
+They are not rows in fork 2's capability table, because Markdown does not render in any of them: the
+baseline is the one dialect that must never be used. That is the Slack and Jira case exactly — a
+dialect that earns its own file.
+
+### What made them one issue rather than three
+
+**The skill cannot tell which markup mode the instance is in.** Every previously supported target's
+dialect is a property of the *platform*; on Bugzilla and Redmine it is a property of the *instance*.
+
+| Tracker | Default | Other mode | Who decides |
+|---|---|---|---|
+| **Bugzilla** | plain text, no markup | Markdown | a per-user preference **and** a per-comment checkbox |
+| **Redmine** | Textile | CommonMark | an instance-wide admin setting (`text_formatting`) |
+| **Trac** | its own wiki markup | — | always |
+
+Bugzilla is the sharpest case: two identical-looking instances accept different markup, and the
+choice is per *comment*. Nothing in the URL or the user's phrasing reveals it, so this needed a step
+the skill did not have — **assume the mode, and say which one you assumed.**
+
+**Chosen: default to the product default, announce it, offer the switch.** The **asymmetry of the
+failure** picks the direction. Markdown pasted into a plain-text Bugzilla comment renders as literal
+`**asterisks**` and `## hashes` and is unreadable; plain text pasted into a Markdown-enabled one is
+merely unstyled. The announcement is the rule the skill already applies to the Slack default and the
+Markdown fallback: choosing for the user is fine, choosing silently is not.
+
+**Rejected: ask the user first.** It would be correct and it would be annoying — an extra round trip
+on every Bugzilla and Redmine request, to settle something the default gets right most of the time
+and that one sentence at the end of the reply makes reversible in one word.
+
+**Rejected: infer the mode from the instance URL.** Nothing in a Bugzilla or Redmine URL carries the
+setting, and the Bugzilla case is per comment besides. An inference that cannot be right is worse
+than a stated assumption, because it does not announce itself.
+
+### Plain text is the one target where the composition changes
+
+Every other dialect is a different spelling of the same shape — the sections survive, the markup
+around them changes. Plain text has no headings and no fenced blocks, so the sections have to be
+carried by blank lines and capitalised labels, and the ASCII diagram loses its monospace guarantee:
+a box diagram in a proportional font is not a diagram. `references/plaintext.md` therefore ships a
+**template variant** rather than the shared template with its markup stripped, and tells the agent
+to keep a load-bearing diagram narrow and say in words what it shows.
+
+### Keep Trac, cut Confluence
+
+**Trac: keep, narrowly.** Bugzilla and Redmine are still widely deployed; Trac is largely legacy and
+was the first thing to cut had this been trimmed. It survives on cost — one more syntax table once
+the plain-text plumbing exists — and because it is the easy case, one fixed dialect with no mode.
+
+**Confluence: cut.** It looks like a natural pair with Jira, but its editor converts pasted wiki
+markup on entry and the markup is not editable afterward, so a wiki-markup draft is not reliably
+pasteable. It is also a page rather than a comment on an item that already exists, which puts it
+outside the boundary #577 drew and §3 documents.
+
+### The checker is where this pays
+
+`scripts/check-format.mjs` gained four targets — `bugzilla`, `bugzilla-markdown`, `redmine`, `trac`
+— because these are the dialects where the failure is **invisible until paste**. Bugzilla is two
+targets rather than one: the two modes enforce opposite rules, so a single `bugzilla` target would
+have to pass drafts that contradict each other.
+
+Extending it also forced verbatim-region detection to become dialect-specific instead of always a
+``` fence — `{code}`/`{noformat}` on Jira, `<pre>` on Redmine, `{{{ }}}` on Trac, a four-space
+indent on plain-text Bugzilla, which has no delimiter at all. That surfaced a rule that could never
+fire: Jira's "Markdown code fence" scan ran over lines the fence pass had already blanked out, so a
+``` block in a Jira draft went unreported.
+
+---
+
 ## Issues filed
 
 | Fork | Issue |
@@ -209,6 +294,7 @@ the text.
 | 1 — Content shape as a parameter, starting with the unblock-ping shape | [#578](https://github.com/repobuddy/repobuddy/issues/578) — **delivered**: `references/shape-question.md` + `references/shape-unblock.md`, shape resolution, and the scenarios behind them |
 | 2 — Collapse `references/` into a capability table; scale platforms by row | [#579](https://github.com/repobuddy/repobuddy/issues/579) — **delivered**: baseline + capability table + Linear + the unrecognized-platform rule here, then `github`/`gitlab`/`asana` folded in under the issue |
 | 4 — Portable handoff path instead of hardcoded `/tmp/question.md` | [#580](https://github.com/repobuddy/repobuddy/issues/580) — **delivered** |
+| 5 — The non-Markdown trackers, and the mode the instance is in | [#598](https://github.com/repobuddy/repobuddy/issues/598) — **delivered**: `references/plaintext.md`, `references/textile.md`, `references/trac.md`, a Markdown-mode `bugzilla` row, mode resolution with the stated assumption, and four checker targets |
 
 Fork 3 (the overlap with `create-issue` and `community-post`) needed no issue — it resolved to
 "no duplication, boundary undocumented", and the boundary is now documented and enforced by the

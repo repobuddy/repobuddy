@@ -28,6 +28,9 @@ Feature: to-question — compose a technical question and render it for a target
       | write up the retry problem as a new jira ticket                            | no             |
       | help me word a slack ping, I'm blocked on the staging IAM role             | yes            |
       | word this for the team — I need a review by thursday and nobody has looked | yes            |
+      | word this retry-backoff question for the bugzilla bug, I'll paste it       | yes            |
+      | word this for the redmine issue we already filed                           | yes            |
+      | file a new bugzilla bug for the dropped retry attempt                      | no             |
       | word this retry-backoff question for stack overflow                        | no             |
       | draft a post about the retry problem for x, I'll paste it myself           | no             |
 
@@ -115,6 +118,100 @@ Feature: to-question — compose a technical question and render it for a target
     Then it reads references/markdown.md
     And there is no references/gitlab.md to read
     And there is no references/github.md to read
+
+
+  # ── The non-Markdown trackers: the dialect is a property of the instance ──
+
+  @behavior
+  Scenario: renders plain text with no markup at all when bugzilla is named
+    Given the user says "format this for bugzilla"
+    And the user has said nothing about the instance's markup mode
+    When to-question produces the draft
+    Then it reads references/plaintext.md
+    And the draft contains no markdown heading syntax
+    And the draft contains no asterisk emphasis
+    And the draft contains no backtick or fenced code block
+    And the draft's section labels are capitalised words on their own line
+
+  @behavior
+  Scenario: states the plain-text mode it assumed for bugzilla, with the switch
+    Given the user says "format this for bugzilla"
+    And the user has said nothing about the instance's markup mode
+    When to-question produces the draft
+    Then the reply states that the draft was formatted as plain text, the Bugzilla default
+    And the reply says what the user can say to get the Markdown-mode draft instead
+
+  @behavior
+  Scenario: takes the user's word for the mode instead of announcing an assumption
+    Given the user says "format this for bugzilla, our instance has Markdown turned on"
+    When to-question produces the draft
+    Then it reads references/markdown.md
+    And the draft uses markdown headings
+    And the reply does not state that it assumed a markup mode
+
+  @behavior
+  Scenario: drops inline images and inline HTML on a Markdown-mode bugzilla
+    Given the user says "format this for bugzilla, the instance renders Markdown"
+    And the draft would otherwise use a collapsible details block and an inline image
+    When to-question produces the draft
+    Then the draft contains no inline HTML tag
+    And the draft contains no inline image
+
+  @behavior
+  Scenario: renders textile when redmine is named, and states the mode
+    Given the user says "format this for redmine"
+    And the user has said nothing about the instance's text_formatting setting
+    When to-question produces the draft
+    Then it reads references/textile.md
+    And the draft uses "h2." for its section headings
+    And the draft contains no double-asterisk emphasis
+    And the reply states that the draft was formatted as Textile, Redmine's default
+    And the reply says what the user can say to get the CommonMark draft instead
+
+  @behavior
+  Scenario: assumes no mode for trac, which has only one dialect
+    Given the user says "format this for trac"
+    When to-question produces the draft
+    Then it reads references/trac.md
+    And the draft uses "= Heading =" for its section headings
+    And the draft emphasises option names with three single quotes
+    And the reply states no assumption about a markup mode
+
+  @behavior
+  Scenario Outline: does not fall back to markdown for a tracker that does not render it
+    Given the user says "format this for <platform>"
+    When to-question resolves the target platform
+    Then it reads <reference>
+    And it does not compose the draft on the markdown baseline
+
+    Examples:
+      | platform | reference               |
+      | bugzilla | references/plaintext.md |
+      | redmine  | references/textile.md   |
+      | trac     | references/trac.md      |
+
+  @behavior
+  Scenario: composes the plain-text template variant rather than stripping the markup out
+    Given the user says "format this for bugzilla"
+    And the question is best explained with a diagram of the retry schedule
+    When to-question produces the draft
+    Then the sections are separated by blank lines and capitalised labels
+    And the diagram is indented rather than fenced
+    And the line above the diagram says in words what the diagram shows
+
+  @behavior
+  Scenario Outline: checks each tracker dialect before showing the draft
+    Given the user says "format this for <platform>"
+    When to-question has a draft ready to display
+    Then it runs scripts/check-format.mjs against the draft with the <target> target
+    And the draft it displays produces no findings from that check
+
+    Examples:
+      | platform                          | target            |
+      | bugzilla                          | bugzilla          |
+      | bugzilla, we have Markdown on     | bugzilla-markdown |
+      | redmine                           | redmine           |
+      | trac                              | trac              |
 
   @behavior
   Scenario: drops to bullet lists when the capability table says tables do not render
