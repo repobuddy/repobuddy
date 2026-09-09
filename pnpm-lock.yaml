@@ -177,6 +177,9 @@ importers:
 
   packages/buddy:
     dependencies:
+      '@repobuddy/jest':
+        specifier: workspace:^
+        version: link:../jest
       clibuilder:
         specifier: ^11.0.0
         version: 11.0.0(typescript@7.0.2)
@@ -184,9 +187,6 @@ importers:
       '@jest/globals':
         specifier: ^30.0.0
         version: 30.4.1(supports-color@8.1.1)
-      '@repobuddy/jest':
-        specifier: workspace:*
-        version: link:../jest
       cross-env:
         specifier: ^10.1.0
         version: 10.1.0
