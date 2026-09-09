@@ -184,6 +184,16 @@ describe('test-scripts', () => {
 		expect(messages).toContain('no package.json in')
 	})
 
+	it('falls back to tabs for a manifest with no indentation to copy', async () => {
+		writeFileSync(join(cwd, 'package.json'), JSON.stringify({ name: 'p', devDependencies: { jest: '^30.0.0' } }))
+
+		await run()
+
+		const source = readFileSync(join(cwd, 'package.json'), 'utf-8')
+		expect(source).toContain('\n\t"name": "p"')
+		expect(source.endsWith('\n')).toBe(false)
+	})
+
 	it('keeps the indentation and the trailing newline the manifest had', async () => {
 		writeManifest({ name: 'p', devDependencies: { jest: '^30.0.0' } }, { indent: '  ' })
 

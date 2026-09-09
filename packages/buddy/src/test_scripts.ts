@@ -10,13 +10,13 @@ export type TestRunner = 'jest' | 'vitest'
  * The union of the values for one script is also the set of values this command
  * recognizes as its own — see `planTestScripts`.
  */
-export const managedScripts = {
+const managedScripts = {
 	test: { jest: 'jest', vitest: 'vitest run' },
 	coverage: { jest: 'jest --coverage', vitest: 'vitest run --coverage' },
 	'test:watch': { jest: 'jest --watch', vitest: 'vitest' },
 } as const
 
-export type ManagedScript = keyof typeof managedScripts
+type ManagedScript = keyof typeof managedScripts
 
 export type ScriptChange = {
 	name: ManagedScript
