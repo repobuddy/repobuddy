@@ -31,7 +31,7 @@ If the user says the instance is in Markdown mode, use [markdown.md](./markdown.
 
 ## What structure is available
 
-Three things, and nothing else:
+Three structuring devices, plus two things Bugzilla treats specially on its own:
 
 | Device | How | Notes |
 |---|---|---|
@@ -101,5 +101,5 @@ The `unblock` shape uses the same devices: `BLOCKED ON`, `ALREADY TRIED`, `WHAT 
 - Bare URLs are already links; `[text](url)` is not, and shows both halves as text
 - Capitalised labels carry the sections — do not fall back to `--- Context ---` rules or `===` bars,
   which are noise a label already handles
-- Two blank lines before a label and one after is enough separation; more just makes the comment long
+- One blank line above a label and one below is enough separation; more just makes the comment long
 - Say the mode you assumed, every time. Choosing for the user is fine; choosing silently is not
