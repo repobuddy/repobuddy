@@ -1,15 +1,23 @@
 #!/usr/bin/env node
 /**
  * Detects current GitHub repo settings and filesystem signals.
- * Writes .github/setup-state.json; prints a JSON ack to stdout.
- * Human-readable table on stderr with --verbose.
+ * Writes the state artifact to a temp path (override with --out <path>) and prints a
+ * JSON ack to stdout carrying that path. Human-readable table on stderr with --verbose.
  */
 
 import { execSync } from 'node:child_process'
-import { existsSync, mkdirSync, readdirSync, writeFileSync } from 'node:fs'
-import { extname, join } from 'node:path'
+import { existsSync, mkdirSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
+import { dirname, extname, join, resolve } from 'node:path'
+import { stateArtifactPath } from './state-path.mts'
 
 const verbose = process.argv.includes('--verbose')
+const outFlag = process.argv.indexOf('--out')
+const outOverride = outFlag === -1 ? null : process.argv[outFlag + 1]
+
+if (outFlag !== -1 && !outOverride) {
+	console.error('--out requires a path')
+	process.exit(1)
+}
 
 function run(cmd: string): string {
 	return execSync(cmd, { encoding: 'utf8' }).trim()
@@ -235,10 +243,16 @@ const state = {
 	rows,
 }
 
-const artifact = '.github/setup-state.json'
+const artifact = outOverride ?? stateArtifactPath(nameWithOwner)
 
-mkdirSync('.github', { recursive: true })
+mkdirSync(dirname(artifact), { recursive: true })
 writeFileSync(artifact, JSON.stringify(state, null, 2))
+
+// Earlier versions of this skill wrote the artifact into the repo tree, where it was
+// left behind untracked. Clear that leftover so it stops reading as repo policy.
+const legacyArtifact = '.github/setup-state.json'
+const removedLegacyArtifact = resolve(legacyArtifact) !== resolve(artifact) && existsSync(legacyArtifact)
+if (removedLegacyArtifact) rmSync(legacyArtifact, { force: true })
 
 const willSet = rows.filter((r) => r.action.startsWith('will')).length
 const alreadySet = rows.length - willSet
@@ -247,6 +261,7 @@ process.stdout.write(
 	`${JSON.stringify({
 		ok: true,
 		artifact,
+		...(removedLegacyArtifact ? { removedLegacyArtifact: legacyArtifact } : {}),
 		repo: nameWithOwner,
 		defaultBranch,
 		counts: { willSet, alreadySet },
