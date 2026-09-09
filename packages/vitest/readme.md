@@ -52,6 +52,24 @@ export default defineConfig({
 })
 ```
 
+### Load tests
+
+Load tests (`*.load.ts`, `*.load.js`) are recognized as test files,
+but are excluded from a normal run because they are slow.
+
+Opt into them with `includeLoadTests`, or give them their own config:
+
+```ts
+// vitest.config.load.ts
+import { defineConfig } from 'vitest/config'
+import { buddyConfigDefaults, nodeTestPreset } from '@repobuddy/vitest/config/node'
+
+export default defineConfig({
+  plugins: [nodeTestPreset()],
+  test: { include: buddyConfigDefaults.include.testLoad },
+})
+```
+
 [downloads-image]: https://img.shields.io/npm/dm/@repobuddy/typescript.svg?style=flat
 [downloads-url]: https://npmjs.org/package/@repobuddy/typescript
 [npm-image]: https://img.shields.io/npm/v/@repobuddy/typescript.svg?style=flat

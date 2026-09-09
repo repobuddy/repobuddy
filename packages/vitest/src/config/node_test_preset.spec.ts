@@ -44,6 +44,16 @@ describe(`${nodeTestPreset.name}()`, () => {
 		expect(callConfig(r).test?.include).toEqual(expect.arrayContaining(buddyConfigDefaults.include.testGeneral))
 	})
 
+	it('does not include load tests by default', () => {
+		const include = callConfig(nodeTestPreset()).test?.include
+		buddyConfigDefaults.include.testLoad.forEach((item) => void expect(include).not.toContain(item))
+	})
+
+	it('can include load tests', () => {
+		const r = nodeTestPreset({ includeLoadTests: true })
+		expect(callConfig(r).test?.include).toEqual(expect.arrayContaining(buddyConfigDefaults.include.testLoad))
+	})
+
 	it('can override environment', () => {
 		const r = nodeTestPreset({ environment: 'jsdom' })
 		expect(callConfig(r).test?.environment).toBe('jsdom')

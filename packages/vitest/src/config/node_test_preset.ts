@@ -22,6 +22,9 @@ export function nodeTestPreset(options?: NodePresetOptions | undefined): Plugin 
 			if (options?.includeGeneralTests) {
 				include.push(...buddyConfigDefaults.include.testGeneral)
 			}
+			if (options?.includeLoadTests) {
+				include.push(...buddyConfigDefaults.include.testLoad)
+			}
 			if (options?.environment && ['jsdom', 'happy-dom'].includes(options?.environment)) {
 				include.push(...buddyConfigDefaults.include.testBrowser)
 			}

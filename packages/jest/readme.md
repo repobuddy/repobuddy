@@ -120,6 +120,22 @@ Here are some highlights:
   - `feature.spec.node16.ts`
   - `feature.spec.jsdom.ts`
   - The platform specifiers are placed after the test specifier (e.g. `spec`) to alloy more freedom in naming the feature.
+- Load tests (`feature.load.ts`) are recognized as test files but are **not** part of a normal run.
+  They are slow, so you opt into them with a dedicated config:
+
+  ```ts
+  // jest.load.config.js
+  import { configs } from '@repobuddy/jest'
+
+  export default {
+    preset: '@repobuddy/jest/presets/ts-esm',
+    ...configs.nodeLoad
+  }
+  ```
+
+  `configs.configNode(identifiers)` takes the identifiers to run,
+  so `configs.configNode([...configs.defaultTestIdentifiers, ...configs.loadTestIdentifiers])` runs both.
+  Either way, load test files are always ignored for coverage.
 - Uses [@repobuddy/jest/resolver] that handles [subpath imports][subpath-imports] correctly.
 - `cjs` uses [jest-esm-transformer-2] to transforms ESM dependencies.
 - `ts` uses [ts-jest] with `isolatedModule: true`.
@@ -165,6 +181,7 @@ The configurations for specific use cases are exposed and available for you to c
 They can be predefined configs:
 
 - [node](./src/configs/node.ts)
+- [nodeLoad](./src/configs/node.ts): runs `*.load.*` tests only
 - [jsdom](./src/configs/jsdom.ts)
 - [jsCjs](./src/configs/javascript.ts)
 - [jsEsm](./src/configs/javascript.ts)
@@ -175,6 +192,12 @@ or functions prefixed with `config`:
 
 - [configNode()](./src/configs/node.ts)
 - [configSource()](./src/configs/configSource.ts)
+
+or the test identifiers used to build them:
+
+- [defaultTestIdentifiers](./src/configs/node.ts): identifiers included in a normal run
+- [loadTestIdentifiers](./src/configs/node.ts): `load`, opt-in only
+- [knownTestIdentifiers](./src/configs/node.ts): every recognized identifier
 
 ## Fields
 

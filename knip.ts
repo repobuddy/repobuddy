@@ -24,8 +24,13 @@ import type { KnipConfig } from 'knip'
  * or `importHelpers` — and says which.
  */
 
-/** Test-file suffixes this repo uses. `.spec` alone does not cover them. */
-const testSuffixes = '{spec,test,unit,accept,integrate,system,perf,stress,study,learning}'
+/**
+ * Test-file suffixes this repo uses. `.spec` alone does not cover them.
+ *
+ * `load` is here even though no default run executes it: a `*.load.ts` file is
+ * still a test file a runner picks up, just an opt-in one.
+ */
+const testSuffixes = '{spec,test,unit,accept,integrate,system,perf,stress,study,learning,load}'
 const extensions = '{ts,tsx,cts,mts,js,jsx,cjs,mjs}'
 
 /**

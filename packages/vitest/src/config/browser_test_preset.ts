@@ -16,12 +16,16 @@ export function browserTestPreset(options?: PresetOptions | undefined): Plugin {
 	return {
 		name: '@repobuddy/vitest/browser-preset',
 		config(userConfig?: ViteUserConfig | undefined) {
+			const include = options?.includeGeneralTests
+				? [...buddyConfigDefaults.include.testGeneral, ...buddyConfigDefaults.include.testBrowser]
+				: [...buddyConfigDefaults.include.testBrowser]
+			if (options?.includeLoadTests) {
+				include.push(...buddyConfigDefaults.include.testLoad)
+			}
 			return {
 				test: {
 					...buddyConfigDefaults.test,
-					include: options?.includeGeneralTests
-						? [...buddyConfigDefaults.include.testGeneral, ...buddyConfigDefaults.include.testBrowser]
-						: buddyConfigDefaults.include.testBrowser,
+					include,
 					browser: {
 						enabled: true,
 						headless: true,
