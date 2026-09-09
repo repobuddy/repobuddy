@@ -15,7 +15,7 @@
 | --- | --- |
 | [`create-issue`] | Create a bug report or feature request — searches for duplicates first |
 | [`llms-txt`] | Publish an `llms.txt` generated from a project's real public surface, with a CI drift check |
-| [`merge-dep-prs`] | Merge pending dependency update PRs — diagnoses CI failures, never merges release PRs |
+| [`merge-dep-prs`] | Merge pending dependency update PRs — gates each merge on whether CI reached what the change can break, diagnoses CI failures, never merges release PRs |
 | [`review-permissions`] | Audit what your agents are allowed to do — risk-rank every grant, then tighten and consolidate it |
 | [`setup-github-pages`] | Deploy a static site to GitHub Pages — base path, Actions workflow, and Pages source |
 | [`setup-github-repo`] | Set up a GitHub repo with branch protection, Dependabot, and CI |
