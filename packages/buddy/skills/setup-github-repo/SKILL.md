@@ -45,12 +45,18 @@ else
   ACK=$(npx tsx "$SKILL_DIR/scripts/detect-state.mts")
 fi
 STATE=$(printf '%s' "$ACK" | jq -r .artifact)
+printf '%s\n' "$ACK"
 ```
 
 The script writes the state artifact **outside the repo tree** — under the OS temp dir, at the
 path the ack reports as `artifact`. Never write it into the repo: it is a scratch snapshot, and a
 copy left in the working tree reads like a statement of the repo's settings policy long after the
-run made it stale. Capture the path as `$STATE` (above) and pass it to every later step.
+run made it stale. Capture the path as `$STATE` (above) and pass it to every later step; if a
+later step runs in a shell where `$STATE` is unset, use the literal path the ack printed.
+
+If the ack carries `removedLegacyArtifact`, an earlier version of this skill had left that file in
+the repo and the script deleted it. Tell the user — if they had committed it, it now shows as a
+deletion in `git status`.
 
 The ack carries only the artifact path and a count. **Do not parse stdout for state** — read the
 artifact file instead:

@@ -251,7 +251,8 @@ writeFileSync(artifact, JSON.stringify(state, null, 2))
 // Earlier versions of this skill wrote the artifact into the repo tree, where it was
 // left behind untracked. Clear that leftover so it stops reading as repo policy.
 const legacyArtifact = '.github/setup-state.json'
-if (resolve(legacyArtifact) !== resolve(artifact)) rmSync(legacyArtifact, { force: true })
+const removedLegacyArtifact = resolve(legacyArtifact) !== resolve(artifact) && existsSync(legacyArtifact)
+if (removedLegacyArtifact) rmSync(legacyArtifact, { force: true })
 
 const willSet = rows.filter((r) => r.action.startsWith('will')).length
 const alreadySet = rows.length - willSet
@@ -260,6 +261,7 @@ process.stdout.write(
 	`${JSON.stringify({
 		ok: true,
 		artifact,
+		...(removedLegacyArtifact ? { removedLegacyArtifact: legacyArtifact } : {}),
 		repo: nameWithOwner,
 		defaultBranch,
 		counts: { willSet, alreadySet },
