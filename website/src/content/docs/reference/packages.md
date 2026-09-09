@@ -22,7 +22,7 @@ coding assistants:
 | Skill | Description |
 | --- | --- |
 | `create-issue` | Create a bug report or feature request — searches for duplicates first |
-| `merge-dep-prs` | Merge pending dependency update PRs — diagnoses CI failures, never merges release PRs |
+| `merge-dep-prs` | Merge pending dependency update PRs — gates each merge on whether CI reached what the change can break, diagnoses CI failures, never merges release PRs |
 | `setup-github-pages` | Deploy a static site to GitHub Pages — base path, Actions workflow, Pages source |
 | `setup-github-repo` | Set up a GitHub repo with branch protection, Dependabot, and CI |
 

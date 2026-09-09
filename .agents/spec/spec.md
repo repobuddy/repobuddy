@@ -76,8 +76,10 @@ frontmatter — refresh it with the `concept-index` skill rather than editing it
 
 | Concept | Facets |
 |---|---|
+| `blast-radius` | `agent-skills/merge-dep-prs/` (behavior) |
 | `content-composition` | `agent-skills/to-question/` (behavior) |
 | `human-handoff` | `agent-skills/to-question/` (behavior) |
+| `merge-gating` | `agent-skills/merge-dep-prs/` (behavior) |
 | `platform-rendering` | `agent-skills/to-question/` (behavior) |
 
 <!-- END generated: by-concept -->
