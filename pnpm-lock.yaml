@@ -283,6 +283,10 @@ importers:
         version: 6.0.3
 
   packages/test:
+    dependencies:
+      assertron:
+        specifier: ^11.7.0
+        version: 11.7.0(typescript@7.0.2)
     devDependencies:
       '@repobuddy/typescript':
         specifier: workspace:*
@@ -3758,6 +3762,10 @@ packages:
     resolution: {integrity: sha512-10ISpYENayWRyH7bwz1l3jfYeyNv0W4TlJ5t2vNfPtKclHnpCXGKv0Vfr7xCGdgR843U2H3+EfUY12bOwjPDzA==}
     engines: {node: '>=20'}
 
+  assertron@11.7.0:
+    resolution: {integrity: sha512-LAykbog/XG9NO4T0kyHhOujm4xyEN2zsuqEHgqccHlLyCXm97ZJEXBVrQsk/+J+qIGqLAIv/Zk4hIOS/x8MATA==}
+    engines: {node: '>=20'}
+
   ast-types@0.16.1:
     resolution: {integrity: sha512-6t10qk83GOG8p0vKmaCr8eiilZwO171AvbROMtvvNiwrTly62t+7XkA8RdIIVbpMhCASAsxgAzdRSwh6nw/5Dg==}
     engines: {node: '>=4'}
@@ -4959,6 +4967,10 @@ packages:
   iso-error@6.0.5:
     resolution: {integrity: sha512-e6RUrLKvZhUzkjVYozUo8RKnZsKtoEljdPyzXWJfPfn2jhZWn74xyEYYrlWDFNr/+zQcyDEmXYp7ir+hzbJ8MA==}
     engines: {node: '>= 10'}
+
+  iso-error@7.0.0:
+    resolution: {integrity: sha512-GyHH/0Xyug/vO9LOr5zKI3fyEAAJuBuXYNZE+Fs5DmpUmH4oRbcR8aYyql+MGi8CY53qPcU1bNJEjC5QsesFhA==}
+    engines: {node: '>= 20'}
 
   isobject@3.0.1:
     resolution: {integrity: sha512-WhB9zCku7EGTj/HQQRz5aUQEUeoQZH2bWcltRErOpymJ4boYE6wL9Tbr23krRPSZ+C5zqNSrSw+Cc7sZZ4b7vg==}
@@ -10022,6 +10034,17 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
+  assertron@11.7.0(typescript@7.0.2):
+    dependencies:
+      is-promise: 4.0.0
+      iso-error: 7.0.0
+      path-equal: 1.2.8
+      satisfier: 5.4.4
+      tersify: 4.0.6
+      type-plus: 8.0.0-beta.10(typescript@7.0.2)
+    transitivePeerDependencies:
+      - typescript
+
   ast-types@0.16.1:
     dependencies:
       tslib: 2.8.1
@@ -11442,6 +11465,8 @@ snapshots:
   isexe@4.0.0: {}
 
   iso-error@6.0.5: {}
+
+  iso-error@7.0.0: {}
 
   isobject@3.0.1: {}
 
