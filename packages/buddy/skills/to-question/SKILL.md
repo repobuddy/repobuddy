@@ -1,6 +1,6 @@
 ---
 name: to-question
-description: Use this skill when wording a question or unblock ping to paste into Slack, Jira, Bugzilla, Redmine, Trac, or email.
+description: Use this skill when wording a question or unblock ping for Slack, Jira, Linear, Asana, Bugzilla, Redmine, Trac or email.
 ---
 
 # Question Formatter
