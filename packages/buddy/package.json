@@ -54,11 +54,11 @@
 		"verify": "npm-run-all -p build -p test"
 	},
 	"dependencies": {
+		"@repobuddy/jest": "workspace:^",
 		"clibuilder": "^11.0.0"
 	},
 	"devDependencies": {
 		"@jest/globals": "^30.0.0",
-		"@repobuddy/jest": "workspace:*",
 		"cross-env": "^10.1.0",
 		"jest": "^30.0.0",
 		"npm-run-all2": "^9.0.0",
