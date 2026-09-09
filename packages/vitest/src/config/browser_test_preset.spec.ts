@@ -33,6 +33,17 @@ describe(`${browserTestPreset.name}()`, () => {
 		buddyConfigDefaults.include.testGeneral.forEach((item) => void expect(include).toContain(item))
 	})
 
+	it('does not include load tests by default', () => {
+		const include = callConfig(browserTestPreset()).test?.include
+		buddyConfigDefaults.include.testLoad.forEach((item) => void expect(include).not.toContain(item))
+	})
+
+	it('can include load tests', () => {
+		const r = browserTestPreset({ includeLoadTests: true })
+		const include = callConfig(r).test?.include
+		buddyConfigDefaults.include.testLoad.forEach((item) => void expect(include).toContain(item))
+	})
+
 	it('supports config without name', () => {
 		const r = browserTestPreset()
 		expect(callConfig(r, { test: {} }).test?.browser?.instances?.[0]?.name).toBeUndefined()
