@@ -13,10 +13,11 @@ the configuration file resolution, and the plugin auto-loading — so much of wh
 promises is *inherited* behavior that this spec still has to pin down, because a consumer
 cannot tell inherited behavior from authored behavior and depends on both.
 
-The work this project does is: **set a repository up** (`init`), **manage which plugins are
-active** (`add` / `remove` / `update` / list and search), and **resolve the configuration**
-that records those choices. Each plugin then contributes its own commands — `@repobuddy/typescript`
-adds a `ts` command, for example — so the CLI's surface grows with what the repository installs.
+The work this project does is: **set a repository up** (`init`), **keep its test scripts matching
+the runner it uses** (`test-scripts`), **manage which plugins are active** (`add` / `remove` /
+`update` / list and search), and **resolve the configuration** that records those choices. Each
+plugin then contributes its own commands — `@repobuddy/typescript` adds a `ts` command, for
+example — so the CLI's surface grows with what the repository installs.
 
 ## Capabilities
 
@@ -25,6 +26,7 @@ adds a `ts` command, for example — so the CLI's surface grows with what the re
 | [`cli-shell/`](./cli-shell/README.md) | behavioral | The runtime shell: the `buddy` / `bd` entry points, version, description, help, and what happens when no command or an unknown command is given. |
 | [`configuration/`](./configuration/README.md) | behavioral | Resolving `.repobuddy.json` and its accepted variants, and validating what it contains. |
 | [`initialization/`](./initialization/README.md) | behavioral | `buddy init` — writing the configuration, detecting already-installed plugins, and scaffolding template files, safe to repeat. |
+| [`test-scripts/`](./test-scripts/README.md) | behavioral | `buddy test-scripts` — writing the `test`, `coverage`, and `test:watch` scripts for the runner a repository uses, without clobbering one it customized. |
 | [`plugin-management/`](./plugin-management/README.md) | descriptive | The capability index for adding, removing, updating, and discovering plugins, and the contract a plugin implements. |
 | [`tooling/`](./tooling/README.md) | descriptive | How the package is built and published — the build outputs, the published file allowlist, and the `bin` mapping. |
 | [`workflows/`](./workflows/README.md) | behavioral | End-to-end flows across capabilities: the paths a real user actually walks. |
