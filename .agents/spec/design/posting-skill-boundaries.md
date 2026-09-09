@@ -23,8 +23,8 @@ that will render correctly when pasted.
 
 ## The sharper line: new item vs. comment on an existing one
 
-The apparent overlap is that `to-question` accepts `github`, `gitlab`, `jira`, `linear` and `asana`
-as targets, and `create-issue` also works against trackers. It dissolves once you say what the
+The apparent overlap is that `to-question` accepts `github`, `gitlab`, `jira`, `linear`, `asana`,
+`bugzilla`, `redmine` and `trac` as targets, and `create-issue` also works against trackers. It dissolves once you say what the
 composed text actually *is* on a tracker:
 
 - **`create-issue` creates an item that does not exist yet** — an issue, a bug, a feature request.
@@ -57,7 +57,7 @@ What separates them there is **whether the audience already has the context**:
 
 | Audience | Example venues | Skill |
 |---|---|---|
-| Already on the item, in the channel, or named on the mail | Jira, Linear, Asana, GitHub and GitLab comments; Slack; email | `to-question` |
+| Already on the item, in the channel, or named on the mail | Jira, Linear, Asana, GitHub, GitLab, Bugzilla, Redmine and Trac comments; Slack; email | `to-question` |
 | Has no prior context and did not ask | Stack Overflow, X/Bluesky, Reddit, Discord, Telegram, Facebook/LinkedIn | `community-post` |
 
 Every `to-question` target is a private or semi-private audience that is already looking at the
