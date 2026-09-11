@@ -1,5 +1,121 @@
 # repobuddy
 
+## 1.7.0
+
+### Minor Changes
+
+- 5d74440: New `add-badges` skill: builds a readme badge row from facts detected in the repo — package name,
+  visibility, workflows, license file, docs URL — instead of a fixed template.
+  
+  It resolves which readme npm and GitHub actually render before writing (in a monorepo that is the
+  published package's, not the root's), badges the workflow that gates the default branch rather than a
+  pull-request workflow whose badge reads stale on `main`, skips build badges on private repos where
+  shields cannot read them, and verifies the badges render on the pushed branch before merge.
+- e414614: Build the CLI with tsdown and inline its dependencies, replacing the `tsc` build.
+  
+  An installed agent plugin is a copy of a source checkout, not an npm install, so its directory has
+  no reliable `node_modules` and a CLI with external dependencies cannot be run from it. `esm/bin.js`
+  is now a bundle that inlines `clibuilder` and runs with no `node_modules` present at all, so
+  `clibuilder` moves from `dependencies` to `devDependencies`.
+  
+  Published paths do not move: the output stays in `esm/` with a `.js` extension, so the tracked
+  `bin/buddy.js` shim keeps resolving `../esm/bin.js`. The declaration files `tsc` used to emit
+  alongside it are gone, which affects nothing — the package exports only `./package.json` and has no
+  library surface.
+  
+  Bundling also required pointing `jsonc-parser` (reached through clibuilder) at its ESM build. Its
+  `main` is a UMD bundle whose factory calls `require("./impl/format")` and three siblings — specifiers
+  a bundler cannot analyse, so those modules were silently left out and the CLI threw
+  `Cannot find module './impl/format'` at startup.
+  
+  Because `tsc` was also typechecking as a side effect of building, the package gains an explicit
+  `typecheck` script, wired into `verify`.
+- a69bcdd: `to-question`: make the content shape a parameter, and add an `unblock` shape.
+  
+  The skill composed into exactly one shape — Context → Use Cases → Problem → Options → Questions —
+  while the platform was already a parameter. That shape assumes the user is undecided between
+  alternatives and wants input. Where that does not hold, the misfire is quiet: the agent
+  manufactures an "Options" section for a request that has no options.
+  
+  Shape and dialect are now chosen independently. `question` stays the default, so a request that
+  names no shape composes exactly as before.
+  
+  The new `unblock` shape is for "can someone unblock me": what you are blocked on, what you have
+  already tried, **what you need from whom**, and by when. The ask is a required slot naming a person
+  or team plus one concrete action — if you have not said who or by when, the skill asks instead of
+  drafting a ping whose ask is "any help appreciated". It picks `unblock` when your own words say you
+  are blocked, stuck, or waiting on someone, and tells you it did so you can ask for the other shape.
+  
+  The frontmatter description now reads "a question or an unblock ping", so a blocked user's request
+  matches it.
+- 3631025: `merge-dep-prs` now gates each merge on **verification reach covering blast radius** instead of on a
+  green check. A green check is evidence about what CI executed and about nothing else — a dependency
+  PR can be correct, pass every check in its own repo, and still break every consumer of the artifact
+  it changed, because no check ever exercised a consumer.
+  
+  A new Step 3 runs between sorting by CI status and merging: detect whether the diff touches a
+  consumed artifact (reusable workflow, composite action, published package or preset, container
+  image, depended-on workspace package); name what shrank CI's reach (no test suite, affected-only
+  selection, path-filtered jobs that skipped); enumerate the consumers when reach falls short — by
+  looping the org repo list, since `gh search code` misses org-internal matches — and check what each
+  one resolves. The gate ends in an explicit decision, hold or merge-with-follow-ups, never a
+  fall-through to merge-on-green. The same gate covers the in-repo case, where `turbo --filter` or
+  `nx affected` deliberately shrinks reach past edges the task graph does not model.
+  
+  The skill also gains a `What NOT to do` section and the `README.md` it was shipping without.
+
+### Patch Changes
+
+- c0fdc06: `to-question`: route public venues to `research-workbench:community-post` instead of the Markdown baseline.
+  
+  An unlisted platform is no longer automatically a fallback case. An unlisted *private* venue —
+  Notion, Teams — still resolves to the Markdown baseline with the fallback announced. An unlisted
+  *public* venue — Stack Overflow, X/Bluesky, Reddit, Discord, Telegram, Facebook/LinkedIn — is now
+  routed to `community-post`, which researches first.
+  
+  Previously the skill would compose a Reddit or Discord post on the Markdown baseline, which looked
+  like a supported target and was not: every `to-question` target writes to an audience that already
+  has the context, so the template opens by asking the question directly and treats Context as what the
+  thread does not already cover. A public audience has none of that, and owes prior art and a check for
+  an existing answer besides — both stated non-goals of this skill.
+- 6094343: `setup-github-repo` no longer leaves `.github/setup-state.json` in the working tree. The run's state
+  artifact is written to a temp path keyed by `owner/repo` instead, so it can't be committed by
+  accident or linger as an untracked file that reads like the repo's settings policy. `detect-state`
+  reports the path in its stdout ack and accepts `--out` to override it; `scaffold-workflows` resolves
+  the same path by default. A leftover `.github/setup-state.json` from an earlier run is deleted.
+- 32f4e72: `to-question`: support the non-Markdown trackers — Bugzilla, Redmine and Trac.
+  
+  Markdown renders in none of them, so the baseline every unlisted platform falls back to is the one
+  dialect that must never be used there. Each gets its own dialect reference, the way Slack mrkdwn and
+  Jira wiki markup already do: `references/plaintext.md` for Bugzilla's default mode, where no markup
+  renders at all, `references/textile.md` for Redmine's, and `references/trac.md` for Trac's one fixed
+  dialect. A Markdown-mode Bugzilla is a row in the capability table instead — GFM minus inline images
+  and inline HTML, both of which Bugzilla strips.
+  
+  These are the first targets whose dialect is a property of the *instance* rather than of the
+  platform. Bugzilla is plain text by default with Markdown switchable per user preference and per
+  comment; Redmine is Textile by default with CommonMark set instance-wide. Nothing in the request
+  reveals which, so the skill composes for the product default and says which mode it assumed, with the
+  one-line switch — the same rule the Slack default and the Markdown fallback already follow.
+  
+  Plain text is the one target where the composition changes rather than only the markup: with no
+  headings and no fenced blocks, sections are carried by blank lines and capitalised labels, and an
+  ASCII diagram loses its monospace guarantee, so `plaintext.md` ships a template variant.
+  
+  `scripts/check-format.mjs` gains `bugzilla`, `bugzilla-markdown`, `redmine` and `trac`. Its
+  verbatim-region detection is now dialect-specific rather than always a ``` fence, which also fixes a
+  Jira rule that could never fire: the "Markdown code fence" scan ran over lines the fence pass had
+  already blanked, so a fenced block in a Jira draft went unreported.
+- ec04657: `to-question`: bundled files move from `assets/` to `references/`.
+  
+  The agentskills layout separates the two by kind rather than by topic — `assets/` holds static
+  resources (templates, images, data files), while documentation the agent reads under a stated
+  condition belongs in `references/`. Every file this skill bundles is the second kind: the dialect
+  files and the shape files are read to inform the draft, never copied into it.
+  
+  No behavior change. The skill loads the same six files under the same conditions; only the paths
+  inside the package move.
+
 ## 1.6.0
 
 ### Minor Changes
