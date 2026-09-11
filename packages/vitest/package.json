@@ -54,6 +54,12 @@
 				"types": "./esm/setup/browser.d.ts",
 				"default": "./esm/setup/browser.js"
 			}
+		},
+		"./setup/order": {
+			"import": {
+				"types": "./esm/setup/order.d.ts",
+				"default": "./esm/setup/order.js"
+			}
 		}
 	},
 	"files": [
