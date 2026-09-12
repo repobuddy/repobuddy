@@ -759,8 +759,8 @@ importers:
         specifier: workspace:^
         version: link:../../packages/jest
       '@unional/fixture':
-        specifier: ^5.0.0
-        version: 5.0.0(typescript@6.0.3)
+        specifier: ^6.0.0
+        version: 6.0.1(typescript@6.0.3)
       cross-env:
         specifier: ^10.1.0
         version: 10.1.0
@@ -2014,6 +2014,9 @@ packages:
 
   '@just-func/types@0.5.1':
     resolution: {integrity: sha512-yP+XbIIT5qGI/6TOZ0lRFHq2UubCfpf+2EKQPhEwOGsvh1vJTdDTPGyNWYHmLMLT5jx8h/SR3mAAVDmYyAjpwA==}
+
+  '@just-func/types@0.6.0':
+    resolution: {integrity: sha512-5/nFEvX/QizdRCMXjo/VfW4qgBw2pX2+Sz5+aJ907d7NqXVXxEu1Hwu6k35A5INI2NtIOvplQnkm7uFqPGiL0w==}
 
   '@manypkg/find-root@3.1.0':
     resolution: {integrity: sha512-BcSqCyKhBVZ5YkSzOiheMCV41kqAFptW6xGqYSTjkVTl9XQpr+pqHhwgGCOHQtjDCv7Is6EFyA14Sm5GVbVABA==}
@@ -3525,8 +3528,8 @@ packages:
   '@ungap/structured-clone@1.3.1':
     resolution: {integrity: sha512-mUFwbeTqrVgDQxFveS+df2yfap6iuP20NAKAsBt5jDEoOTDew+zwLAOilHCeQJOVSvmgCX4ogqIrA0mnyr08yQ==}
 
-  '@unional/fixture@5.0.0':
-    resolution: {integrity: sha512-YpNWPl6MJ8P9UPXVrdCRbhfbqRx5SpDGH/YC3hjdxqySL5W/UQAs5K9Zr1Pw2i9mo7D2nt5PEAOhjk0kMCTsSg==}
+  '@unional/fixture@6.0.1':
+    resolution: {integrity: sha512-11JbjpJ2O87BmgXfAuhpHeN5O16pIo0XSZNS71zyvI+QxtpogQqoknXVN8lQxMA8N7d/B3a0SdSJ41GTRha32Q==}
     engines: {node: '>= 20'}
 
   '@unrs/resolver-binding-android-arm-eabi@1.12.2':
@@ -6707,11 +6710,16 @@ packages:
     peerDependencies:
       standard-log: '>=11.0.1'
 
-  standard-log@11.5.2:
-    resolution: {integrity: sha512-ucM5UTaAJgN6RQVoDHoP0K6dqJEeVbm1+V4HJ57PcykZNnzWgaXFTCJMffFdRqL/4k+ctIrtWEQxzczu+9XjhQ==}
+  standard-log-color@13.3.0:
+    resolution: {integrity: sha512-vS0pD5lF2pEknDHFkSfMjcPxQgitLbU1PNeeXlG8rom+URrNJzU0hbbujkKe1ghBiC3qhdMguJiBbKjW6Seoxw==}
+    peerDependencies:
+      standard-log: '>=11.0.1'
 
   standard-log@12.1.2:
     resolution: {integrity: sha512-vFTFTkiZhHg8PGpp7wnOPJsQQsO2DMX1bnEAVms8LF9IdJWNGGMD+1btV5pWUkFb7p/qDHUhZqN/do+nsg0rPQ==}
+
+  standard-log@13.3.0:
+    resolution: {integrity: sha512-G2SVB/gcbCdQIeR+41ciB+Lr/Kp95vvl2jb1fIYwkAIUSKDcr2OR0uEMwfzUYEIlg7x9tzrz09lGfKtH4yEidA==}
 
   std-env@4.2.0:
     resolution: {integrity: sha512-oCUKSupKTHX53EyjDtuZQ64pjLJ6yYCtpmEw0goYxtjG9KpbRe8KAsl2tBUGU9DyMcJ0RwJ8GqJAFzMXcXW1Rw==}
@@ -6874,6 +6882,9 @@ packages:
 
   tersify@4.0.6:
     resolution: {integrity: sha512-+z2dTeRvbPyI7qiAmBY+VgWnhhN9IuaGjgrPfeF33hI4A/Yd9KT11tbc4l8vfIA3L/5EWiE0swvxOfAckGRuzA==}
+
+  tersify@4.0.7:
+    resolution: {integrity: sha512-HbSau9xNaHqYRJ/Y6lAddBLNpi5wowJhDGuhfM/6LAmyhsIiNKX3Q50qJwRcKFsV4/BV45XMyTdaHZ5nW6OjRg==}
 
   test-exclude@6.0.0:
     resolution: {integrity: sha512-cAGWPIyOHU6zlmg88jwm7VRyXnMN7iV68OGAbYDk/Mh/xC/pzVPlQtY6ngoIH/5/tciuhGfvESU8GrHrcxD56w==}
@@ -7061,9 +7072,6 @@ packages:
 
   type-plus@5.6.0:
     resolution: {integrity: sha512-LAIvZzs6mKXYHzwRfGeOuWKsE5jHndwWlLheulMl6eWDSGa1bfZCd0aLQSMgP3HZTbazx/P2UumCqtOz5AMctA==}
-
-  type-plus@6.8.1:
-    resolution: {integrity: sha512-yEv9ZE4Lw7fUGQOUYGtUoRJrC46Uta2U2HnpuvIVnwFVmzMP9oE5on7xOxsT39o0hk2lkFghZqlba9GvmW0/rw==}
 
   type-plus@7.6.2:
     resolution: {integrity: sha512-qUlXv9Y0/W56pg38m275IMD3WA03QbVoqNY16S3kmwtuA4gOT2iheyUdOp8NWrmXWpf7om98hzr7AZD/eW2jLA==}
@@ -8974,6 +8982,12 @@ snapshots:
     dependencies:
       type-plus: 5.6.0
 
+  '@just-func/types@0.6.0(typescript@6.0.3)':
+    dependencies:
+      type-plus: 8.0.0-beta.10(typescript@6.0.3)
+    transitivePeerDependencies:
+      - typescript
+
   '@manypkg/find-root@3.1.0':
     dependencies:
       '@manypkg/tools': 2.1.2
@@ -10061,7 +10075,7 @@ snapshots:
 
   '@ungap/structured-clone@1.3.1': {}
 
-  '@unional/fixture@5.0.0(typescript@6.0.3)':
+  '@unional/fixture@6.0.1(typescript@6.0.3)':
     dependencies:
       '@types/diff-match-patch': 1.0.36
       chalk: 5.6.2
@@ -10071,14 +10085,14 @@ snapshots:
       dir-compare: 4.2.0
       execa: 7.2.0
       glob: 8.1.0
-      iso-error: 6.0.5
+      iso-error: 7.0.0
       js-yaml: 4.3.1
       minimatch: 8.0.7
       pad-left: 2.1.0
       rimraf: 3.0.2
-      standard-log: 11.5.2
-      standard-log-color: 12.1.2(standard-log@11.5.2)
-      tersify: 3.12.1
+      standard-log: 13.3.0(typescript@6.0.3)
+      standard-log-color: 13.3.0(standard-log@13.3.0(typescript@6.0.3))
+      tersify: 4.0.7
       type-plus: 8.0.0-beta.10(typescript@6.0.3)
     transitivePeerDependencies:
       - typescript
@@ -14122,13 +14136,6 @@ snapshots:
 
   stackback@0.0.2: {}
 
-  standard-log-color@12.1.2(standard-log@11.5.2):
-    dependencies:
-      color-map: 2.0.6
-      standard-log: 11.5.2
-      supports-color: 8.1.1
-      unpartial: 1.0.7
-
   standard-log-color@12.1.2(standard-log@12.1.2):
     dependencies:
       color-map: 2.0.6
@@ -14136,13 +14143,12 @@ snapshots:
       supports-color: 8.1.1
       unpartial: 1.0.7
 
-  standard-log@11.5.2:
+  standard-log-color@13.3.0(standard-log@13.3.0(typescript@6.0.3)):
     dependencies:
-      '@just-func/types': 0.5.1
-      iso-error: 6.0.5
-      ms: 2.1.3
-      type-plus: 6.8.1
-      upper-case: 2.0.2
+      color-map: 2.0.6
+      standard-log: 13.3.0(typescript@6.0.3)
+      supports-color: 8.1.1
+      unpartial: 1.0.7
 
   standard-log@12.1.2:
     dependencies:
@@ -14151,6 +14157,15 @@ snapshots:
       ms: 2.1.3
       type-plus: 7.6.2
       upper-case: 2.0.2
+
+  standard-log@13.3.0(typescript@6.0.3):
+    dependencies:
+      '@just-func/types': 0.6.0(typescript@6.0.3)
+      iso-error: 7.0.0
+      ms: 2.1.3
+      type-plus: 8.0.0-beta.10(typescript@6.0.3)
+    transitivePeerDependencies:
+      - typescript
 
   std-env@4.2.0: {}
 
@@ -14354,6 +14369,11 @@ snapshots:
       acorn: 8.18.0
       unpartial: 1.0.7
 
+  tersify@4.0.7:
+    dependencies:
+      acorn: 8.18.0
+      unpartial: 1.0.7
+
   test-exclude@6.0.0:
     dependencies:
       '@istanbuljs/schema': 0.1.6
@@ -14494,11 +14514,6 @@ snapshots:
   type-fest@4.41.0: {}
 
   type-plus@5.6.0:
-    dependencies:
-      tersify: 3.12.1
-      unpartial: 1.0.7
-
-  type-plus@6.8.1:
     dependencies:
       tersify: 3.12.1
       unpartial: 1.0.7
