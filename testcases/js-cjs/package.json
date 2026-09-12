@@ -11,7 +11,7 @@
 		"@repobuddy/jest": "workspace:^",
 		"chalk": "^6.0.0",
 		"jest": "^30.0.0",
-		"jest-watch-suspend": "^1.1.2",
+		"jest-watch-suspend": "^2.0.0",
 		"jest-watch-toggle-config": "^3.0.0",
 		"jest-watch-typeahead": "^3.0.0"
 	}
