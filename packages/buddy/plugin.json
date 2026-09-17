@@ -1,7 +1,7 @@
 {
 	"$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
 	"name": "repobuddy",
-	"version": "1.9.0",
+	"version": "1.9.1",
 	"description": "Agent skills for managing a repository — issues, dependency PRs, GitHub Pages, repo setup, and npm trusted publishing.",
 	"author": {
 		"name": "Homa Wong (unional)",
