@@ -84,6 +84,7 @@ This is a **pnpm monorepo** managed with [Turborepo](https://turbo.build/). It i
 
 **Public agent skills** (`packages/buddy/skills/`) — shipped as a universal plugin inside the `repobuddy` npm package, and installed by consumers via `npx skills add repobuddy/repobuddy`:
 - `create-issue` — create GitHub/GitLab issues, dedup check first
+- `init-buddy` — set up the machine for the repo's git host: detect OS, package managers, and existing MCP servers; install and log in `gh`, `glab`, `tea`, `fj`, or `az`
 - `llms-txt` — publish an `llms.txt` generated from the project's public surface; decides whether one is warranted, wires the drift check, reports the documentation gap
 - `merge-dep-prs` — merge Dependabot/Renovate PRs; gates each merge on whether CI reached the change's blast radius, handles CI failures
 - `min-release-age` — lift the minimum-release-age gate for one package version, restore it once the version ages past the window, and install a scheduled CI job that expires lifts automatically (pnpm, Yarn, npm, bun; GitHub, GitLab, Bitbucket, Azure, Forgejo/Gitea)
