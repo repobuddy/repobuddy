@@ -165,3 +165,14 @@ test('collectMcp: plugin entry for a different project is skipped', () => {
 	const found = collectMcp(dir, {}, ['github'], home)
 	assert.deepEqual(found, [])
 })
+
+test('collectMcp: a server with no command or url reports transport unknown', () => {
+	const dir = tmp('mcp-dir-')
+	const home = tmp('mcp-home-')
+	write(dir, '.mcp.json', JSON.stringify({ mcpServers: { github: {} } }))
+	const found = collectMcp(dir, {}, ['github'], home)
+	assert.deepEqual(
+		found.map((s) => [s.name, s.transport, s.command, s.url]),
+		[['github', 'unknown', null, null]],
+	)
+})
