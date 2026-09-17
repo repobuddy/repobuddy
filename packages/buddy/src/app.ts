@@ -1,8 +1,8 @@
 import { readFileSync } from 'node:fs'
-import { resolve } from 'node:path'
 import { cli } from 'clibuilder'
 
-const pkg = JSON.parse(readFileSync(resolve('./package.json'), 'utf-8'))
+// Both `src/app.ts` and the bundled `esm/bin.js` sit one level below the package root.
+const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf-8'))
 
 export const app = cli({
 	name: 'repobuddy',
