@@ -28,7 +28,7 @@ Gets a machine ready to work with a repository's git host. It detects the OS and
    | Bitbucket Cloud | no official CLI |
 
 4. **Finds existing MCP servers** for those hosts:
-   - in local config files: Claude Code (including plugins), Cursor, Codex, Copilot CLI, Gemini CLI, VS Code, Windsurf, OpenCode, and Zed
+   - in local config files: Claude Code (including plugins), Cursor, Codex, Copilot CLI, Gemini CLI, VS Code, Windsurf (Devin Desktop), OpenCode, and Zed
    - among the tools the current session has, which covers web-account connectors that no local file shows
 
    If one is active, it shows you and asks whether you still want the CLI.

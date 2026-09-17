@@ -30,7 +30,7 @@ installed from git) or cannot be run, use `npx -y repobuddy@^1.8.0 env` with the
 - It reads the hosts from the repo's git remotes. Pass `--host` when there is no repo, when the user names a host, or to add a self-hosted instance (`--host gitlab=git.corp.example`).
 - If a host shows as `unknown`, re-run with `--probe`. It asks that host's API which product it runs.
 - It reports the OS family (`macos`, `windows`, `debian`, `fedora`, `rhel`, `arch`, `suse`, `alpine`, `nixos`, `other`), WSL, whether `sudo` works without a password, the package managers on PATH, and each host's CLI: whether it is installed and logged in, and the install options that fit this machine.
-- It lists MCP servers for those hosts from Claude Code (including plugins), Cursor, Codex, Copilot CLI, Gemini CLI, VS Code, Windsurf, OpenCode, and Zed. It prints names, commands, and URL origins only. Never open those config files to show more, because they often hold tokens.
+- It lists MCP servers for those hosts from Claude Code (including plugins), Cursor, Codex, Copilot CLI, Gemini CLI, VS Code, Windsurf (Devin Desktop), OpenCode, and Zed. It prints names, commands, and URL origins only. Never open those config files to show more, because they often hold tokens.
 
 **Also check this session's own tools.** Connectors configured in a web account (for example claude.ai) are not in any local file. Look for tools whose names contain the host, such as `mcp__github__…` or `mcp__claude_ai_GitLab__…`, and add them to the report as active in this session.
 
