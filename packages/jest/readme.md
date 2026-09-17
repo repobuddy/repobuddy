@@ -194,6 +194,34 @@ They can be `known` configurations, which you can use to build your configuratio
 - [knownTransforms](./src/fields/transform.ts)
 - [knownWatchPlugins](./src/fields/watchPlugins.ts)
 
+## Extract
+
+`extract.extractPackages(config)` lists the packages a [jest config](https://jestjs.io/docs/configuration) pulls in, so a
+missing or outdated one can be named instead of failing obscurely:
+
+```ts
+import { extract } from '@repobuddy/jest'
+
+extract.extractPackages({
+  testEnvironment: 'jsdom',
+  watchPlugins: ['jest-watch-suspend', 'jest-watch-typeahead/filename']
+})
+// [
+//   { name: 'jest-environment-jsdom', specifiers: ['jest-environment-jsdom'], fields: ['testEnvironment'] },
+//   { name: 'jest-watch-suspend', specifiers: ['jest-watch-suspend'], fields: ['watchPlugins'] },
+//   { name: 'jest-watch-typeahead', specifiers: ['jest-watch-typeahead/filename'], fields: ['watchPlugins'] }
+// ]
+```
+
+It covers the fields that reference a package by name — `moduleNameMapper`, `preset`, `reporters`, `resolver`,
+`setupFiles`, `setupFilesAfterEnv`, `snapshotSerializers`, `testEnvironment`, `transform`, `watchPlugins`, and the other
+runner and resolver hooks — and traverses `projects`.
+
+File paths, `<rootDir>` references, regex replacements, and jest built-ins such as the `default` reporter are not
+packages and are skipped. `testEnvironment: 'node' | 'jsdom'` resolve to their `jest-environment-*` packages.
+
+- [extractPackages](./src/extract/extractPackages.ts)
+
 ## Matchers
 
 There are also matchers which you can use to extend the `expect()` function:
