@@ -10,7 +10,17 @@
 	"files": {
 		// The vendor plugin manifests are build output of `universal-plugin plugin build`.
 		// Formatting them here would fight the generator on every build.
-		"includes": ["!**/tests/performant", "!.agents", "!**/.claude-plugin", "!**/.cursor-plugin", "!**/.codex-plugin"]
+		// The two skill scripts are tsdown output too (see packages/buddy/tsdown.config.ts):
+		// generated bundles, not hand-authored source, so they're excluded from lint/format.
+		"includes": [
+			"!**/tests/performant",
+			"!.agents",
+			"!**/.claude-plugin",
+			"!**/.cursor-plugin",
+			"!**/.codex-plugin",
+			"!packages/buddy/skills/min-release-age/scripts/min-release-age.mjs",
+			"!packages/buddy/skills/init-buddy/scripts/detect-env.mjs"
+		]
 	},
 	"formatter": {
 		"enabled": true,

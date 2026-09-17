@@ -52,6 +52,7 @@
 		"test": "cross-env NODE_OPTIONS=\"--experimental-vm-modules --experimental-import-meta-resolve\" jest",
 		"test:watch": "cross-env NODE_OPTIONS=\"--experimental-vm-modules --experimental-import-meta-resolve\" jest --watch",
 		"typecheck": "tsc --noEmit",
+		"skills:check": "git diff --exit-code -- skills/min-release-age/scripts/min-release-age.mjs skills/init-buddy/scripts/detect-env.mjs",
 		"verify": "npm-run-all -p build typecheck -p test"
 	},
 	"devDependencies": {
