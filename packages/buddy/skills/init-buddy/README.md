@@ -52,6 +52,13 @@ An installed, logged-in CLI for each host you chose, and a summary of the enviro
 
 ## Install
 
+Install the `repobuddy` plugin (see the [repository readme](../../../../readme.md#installing-as-a-plugin)), or add
+the skill alone:
+
 ```sh
 npx skills add repobuddy/repobuddy --skill init-buddy
 ```
+
+A skill installed with `skills add` comes from git and has no built `scripts/` folder. It runs its
+script through `npx -y repobuddy@^1.8.0` instead, which needs network access. The plugin install
+ships the script with the skill.

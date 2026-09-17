@@ -2,3 +2,7 @@ cjs
 esm
 tslib
 *.tsbuildinfo
+
+# Built by `pnpm build` from src/skills/; shipped in the npm package, not committed.
+skills/min-release-age/scripts/min-release-age.mjs
+skills/init-buddy/scripts/detect-env.mjs

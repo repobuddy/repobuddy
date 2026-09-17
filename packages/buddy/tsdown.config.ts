@@ -27,8 +27,9 @@ function skillBanner(entry: string) {
 //
 // 2. The skill scripts (`src/skills/*.ts`) → `skills/<skill>/scripts/*.mjs`. A skill folder is
 // what an installer copies, so each bundle inlines everything except node builtins. The bundles are
-// generated but committed; `skills:check` fails when they drift from the source. `clean: false`
-// because the rest of each skill folder is hand-written.
+// gitignored and ship only in the npm package; `pack:check` confirms the tarball carries them and
+// that they run. They are minified because agents read only the banner. `clean: false` because the
+// rest of each skill folder is hand-written.
 export default defineConfig([
 	{
 		entry: { bin: 'src/bin.ts' },
@@ -81,7 +82,7 @@ export default defineConfig([
 		outExtensions: () => ({ js: '.mjs' }),
 		clean: false,
 		dts: false,
-		minify: false,
+		minify: true,
 		banner: { js: skillBanner('src/skills/min-release-age.ts') },
 	},
 	{
@@ -93,7 +94,7 @@ export default defineConfig([
 		outExtensions: () => ({ js: '.mjs' }),
 		clean: false,
 		dts: false,
-		minify: false,
+		minify: true,
 		banner: { js: skillBanner('src/skills/detect-env.ts') },
 	},
 ])

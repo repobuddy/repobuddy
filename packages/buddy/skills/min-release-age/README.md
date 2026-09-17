@@ -70,6 +70,13 @@ The skill detects the provider from the git remote and the CI files in the repo,
 
 ## Install
 
+Install the `repobuddy` plugin (see the [repository readme](../../../../readme.md#installing-as-a-plugin)), or add
+the skill alone:
+
 ```sh
 npx skills add repobuddy/repobuddy --skill min-release-age
 ```
+
+A skill installed with `skills add` comes from git and has no built `scripts/` folder. It runs its
+script through `npx -y repobuddy@^1.8.0` instead, which needs network access. The plugin install
+ships the script with the skill.

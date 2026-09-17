@@ -24,6 +24,9 @@ Run the detection script from this skill's directory:
 node <this-skill-dir>/scripts/detect-env.mjs [--host <kind[=hostname]>]... [--probe] [--json]
 ```
 
+The script ships in the `repobuddy` npm package. If `scripts/detect-env.mjs` is missing (the skill was
+installed from git) or cannot be run, use `npx -y repobuddy@^1.8.0 env` with the same arguments.
+
 - It reads the hosts from the repo's git remotes. Pass `--host` when there is no repo, when the user names a host, or to add a self-hosted instance (`--host gitlab=git.corp.example`).
 - If a host shows as `unknown`, re-run with `--probe`. It asks that host's API which product it runs.
 - It reports the OS family (`macos`, `windows`, `debian`, `fedora`, `rhel`, `arch`, `suse`, `alpine`, `nixos`, `other`), WSL, whether `sudo` works without a password, the package managers on PATH, and each host's CLI: whether it is installed and logged in, and the install options that fit this machine.

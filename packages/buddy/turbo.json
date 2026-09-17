@@ -9,7 +9,7 @@
 				"skills/init-buddy/scripts/detect-env.mjs"
 			]
 		},
-		"skills:check": {
+		"pack:check": {
 			"dependsOn": ["build"],
 			"cache": false
 		}
