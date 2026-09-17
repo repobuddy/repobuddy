@@ -147,5 +147,6 @@ Renovate manages this repo's dependencies (`.github/renovate.json` extends `gith
 This repo uses [Changesets](https://github.com/changesets/changesets) for versioning and release.
 
 - Every PR that modifies a published package needs a changeset: `pnpm cs`
-- Release PRs are created automatically by the Changesets GitHub Action — **never merge release PRs manually**
+- Release PRs are opened automatically by the Changesets GitHub Action. An agent merges one only when the owner asks, and only after every check passes, through GitHub — never by pushing to the release branch or merging locally.
+- The bot's release PR runs can wait on workflow approval (`action_required`); the owner, or an agent asked to release, approves those runs before the checks can complete.
 - `pnpm version` bumps versions; `pnpm release` builds and publishes
