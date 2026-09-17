@@ -1,5 +1,37 @@
 # repobuddy
 
+## 1.8.0
+
+### Minor Changes
+
+- 7669e6a: Add `buddy release-age <status|lift|restore|open-pr>` and `buddy env`. They run the same code, with the same flags and output, as the `min-release-age` and `init-buddy` skill scripts.
+- 868c227: New `init-buddy` skill: gets a machine ready to work with the repository's git host.
+  
+  It detects the OS and Linux family (Debian/Ubuntu, Fedora, RHEL-like, Arch, openSUSE, Alpine, NixOS), WSL,
+  `sudo` access, and the package managers on PATH. It then checks each host's CLI (`gh`, `glab`, `tea`, `fj`, or
+  `az` with the Azure DevOps extension) and lists the install commands that fit the machine, official
+  packages first. It also finds MCP servers already configured for the host across Claude Code (including
+  plugins), Cursor, Codex, Copilot CLI, Gemini CLI, VS Code, Windsurf, OpenCode, and Zed, reporting only
+  names, commands, and URL origins. When one is active, it asks whether the CLI is still wanted. Logins are
+  handed to the user to run.
+- 98c16ce: New `min-release-age` skill: lifts the minimum-release-age gate for one package version when a fresh
+  release is needed, and puts it back afterward. Works with pnpm, Yarn Berry, npm, and bun.
+  
+  `lift <pkg>` resolves the bare name to its `latest` dist-tag; a tag or an exact version also works, and
+  the exemption always pins the exact version. Before lifting, it checks the release: provenance, publisher, and the diff from the previous version.
+  Each lift is written with an expiry marker set to the version's publish time plus the gate window. After
+  that time the version passes the gate on its own. `restore` removes only marked, expired lifts and never
+  touches permanent exemptions. npm and bun cannot exempt a single version, so the skill asks before
+  exempting a whole package name. `setup-ci` detects the CI provider and installs a daily job that removes
+  expired lifts and opens or updates a PR/MR. It has templates for GitHub Actions, GitLab CI, Bitbucket Pipelines,
+  Azure Pipelines, and Forgejo/Gitea Actions, and generic steps for other CI systems.
+
+### Patch Changes
+
+- 5392b0e: Add a `repobuddy` bin alongside `buddy` and `bd`. Runners that pick the bin named after the package, such as `upx repobuddy@^1`, can now resolve it.
+- 8637166: `buddy --version` reads the version from its own `package.json`, not from `package.json` in the current directory.
+- 17e9303: The `min-release-age` and `init-buddy` skill scripts are built at release and ship only in the npm package. A skill installed from git, without its `scripts/` folder, runs the same command through `npx -y repobuddy@^1.8.0`.
+
 ## 1.7.0
 
 ### Minor Changes
