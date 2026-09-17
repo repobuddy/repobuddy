@@ -52,7 +52,9 @@ const config: KnipConfig = {
 		'packages/buddy': {
 			entry: [
 				'bin/*.js',
-				'src/bin.ts',
+				// src/bin.ts is not listed here: knip's tsdown plugin already infers
+				// it as an entry from tsdown.config.ts's `bin` build target, so
+				// repeating it here triggered knip's "redundant entry pattern" hint.
 				// Shipped skill scripts. Agents invoke these through a shell, so
 				// nothing in the repo imports them.
 				'skills/**/scripts/*.{mjs,mts}',
