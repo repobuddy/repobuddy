@@ -15,7 +15,7 @@
 		"jest": "^30.0.0",
 		"jest-environment-jsdom": "^30.0.0",
 		"jest-esm-transformer-2": "^1.0.0",
-		"jest-watch-suspend": "^1.1.2",
+		"jest-watch-suspend": "^2.0.0",
 		"jest-watch-toggle-config": "^3.0.0",
 		"jest-watch-typeahead": "^3.0.0",
 		"ts-jest": "29.4.12",
