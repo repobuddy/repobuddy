@@ -1,6 +1,19 @@
+import { readFileSync } from 'node:fs'
 import { defineConfig } from 'tsdown'
 
-// A single config, because this package has no JS library surface: `exports` names only
+// A skill bundle starts with a shebang, a generated-file notice, and the entry's own leading
+// `/* … */` usage comment, which agents read when a skill script misbehaves. Bundling keeps JSDoc
+// comments where they are but drops plain block comments, so the entry uses a plain block comment
+// and the banner puts it at the top.
+function skillBanner(entry: string) {
+	const usage = /^\/\*[\s\S]*?\*\//.exec(readFileSync(entry, 'utf8'))?.[0]
+	if (!usage) throw new Error(`${entry} must start with a /* usage */ comment`)
+	return `#!/usr/bin/env node\n// Generated from packages/buddy/${entry} by \`pnpm build\` — do not edit.\n${usage}\n`
+}
+
+// Two build targets share this file:
+//
+// 1. `src/bin.ts` → `esm/bin.js`. This package has no JS library surface: `exports` names only
 // `./package.json`, and both bins (`bd`, `buddy`) go through `bin/buddy.js`. So there is
 // no consumer that needs a shared copy of a dependency and everything can be inlined.
 //
@@ -11,44 +24,77 @@ import { defineConfig } from 'tsdown'
 //
 // `tsc` was also typechecking as a side effect of building. tsdown does not typecheck,
 // so the package gained an explicit `typecheck` script; it must stay in `verify`.
-export default defineConfig({
-	entry: { bin: 'src/bin.ts' },
-	outDir: 'esm',
-	format: 'esm',
-	platform: 'node',
-	// Matches the `target` the previous tsc build used, so the emitted JavaScript keeps
-	// the same language level.
-	target: 'es2020',
-	outExtensions: () => ({ js: '.js' }),
-	clean: true,
-	// No `dts`: nothing imports this package as a library, so the declarations tsc used
-	// to emit into `esm/` had no consumer.
-	dts: false,
-	// `clibuilder` is inlined so the published `esm/bin.js` runs with no `node_modules`
-	// present — the state an installed agent plugin is actually in, since the plugin
-	// directory is a copy of the source checkout rather than an npm install.
-	//
-	// Only this package's own `dependencies` need listing: those are the only ones
-	// tsdown externalizes by default, so clibuilder's ~30 transitive packages are
-	// inlined automatically. `onlyBundle: false` silences the "bundled a dependency"
-	// warnings that are the whole point here.
-	//
-	// Expect two build warnings about unanalyzable dynamic imports: clibuilder loads
-	// third-party plugins and user config files by runtime-computed specifier. Both are
-	// correct by design and must stay dynamic; keeping this output ESM preserves them.
-	// `jsonc-parser` (reached through clibuilder) resolves to its UMD build via `main`,
-	// and that build's factory calls `require("./impl/format")` and three siblings —
-	// specifiers rolldown cannot analyse. So its `impl/` modules were never inlined, and
-	// at runtime the require resolved against `esm/` and threw `Cannot find module
-	// './impl/format'`.
-	//
-	// The package also ships a real ESM build whose imports are static. It has no
-	// `exports` field, so addressing that subpath directly is allowed; the build's
-	// extensionless specifiers are fine because a bundler resolves them, which is what
-	// its `module` entry exists for.
-	alias: { 'jsonc-parser': 'jsonc-parser/lib/esm/main.js' },
-	deps: {
-		alwaysBundle: [/^clibuilder(\/|$)/],
-		onlyBundle: false,
+//
+// 2. The skill scripts (`src/skills/*.ts`) → `skills/<skill>/scripts/*.mjs`. A skill folder is
+// what an installer copies, so each bundle inlines everything except node builtins. The bundles are
+// gitignored and ship only in the npm package; `pack:check` confirms the tarball carries them and
+// that they run. They are minified because agents read only the banner. `clean: false` because the
+// rest of each skill folder is hand-written.
+export default defineConfig([
+	{
+		entry: { bin: 'src/bin.ts' },
+		outDir: 'esm',
+		format: 'esm',
+		platform: 'node',
+		// Matches the `target` the previous tsc build used, so the emitted JavaScript keeps
+		// the same language level.
+		target: 'es2020',
+		outExtensions: () => ({ js: '.js' }),
+		clean: true,
+		// No `dts`: nothing imports this package as a library, so the declarations tsc used
+		// to emit into `esm/` had no consumer.
+		dts: false,
+		// `clibuilder` is inlined so the published `esm/bin.js` runs with no `node_modules`
+		// present — the state an installed agent plugin is actually in, since the plugin
+		// directory is a copy of the source checkout rather than an npm install.
+		//
+		// Only this package's own `dependencies` need listing: those are the only ones
+		// tsdown externalizes by default, so clibuilder's ~30 transitive packages are
+		// inlined automatically. `onlyBundle: false` silences the "bundled a dependency"
+		// warnings that are the whole point here.
+		//
+		// Expect two build warnings about unanalyzable dynamic imports: clibuilder loads
+		// third-party plugins and user config files by runtime-computed specifier. Both are
+		// correct by design and must stay dynamic; keeping this output ESM preserves them.
+		// `jsonc-parser` (reached through clibuilder) resolves to its UMD build via `main`,
+		// and that build's factory calls `require("./impl/format")` and three siblings —
+		// specifiers rolldown cannot analyse. So its `impl/` modules were never inlined, and
+		// at runtime the require resolved against `esm/` and threw `Cannot find module
+		// './impl/format'`.
+		//
+		// The package also ships a real ESM build whose imports are static. It has no
+		// `exports` field, so addressing that subpath directly is allowed; the build's
+		// extensionless specifiers are fine because a bundler resolves them, which is what
+		// its `module` entry exists for.
+		alias: { 'jsonc-parser': 'jsonc-parser/lib/esm/main.js' },
+		deps: {
+			alwaysBundle: [/^clibuilder(\/|$)/],
+			onlyBundle: false,
+		},
 	},
-})
+	{
+		entry: { 'min-release-age': 'src/skills/min-release-age.ts' },
+		outDir: 'skills/min-release-age/scripts',
+		format: 'esm',
+		platform: 'node',
+		// Supports top-level await, which both skill entry points use to run `main()`.
+		target: 'node22',
+		outExtensions: () => ({ js: '.mjs' }),
+		clean: false,
+		dts: false,
+		minify: true,
+		banner: { js: skillBanner('src/skills/min-release-age.ts') },
+	},
+	{
+		entry: { 'detect-env': 'src/skills/detect-env.ts' },
+		outDir: 'skills/init-buddy/scripts',
+		format: 'esm',
+		platform: 'node',
+		target: 'node22',
+		outExtensions: () => ({ js: '.mjs' }),
+		clean: false,
+		dts: false,
+		minify: true,
+		banner: { js: skillBanner('src/skills/detect-env.ts') },
+	},
+])

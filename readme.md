@@ -15,7 +15,9 @@
 | --- | --- |
 | [`create-issue`] | Create a bug report or feature request — searches for duplicates first |
 | [`llms-txt`] | Publish an `llms.txt` generated from a project's real public surface, with a CI drift check |
+| [`init-buddy`] | Set up the machine for the repo's git host — detects the OS and existing MCP servers, then installs and logs in `gh`, `glab`, `tea`, `fj`, or `az` |
 | [`merge-dep-prs`] | Merge pending dependency update PRs — gates each merge on whether CI reached what the change can break, diagnoses CI failures, never merges release PRs |
+| [`min-release-age`] | Lift the minimum-release-age gate for one package version, restore it when the version ages past the window, and schedule the cleanup in CI |
 | [`review-permissions`] | Audit what your agents are allowed to do — risk-rank every grant, then tighten and consolidate it |
 | [`setup-github-pages`] | Deploy a static site to GitHub Pages — base path, Actions workflow, and Pages source |
 | [`setup-github-repo`] | Set up a GitHub repo with branch protection, Dependabot, and CI |
@@ -41,6 +43,10 @@ npx skills add repobuddy/repobuddy
 npx skills add repobuddy/repobuddy --skill create-issue --skill setup-github-repo
 ```
 
+`init-buddy` and `min-release-age` run scripts that are built at release and ship only in the npm
+package. Installed from git as above, they run those scripts through `npx -y repobuddy@^1.8.0`
+instead, which needs network access.
+
 **Install from npm:**
 
 The skills also ship inside the [`repobuddy`] package as a [universal plugin], so installing the
@@ -53,8 +59,10 @@ npx skills experimental_sync
 
 ### Installing as a Plugin
 
-This repository is also a plugin marketplace — `.claude-plugin/marketplace.json` lists the
-`repobuddy` plugin, and every runtime below reads that catalog.
+This repository is also a plugin marketplace. Claude Code and Codex read
+`.claude-plugin/marketplace.json`, which installs the plugin from the `repobuddy` npm package, so the
+built skill scripts come with it. Copilot CLI reads `.github/plugin/marketplace.json`, which installs
+the plugin from this repository; its skills fall back to `npx` for their scripts.
 
 **Claude Code**
 
@@ -156,7 +164,9 @@ npx skills add repobuddy/agent-changesets
 [universal plugin]: https://github.com/agentplugins/agent-plugins-spec
 [`create-issue`]: ./packages/buddy/skills/create-issue/SKILL.md
 [`llms-txt`]: ./packages/buddy/skills/llms-txt/SKILL.md
+[`init-buddy`]: ./packages/buddy/skills/init-buddy/SKILL.md
 [`merge-dep-prs`]: ./packages/buddy/skills/merge-dep-prs/SKILL.md
+[`min-release-age`]: ./packages/buddy/skills/min-release-age/SKILL.md
 [`review-permissions`]: ./packages/buddy/skills/review-permissions/SKILL.md
 [`setup-github-pages`]: ./packages/buddy/skills/setup-github-pages/SKILL.md
 [`setup-github-repo`]: ./packages/buddy/skills/setup-github-repo/SKILL.md

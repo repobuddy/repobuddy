@@ -1,0 +1,41 @@
+# A separate pipeline: register it with `az pipelines create --yml-path .azure-pipelines/min-release-age.yml`.
+# Removes minimum-release-age lifts whose window has passed and opens (or updates) a pull request.
+
+trigger: none
+pr: none
+
+schedules:
+  - cron: '17 3 * * *'
+    displayName: Expire minimum-release-age lifts
+    branches:
+      include:
+        - main
+    always: true
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  BRANCH: chore/min-release-age-restore
+
+steps:
+  - checkout: self
+    persistCredentials: true
+
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '22.x'
+
+  - bash: |
+      set -euo pipefail
+      node ci/min-release-age.mjs restore --json --body-file "$AGENT_TEMPDIRECTORY/mra-body.md" > "$AGENT_TEMPDIRECTORY/mra.json"
+      if [ "$(node -p "require(process.env.AGENT_TEMPDIRECTORY + '/mra.json').removed.length")" = 0 ]; then exit 0; fi
+      git config user.name 'min-release-age'
+      git config user.email 'min-release-age@noreply.dev.azure.com'
+      git switch -C "$BRANCH"
+      git commit -am 'chore: restore minimum release age'
+      git push --force origin "$BRANCH"
+      node ci/min-release-age.mjs open-pr --provider azure --branch "$BRANCH" --body-file "$AGENT_TEMPDIRECTORY/mra-body.md"
+    displayName: Remove expired lifts
+    env:
+      SYSTEM_ACCESSTOKEN: $(System.AccessToken)
