@@ -62,7 +62,10 @@ npx skills experimental_sync
 This repository is also a plugin marketplace. Claude Code and Codex read
 `.claude-plugin/marketplace.json`, which installs the plugin from the `repobuddy` npm package, so the
 built skill scripts come with it. Copilot CLI reads `.github/plugin/marketplace.json`, which installs
-the plugin from this repository; its skills fall back to `npx` for their scripts.
+the plugin from this repository; its skills fall back to `npx` for their scripts. Copilot's docs also
+list `.claude-plugin/` as an alternate marketplace location it can read — deliberately kept out of sync
+here, since its `npm` source shape isn't one of Copilot's documented source kinds (a relative path or a
+git repository) and Copilot would fail to parse it.
 
 **Claude Code**
 

@@ -15,6 +15,8 @@ Configures a repo to deploy a static site to GitHub Pages using GitHub Actions a
 
 ## Prerequisites
 
+If `gh` is missing or not logged in, run the `init-buddy` skill when it is installed; otherwise tell the user to install and log in.
+
 ```bash
 gh auth status
 git remote get-url origin

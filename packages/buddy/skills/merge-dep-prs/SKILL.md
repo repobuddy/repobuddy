@@ -20,7 +20,7 @@ git remote get-url origin
 | `github.com` | GitHub | `gh` |
 | `gitlab.com` or self-hosted GitLab | GitLab | `glab` |
 
-All examples below use `gh`. For GitLab, substitute `glab mr` for `gh pr`, `glab ci` for `gh run`.
+All examples below use `gh`. For GitLab, substitute `glab mr` for `gh pr`, `glab ci` for `gh run`. If `gh` or `glab` is missing or not logged in, run the `init-buddy` skill when it is installed; otherwise tell the user to install and log in.
 
 ## Step 1 — List and classify PRs
 

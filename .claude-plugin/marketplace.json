@@ -1,29 +1,29 @@
 {
-  "name": "repobuddy",
-  "owner": {
-    "name": "Homa Wong (unional)",
-    "email": "homawong@gmail.com"
-  },
-  "description": "Marketplace for installing repobuddy's agent skills from the repobuddy npm package.",
-  "plugins": [
-    {
-      "name": "repobuddy",
-      "source": {
-        "source": "npm",
-        "package": "repobuddy"
-      },
-      "description": "Agent skills for managing a repository — issues, dependency PRs, GitHub Pages, repo setup, and npm trusted publishing.",
-      "version": "1.3.2",
-      "homepage": "https://github.com/repobuddy/repobuddy",
-      "repository": "https://github.com/repobuddy/repobuddy.git",
-      "license": "MIT",
-      "keywords": [
-        "agent-skills",
-        "repository",
-        "github",
-        "automation",
-        "cli"
-      ]
-    }
-  ]
+	"name": "repobuddy",
+	"owner": {
+		"name": "Homa Wong (unional)",
+		"email": "homawong@gmail.com"
+	},
+	"description": "Marketplace for installing repobuddy's agent skills from the repobuddy npm package.",
+	"plugins": [
+		{
+			"name": "repobuddy",
+			"source": {
+				"source": "npm",
+				"package": "repobuddy"
+			},
+			"description": "Agent skills for managing a repository — issues, dependency PRs, GitHub Pages, repo setup, and npm trusted publishing.",
+			"version": "1.8.0",
+			"homepage": "https://github.com/repobuddy/repobuddy",
+			"repository": "https://github.com/repobuddy/repobuddy.git",
+			"license": "MIT",
+			"keywords": [
+				"agent-skills",
+				"repository",
+				"github",
+				"automation",
+				"cli"
+			]
+		}
+	]
 }

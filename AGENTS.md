@@ -109,10 +109,25 @@ editing in place, or the lock hash goes stale.
 **Test cases** live under `testcases/` — fixture packages exercised by integration tests.
 
 **Universal plugin**: `packages/buddy/plugin.json` is the canonical manifest (Agent Plugins Specification v1.0.0). The
-`.claude-plugin/`, `.cursor-plugin/`, and `.codex-plugin/` manifests beside it are **generated** by
-`npx universal-plugin plugin build` — never hand-edit them. Copilot CLI reads the canonical `plugin.json` directly, so
-nothing is derived for it. The plugin `version` mirrors the package version via `packagePath: "."`; move it with
-`/universal-plugin:version`, never by hand.
+`.claude-plugin/`, `.cursor-plugin/`, and `.codex-plugin/` manifests beside it, and the two local marketplace catalogs
+(`.claude-plugin/marketplace.json`, `.github/plugin/marketplace.json`), are **generated** by
+`npx universal-plugin plugin build` — never hand-edit them, except the Claude catalog's `source` (see below). Copilot
+CLI reads the canonical `plugin.json` directly, so nothing is derived for it. `packages/buddy/.agents/universal-plugin.json`
+declares `packagePath: "."`, which is what this repo's release wiring reads — not the field of the same name that used
+to live under `plugin.json`'s `extensions` block, which this CLI version no longer reads there.
+
+The `version` script (`changeset version && node scripts/sync-plugin-manifests.mjs`) carries a released version into
+the plugin automatically: `scripts/sync-plugin-manifests.mjs` runs `universal-plugin publish sync-version` (never
+`plugin version` — this is a changesets repo, so changesets decides the number) followed by `plugin build`, pinned to
+an exact `universal-plugin` version. `scripts/check-plugin-version.mjs` (wired into `verify` as `check-plugin-version`)
+fails when `packages/buddy/package.json`'s version disagrees with the manifest, any vendor manifest, or either
+catalog's `repobuddy` entry.
+
+`plugin build`'s catalog generation only ever writes a local-path `source`; it has no npm-package source concept. This
+repo ships its Claude Code/Codex catalog entry from the published `repobuddy` npm package instead (so the catalog
+carries the built, gitignored skill script bundles that only the npm tarball has) — `sync-plugin-manifests.mjs`
+restores that `source` in `.claude-plugin/marketplace.json` after every rebuild. That is the one field in a generated
+file this repo intentionally keeps out of sync with the tool's own output.
 
 **Documentation site** lives under `website/` (Astro).
 
@@ -147,5 +162,6 @@ Renovate manages this repo's dependencies (`.github/renovate.json` extends `gith
 This repo uses [Changesets](https://github.com/changesets/changesets) for versioning and release.
 
 - Every PR that modifies a published package needs a changeset: `pnpm cs`
-- Release PRs are created automatically by the Changesets GitHub Action — **never merge release PRs manually**
+- Release PRs are opened automatically by the Changesets GitHub Action. An agent merges one only when the owner asks, and only after every check passes, through GitHub — never by pushing to the release branch or merging locally.
+- The bot's release PR runs can wait on workflow approval (`action_required`); the owner, or an agent asked to release, approves those runs before the checks can complete.
 - `pnpm version` bumps versions; `pnpm release` builds and publishes

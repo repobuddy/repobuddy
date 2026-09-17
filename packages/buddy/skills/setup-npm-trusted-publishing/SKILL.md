@@ -23,7 +23,7 @@ Not for: adding OIDC support to a release workflow file, or configuring GitHub-s
 | npm >= 11.15.0 | `npm --version` |
 | Logged in to npm | `npm whoami` |
 | Account-level 2FA | required; granular tokens that bypass 2FA are rejected |
-| `gh` authenticated | `gh auth status` |
+| `gh` authenticated | `gh auth status` (if missing or not logged in, run the `init-buddy` skill when it is installed; otherwise tell the user to install and log in) |
 | Workflow already declares `id-token: write` | on the publishing job |
 | Package already exists on the registry | trust cannot be pre-registered |
 

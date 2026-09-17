@@ -16,7 +16,7 @@ Apply a consistent set of GitHub repository settings using the `gh` CLI. Idempot
 
 ## Prerequisites
 
-Verify before taking any action:
+Verify before taking any action. If `gh` is missing or not logged in, run the `init-buddy` skill when it is installed; otherwise tell the user to install and log in.
 
 ```bash
 gh auth status

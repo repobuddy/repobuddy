@@ -19,6 +19,8 @@ Detect the platform from the git remote URL:
 | `gitlab.com` or self-hosted GitLab | GitLab | `glab` |
 | `bitbucket.org` | Bitbucket | `gh` with Bitbucket extension or browser |
 
+If `gh` or `glab` is missing or not logged in, run the `init-buddy` skill when it is installed; otherwise tell the user to install and log in.
+
 ```bash
 git remote get-url origin
 ```
