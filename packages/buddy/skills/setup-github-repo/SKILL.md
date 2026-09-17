@@ -37,16 +37,19 @@ DEFAULT_BRANCH=$(gh repo view --json defaultBranchRef --jq '.defaultBranchRef.na
 Run the detect script from the repo root:
 
 ```bash
-node_major=$(node -e "process.stdout.write(String(process.versions.node.split('.')[0]))")
 SKILL_DIR=$(npx skills path setup-github-repo 2>/dev/null || echo "$HOME/.agents/skills/setup-github-repo")
-if [ "$node_major" -ge 23 ]; then
-  ACK=$(node "$SKILL_DIR/scripts/detect-state.mts")
+if [ -f "$SKILL_DIR/scripts/detect-state.mjs" ]; then
+  ACK=$(node "$SKILL_DIR/scripts/detect-state.mjs")
 else
-  ACK=$(npx tsx "$SKILL_DIR/scripts/detect-state.mts")
+  ACK=$(npx -y repobuddy@^1.9.0 detect-state)
 fi
 STATE=$(printf '%s' "$ACK" | jq -r .artifact)
 printf '%s\n' "$ACK"
 ```
+
+The script ships in the `repobuddy` npm package. If `scripts/detect-state.mjs` is missing (the skill
+was installed from git) or cannot be run, use `npx -y repobuddy@^1.9.0 detect-state` with the same
+arguments.
 
 The script writes the state artifact **outside the repo tree** — under the OS temp dir, at the
 path the ack reports as `artifact`. Never write it into the repo: it is a scratch snapshot, and a
@@ -167,12 +170,16 @@ The scaffold script detects which workflows to offer based on filesystem signals
 
 ```bash
 SKILL_DIR=$(npx skills path setup-github-repo 2>/dev/null || echo "$HOME/.agents/skills/setup-github-repo")
-if [ "$node_major" -ge 23 ]; then
-  node "$SKILL_DIR/scripts/scaffold-workflows.mts" --state "$STATE" --yes
+if [ -f "$SKILL_DIR/scripts/scaffold-workflows.mjs" ]; then
+  node "$SKILL_DIR/scripts/scaffold-workflows.mjs" --state "$STATE" --yes
 else
-  npx tsx "$SKILL_DIR/scripts/scaffold-workflows.mts" --state "$STATE" --yes
+  npx -y repobuddy@^1.9.0 scaffold-workflows --state "$STATE" --yes
 fi
 ```
+
+The script ships in the `repobuddy` npm package. If `scripts/scaffold-workflows.mjs` is missing (the
+skill was installed from git) or cannot be run, use `npx -y repobuddy@^1.9.0 scaffold-workflows` with
+the same arguments.
 
 Use `--yes` for agent runs (non-interactive). Omit `--yes` for human runs — the script prompts on stderr. Read JSON stdout for `created` and `skipped`; add `--verbose` for progress on stderr.
 

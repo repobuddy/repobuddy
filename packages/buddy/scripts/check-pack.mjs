@@ -7,6 +7,9 @@
  * The skill scripts are build output: gitignored, and shipped only in the npm package. This packs the
  * package, unpacks it into a temp directory with no node_modules, and runs each script there.
  *
+ * It packs with ignore-scripts: `prepack` rebuilds, and tsdown's clean step would delete `esm/`
+ * while tests that run the built CLI are in flight. The `pack:check` task already depends on `build`.
+ *
  * Exit 0 when every script is present and runs, 1 otherwise.
  */
 
@@ -22,12 +25,19 @@ const packageDir = dirname(dirname(fileURLToPath(import.meta.url)))
 const SCRIPTS = [
 	{ path: 'skills/min-release-age/scripts/min-release-age.mjs', args: ['no-such-command'], exit: 2 },
 	{ path: 'skills/init-buddy/scripts/detect-env.mjs', args: ['--json', '--host', 'github'], exit: 0 },
+	// These reject bad usage before shelling out to `gh`, so they run without a git remote or auth.
+	{ path: 'skills/setup-github-repo/scripts/detect-state.mjs', args: ['--dir'], exit: 1 },
+	{ path: 'skills/setup-github-repo/scripts/scaffold-workflows.mjs', args: ['no-such-command'], exit: 1 },
+	{ path: 'skills/setup-npm-trusted-publishing/scripts/npm-trust.mjs', args: ['no-such-command'], exit: 2 },
 ]
 
 const temp = mkdtempSync(join(tmpdir(), 'repobuddy-pack-'))
 const failures = []
 try {
-	const pack = spawnSync('pnpm', ['pack', '--pack-destination', temp], { cwd: packageDir, encoding: 'utf8' })
+	const pack = spawnSync('pnpm', ['pack', '--config.ignore-scripts=true', '--pack-destination', temp], {
+		cwd: packageDir,
+		encoding: 'utf8',
+	})
 	if (pack.status !== 0) throw new Error(`pnpm pack failed:\n${pack.stderr}`)
 	const tarball = readdirSync(temp).find((f) => f.endsWith('.tgz'))
 	if (!tarball) throw new Error('pnpm pack produced no tarball')
