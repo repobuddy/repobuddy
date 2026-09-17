@@ -73,7 +73,7 @@ test('open-pr azure: create against the source branch', async () => {
 	assert.deepEqual(await openPr('azure', args, env, f.fn), { ok: true, provider: 'azure', action: 'created', id: 3 })
 	assert.match(
 		f.calls[1]?.url ?? '',
-		/^https:\/\/dev.azure.com\/o\/My%20Proj\/_apis\/git\/repositories\/id\/pullrequests/,
+		/^https:\/\/dev\.azure\.com\/o\/My%20Proj\/_apis\/git\/repositories\/id\/pullrequests/,
 	)
 	const body = (f.calls[1]?.body ?? {}) as { sourceRefName: string; targetRefName: string }
 	assert.deepEqual(
