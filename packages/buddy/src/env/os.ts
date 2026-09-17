@@ -52,8 +52,12 @@ export function run(cmd: string, args: string[], opts: Record<string, unknown> =
 	return { status: r.error ? null : r.status, stdout: (r.stdout ?? '').trim(), stderr: (r.stderr ?? '').trim() }
 }
 
-export function which(name: string, env: NodeJS.ProcessEnv = process.env): string | null {
-	const exts = platform() === 'win32' ? (env['PATHEXT'] ?? '.EXE;.CMD;.BAT').split(';') : ['']
+export function which(
+	name: string,
+	env: NodeJS.ProcessEnv = process.env,
+	plat: NodeJS.Platform = platform(),
+): string | null {
+	const exts = plat === 'win32' ? (env['PATHEXT'] ?? '.EXE;.CMD;.BAT').split(';') : ['']
 	for (const dir of (env['PATH'] ?? env['Path'] ?? '').split(delimiter)) {
 		if (!dir) continue
 		for (const ext of exts) {
@@ -89,19 +93,37 @@ export function distroFamily(id = '', idLike = ''): OsFamily {
 	return 'other'
 }
 
-export function detectOs(env: NodeJS.ProcessEnv): OsInfo {
-	const plat = platform()
+/** Injectable seams so tests can exercise every OS branch without touching the real machine. */
+export interface DetectOsDeps {
+	platform?: () => NodeJS.Platform
+	arch?: () => string
+	release?: () => string
+	readText?: (file: string) => string
+	run?: typeof run
+	which?: typeof which
+	getuid?: () => number
+}
+
+export function detectOs(env: NodeJS.ProcessEnv, deps: DetectOsDeps = {}): OsInfo {
+	const platformFn = deps.platform ?? platform
+	const archFn = deps.arch ?? arch
+	const releaseFn = deps.release ?? release
+	const readTextFn = deps.readText ?? readText
+	const runFn = deps.run ?? run
+	const whichFn = deps.which ?? which
+	const getuidFn = deps.getuid ?? (typeof process.getuid === 'function' ? process.getuid.bind(process) : undefined)
+	const plat = platformFn()
 	// `family` is assigned per-branch below (after `distro` for linux) rather than in this literal,
 	// so the JSON key order matches the original script: platform, arch, release, wsl, distro, family.
-	const os = { platform: plat, arch: arch(), release: release(), wsl: false } as OsInfo
+	const os = { platform: plat, arch: archFn(), release: releaseFn(), wsl: false } as OsInfo
 	if (plat === 'darwin') {
 		os.family = 'macos'
-		os.version = run('sw_vers', ['-productVersion']).stdout || null
+		os.version = runFn('sw_vers', ['-productVersion']).stdout || null
 	} else if (plat === 'win32') {
 		os.family = 'windows'
 	} else if (plat === 'linux') {
-		os.wsl = Boolean(env['WSL_DISTRO_NAME']) || /microsoft/i.test(readText('/proc/version'))
-		const rel = parseOsRelease(readText('/etc/os-release'))
+		os.wsl = Boolean(env['WSL_DISTRO_NAME']) || /microsoft/i.test(readTextFn('/proc/version'))
+		const rel = parseOsRelease(readTextFn('/etc/os-release'))
 		os.distro = {
 			id: rel['ID'] ?? null,
 			idLike: rel['ID_LIKE'] ?? null,
@@ -113,9 +135,9 @@ export function detectOs(env: NodeJS.ProcessEnv): OsInfo {
 		os.family = 'other'
 	}
 	if (plat !== 'win32') {
-		if (typeof process.getuid === 'function' && process.getuid() === 0) os.sudo = 'root'
-		else if (!which('sudo', env)) os.sudo = 'absent'
-		else os.sudo = run('sudo', ['-n', 'true']).status === 0 ? 'passwordless' : 'needs-password'
+		if (getuidFn && getuidFn() === 0) os.sudo = 'root'
+		else if (!whichFn('sudo', env)) os.sudo = 'absent'
+		else os.sudo = runFn('sudo', ['-n', 'true']).status === 0 ? 'passwordless' : 'needs-password'
 	}
 	return os
 }

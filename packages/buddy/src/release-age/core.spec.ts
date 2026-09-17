@@ -102,6 +102,17 @@ test('bun: inline array rewritten, multi-line array gets trailing comma', () => 
 	assert.match(readFileSync(join(dir2, 'bunfig.toml'), 'utf8'), /"foo",\n {2}# min/)
 })
 
+test('bun: no [install] section at all creates one from scratch', () => {
+	const dir = repo('bunfig.toml', '')
+	lift(dir, 'bun', 'bar@1.0.0', { until, now, nameWide: true })
+	assert.equal(
+		readFileSync(join(dir, 'bunfig.toml'), 'utf8'),
+		`[install]\nminimumReleaseAgeExcludes = [\n  # min-release-age: lift bar@1.0.0 until ${until}\n  "bar",\n]\n`,
+	)
+	const s = status(dir, 'bun', now)
+	assert.equal(s.lifts[0]?.value, 'bar')
+})
+
 test('restore fails on an orphaned marker', () => {
 	const dir = repo(
 		'pnpm-workspace.yaml',
