@@ -82,14 +82,15 @@ test('collectHosts: probes a self-hosted host and reclassifies it', async () => 
 test('collectHosts: probe finds forgejo, gitlab and github signatures, and none at all', async () => {
 	const originalFetch = global.fetch
 	global.fetch = (async (url: string | URL | Request) => {
-		const u = String(url)
-		if (u.includes('fj.example.com') && u.includes('/api/v1/version')) {
+		const { hostname, pathname } = new URL(String(url))
+		const is = (host: string, path: string) => hostname === host && pathname === path
+		if (is('fj.example.com', '/api/v1/version')) {
 			return { status: 200, text: async () => '{"version":"1.0+forgejo-1.20"}' } as Response
 		}
-		if (u.includes('gl.example.com') && u.includes('/api/v4/version')) {
+		if (is('gl.example.com', '/api/v4/version')) {
 			return { status: 401, text: async () => 'Unauthorized' } as Response
 		}
-		if (u.includes('gh.example.com') && u.includes('/api/v3/meta')) {
+		if (is('gh.example.com', '/api/v3/meta')) {
 			return { status: 200, text: async () => '{"installed_version":"3.1"}' } as Response
 		}
 		return { status: 404, text: async () => '' } as Response
