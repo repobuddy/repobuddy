@@ -1,5 +1,20 @@
 # repobuddy
 
+## 1.9.0
+
+### Minor Changes
+
+- a661bef: Add `buddy detect-state`, `buddy scaffold-workflows`, and `buddy npm-trust <plan|apply>`. They run the
+  same code, with the same flags and output, as the `setup-github-repo` and `setup-npm-trusted-publishing`
+  skill scripts, which now ship as bundled `.mjs` scripts (built from `src/setup-github-repo/` and
+  `src/npm-trust/`) instead of hand-written `.mts` files run through `npx tsx`.
+
+### Patch Changes
+
+- 2bdb450: Point `add-badges`, `create-issue`, `merge-dep-prs`, `setup-github-pages`, `setup-github-repo`, and `setup-npm-trusted-publishing` at the `init-buddy` skill when `gh`/`glab` is missing or not logged in.
+- bb7e17f: `buddy --version` and `buddy --help` no longer print clibuilder's "no config found under ..." warning when run outside a repobuddy-configured repo. Config loading itself is unaffected: a `.repobuddy*` file (or a `repobuddy` key in `package.json`) still loads normally.
+- f5786fb: Fix plugin version drift: `packages/buddy/plugin.json`, its vendor manifests, and both local marketplace catalogs were stuck at 1.3.2 while the package moved to 1.8.0, so `claude plugin update repobuddy@repobuddy` reported the plugin was already up to date and never installed the update. The root `version` script now carries a released version into the plugin automatically, and `pnpm verify` fails if it ever drifts again.
+
 ## 1.8.0
 
 ### Minor Changes
