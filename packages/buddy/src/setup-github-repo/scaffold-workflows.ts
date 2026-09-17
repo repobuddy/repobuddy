@@ -1,56 +1,15 @@
-#!/usr/bin/env node
-
 /**
- * Scaffolds GitHub Actions workflow files based on detected repo state.
- * Reads the state artifact produced by detect-state.mts. Defaults to the same temp path
- * detect-state writes to; pass --state to point at another one.
+ * Scaffolds GitHub Actions workflow files based on detected repo state (written by `detect-state.ts`).
  * Skips files that already exist.
- * Usage: npx tsx scaffold-workflows.mts [--state <path>] [--workflows pull-request,release,dependabot-automerge,codeql] [--yes] [--verbose]
  */
 
-import { execSync } from 'node:child_process'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { join } from 'node:path'
+import { join, resolve } from 'node:path'
 import { createInterface } from 'node:readline'
-import { parseArgs } from 'node:util'
-import { stateArtifactPath } from './state-path.mts'
+import { type Exec, realExec } from './exec.js'
+import { stateArtifactPath } from './state-path.js'
 
-// --- Args ---
-
-const { values } = parseArgs({
-	options: {
-		state: { type: 'string' },
-		workflows: { type: 'string' },
-		yes: { type: 'boolean', short: 'y', default: false },
-		verbose: { type: 'boolean', default: false },
-	},
-	allowPositionals: false,
-	strict: true,
-})
-
-const statePath = values.state || defaultStatePath()
-const workflowsArg = values.workflows
-const autoYes = values.yes
-const verbose = values.verbose
-
-function writeResult(result: Record<string, unknown>) {
-	process.stdout.write(`${JSON.stringify(result)}\n`)
-}
-
-function defaultStatePath(): string {
-	const nameWithOwner = execSync('gh repo view --json nameWithOwner --jq .nameWithOwner', {
-		encoding: 'utf8',
-	}).trim()
-	return stateArtifactPath(nameWithOwner)
-}
-
-if (!existsSync(statePath)) {
-	console.error(`State file not found: ${statePath}`)
-	console.error('Run detect-state.mts first.')
-	process.exit(1)
-}
-
-interface State {
+export interface ScaffoldState {
 	repo: string
 	defaultBranch: string
 	detected: {
@@ -63,75 +22,9 @@ interface State {
 	}
 }
 
-const state = JSON.parse(readFileSync(statePath, 'utf8')) as State
-const { detected, defaultBranch } = state
-
-// --- Determine which workflows to offer ---
-
-const allWorkflows = ['pull-request', 'release', 'dependabot-automerge', 'codeql']
-
-let toOffer: string[]
-if (workflowsArg) {
-	toOffer = workflowsArg.split(',').map((s) => s.trim())
-} else {
-	// Infer from signals
-	const hasWorkflows = detected.existingWorkflows.length > 0
-	if (!hasWorkflows) {
-		toOffer = [...allWorkflows]
-	} else {
-		toOffer = []
-		if (detected.hasPackageJson) toOffer.push('pull-request', 'release')
-		if (detected.hasDependabotConfig) toOffer.push('dependabot-automerge')
-		if (detected.language) toOffer.push('codeql')
-		toOffer = [...new Set(toOffer)]
-	}
-}
-
-// --- Filter already-existing ---
-
-const workflowsDir = '.github/workflows'
-const skipped: Array<{ name: string; reason: string }> = []
-
-const toCreate = toOffer.filter((name) => {
-	const file = `${name}.yml`
-	if (detected.existingWorkflows.includes(file)) {
-		skipped.push({ name: file, reason: 'already exists' })
-		if (verbose) console.warn(`  [skip] ${file} — already exists`)
-		return false
-	}
-	return true
-})
-
-if (toCreate.length === 0) {
-	writeResult({ ok: true, created: [], skipped })
-	process.exit(0)
-}
-
-if (verbose) {
-	console.warn('\nWorkflows to create:')
-	for (const name of toCreate) {
-		console.warn(`  ${name}.yml`)
-	}
-}
-
-// --- Confirm ---
-
-async function confirm(): Promise<boolean> {
-	if (autoYes) return true
-	const rl = createInterface({ input: process.stdin, output: process.stderr })
-	return new Promise((resolve) => {
-		rl.question('\nCreate these files? [y/N] ', (answer) => {
-			rl.close()
-			resolve(answer.toLowerCase() === 'y')
-		})
-	})
-}
-
-// --- LTS Node versions ---
+export const ALL_WORKFLOWS = ['pull-request', 'release', 'dependabot-automerge', 'codeql']
 
 const NODE_LTS_VERSIONS = [20, 22, 24]
-
-// --- Install and test commands by package manager ---
 
 function installCmd(pm: string | null): string {
 	switch (pm) {
@@ -170,9 +63,7 @@ function setupNodeAction(pm: string | null): string {
           cache: '${cache}'`
 }
 
-// --- Workflow templates ---
-
-function pullRequestYml(): string {
+function pullRequestYml(detected: ScaffoldState['detected']): string {
 	const pm = detected.packageManager
 	const isNode = detected.hasPackageJson || pm !== null
 	const matrix = isNode
@@ -212,7 +103,7 @@ ${matrix}    steps:
 `
 }
 
-function releaseYml(): string {
+function releaseYml(detected: ScaffoldState['detected'], defaultBranch: string): string {
 	const pm = detected.packageManager
 	const isNode = detected.hasPackageJson || pm !== null
 	const matrix = isNode
@@ -290,7 +181,7 @@ jobs:
 `
 }
 
-function codeqlYml(): string {
+function codeqlYml(detected: ScaffoldState['detected'], defaultBranch: string): string {
 	const lang = detected.codeqlLanguage ?? 'javascript'
 	return `name: CodeQL
 on:
@@ -326,38 +217,119 @@ jobs:
 `
 }
 
-const templates: Record<string, () => string> = {
-	'pull-request': pullRequestYml,
-	release: releaseYml,
-	'dependabot-automerge': dependabotAutomergeYml,
-	codeql: codeqlYml,
+export interface ScaffoldWorkflowsOptions {
+	statePath?: string
+	workflows?: string
+	yes?: boolean
+	/** Repo working directory the `.github/workflows` folder is created under. Defaults to cwd. */
+	dir?: string
+	exec?: Exec
+	/** Asked when `yes` is not set. Defaults to an interactive stdin/stderr prompt. */
+	confirm?: () => Promise<boolean>
+	log?: (message: string) => void
 }
 
-const ok = await confirm()
-if (!ok) {
-	writeResult({ ok: false, reason: 'aborted', created: [], skipped })
-	process.exit(0)
+export interface ScaffoldWorkflowsResult {
+	ok: boolean
+	created: string[]
+	skipped: Array<{ name: string; reason: string }>
+	reason?: string
 }
 
-mkdirSync(workflowsDir, { recursive: true })
+/* istanbul ignore next -- real interactive stdin prompt; every caller is exercised in tests through an injected `confirm` instead */
+function defaultConfirm(): Promise<boolean> {
+	const rl = createInterface({ input: process.stdin, output: process.stderr })
+	return new Promise((resolvePromise) => {
+		rl.question('\nCreate these files? [y/N] ', (answer) => {
+			rl.close()
+			resolvePromise(answer.toLowerCase() === 'y')
+		})
+	})
+}
 
-const created: string[] = []
+export async function scaffoldWorkflows(options: ScaffoldWorkflowsOptions = {}): Promise<ScaffoldWorkflowsResult> {
+	const exec = options.exec ?? realExec
+	const dir = resolve(options.dir ?? process.cwd())
+	const log = options.log ?? (() => {})
 
-for (const name of toCreate) {
-	const generate = templates[name]
-	if (!generate) {
-		skipped.push({ name: `${name}.yml`, reason: 'unknown workflow name' })
-		if (verbose) console.warn(`  [skip] ${name} — unknown workflow name`)
-		continue
+	const statePath =
+		options.statePath ?? stateArtifactPath(exec.run('gh repo view --json nameWithOwner --jq .nameWithOwner'))
+
+	if (!existsSync(statePath)) {
+		throw new Error(`State file not found: ${statePath}\nRun detect-state first.`)
 	}
-	const filePath = join(workflowsDir, `${name}.yml`)
-	writeFileSync(filePath, generate())
-	created.push(filePath)
-	if (verbose) console.warn(`  [created] ${filePath}`)
-}
 
-writeResult({ ok: true, created, skipped })
+	const state = JSON.parse(readFileSync(statePath, 'utf8')) as ScaffoldState
+	const { detected, defaultBranch } = state
 
-if (verbose) {
-	console.warn('\nDone. Review the generated files before committing — CI steps may need customization.')
+	let toOffer: string[]
+	if (options.workflows) {
+		toOffer = options.workflows.split(',').map((s) => s.trim())
+	} else {
+		const hasWorkflows = detected.existingWorkflows.length > 0
+		if (!hasWorkflows) {
+			toOffer = [...ALL_WORKFLOWS]
+		} else {
+			toOffer = []
+			if (detected.hasPackageJson) toOffer.push('pull-request', 'release')
+			if (detected.hasDependabotConfig) toOffer.push('dependabot-automerge')
+			if (detected.language) toOffer.push('codeql')
+			toOffer = [...new Set(toOffer)]
+		}
+	}
+
+	const workflowsDir = join(dir, '.github', 'workflows')
+	const skipped: Array<{ name: string; reason: string }> = []
+
+	const toCreate = toOffer.filter((name) => {
+		const file = `${name}.yml`
+		if (detected.existingWorkflows.includes(file)) {
+			skipped.push({ name: file, reason: 'already exists' })
+			log(`  [skip] ${file} — already exists`)
+			return false
+		}
+		return true
+	})
+
+	if (toCreate.length === 0) {
+		return { ok: true, created: [], skipped }
+	}
+
+	log('\nWorkflows to create:')
+	for (const name of toCreate) log(`  ${name}.yml`)
+
+	const confirm = options.yes ? () => Promise.resolve(true) : (options.confirm ?? defaultConfirm)
+	const ok = await confirm()
+	if (!ok) {
+		return { ok: false, reason: 'aborted', created: [], skipped }
+	}
+
+	mkdirSync(workflowsDir, { recursive: true })
+
+	const templates: Record<string, () => string> = {
+		'pull-request': () => pullRequestYml(detected),
+		release: () => releaseYml(detected, defaultBranch),
+		'dependabot-automerge': dependabotAutomergeYml,
+		codeql: () => codeqlYml(detected, defaultBranch),
+	}
+
+	const created: string[] = []
+	for (const name of toCreate) {
+		const generate = templates[name]
+		if (!generate) {
+			skipped.push({ name: `${name}.yml`, reason: 'unknown workflow name' })
+			log(`  [skip] ${name} — unknown workflow name`)
+			continue
+		}
+		// Reported relative to `dir` (as the original script, run from the repo root, always did),
+		// even though the file is written under the absolute `workflowsDir` computed above.
+		const relativePath = join('.github', 'workflows', `${name}.yml`)
+		writeFileSync(join(workflowsDir, `${name}.yml`), generate())
+		created.push(relativePath)
+		log(`  [created] ${relativePath}`)
+	}
+
+	log('\nDone. Review the generated files before committing — CI steps may need customization.')
+
+	return { ok: true, created, skipped }
 }
