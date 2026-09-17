@@ -2,9 +2,21 @@
 /**
  * Read and edit a repository's minimum-release-age exemptions.
  *
- *   node scripts/min-release-age.mjs status  [--dir <repo>] [--json]
- *   node scripts/min-release-age.mjs lift    <pkg[@version|@tag]> [--dir <repo>] [--pm <pm>] [--name-wide] [--until <ISO>] [--json]
- *   node scripts/min-release-age.mjs restore [--dir <repo>] [--now <ISO>] [--dry-run] [--json] [--github-output]
+ *   node scripts/min-release-age.mjs status  [--dir <repo>] [--json] [--check]
+ *   node scripts/min-release-age.mjs lift    <pkg[@version|@tag]> [--dir <repo>] [--pm <pm>] [--check] [--name-wide] [--until <ISO>] [--json]
+ *   node scripts/min-release-age.mjs restore [--dir <repo>] [--now <ISO>] [--dry-run] [--json] [--github-output] [--body-file <path>]
+ *
+ * `status` also reports the git host (from the origin remote), the CI systems found in the repo, and
+ * which provider `setup-ci` should target and
+ * the reference to load for it. --check exits 1 when any lift has expired.
+ *
+ * `restore` exits 0 whether or not it removed anything; read `removed` from --json or --github-output.
+ * --body-file writes the change-request description for CI jobs that open one.
+ *
+ *   node scripts/min-release-age.mjs open-pr --provider bitbucket|azure|forgejo|gitea --body-file <path> [--branch <b>]
+ *
+ * `open-pr` runs inside a CI job and opens or updates the restore pull request through the provider's
+ * REST API, reading the repository and token from the job's environment. It prints JSON.
  *
  * Supports pnpm (pnpm-workspace.yaml), Yarn Berry (.yarnrc.yml), npm (.npmrc) and bun (bunfig.toml).
  *
@@ -31,7 +43,117 @@ import { appendFileSync, existsSync, readFileSync, writeFileSync } from 'node:fs
 import { join, resolve } from 'node:path'
 
 const MARKER = /^\s*#\s*min-release-age: lift (\S+) until (\S+)\s*$/
-const WORKFLOW = '.github/workflows/min-release-age.yml'
+
+// ── CI providers ──────────────────────────────────────────────────────────────
+// detect: files that show the CI system is in use. job: where setup-ci writes the cleanup job.
+// script: where setup-ci copies this script. `job` ending in `#` means "a block inside that file".
+const PROVIDERS = {
+	github: {
+		name: 'GitHub Actions',
+		detect: ['.github/workflows'],
+		job: '.github/workflows/min-release-age.yml',
+		script: '.github/scripts/min-release-age.mjs',
+	},
+	gitlab: {
+		name: 'GitLab CI',
+		detect: ['.gitlab-ci.yml'],
+		job: '.gitlab/ci/min-release-age.yml',
+		script: 'ci/min-release-age.mjs',
+	},
+	bitbucket: {
+		name: 'Bitbucket Pipelines',
+		detect: ['bitbucket-pipelines.yml'],
+		job: 'bitbucket-pipelines.yml#',
+		script: 'ci/min-release-age.mjs',
+	},
+	azure: {
+		name: 'Azure Pipelines',
+		detect: ['azure-pipelines.yml', '.azure-pipelines'],
+		job: '.azure-pipelines/min-release-age.yml',
+		script: 'ci/min-release-age.mjs',
+	},
+	forgejo: {
+		name: 'Forgejo Actions',
+		detect: ['.forgejo/workflows'],
+		job: '.forgejo/workflows/min-release-age.yml',
+		script: '.forgejo/scripts/min-release-age.mjs',
+	},
+	gitea: {
+		name: 'Gitea Actions',
+		detect: ['.gitea/workflows'],
+		job: '.gitea/workflows/min-release-age.yml',
+		script: '.gitea/scripts/min-release-age.mjs',
+	},
+}
+
+// CI systems without a template: setup-ci falls back to the generic reference.
+const OTHER_CI = {
+	circleci: '.circleci/config.yml',
+	jenkins: 'Jenkinsfile',
+	travis: '.travis.yml',
+	woodpecker: '.woodpecker',
+	drone: '.drone.yml',
+	buildkite: '.buildkite',
+}
+
+const HOSTS = [
+	[/(^|\.)github\.com$/, 'github'],
+	[/(^|\.)bitbucket\.org$/, 'bitbucket'],
+	[/(^|\.)(dev\.azure\.com|visualstudio\.com)$/, 'azure'],
+	[/(^|\.)codeberg\.org$|forgejo/, 'forgejo'],
+	[/gitea/, 'gitea'],
+	[/(^|\.)gitlab\.com$|gitlab/, 'gitlab'],
+]
+
+function remoteHost(url) {
+	const m = /^(?:[a-z+]+:\/\/)?(?:[^@/]+@)?([^/:]+)/i.exec(url ?? '')
+	return m?.[1].toLowerCase()
+}
+
+function hasJob(dir, provider) {
+	const { job } = PROVIDERS[provider]
+	if (!job.endsWith('#')) return existsSync(join(dir, job))
+	const file = join(dir, job.slice(0, -1))
+	return existsSync(file) && readFileSync(file, 'utf8').includes('min-release-age')
+}
+
+export function detectCi(dir, remote) {
+	let url = remote
+	if (url === undefined) {
+		try {
+			url = execFileSync('git', ['-C', dir, 'remote', 'get-url', 'origin'], {
+				encoding: 'utf8',
+				stdio: ['ignore', 'pipe', 'ignore'],
+			}).trim()
+		} catch {
+			url = undefined
+		}
+	}
+	const hostname = remoteHost(url)
+	const host = (hostname && HOSTS.find(([re]) => re.test(hostname))?.[1]) ?? 'unknown'
+	const systems = [
+		...Object.keys(PROVIDERS).filter((p) => PROVIDERS[p].detect.some((f) => existsSync(join(dir, f)))),
+		...Object.keys(OTHER_CI).filter((p) => existsSync(join(dir, OTHER_CI[p]))),
+	]
+	// Forgejo and Gitea also run `.github/workflows`; those workflows still need the host's API.
+	if (['forgejo', 'gitea'].includes(host) && systems.includes('github') && !systems.includes(host)) {
+		systems.splice(systems.indexOf('github'), 1, host)
+	}
+	const installed = Object.keys(PROVIDERS).find((p) => hasJob(dir, p)) ?? null
+	const provider =
+		installed ?? (systems.includes(host) ? host : undefined) ?? systems[0] ?? (PROVIDERS[host] ? host : 'other')
+	return {
+		remote: url ?? null,
+		host,
+		systems,
+		provider,
+		templated: Boolean(PROVIDERS[provider]),
+		installed: Boolean(installed),
+		job: PROVIDERS[provider]?.job.replace(/#$/, '') ?? null,
+		script: PROVIDERS[provider]?.script ?? 'ci/min-release-age.mjs',
+		reference: `references/ci/${provider === 'gitea' ? 'forgejo' : PROVIDERS[provider] ? provider : 'other'}.md`,
+	}
+}
 
 const MANAGERS = {
 	pnpm: {
@@ -81,14 +203,14 @@ const MANAGERS = {
 function usage(message) {
 	process.stderr.write(`${message}\n`)
 	process.stderr.write(
-		'usage: min-release-age.mjs <status|lift <pkg[@version|@tag]>|restore> [--dir <repo>] [--pm <pm>] [--name-wide] [--until <ISO>] [--now <ISO>] [--dry-run] [--json] [--github-output]\n',
+		'usage: min-release-age.mjs <status|lift <pkg[@version|@tag]>|restore|open-pr> [--dir <repo>] [--pm <pm>] [--name-wide] [--until <ISO>] [--now <ISO>] [--dry-run] [--json] [--github-output] [--body-file <path>] [--provider <p>] [--branch <b>]\n',
 	)
 	process.exit(2)
 }
 
 function parseArgs(argv) {
 	const opts = { positional: [] }
-	const valued = new Set(['--dir', '--pm', '--until', '--now'])
+	const valued = new Set(['--dir', '--pm', '--until', '--now', '--body-file', '--provider', '--branch'])
 	for (let i = 0; i < argv.length; i++) {
 		const a = argv[i]
 		if (valued.has(a)) {
@@ -280,7 +402,7 @@ export function status(dir, pm, now = new Date()) {
 		versionPin: cfg.versionPin,
 		lifts: exemptions.filter((e) => e.kind === 'lift'),
 		permanent: exemptions.filter((e) => e.kind === 'permanent').map((e) => e.value),
-		workflowInstalled: existsSync(join(dir, WORKFLOW)),
+		ci: detectCi(dir),
 	}
 }
 
@@ -459,6 +581,125 @@ export function restore(dir, pm, { now = new Date(), dryRun = false } = {}) {
 	return { ok: true, file: path, dryRun, removed, kept }
 }
 
+// ── open-pr ───────────────────────────────────────────────────────────────────
+// Opens, or updates, the restore pull request from inside a CI job. GitHub uses `gh` and GitLab uses
+// push options, so only the providers without a preinstalled CLI are handled here.
+
+export const RESTORE_TITLE = 'chore: restore minimum release age'
+
+function required(env, names) {
+	const missing = names.filter((n) => !env[n])
+	if (missing.length) throw new Error(`missing environment variable(s): ${missing.join(', ')}`)
+	return names.map((n) => env[n])
+}
+
+async function call(fetchFn, url, init) {
+	const res = await fetchFn(url, {
+		...init,
+		headers: { 'content-type': 'application/json', accept: 'application/json', ...init?.headers },
+	})
+	const text = await res.text()
+	if (!res.ok) throw new Error(`${init?.method ?? 'GET'} ${url} → ${res.status} ${text.slice(0, 300)}`)
+	return text ? JSON.parse(text) : {}
+}
+
+const PR_APIS = {
+	bitbucket: async (env, { branch, body }, fetchFn) => {
+		const [workspace, slug, base, token] = required(env, [
+			'BITBUCKET_WORKSPACE',
+			'BITBUCKET_REPO_SLUG',
+			'BITBUCKET_BRANCH',
+			'MIN_RELEASE_AGE_TOKEN',
+		])
+		const api = `https://api.bitbucket.org/2.0/repositories/${workspace}/${slug}/pullrequests`
+		const headers = { authorization: `Bearer ${token}` }
+		const q = encodeURIComponent(`source.branch.name="${branch}" AND state="OPEN"`)
+		const [open] = (await call(fetchFn, `${api}?q=${q}`, { headers })).values ?? []
+		if (open) {
+			const pr = await call(fetchFn, `${api}/${open.id}`, {
+				method: 'PUT',
+				headers,
+				body: JSON.stringify({ title: RESTORE_TITLE, description: body }),
+			})
+			return { action: 'updated', url: pr.links?.html?.href }
+		}
+		const pr = await call(fetchFn, api, {
+			method: 'POST',
+			headers,
+			body: JSON.stringify({
+				title: RESTORE_TITLE,
+				description: body,
+				source: { branch: { name: branch } },
+				destination: { branch: { name: base } },
+				close_source_branch: true,
+			}),
+		})
+		return { action: 'created', url: pr.links?.html?.href }
+	},
+	azure: async (env, { branch, body }, fetchFn) => {
+		const [collection, project, repo, base, token] = required(env, [
+			'SYSTEM_COLLECTIONURI',
+			'SYSTEM_TEAMPROJECT',
+			'BUILD_REPOSITORY_ID',
+			'BUILD_SOURCEBRANCH',
+			'SYSTEM_ACCESSTOKEN',
+		])
+		const api = `${collection.replace(/\/$/, '')}/${encodeURIComponent(project)}/_apis/git/repositories/${repo}/pullrequests`
+		const headers = { authorization: `Bearer ${token}` }
+		const source = `refs/heads/${branch}`
+		const search = `searchCriteria.sourceRefName=${encodeURIComponent(source)}&searchCriteria.status=active`
+		const [open] = (await call(fetchFn, `${api}?${search}&api-version=7.1`, { headers })).value ?? []
+		if (open) {
+			await call(fetchFn, `${api}/${open.pullRequestId}?api-version=7.1`, {
+				method: 'PATCH',
+				headers,
+				body: JSON.stringify({ description: body }),
+			})
+			return { action: 'updated', id: open.pullRequestId }
+		}
+		const pr = await call(fetchFn, `${api}?api-version=7.1`, {
+			method: 'POST',
+			headers,
+			body: JSON.stringify({ sourceRefName: source, targetRefName: base, title: RESTORE_TITLE, description: body }),
+		})
+		return { action: 'created', id: pr.pullRequestId }
+	},
+	forgejo: async (env, { branch, body }, fetchFn) => {
+		const [server, repo, base] = required(env, ['GITHUB_SERVER_URL', 'GITHUB_REPOSITORY', 'GITHUB_REF_NAME'])
+		const token = env.MIN_RELEASE_AGE_TOKEN || env.GITHUB_TOKEN
+		if (!token) throw new Error('missing environment variable(s): MIN_RELEASE_AGE_TOKEN or GITHUB_TOKEN')
+		const api = `${server.replace(/\/$/, '')}/api/v1/repos/${repo}/pulls`
+		const headers = { authorization: `token ${token}` }
+		const pulls = await call(fetchFn, `${api}?state=open&limit=50`, { headers })
+		const open = pulls.find((p) => p.head?.ref === branch)
+		if (open) {
+			const pr = await call(fetchFn, `${api}/${open.number}`, {
+				method: 'PATCH',
+				headers,
+				body: JSON.stringify({ body }),
+			})
+			return { action: 'updated', url: pr.html_url }
+		}
+		const pr = await call(fetchFn, api, {
+			method: 'POST',
+			headers,
+			body: JSON.stringify({ head: branch, base, title: RESTORE_TITLE, body }),
+		})
+		return { action: 'created', url: pr.html_url }
+	},
+}
+PR_APIS.gitea = PR_APIS.forgejo
+
+export async function openPr(provider, { branch, body }, env = process.env, fetchFn = fetch) {
+	const api = PR_APIS[provider]
+	if (!api) return { ok: false, error: `open-pr supports ${Object.keys(PR_APIS).join(', ')}; got "${provider}"` }
+	try {
+		return { ok: true, provider, ...(await api(env, { branch, body }, fetchFn)) }
+	} catch (error) {
+		return { ok: false, provider, error: error.message }
+	}
+}
+
 // ── output ────────────────────────────────────────────────────────────────────
 
 function printStatus(s) {
@@ -469,28 +710,48 @@ function printStatus(s) {
 		`permanent: ${s.permanent.length ? s.permanent.join(', ') : 'none'}`,
 		`lifts: ${s.lifts.length ? '' : 'none'}`,
 		...s.lifts.map((l) => `  ${l.value} until ${l.until}${l.expired ? ' — EXPIRED' : ''}`),
-		`cleanup workflow: ${s.workflowInstalled ? 'installed' : 'not installed'}`,
+		`git host: ${s.ci.host}${s.ci.remote ? ` (${s.ci.remote})` : ''}`,
+		`ci systems: ${s.ci.systems.length ? s.ci.systems.join(', ') : 'none found'}`,
+		`cleanup job: ${s.ci.installed ? `installed (${s.ci.provider}, ${s.ci.job})` : `not installed — setup-ci would target ${s.ci.provider}`}`,
 	]
 	process.stdout.write(`${lines.join('\n')}\n`)
+}
+
+function restoreBody(result) {
+	return [
+		'Removes minimum-release-age lifts whose window has passed. Each version now clears the gate on its own.',
+		'',
+		...result.removed.map((r) => `- \`${r.lift}\` (expired ${r.until})`),
+	].join('\n')
 }
 
 function writeGithubOutput(result) {
 	const target = process.env.GITHUB_OUTPUT
 	if (!target) return
-	const body = [
-		'Removes minimum-release-age lifts whose window has passed. Each version now clears the gate on its own.',
-		'',
-		...result.removed.map((r) => `- \`${r.lift}\` (expired ${r.until})`),
-	].join('\n')
-	appendFileSync(target, `removed=${result.removed.length}\nbody<<__MRA__\n${body}\n__MRA__\n`)
+	appendFileSync(target, `removed=${result.removed.length}\nbody<<__MRA__\n${restoreBody(result)}\n__MRA__\n`)
 }
 
-function main() {
+async function main() {
 	const opts = parseArgs(process.argv.slice(2))
 	const [command, spec] = opts.positional
 	const dir = resolve(opts.dir ?? process.cwd())
+	if (!command || !['status', 'lift', 'restore', 'open-pr'].includes(command))
+		usage(`unknown command "${command ?? ''}"`)
+	if (command === 'open-pr') {
+		if (typeof opts.provider !== 'string' || typeof opts['body-file'] !== 'string') {
+			usage('open-pr needs --provider and --body-file')
+		}
+		const branch = typeof opts.branch === 'string' ? opts.branch : 'chore/min-release-age-restore'
+		const body = readFileSync(opts['body-file'], 'utf8')
+		const result = await openPr(opts.provider, { branch, body })
+		if (!result.ok) {
+			process.stderr.write(`${result.error}\n`)
+			process.exit(1)
+		}
+		process.stdout.write(`${JSON.stringify(result)}\n`)
+		return
+	}
 	const pm = opts.pm ?? detectManager(dir)
-	if (!command || !['status', 'lift', 'restore'].includes(command)) usage(`unknown command "${command ?? ''}"`)
 	if (!pm || !MANAGERS[pm]) usage(`cannot detect the package manager in ${dir}; pass --pm pnpm|yarn|npm|bun`)
 	const now = opts.now ? new Date(opts.now) : new Date()
 
@@ -499,6 +760,7 @@ function main() {
 		result = status(dir, pm, now)
 		if (opts.json) process.stdout.write(`${JSON.stringify(result, null, 2)}\n`)
 		else printStatus(result)
+		if (opts.check && result.lifts.some((l) => l.expired)) process.exit(1)
 		return
 	}
 	if (command === 'lift') {
@@ -511,6 +773,7 @@ function main() {
 	} else {
 		result = restore(dir, pm, { now, dryRun: Boolean(opts['dry-run']) })
 		if (result.ok && opts['github-output']) writeGithubOutput(result)
+		if (result.ok && typeof opts['body-file'] === 'string') writeFileSync(opts['body-file'], `${restoreBody(result)}\n`)
 	}
 
 	if (!result.ok) {
@@ -534,4 +797,4 @@ function main() {
 	}
 }
 
-if (process.argv[1]?.endsWith('min-release-age.mjs')) main()
+if (process.argv[1]?.endsWith('min-release-age.mjs')) await main()

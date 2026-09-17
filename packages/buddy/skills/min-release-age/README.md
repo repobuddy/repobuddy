@@ -1,6 +1,6 @@
 # min-release-age
 
-Lifts a repository's minimum-release-age gate for one package version. It checks the release first, records when the lift expires, and removes the lift after that time. It can also install a daily GitHub workflow that does the removal for you.
+Lifts a repository's minimum-release-age gate for one package version. It checks the release first, records when the lift expires, and removes the lift after that time. It can also install a daily CI job that does the removal for you, on GitHub, GitLab, Bitbucket, Azure Pipelines, Forgejo, or Gitea.
 
 Works with pnpm, Yarn Berry, npm, and bun.
 
@@ -16,10 +16,10 @@ Works with pnpm, Yarn Berry, npm, and bun.
 
 | Mode | Result |
 |---|---|
-| *(no argument)* | Shows the gate, active lifts and their expiry, and whether the cleanup workflow is installed. Offers to restore expired lifts or install the workflow. |
+| *(no argument)* | Shows the gate, active lifts and their expiry, the git host and CI systems it found, and whether the cleanup job is installed. Offers to restore expired lifts or install the job. |
 | `lift <pkg>[@version\|@tag]` | Resolves the bare name to `latest` (or the given tag or version), checks the release (provenance, publisher, diff from the previous version), then adds an exemption for that exact version with an expiry marker. |
 | `restore` | Removes lifts whose expiry has passed. |
-| `setup-ci` | Adds a daily workflow that removes expired lifts and opens a PR. |
+| `setup-ci` | Detects the CI provider and adds a daily job that removes expired lifts and opens or updates a PR/MR. |
 
 A lift is written as two lines, and only lines like these are ever removed:
 
@@ -47,7 +47,7 @@ npm and bun cannot exempt a single version, so the skill asks before it exempts 
 
 - **Tracking in public is fine.** The exemption is already visible in the config file. A version pin trusts only a release that already exists, and the lockfile holds its integrity hash.
 - **Keep the reason out of it.** Commits and PRs name the package, not why it was needed. An undisclosed vulnerability belongs in a private advisory.
-- **About the workflow:** it runs on `schedule` and `workflow_dispatch` only, pins its checkout action by SHA, and can only delete marked lines. A PR opened with `GITHUB_TOKEN` does not trigger CI, so set a `MIN_RELEASE_AGE_TOKEN` secret (GitHub App token or fine-grained PAT) if the restore PR must pass required checks.
+- **About the CI job:** it runs on a schedule only (plus manual dispatch where the provider has it) and can only delete marked lines. The GitHub template pins its checkout action by SHA. On GitHub, Forgejo, and Gitea, a PR opened with the automatic token does not trigger CI, so set a `MIN_RELEASE_AGE_TOKEN` secret if the restore PR must pass required checks.
 
 ## How to invoke
 
@@ -55,7 +55,18 @@ Ask for it directly, or run `/min-release-age [lift <pkg>[@version|@tag] | resto
 
 ## What it produces
 
-A config change with a lift marker plus the updated lockfile, a restore commit, or `.github/workflows/min-release-age.yml` with its script at `.github/scripts/min-release-age.mjs`.
+A config change with a lift marker plus the updated lockfile, a restore commit, or a scheduled CI job plus a copy of the script:
+
+| Provider | Job | Script | Also needed |
+|---|---|---|---|
+| GitHub Actions | `.github/workflows/min-release-age.yml` | `.github/scripts/` | optional token secret |
+| GitLab CI | `.gitlab/ci/min-release-age.yml`, included from `.gitlab-ci.yml` | `ci/` | pipeline schedule with `MIN_RELEASE_AGE=restore`, and a token or job-token push access |
+| Bitbucket Pipelines | `custom: min-release-age` in `bitbucket-pipelines.yml` | `ci/` | schedule in repository settings, repository access token |
+| Azure Pipelines | `.azure-pipelines/min-release-age.yml` | `ci/` | pipeline registration, build-service permissions |
+| Forgejo / Gitea | `.forgejo/workflows/` or `.gitea/workflows/` | `.forgejo/scripts/` or `.gitea/scripts/` | optional token secret |
+| anything else | written for the repo's own CI system | `ci/` | depends on the system |
+
+The skill detects the provider from the git remote and the CI files in the repo, and loads only that provider's instructions. It asks before creating schedules, registering pipelines, or requesting tokens.
 
 ## Install
 

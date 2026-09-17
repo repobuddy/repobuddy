@@ -10,5 +10,6 @@ the exemption always pins the exact version. Before lifting, it checks the relea
 Each lift is written with an expiry marker set to the version's publish time plus the gate window. After
 that time the version passes the gate on its own. `restore` removes only marked, expired lifts and never
 touches permanent exemptions. npm and bun cannot exempt a single version, so the skill asks before
-exempting a whole package name. `setup-ci` installs a daily GitHub workflow that removes expired lifts
-and opens a PR.
+exempting a whole package name. `setup-ci` detects the CI provider and installs a daily job that removes
+expired lifts and opens or updates a PR/MR. It has templates for GitHub Actions, GitLab CI, Bitbucket Pipelines,
+Azure Pipelines, and Forgejo/Gitea Actions, and generic steps for other CI systems.

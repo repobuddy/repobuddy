@@ -7,7 +7,7 @@ argument-hint: "[lift <pkg>[@version|@tag] | restore | setup-ci]"
 # Minimum Release Age
 
 Manage a repository's minimum-release-age gate: lift it for one package version, remove the lift once
-the version has aged past the gate, and install a scheduled workflow that removes expired lifts on its
+the version has aged past the gate, and install a scheduled CI job that removes expired lifts on its
 own. Covers pnpm, Yarn Berry, npm, and bun.
 
 ## When to use
@@ -22,7 +22,7 @@ All file edits go through `scripts/min-release-age.mjs` in this skill's director
 exemption list by hand.
 
 ```bash
-node <this-skill-dir>/scripts/min-release-age.mjs status  [--json]
+node <this-skill-dir>/scripts/min-release-age.mjs status  [--json] [--check]
 node <this-skill-dir>/scripts/min-release-age.mjs lift    <pkg>[@version|@tag] [--name-wide] [--until <ISO>]
 node <this-skill-dir>/scripts/min-release-age.mjs restore [--dry-run]
 ```
@@ -44,13 +44,13 @@ Entries without a marker are permanent policy. Never add, remove, or rewrite the
 | no argument, "status", "what's exempt" | Status |
 | `lift <pkg>`, an age-gate install failure, "let me install X now" | Lift |
 | `restore`, "put the gate back", "clear old exemptions" | Restore |
-| `setup-ci`, "restore it automatically" | Setup CI |
+| `setup-ci`, "restore it automatically", "add a scheduled job" | Setup CI |
 
 ## Status
 
-1. Run `status`. Report the package manager, the gate value, each lift with its expiry, and whether the cleanup workflow is installed.
+1. Run `status`. Report the package manager, the gate value, each lift with its expiry, the git host and CI systems, and whether the cleanup job is installed.
 2. If any lift is expired, offer to run Restore now.
-3. If the workflow is not installed and the repo is on GitHub, ask whether to run Setup CI.
+3. If the cleanup job is not installed, ask whether to run Setup CI for the provider `status` names.
 4. Change nothing without a yes.
 
 ## Lift
@@ -64,7 +64,7 @@ Entries without a marker are permanent policy. Never add, remove, or rewrite the
 4. Run `lift <pkg@version>`. The script sets the expiry to the publish time plus the gate window. After that time the version passes the gate without the exemption.
 5. Run the install so the lockfile records the version and its integrity hash. Commit the config change with the lockfile.
 6. **Keep the reason neutral.** Commit messages and PR text say which package was lifted, not why. If the reason is an undisclosed vulnerability, keep that detail in a private security advisory.
-7. If the cleanup workflow is not installed, offer Setup CI. Without it, tell the user to run Restore after the expiry.
+7. If `status` shows no cleanup job (`ci.installed` is false), offer Setup CI. Without it, tell the user to run Restore after the expiry.
 
 ## Restore
 
@@ -75,14 +75,26 @@ Entries without a marker are permanent policy. Never add, remove, or rewrite the
 
 ## Setup CI
 
-GitHub only. On other platforms, tell the user to schedule `restore` in their CI and stop.
+1. Run `status --json` and read `ci`:
+   - `host`: the git host, from the `origin` remote
+   - `systems`: the CI systems found in the repo
+   - `provider`: the one to target
+   - `reference`: the file to load for it
+2. If `ci.installed` is true, report where the job is and stop.
+3. If `provider` does not match what the user expects (for example, the repo is mirrored or several CI systems are present), confirm the target with the user.
+4. Load **only** the file named in `ci.reference` and follow it:
 
-1. Copy `scripts/min-release-age.mjs` to `.github/scripts/min-release-age.mjs`.
-2. Copy `assets/min-release-age.yml` to `.github/workflows/min-release-age.yml`.
-3. Tell the user that a PR opened with `GITHUB_TOKEN` does not trigger CI. Required checks will not run on the restore PR unless they add a `MIN_RELEASE_AGE_TOKEN` secret (a GitHub App token or a fine-grained PAT with contents and pull-requests write access).
-4. Commit as `ci: expire minimum-release-age lifts automatically`.
+   | Provider | Reference |
+   |---|---|
+   | GitHub Actions | `references/ci/github.md` |
+   | GitLab CI | `references/ci/gitlab.md` |
+   | Bitbucket Pipelines | `references/ci/bitbucket.md` |
+   | Azure Pipelines (Azure Repos) | `references/ci/azure.md` |
+   | Forgejo / Gitea / Codeberg | `references/ci/forgejo.md` |
+   | anything else | `references/ci/other.md` |
 
-The workflow runs daily on `schedule` and `workflow_dispatch` only. Never add `pull_request_target` or any trigger that runs on untrusted input.
+5. **Every template** runs on a schedule only (and manual dispatch where the provider has it), touches only marked lines, and opens or updates one change request from `chore/min-release-age-restore`. Never add a trigger that runs on pull requests or other untrusted input.
+6. Ask before any step that changes settings outside the repo: creating a schedule, registering a pipeline, or creating a token.
 
 ## Anti-patterns
 
@@ -97,3 +109,4 @@ The workflow runs daily on `schedule` and `workflow_dispatch` only. Never add `p
 - Yarn `npmMinimalAgeGate`: https://yarnpkg.com/configuration/yarnrc#npmMinimalAgeGate
 - npm `min-release-age`: https://github.com/npm/cli/blob/latest/workspaces/config/lib/definitions/definitions.js
 - bun `minimumReleaseAge`: https://bun.com/docs/runtime/bunfig#install-minimumreleaseage
+- Per-provider Setup CI steps: `references/ci/` (load only the one `status` names)

@@ -1,0 +1,18 @@
+# Merge under `pipelines: custom:` in bitbucket-pipelines.yml, then point a schedule at it.
+# Removes minimum-release-age lifts whose window has passed and opens (or updates) a pull request.
+    min-release-age:
+      - step:
+          name: Remove expired minimum-release-age lifts
+          image: node:22
+          script:
+            - |
+              BRANCH=chore/min-release-age-restore
+              node ci/min-release-age.mjs restore --json --body-file /tmp/mra-body.md > /tmp/mra.json
+              if [ "$(node -p "require('/tmp/mra.json').removed.length")" != 0 ]; then
+                git config user.name 'min-release-age'
+                git config user.email 'min-release-age@noreply.bitbucket.org'
+                git switch -C "$BRANCH"
+                git commit -am 'chore: restore minimum release age'
+                git push --force origin "$BRANCH"
+                node ci/min-release-age.mjs open-pr --provider bitbucket --branch "$BRANCH" --body-file /tmp/mra-body.md
+              fi
