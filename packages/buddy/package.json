@@ -27,7 +27,8 @@
 	"type": "module",
 	"bin": {
 		"bd": "./bin/buddy.js",
-		"buddy": "./bin/buddy.js"
+		"buddy": "./bin/buddy.js",
+		"repobuddy": "./bin/buddy.js"
 	},
 	"exports": {
 		"./package.json": "./package.json"
