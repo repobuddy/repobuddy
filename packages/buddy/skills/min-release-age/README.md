@@ -17,7 +17,7 @@ Works with pnpm, Yarn Berry, npm, and bun.
 | Mode | Result |
 |---|---|
 | *(no argument)* | Shows the gate, active lifts and their expiry, and whether the cleanup workflow is installed. Offers to restore expired lifts or install the workflow. |
-| `lift <pkg@version>` | Checks the release (provenance, publisher, diff from the previous version), then adds an exemption with an expiry marker. |
+| `lift <pkg>[@version\|@tag]` | Resolves the bare name to `latest` (or the given tag or version), checks the release (provenance, publisher, diff from the previous version), then adds an exemption for that exact version with an expiry marker. |
 | `restore` | Removes lifts whose expiry has passed. |
 | `setup-ci` | Adds a daily workflow that removes expired lifts and opens a PR. |
 
@@ -51,7 +51,7 @@ npm and bun cannot exempt a single version, so the skill asks before it exempts 
 
 ## How to invoke
 
-Ask for it directly, or run `/min-release-age [lift <pkg@version> | restore | setup-ci]` where slash commands are supported.
+Ask for it directly, or run `/min-release-age [lift <pkg>[@version|@tag] | restore | setup-ci]` where slash commands are supported.
 
 ## What it produces
 

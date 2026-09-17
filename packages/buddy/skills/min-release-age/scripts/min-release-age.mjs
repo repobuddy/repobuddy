@@ -3,7 +3,7 @@
  * Read and edit a repository's minimum-release-age exemptions.
  *
  *   node scripts/min-release-age.mjs status  [--dir <repo>] [--json]
- *   node scripts/min-release-age.mjs lift    <pkg@version> [--dir <repo>] [--pm <pm>] [--name-wide] [--until <ISO>] [--json]
+ *   node scripts/min-release-age.mjs lift    <pkg[@version|@tag]> [--dir <repo>] [--pm <pm>] [--name-wide] [--until <ISO>] [--json]
  *   node scripts/min-release-age.mjs restore [--dir <repo>] [--now <ISO>] [--dry-run] [--json] [--github-output]
  *
  * Supports pnpm (pnpm-workspace.yaml), Yarn Berry (.yarnrc.yml), npm (.npmrc) and bun (bunfig.toml).
@@ -16,7 +16,8 @@
  * `restore` deletes the marker and its entry once `until` has passed. Entries without a marker are
  * permanent policy and are never touched.
  *
- * `lift` sets `until` to the version's publish time plus the configured window: past that moment the
+ * `lift` takes `pkg` (latest), `pkg@tag`, or `pkg@x.y.z` and always writes the exact version.
+ * It sets `until` to the version's publish time plus the configured window: past that moment the
  * version clears the gate on its own and the exemption does nothing. pnpm and Yarn exempt the single
  * version; npm and bun can only exempt the whole package name, which `lift` refuses without
  * `--name-wide`.
@@ -80,7 +81,7 @@ const MANAGERS = {
 function usage(message) {
 	process.stderr.write(`${message}\n`)
 	process.stderr.write(
-		'usage: min-release-age.mjs <status|lift <pkg@version>|restore> [--dir <repo>] [--pm <pm>] [--name-wide] [--until <ISO>] [--now <ISO>] [--dry-run] [--json] [--github-output]\n',
+		'usage: min-release-age.mjs <status|lift <pkg[@version|@tag]>|restore> [--dir <repo>] [--pm <pm>] [--name-wide] [--until <ISO>] [--now <ISO>] [--dry-run] [--json] [--github-output]\n',
 	)
 	process.exit(2)
 }
@@ -287,24 +288,42 @@ export function status(dir, pm, now = new Date()) {
 
 function splitSpec(spec) {
 	const at = spec.lastIndexOf('@')
-	if (at <= 0) return undefined
+	if (at <= 0) return { name: spec, version: undefined }
 	return { name: spec.slice(0, at), version: spec.slice(at + 1) }
 }
 
-function publishTime(name, version) {
-	const out = execFileSync('npm', ['view', name, 'time', '--json'], { encoding: 'utf8' })
-	const parsed = JSON.parse(out)
-	const time = (Array.isArray(parsed) ? parsed : [parsed]).find((t) => t?.[version])?.[version]
-	if (!time) throw new Error(`npm has no publish time for ${name}@${version}`)
-	return new Date(time)
+function npmView(name, field) {
+	const parsed = JSON.parse(execFileSync('npm', ['view', name, field, '--json'], { encoding: 'utf8' }))
+	return Array.isArray(parsed) ? parsed.find(Boolean) : parsed
 }
 
-export function lift(dir, pm, spec, { nameWide = false, until, now = new Date() } = {}) {
-	const cfg = MANAGERS[pm]
-	const parsed = splitSpec(spec)
-	if (!parsed || !/^\d+\.\d+\.\d+/.test(parsed.version)) {
-		return { ok: false, error: `expected <pkg@exact-version>, got "${spec}"` }
+const npmRegistry = {
+	distTags: (name) => npmView(name, 'dist-tags') ?? {},
+	times: (name) => npmView(name, 'time') ?? {},
+}
+
+const EXACT = /^\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?(\+[0-9A-Za-z.-]+)?$/
+const TAG = /^[A-Za-z][\w.-]*$/
+
+/** `pkg`, `pkg@tag`, or `pkg@x.y.z` → an exact version. Ranges are refused. */
+export function resolveSpec(spec, registry = npmRegistry) {
+	const { name, version } = splitSpec(spec)
+	if (!name || name.startsWith('.') || name.includes(' ')) return { error: `invalid package "${spec}"` }
+	if (version && EXACT.test(version)) return { name, version }
+	if (version !== undefined && !TAG.test(version)) {
+		return { error: `"${spec}" is a range; pass an exact version, a dist-tag, or the bare name for latest` }
 	}
+	const tag = version ?? 'latest'
+	const resolved = registry.distTags(name)[tag]
+	if (!resolved) return { error: `${name} has no "${tag}" dist-tag` }
+	return { name, version: resolved, tag }
+}
+
+export function lift(dir, pm, input, { nameWide = false, until, now = new Date(), registry = npmRegistry } = {}) {
+	const cfg = MANAGERS[pm]
+	const parsed = resolveSpec(input, registry)
+	if (parsed.error) return { ok: false, error: parsed.error }
+	const spec = `${parsed.name}@${parsed.version}`
 	if (!cfg.versionPin && !nameWide) {
 		return {
 			ok: false,
@@ -316,18 +335,20 @@ export function lift(dir, pm, spec, { nameWide = false, until, now = new Date() 
 	const covered = [...current.permanent, ...current.lifts.map((l) => l.value)].find(
 		(v) => v === entry || v === parsed.name || (v.endsWith('/*') && parsed.name.startsWith(v.slice(0, -1))),
 	)
-	if (covered) return { ok: true, changed: false, entry, reason: `already exempt by "${covered}"` }
+	if (covered) return { ok: true, changed: false, entry, spec, reason: `already exempt by "${covered}"` }
 
 	let expiry = until ? new Date(until) : undefined
 	if (!expiry) {
 		if (!current.minutes) return { ok: false, error: `${cfg.ageKey} is not set; there is no gate to lift` }
-		expiry = new Date(publishTime(parsed.name, parsed.version).getTime() + current.minutes * 60_000)
+		const published = registry.times(parsed.name)[parsed.version]
+		if (!published) return { ok: false, error: `npm has no publish time for ${spec}` }
+		expiry = new Date(new Date(published).getTime() + current.minutes * 60_000)
 		expiry.setUTCMinutes(0, 0, 0)
 		expiry = new Date(expiry.getTime() + 3_600_000)
 	}
 	if (Number.isNaN(expiry.getTime())) return { ok: false, error: `invalid expiry "${until}"` }
 	if (expiry <= now) {
-		return { ok: true, changed: false, entry, reason: `${spec} already clears the gate; no lift needed` }
+		return { ok: true, changed: false, entry, spec, reason: `${spec} already clears the gate; no lift needed` }
 	}
 
 	const iso = expiry.toISOString().replace(/\.\d{3}Z$/, 'Z')
@@ -335,7 +356,7 @@ export function lift(dir, pm, spec, { nameWide = false, until, now = new Date() 
 	const { path, lines } = load(dir, pm)
 	insertEntry(pm, lines, entry, markerText)
 	save(path, lines)
-	return { ok: true, changed: true, file: path, entry, until: iso, nameWide: !cfg.versionPin }
+	return { ok: true, changed: true, file: path, spec, tag: parsed.tag, entry, until: iso, nameWide: !cfg.versionPin }
 }
 
 function insertEntry(pm, lines, entry, markerText) {
@@ -481,7 +502,7 @@ function main() {
 		return
 	}
 	if (command === 'lift') {
-		if (!spec) usage('lift needs <pkg@version>')
+		if (!spec) usage('lift needs <pkg[@version|@tag]>')
 		try {
 			result = lift(dir, pm, spec, { nameWide: Boolean(opts['name-wide']), until: opts.until, now })
 		} catch (error) {
@@ -501,7 +522,7 @@ function main() {
 	else if (command === 'lift') {
 		process.stdout.write(
 			result.changed
-				? `lifted ${result.entry} in ${result.file} until ${result.until}${result.nameWide ? ' (whole package name)' : ''}\n`
+				? `lifted ${result.spec}${result.tag ? ` (${result.tag})` : ''} as '${result.entry}' in ${result.file} until ${result.until}${result.nameWide ? ' (whole package name)' : ''}\n`
 				: `no change: ${result.reason}\n`,
 		)
 	} else {

@@ -1,7 +1,7 @@
 ---
 name: min-release-age
 description: "Use this skill when an install fails minimum-release-age, or to lift, restore, or auto-expire a package exemption."
-argument-hint: "[lift <pkg@version> | restore | setup-ci]"
+argument-hint: "[lift <pkg>[@version|@tag] | restore | setup-ci]"
 ---
 
 # Minimum Release Age
@@ -23,7 +23,7 @@ exemption list by hand.
 
 ```bash
 node <this-skill-dir>/scripts/min-release-age.mjs status  [--json]
-node <this-skill-dir>/scripts/min-release-age.mjs lift    <pkg@version> [--name-wide] [--until <ISO>]
+node <this-skill-dir>/scripts/min-release-age.mjs lift    <pkg>[@version|@tag] [--name-wide] [--until <ISO>]
 node <this-skill-dir>/scripts/min-release-age.mjs restore [--dry-run]
 ```
 
@@ -42,7 +42,7 @@ Entries without a marker are permanent policy. Never add, remove, or rewrite the
 | Input | Mode |
 |---|---|
 | no argument, "status", "what's exempt" | Status |
-| `lift <pkg@version>`, an age-gate install failure, "let me install X now" | Lift |
+| `lift <pkg>`, an age-gate install failure, "let me install X now" | Lift |
 | `restore`, "put the gate back", "clear old exemptions" | Restore |
 | `setup-ci`, "restore it automatically" | Setup CI |
 
@@ -55,7 +55,7 @@ Entries without a marker are permanent policy. Never add, remove, or rewrite the
 
 ## Lift
 
-1. **Pin an exact version.** Resolve a range to the one version needed (`npm view <pkg>@<range> version`). Refuse to lift a range or a bare name.
+1. **Pick the version.** Default to the bare name, which the script resolves to the `latest` dist-tag. Pass `@<tag>` for another dist-tag, or `@x.y.z` when the failure names a specific version. The script refuses ranges and always writes the exact version it resolved. If the version falls outside the range the repo declares for that dependency, tell the user before lifting.
 2. **Check the release before exempting it.** The gate exists to catch compromised releases, so check it by hand:
    - `npm view <pkg>@<version> dist.attestations maintainers time --json`: provenance is present if the package had it before, the publisher is a usual maintainer, and the publish time matches the upstream release or tag.
    - Compare against the previous version (`npm diff --diff=<pkg>@<prev> --diff=<pkg>@<version>`): no new install scripts, no unexpected network, `eval`, or obfuscated code.
