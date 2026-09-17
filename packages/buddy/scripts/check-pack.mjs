@@ -7,6 +7,9 @@
  * The skill scripts are build output: gitignored, and shipped only in the npm package. This packs the
  * package, unpacks it into a temp directory with no node_modules, and runs each script there.
  *
+ * It packs with ignore-scripts: `prepack` rebuilds, and tsdown's clean step would delete `esm/`
+ * while tests that run the built CLI are in flight. The `pack:check` task already depends on `build`.
+ *
  * Exit 0 when every script is present and runs, 1 otherwise.
  */
 
@@ -31,7 +34,10 @@ const SCRIPTS = [
 const temp = mkdtempSync(join(tmpdir(), 'repobuddy-pack-'))
 const failures = []
 try {
-	const pack = spawnSync('pnpm', ['pack', '--pack-destination', temp], { cwd: packageDir, encoding: 'utf8' })
+	const pack = spawnSync('pnpm', ['pack', '--config.ignore-scripts=true', '--pack-destination', temp], {
+		cwd: packageDir,
+		encoding: 'utf8',
+	})
 	if (pack.status !== 0) throw new Error(`pnpm pack failed:\n${pack.stderr}`)
 	const tarball = readdirSync(temp).find((f) => f.endsWith('.tgz'))
 	if (!tarball) throw new Error('pnpm pack produced no tarball')
