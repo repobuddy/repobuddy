@@ -132,7 +132,17 @@ test('lift: success prints summary, refusal without --name-wide, range rejection
 	assert.match(stderr.join(''), /--name-wide/)
 
 	stderr = []
-	await main(['lift', 'left-pad@1.3.0', '--dir', dir, '--name-wide', '--until', '2026-09-17T10:00:00Z'])
+	await main([
+		'lift',
+		'left-pad@1.3.0',
+		'--dir',
+		dir,
+		'--name-wide',
+		'--until',
+		'2026-09-17T10:00:00Z',
+		'--now',
+		'2026-09-16T10:00:00Z',
+	])
 	assert.match(stdout.join(''), /lifted left-pad@1\.3\.0.*whole package name/)
 
 	stdout = []
@@ -156,9 +166,18 @@ test('lift: a filesystem error while saving is caught and reported as ok:false',
 	const { chmodSync } = await import('node:fs')
 	chmodSync(file, 0o400)
 	try {
-		await expect(main(['lift', 'left-pad@1.3.0', '--dir', dir, '--until', '2026-09-17T10:00:00Z'])).rejects.toThrow(
-			'exit:1',
-		)
+		await expect(
+			main([
+				'lift',
+				'left-pad@1.3.0',
+				'--dir',
+				dir,
+				'--until',
+				'2026-09-17T10:00:00Z',
+				'--now',
+				'2026-09-16T10:00:00Z',
+			]),
+		).rejects.toThrow('exit:1')
 		assert.match(stderr.join(''), /EACCES|permission/i)
 	} finally {
 		chmodSync(file, 0o600)
