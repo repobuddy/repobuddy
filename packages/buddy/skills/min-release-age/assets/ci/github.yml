@@ -6,7 +6,7 @@ name: min-release-age
 on:
   schedule:
     - cron: '17 3 * * *'
-  workflow_dispatch:
+  workflow_dispatch: {}
 
 permissions:
   contents: write
