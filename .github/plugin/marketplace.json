@@ -4,7 +4,9 @@
 		"name": "Homa Wong (unional)",
 		"email": "homawong@gmail.com"
 	},
-	"description": "Marketplace for installing repobuddy's agent skills straight from this repository.",
+	"metadata": {
+		"description": "Marketplace for installing repobuddy's agent skills straight from this repository."
+	},
 	"plugins": [
 		{
 			"name": "repobuddy",
