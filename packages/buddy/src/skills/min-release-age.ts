@@ -188,4 +188,8 @@ export async function main(argv: string[] = process.argv.slice(2)): Promise<void
 
 // Resolve the entry check against the built bundle's filename, since this module runs as
 // `skills/min-release-age/scripts/min-release-age.mjs`, not under its source name.
+// This process-boundary guard only fires when the bundle is invoked directly as a script (verified
+// by src/skills/bundles.spec.ts, which spawns the built bundle as a child process); it cannot be
+// exercised in-process without changing what "running under jest" means, so it is excluded narrowly.
+/* istanbul ignore next -- process.argv entrypoint guard, covered by bundles.spec.ts (child process) */
 if (process.argv[1]?.endsWith('min-release-age.mjs')) await main()

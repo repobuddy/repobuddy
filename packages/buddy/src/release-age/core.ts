@@ -61,6 +61,10 @@ function splitSpec(spec: string): { name: string; version: string | undefined } 
 	return { name: spec.slice(0, at), version: spec.slice(at + 1) }
 }
 
+// Talks to the real npm registry via the `npm` CLI. Exercising this would require a live network
+// call, which the test suite must not make; every caller of `Registry` is fully covered in
+// core.spec.ts through an injected fake registry instead.
+/* istanbul ignore next -- requires a live npm registry call; see comment above */
 function npmView(name: string, field: string): unknown {
 	const parsed = JSON.parse(execFileSync('npm', ['view', name, field, '--json'], { encoding: 'utf8' }))
 	return Array.isArray(parsed) ? parsed.find(Boolean) : parsed
@@ -71,6 +75,7 @@ export interface Registry {
 	times: (name: string) => Record<string, string>
 }
 
+/* istanbul ignore next -- requires a live npm registry call; see comment above npmView */
 const npmRegistry: Registry = {
 	distTags: (name) => (npmView(name, 'dist-tags') as Record<string, string> | undefined) ?? {},
 	times: (name) => (npmView(name, 'time') as Record<string, string> | undefined) ?? {},

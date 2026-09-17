@@ -13,10 +13,9 @@ const MCP_SIGNATURES: Record<HostKind, RegExp[]> = {
 	forgejo: [/forgejo/i, /codeberg/i],
 }
 
-function vscodeUserDir(env: NodeJS.ProcessEnv): string {
-	const home = homedir()
-	if (platform() === 'win32') return join(env['APPDATA'] ?? join(home, 'AppData', 'Roaming'), 'Code', 'User')
-	if (platform() === 'darwin') return join(home, 'Library', 'Application Support', 'Code', 'User')
+function vscodeUserDir(env: NodeJS.ProcessEnv, home: string, plat: NodeJS.Platform = platform()): string {
+	if (plat === 'win32') return join(env['APPDATA'] ?? join(home, 'AppData', 'Roaming'), 'Code', 'User')
+	if (plat === 'darwin') return join(home, 'Library', 'Application Support', 'Code', 'User')
 	return join(env['XDG_CONFIG_HOME'] ?? join(home, '.config'), 'Code', 'User')
 }
 
@@ -29,8 +28,7 @@ interface McpSource {
 	project?: string
 }
 
-function mcpSources(dir: string, env: NodeJS.ProcessEnv): McpSource[] {
-	const home = homedir()
+function mcpSources(dir: string, env: NodeJS.ProcessEnv, home: string = homedir()): McpSource[] {
 	const xdg = env['XDG_CONFIG_HOME'] ?? join(home, '.config')
 	return [
 		{ harness: 'claude-code', scope: 'user', file: join(home, '.claude.json'), key: 'mcpServers', project: dir },
@@ -53,7 +51,7 @@ function mcpSources(dir: string, env: NodeJS.ProcessEnv): McpSource[] {
 		{ harness: 'copilot-cli', scope: 'project', file: join(dir, '.copilot', 'mcp-config.json'), key: 'mcpServers' },
 		{ harness: 'gemini', scope: 'user', file: join(home, '.gemini', 'settings.json'), key: 'mcpServers' },
 		{ harness: 'gemini', scope: 'project', file: join(dir, '.gemini', 'settings.json'), key: 'mcpServers' },
-		{ harness: 'vscode', scope: 'user', file: join(vscodeUserDir(env), 'mcp.json'), key: 'servers' },
+		{ harness: 'vscode', scope: 'user', file: join(vscodeUserDir(env, home), 'mcp.json'), key: 'servers' },
 		{ harness: 'vscode', scope: 'project', file: join(dir, '.vscode', 'mcp.json'), key: 'servers' },
 		{
 			harness: 'windsurf',
@@ -188,8 +186,8 @@ interface PluginSource extends McpSource {
 }
 
 /** MCP configs shipped by installed Claude Code plugins, with whether the plugin is enabled. */
-function pluginSources(dir: string): PluginSource[] {
-	const root = join(homedir(), '.claude')
+function pluginSources(dir: string, home: string = homedir()): PluginSource[] {
+	const root = join(home, '.claude')
 	let installed: Record<string, { projectPath?: string; installPath?: string }[]> = {}
 	try {
 		installed =
@@ -245,9 +243,14 @@ export interface McpError {
 	error: string
 }
 
-export function collectMcp(dir: string, env: NodeJS.ProcessEnv, kinds: HostKind[]): (McpEntry | McpError)[] {
+export function collectMcp(
+	dir: string,
+	env: NodeJS.ProcessEnv,
+	kinds: HostKind[],
+	home: string = homedir(),
+): (McpEntry | McpError)[] {
 	const found: (McpEntry | McpError)[] = []
-	for (const src of [...mcpSources(dir, env), ...pluginSources(dir)]) {
+	for (const src of [...mcpSources(dir, env, home), ...pluginSources(dir, home)]) {
 		if (!existsSync(src.file)) continue
 		let servers: DescribedServer[] = []
 		try {

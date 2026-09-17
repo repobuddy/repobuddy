@@ -51,7 +51,10 @@ function parseArgs(argv: string[]): Opts {
 	return opts
 }
 
-function printSummary(r: DetectResult): void {
+// Exported for direct unit testing of every summary-line branch, including OS/host/CLI/MCP shapes
+// that would otherwise only occur on machines this test suite must not depend on (a real macOS box,
+// a real WSL session, etc).
+export function printSummary(r: DetectResult): void {
 	const o = r.os
 	const lines = [
 		`os: ${o.family}${o.distro?.name ? ` (${o.distro.name})` : o.version ? ` ${o.version}` : ''} ${o.arch}${o.wsl ? ', WSL' : ''}${o.sudo ? `, sudo: ${o.sudo}` : ''}`,
@@ -106,4 +109,8 @@ export async function main(argv: string[] = process.argv.slice(2)): Promise<void
 	else printSummary(result)
 }
 
+// Process-boundary guard: only fires when the bundle runs directly as a script (verified by
+// src/skills/bundles.spec.ts spawning the built bundle as a child process). Excluded narrowly
+// because exercising it in-process would require redefining what "running under jest" means.
+/* istanbul ignore next -- process.argv entrypoint guard, covered by bundles.spec.ts (child process) */
 if (process.argv[1]?.endsWith('detect-env.mjs')) await main()
