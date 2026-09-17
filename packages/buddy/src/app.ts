@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs'
 import { cli } from 'clibuilder'
+import { testScripts } from './test_scripts.js'
 
 // Both `src/app.ts` and the bundled `esm/bin.js` sit one level below the package root.
 const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf-8'))
@@ -9,4 +10,4 @@ export const app = cli({
 	version: pkg.version,
 	description: 'Your repo buddy',
 	config: true,
-})
+}).command(testScripts)
