@@ -33,6 +33,7 @@ minimumReleaseAgeExclude:
   - storybook-addon-vis
   - vitest-plugin-vis
   - node-supported-releases
+  - buddy-agent-harness
   - '@just-func/*'
   - '@just-web/*'
   - '@mocktomata/*'
