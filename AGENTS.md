@@ -135,7 +135,7 @@ Renovate manages this repo's dependencies (`.github/renovate.json` extends `gith
 - **Let Renovate own semver range bumps.** Do not bulk-rewrite ranges in `package.json` — plain `pnpm update -r`
   rewrites every range to the exact latest and conflicts with the open Renovate PRs. To refresh resolved
   versions only, use `pnpm update -r --no-save`, which touches the lockfile alone.
-- **`.npmrc` sets `minimumreleaseage=1440`.** Any lockfile entry published within the last 24h fails the
+- **`pnpm-workspace.yaml` sets `minimumReleaseAge: 1440`.** Any lockfile entry published within the last 24h fails the
   supply-chain check in CI with `ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION`. A freshly opened dep PR often fails
   for this reason alone — re-run the job once the version has aged out rather than debugging it as a real break.
 - `dependabot-automerge.yml` only fires for `dependabot[bot]`, which covers GitHub security updates; regular
