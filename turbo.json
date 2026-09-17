@@ -21,8 +21,8 @@
 		"//#lint": {},
 		"build": {
 			"dependsOn": ["^build"],
-			"inputs": ["src/**", "package.json", "tsconfig.*"],
-			"outputs": ["cjs/**", "dist/**", "esm/**", "tslib/**", "*.tsbuildinfo"]
+			"inputs": ["src/**", "package.json", "tsconfig.*", "tsdown.config.*"],
+			"outputs": ["cjs/**", "dist/**", "esm/**", "tslib/**", "*.tsbuildinfo", "skills/*/scripts/**"]
 		},
 		"build:doc": {
 			"dependsOn": ["^build"]

@@ -183,6 +183,9 @@ importers:
       '@repobuddy/jest':
         specifier: workspace:*
         version: link:../jest
+      buddy-agent-harness:
+        specifier: ^0.11.0
+        version: 0.11.0
       clibuilder:
         specifier: ^11.0.0
         version: 11.0.0(typescript@7.0.2)
@@ -3419,6 +3422,9 @@ packages:
     peerDependencies:
       '@testing-library/dom': '>=7.21.4'
 
+  '@toon-format/toon@4.1.1':
+    resolution: {integrity: sha512-SGCkS7IjVpwRmGPgnY8ENKpAf0EdAnZDOQkvFW0d2cgOpdn9FEFl7sTgryESyypXrWr0YajHGpwsAUX4zw9ZvA==}
+
   '@turbo/darwin-64@2.10.8':
     resolution: {integrity: sha512-po+7rfJfUnFXjWlcoN2RwhErgzCdRtBc1T26vYPcywHlggmCQiQe1uWaE4j+BibI2uY9/2pDoFzMN0rmSaPFOw==}
     cpu: [x64]
@@ -4289,6 +4295,11 @@ packages:
   bser@2.1.1:
     resolution: {integrity: sha512-gQxTNE/GAfIIrmHLUE3oJyp5FO6HRBfhjnw4/wMmA63ZGDJnWBmgY/lyQBpnDUkGmAhbSe39tx2d/iTOAfglwQ==}
 
+  buddy-agent-harness@0.11.0:
+    resolution: {integrity: sha512-I41nZgURKdijJ5UPuaYbxGZ6KGaACdCfh4+LrU0tLOSLte3RlT3nJpWD5F8boWw42pKsNELubtiC/OgtqTzkMA==}
+    engines: {node: '>=22'}
+    hasBin: true
+
   buffer-from@1.1.2:
     resolution: {integrity: sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==}
 
@@ -4401,6 +4412,10 @@ packages:
   cli-width@4.1.0:
     resolution: {integrity: sha512-ouuZd4/dm2Sw5Gmqy6bGyNNNe1qt9RpmxveLSO7KcgsTnU7RXfsw+/bukWGo1abgBiMAic068rclZsO4IWmmxQ==}
     engines: {node: '>= 12'}
+
+  clibuilder@10.1.0:
+    resolution: {integrity: sha512-JbaMzimIyASNqVPbnWbS8eUroy9HlRQBsD0GN74/B2bqkg+lx3PiGyjkpdqkxvjz1pBXfGFEBT3BW9eoq8cKBw==}
+    engines: {node: '>= 20.19'}
 
   clibuilder@11.0.0:
     resolution: {integrity: sha512-Tx+uYTToh63XxEMnRwUz/IA7jHTBM93oWRbKL5CTrez1PC+aR3qqC1Rp5GHoPBu9xCzJM3xUmQ6wGwgFaSqz/w==}
@@ -10118,6 +10133,8 @@ snapshots:
     dependencies:
       '@testing-library/dom': 10.4.1
 
+  '@toon-format/toon@4.1.1': {}
+
   '@turbo/darwin-64@2.10.8':
     optional: true
 
@@ -11024,6 +11041,12 @@ snapshots:
     dependencies:
       node-int64: 0.4.0
 
+  buddy-agent-harness@0.11.0:
+    dependencies:
+      '@toon-format/toon': 4.1.1
+      clibuilder: 10.1.0
+      smol-toml: 1.8.0
+
   buffer-from@1.1.2: {}
 
   buffer@5.7.1:
@@ -11109,6 +11132,21 @@ snapshots:
   cli-spinners@2.9.2: {}
 
   cli-width@4.1.0: {}
+
+  clibuilder@10.1.0:
+    dependencies:
+      find-installed-packages: 4.0.0
+      js-yaml: 4.3.1
+      jsonc-parser: 3.3.1
+      pad-right: 0.2.2
+      search-packages: 2.2.1
+      standard-log: 12.1.2
+      standard-log-color: 12.1.2(standard-log@12.1.2)
+      tmp: 0.2.7
+      tslib: 2.8.1
+      type-plus: 7.6.2
+      wordwrap: 1.0.0
+      zod: 3.25.76
 
   clibuilder@11.0.0(typescript@7.0.2):
     dependencies:

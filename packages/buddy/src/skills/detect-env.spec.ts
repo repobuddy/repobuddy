@@ -74,7 +74,7 @@ test('detect-env: a valued flag with no value is a usage error', async () => {
 	assert.match(stderr.join(''), /--dir needs a value/)
 })
 
-test('detect-env: installed and authenticated CLI, plus MCP servers and an unreadable-file error', async () => {
+test('detect-env: installed and authenticated CLI, and an unreadable MCP file is silently skipped', async () => {
 	const dir = gitRepo([['origin', 'git@github.com:acme/widgets.git']])
 	const binDir = mkdtempSync(join(tmpdir(), 'detect-bin-'))
 	const gh = join(binDir, 'gh')
@@ -90,7 +90,7 @@ test('detect-env: installed and authenticated CLI, plus MCP servers and an unrea
 	}
 	const out = stdout.join('')
 	assert.match(out, /cli: gh .*— authenticated/)
-	assert.match(out, /\.mcp\.json: unreadable:/)
+	assert.doesNotMatch(out, /unreadable/)
 })
 
 test('detect-env: CLI not installed with no install recipe for this machine', async () => {
@@ -218,7 +218,7 @@ test('printSummary: cli not installed, with and without install recipes, with po
 	assert.match(stdout.join(''), /no install recipe for this machine/)
 })
 
-test('printSummary: mcp entries with a command (no url) and disabled, plus an error entry', () => {
+test('printSummary: mcp entry with a command (no url) and disabled', () => {
 	printSummary(
 		baseResult({
 			mcp: [
@@ -234,13 +234,11 @@ test('printSummary: mcp entries with a command (no url) and disabled, plus an er
 					scope: 'user',
 					hosts: ['github'],
 				},
-				{ harness: 'cursor', scope: 'user', file: '/home/x/.cursor/mcp.json', error: 'unreadable: boom' },
 			],
 		}),
 	)
 	const out = stdout.join('')
 	assert.match(out, /gh-mcp \(github\) — claude-code user, npx github-mcp-server, disabled$/m)
-	assert.match(out, /\/home\/x\/\.cursor\/mcp\.json: unreadable: boom$/m)
 })
 
 test('detect-env: default argv is process.argv.slice(2)', async () => {

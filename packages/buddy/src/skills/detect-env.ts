@@ -85,15 +85,11 @@ export function printSummary(r: DetectResult): void {
 		if (!c.installed && c.postInstall?.length) lines.push(`    then: ${c.postInstall.join(' && ')}`)
 		if (!c.installed) lines.push(`    docs: ${c.docs}`)
 	}
-	const mcp = r.mcp.filter((m): m is Extract<typeof m, { hosts: unknown }> => !('error' in m))
-	lines.push(`mcp servers for these hosts: ${mcp.length ? '' : 'none found'}`)
-	for (const m of mcp) {
+	lines.push(`mcp servers for these hosts: ${r.mcp.length ? '' : 'none found'}`)
+	for (const m of r.mcp) {
 		lines.push(
 			`  ${m.name} (${m.hosts.join(', ')}) — ${m.harness} ${m.scope}, ${m.url ?? [m.command, ...m.args].join(' ')}${m.disabled ? ', disabled' : ''}`,
 		)
-	}
-	for (const m of r.mcp.filter((x): x is Extract<typeof x, { error: unknown }> => 'error' in x)) {
-		lines.push(`  ${m.file}: ${m.error}`)
 	}
 	process.stdout.write(`${lines.join('\n')}\n`)
 }

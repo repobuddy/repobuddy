@@ -71,6 +71,13 @@ export default defineConfig([
 			alwaysBundle: [/^clibuilder(\/|$)/],
 			onlyBundle: false,
 		},
+		// `bin.ts` reaches `buddy-agent-harness`'s `listMcpServers` through `detect-env.ts` → `mcp.ts`.
+		// That package's own CLI entry point reads its version from `../package.json` next to itself
+		// at import time, falling back only when `__PACKAGE_VERSION__` is already defined — its own
+		// doc comment on that line says a bundle that ships without a package tree beside it (a skill
+		// script bundle, or this bin bundle) must define it. Without this, bundling it here throws
+		// ENOENT for a `package.json` that never ships next to the bundle.
+		define: { __PACKAGE_VERSION__: '"0.0.0"' },
 	},
 	{
 		entry: { 'min-release-age': 'src/skills/min-release-age.ts' },
@@ -96,6 +103,10 @@ export default defineConfig([
 		dts: false,
 		minify: true,
 		banner: { js: skillBanner('src/skills/detect-env.ts') },
+		// See the matching comment on the `bin.ts` target above: this bundle reaches
+		// `buddy-agent-harness`'s CLI-version fallback through `./mcp.js`, and ships with no
+		// `package.json` beside it.
+		define: { __PACKAGE_VERSION__: '"0.0.0"' },
 	},
 	{
 		entry: { 'detect-state': 'src/skills/detect-state.ts' },

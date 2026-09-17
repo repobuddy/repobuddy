@@ -2,7 +2,7 @@ import type { HostKind } from '../git-host.js'
 import type { HostEntry } from './clis.js'
 import { describeCli, MANAGERS } from './clis.js'
 import { collectHosts } from './hosts.js'
-import { collectMcp, type McpEntry, type McpError } from './mcp.js'
+import { collectMcp, type McpEntry } from './mcp.js'
 import { detectOs, type OsInfo, which } from './os.js'
 
 export interface DetectOptions {
@@ -17,7 +17,7 @@ export interface DetectResult {
 	os: OsInfo
 	managers: string[]
 	hosts: HostEntry[]
-	mcp: (McpEntry | McpError)[]
+	mcp: McpEntry[]
 }
 
 export async function detect({
