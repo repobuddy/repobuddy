@@ -77,9 +77,10 @@ Copy the skill's `assets/site/` directory into `SITE_DIR` and replace every `<PL
 | `src/content.config.ts`, `src/env.d.ts` | Nothing |
 | `src/content/docs/index.mdx` | Title, pitch, and tagline for the splash page |
 
-Set `site` and `base` for the deploy target now, because a wrong base breaks every asset path. For a
-GitHub project site, `site` is `https://<OWNER>.github.io` and `base` is `/<REPO_NAME>`. For a
-`<OWNER>.github.io` repo or a custom domain, remove `base` and the `/<REPO_NAME>` prefix in `index.mdx`.
+Set `site` and `base` for the deploy target now, because a wrong base breaks every asset path. Take
+the values from the **Base path** section of the repo's host file, which Step 1 of [deploy.md](deploy.md)
+picks. For a GitHub project site, `site` is `https://<OWNER>.github.io` and `base` is `/<REPO_NAME>`.
+When `base` is `/`, remove it and the `/<REPO_NAME>` prefix in `index.mdx`.
 
 The `autogenerate` sidebar lists every page in a directory, so a new page cannot be left out. cyber-sdd
 lists pages by hand instead, which controls the order. Change to an explicit list when the order matters.
@@ -114,26 +115,12 @@ Change only the files that exist. Each change stops a check from failing on file
 
 ## Step 6: Deploy
 
-For GitHub Pages, run the `setup-github-pages` skill if it is installed. Give it `SITE_DIR`,
-`<SITE_DIR>/dist`, and `<PM> --filter <SCOPE>/web build`. `site` and `base` are already set in Step 4.
+Follow [deploy.md](deploy.md) with `SITE_DIR`, `<SITE_DIR>/dist`, and `<PM> --filter <SCOPE>/web build`.
+It works out the base path for the repo's git host. If that differs from what Step 4 set, update
+`site` and `base`.
 
-Then add a `paths` filter to the workflow's `push` trigger, so that only site changes start a deploy:
-
-```yaml
-on:
-  push:
-    branches: [<DEFAULT_BRANCH>]
-    paths:
-      - '<SITE_DIR>/**'
-      - '.github/workflows/deploy-docs.yml'
-  workflow_dispatch:
-```
-
-If the site renders content from other workspaces, such as a package readme or a skills directory, add
-those paths to the filter as well.
-
-For another host, set `site` and `base` for that host and give the user the build command and the output
-directory.
+The deploy job only runs for changes under `SITE_DIR`. If the site renders content from other
+workspaces, such as a package readme or a skills directory, add those paths to the job's filter too.
 
 ## Step 7: Record the site in AGENTS.md
 

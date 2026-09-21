@@ -89,10 +89,9 @@ This is a **pnpm monorepo** managed with [Turborepo](https://turbo.build/). It i
 - `merge-dep-prs` — merge Dependabot/Renovate PRs; gates each merge on whether CI reached the change's blast radius, handles CI failures
 - `min-release-age` — lift the minimum-release-age gate for one package version, restore it once the version ages past the window, and install a scheduled CI job that expires lifts automatically (pnpm, Yarn, npm, bun; GitHub, GitLab, Bitbucket, Azure, Forgejo/Gitea)
 - `review-permissions` — audit harness permissions (Claude Code, Cursor, Codex, Copilot, Gemini): risk, tightening, consolidation
-- `setup-github-pages` — deploy a static site to GitHub Pages (base path, Actions workflow, Pages source)
 - `setup-github-repo` — branch protection, Dependabot, CI setup
 - `setup-npm-trusted-publishing` — register npm trusted publishers (OIDC) to retire `NPM_TOKEN`; one package, an org, or every org owned
-- `website` — router for docs-website work; `init` adds an Astro/Starlight site to a monorepo as a private workspace package, wires turbo, knip, biome, and pnpm build approvals, and hands off deploy to `setup-github-pages`
+- `website` — router for docs-website work; `init` adds an Astro/Starlight site to a monorepo as a private workspace package, wires turbo, knip, biome, and pnpm build approvals; `deploy` publishes a static site from CI to GitHub Pages, GitLab Pages, Codeberg Pages, Bitbucket, or Azure Static Web Apps, setting the base path the host serves at
 - `to-question` — word a question for a platform (Slack, Jira, Linear, Asana, GitHub, GitLab, Bugzilla, Redmine, Trac, email); composes, never posts
 
 **Related skill collections** (separate repos, same install flow):

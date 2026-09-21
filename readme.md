@@ -19,9 +19,8 @@
 | [`merge-dep-prs`] | Merge pending dependency update PRs — gates each merge on whether CI reached what the change can break, diagnoses CI failures, never merges release PRs |
 | [`min-release-age`] | Lift the minimum-release-age gate for one package version, restore it when the version ages past the window, and schedule the cleanup in CI |
 | [`review-permissions`] | Audit what your agents are allowed to do — risk-rank every grant, then tighten and consolidate it |
-| [`setup-github-pages`] | Deploy a static site to GitHub Pages — base path, Actions workflow, and Pages source |
 | [`setup-github-repo`] | Set up a GitHub repo with branch protection, Dependabot, and CI |
-| [`website`] | Work on a repo's docs website — `init` adds an Astro/Starlight site to a monorepo, wired into build, lint, and deploy |
+| [`website`] | Work on a repo's docs website — `init` adds an Astro/Starlight site to a monorepo; `deploy` publishes a static site to GitHub, GitLab, or Codeberg Pages, Bitbucket, or Azure Static Web Apps |
 | [`to-question`] | Word a question for Slack, Jira, Linear, Asana, GitHub, GitLab, Bugzilla, Redmine, Trac, or email — checks the markup before you paste |
 
 ### Installing Skills
@@ -172,7 +171,6 @@ npx skills add repobuddy/agent-changesets
 [`merge-dep-prs`]: ./packages/buddy/skills/merge-dep-prs/SKILL.md
 [`min-release-age`]: ./packages/buddy/skills/min-release-age/SKILL.md
 [`review-permissions`]: ./packages/buddy/skills/review-permissions/SKILL.md
-[`setup-github-pages`]: ./packages/buddy/skills/setup-github-pages/SKILL.md
 [`setup-github-repo`]: ./packages/buddy/skills/setup-github-repo/SKILL.md
 [`website`]: ./packages/buddy/skills/website/SKILL.md
 [`to-question`]: ./packages/buddy/skills/to-question/SKILL.md
