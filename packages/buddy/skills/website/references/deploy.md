@@ -91,6 +91,9 @@ a value that is already correct.
 | Jekyll | `_config.yml` | `baseurl: "<BASE>"` and `url: "<SITE_URL>"` |
 | Hugo | `hugo.toml` or `config.toml` | `baseURL = "<SITE_URL><BASE>/"` |
 
+`SITE_URL` is the origin alone. A path in Astro's `site` (for example `https://owner.github.io/repo`) does
+not prefix asset URLs, so move it into `base`.
+
 When `BASE` is `/`, write `/` for the path settings, leave out Astro's `base`, and do not double the
 slash in full URLs.
 
