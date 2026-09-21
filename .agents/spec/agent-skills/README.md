@@ -11,8 +11,8 @@ One unit per shipped skill.
 | [to-question](./to-question/README.md) | Format a question or discussion for a target platform |
 
 Skills present in `skills/` with no unit here are **not yet backfilled** — `create-issue`,
-`init-buddy`, `min-release-age`, `setup-github-pages`, `setup-github-repo`, `setup-npm-trusted-publishing`. They are a standing
-worklist, not a claim that they are unspecified by design.
+`init-buddy`, `min-release-age`, `setup-github-repo`, `setup-npm-trusted-publishing`, `website`. They are a
+standing worklist, not a claim that they are unspecified by design.
 
 `merge-dep-prs` is **partially** backfilled: its unit specifies the merge gate and nothing else. The
 rest of that skill — PR classification, CI triage, the fix recipes, changesets, closing obsolete PRs
