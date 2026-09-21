@@ -83,7 +83,6 @@ This is a **pnpm monorepo** managed with [Turborepo](https://turbo.build/). It i
 - `repobuddy` — CLI for managing the repository itself
 
 **Public agent skills** (`packages/buddy/skills/`) — shipped as a universal plugin inside the `repobuddy` npm package, and installed by consumers via `npx skills add repobuddy/repobuddy`:
-- `add-astro-website` — add an Astro/Starlight docs site to a monorepo as a private workspace package; wires turbo, knip, biome, and pnpm build approvals, and hands off deploy to `setup-github-pages`
 - `create-issue` — create GitHub/GitLab issues, dedup check first
 - `init-buddy` — set up the machine for the repo's git host: detect OS, package managers, and existing MCP servers; install and log in `gh`, `glab`, `tea`, `fj`, or `az`
 - `llms-txt` — publish an `llms.txt` generated from the project's public surface; decides whether one is warranted, wires the drift check, reports the documentation gap
@@ -93,6 +92,7 @@ This is a **pnpm monorepo** managed with [Turborepo](https://turbo.build/). It i
 - `setup-github-pages` — deploy a static site to GitHub Pages (base path, Actions workflow, Pages source)
 - `setup-github-repo` — branch protection, Dependabot, CI setup
 - `setup-npm-trusted-publishing` — register npm trusted publishers (OIDC) to retire `NPM_TOKEN`; one package, an org, or every org owned
+- `website` — router for docs-website work; `init` adds an Astro/Starlight site to a monorepo as a private workspace package, wires turbo, knip, biome, and pnpm build approvals, and hands off deploy to `setup-github-pages`
 - `to-question` — word a question for a platform (Slack, Jira, Linear, Asana, GitHub, GitLab, Bugzilla, Redmine, Trac, email); composes, never posts
 
 **Related skill collections** (separate repos, same install flow):

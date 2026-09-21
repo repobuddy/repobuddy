@@ -1,9 +1,4 @@
----
-name: add-astro-website
-description: Use this skill when adding an Astro or Starlight docs website to a monorepo as its own workspace package.
----
-
-# Add Astro Website
+# website init
 
 Adds a documentation site to a monorepo as a private workspace package. The site builds with the repo's
 task runner, stays out of the lint and dead-code checks it would otherwise break, and deploys on its own
@@ -18,7 +13,7 @@ Starlight site published to GitHub Pages.
 - A monorepo has no website and the user wants docs, a landing page, or a GitHub Pages site for it
 - The user wants to move docs from the root readme into a site
 
-Do not use this skill for a single-package repo. Scaffold there with `npm create astro@latest` instead.
+Do not use this command for a single-package repo. Scaffold there with `npm create astro@latest` instead.
 If an `astro.config.*` already exists anywhere outside `node_modules`, stop and ask. The repo already has
 a site, and the job is to fix or extend it.
 
@@ -52,7 +47,7 @@ Confirm `SITE_DIR` and the package name with the user before writing files.
 
 ## Step 3: Resolve versions
 
-Do not copy version numbers from this skill or from cyber-sdd. Look them up:
+Do not copy version numbers from these templates or from cyber-sdd. Look them up:
 
 ```bash
 npm view astro version
@@ -72,7 +67,7 @@ npm view @astrojs/starlight peerDependencies.astro
 
 ## Step 4: Scaffold the package
 
-Copy [`assets/site/`](assets/site/) into `SITE_DIR` and replace every `<PLACEHOLDER>` in the copies:
+Copy the skill's `assets/site/` directory into `SITE_DIR` and replace every `<PLACEHOLDER>` in the copies:
 
 | File | What to fill in |
 |---|---|
