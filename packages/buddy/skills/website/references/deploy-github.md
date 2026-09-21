@@ -19,6 +19,21 @@ DEFAULT_BRANCH=$(gh repo view --json defaultBranchRef --jq '.defaultBranchRef.na
 - If Pages already has a custom domain (`gh api "repos/$REPO/pages" --jq .cname` prints one), `SITE_URL`
   is `https://<cname>` and `BASE` is `/`.
 
+## Existing deploys
+
+Look for a deploy that is already there before adding one. Search `.github/workflows/` for
+`actions/deploy-pages`, `peaceiris/actions-gh-pages`, `JamesIves/github-pages-deploy-action`, and pushes to a
+`gh-pages` branch. Also read every reusable workflow a job calls (`uses: <owner>/<repo>/.github/workflows/...`),
+because the deploy step can live there:
+
+```bash
+gh api "repos/<owner>/<repo>/contents/.github/workflows/<file>?ref=<ref>" --jq .content | base64 -d
+```
+
+A deploy that pushes to a branch does nothing while Pages uses the `workflow` build type. The branch
+fills up, the job passes, and the site still returns 404. Replace that deploy with the workflow below and
+remove the old job, so only one deploy remains.
+
 ## Workflow
 
 Create `.github/workflows/deploy-pages.yml`. Skip this if the file exists and Pages already uses the
@@ -33,7 +48,7 @@ on:
     paths:
       - '<SITE_DIR>/**'
       - '.github/workflows/deploy-pages.yml'
-  workflow_dispatch:
+  workflow_dispatch: {}
 
 permissions:
   contents: read
@@ -68,7 +83,8 @@ jobs:
         uses: actions/deploy-pages@v5
 ```
 
-Leave out the `paths` filter when the site is the whole repo. `cancel-in-progress: false` lets a running
+Leave out the `paths` filter when the site is the whole repo. `workflow_dispatch: {}` rather than a bare
+`workflow_dispatch:` passes YAML linters that forbid empty mapping values. `cancel-in-progress: false` lets a running
 deploy finish, so a newer push cannot cancel it halfway.
 
 Replace `<PACKAGE_MANAGER_SETUP>`:
