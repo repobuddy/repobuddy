@@ -1,0 +1,20 @@
+{
+	"name": "<SCOPE>/web",
+	"version": "0.0.1",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"build": "astro build",
+		"dev": "astro dev",
+		"preview": "astro preview",
+		"typecheck": "astro check"
+	},
+	"dependencies": {
+		"@astrojs/starlight": "<VERSION>",
+		"astro": "<VERSION>"
+	},
+	"devDependencies": {
+		"@astrojs/check": "<VERSION>",
+		"typescript": "<VERSION>"
+	}
+}

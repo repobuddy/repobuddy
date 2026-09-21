@@ -83,6 +83,7 @@ This is a **pnpm monorepo** managed with [Turborepo](https://turbo.build/). It i
 - `repobuddy` — CLI for managing the repository itself
 
 **Public agent skills** (`packages/buddy/skills/`) — shipped as a universal plugin inside the `repobuddy` npm package, and installed by consumers via `npx skills add repobuddy/repobuddy`:
+- `add-astro-website` — add an Astro/Starlight docs site to a monorepo as a private workspace package; wires turbo, knip, biome, and pnpm build approvals, and hands off deploy to `setup-github-pages`
 - `create-issue` — create GitHub/GitLab issues, dedup check first
 - `init-buddy` — set up the machine for the repo's git host: detect OS, package managers, and existing MCP servers; install and log in `gh`, `glab`, `tea`, `fj`, or `az`
 - `llms-txt` — publish an `llms.txt` generated from the project's public surface; decides whether one is warranted, wires the drift check, reports the documentation gap

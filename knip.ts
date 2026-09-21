@@ -109,6 +109,9 @@ const config: KnipConfig = {
 	ignore: [
 		// plop templates: copied into a generated package, never executed here.
 		'plops/**',
+		// Skill scaffold templates: an agent copies them into a consumer's repo,
+		// so nothing here imports them.
+		'packages/buddy/skills/*/assets/**',
 		// Fixtures that exist precisely because nothing imports them — they prove
 		// the coverage reporters still count a non-spec source file.
 		'**/not_a_spec.*',

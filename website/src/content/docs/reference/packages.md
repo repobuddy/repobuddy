@@ -21,6 +21,7 @@ coding assistants:
 
 | Skill | Description |
 | --- | --- |
+| `add-astro-website` | Add an Astro/Starlight docs site to a monorepo as its own workspace package, wired into build, lint, and deploy |
 | `create-issue` | Create a bug report or feature request — searches for duplicates first |
 | `merge-dep-prs` | Merge pending dependency update PRs — gates each merge on whether CI reached what the change can break, diagnoses CI failures, never merges release PRs |
 | `setup-github-pages` | Deploy a static site to GitHub Pages — base path, Actions workflow, Pages source |

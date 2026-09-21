@@ -13,6 +13,7 @@
 
 | Skill | Description |
 | --- | --- |
+| [`add-astro-website`] | Add an Astro/Starlight docs site to a monorepo as its own workspace package, wired into build, lint, and deploy |
 | [`create-issue`] | Create a bug report or feature request — searches for duplicates first |
 | [`llms-txt`] | Publish an `llms.txt` generated from a project's real public surface, with a CI drift check |
 | [`init-buddy`] | Set up the machine for the repo's git host — detects the OS and existing MCP servers, then installs and logs in `gh`, `glab`, `tea`, `fj`, or `az` |
@@ -171,6 +172,7 @@ npx skills add repobuddy/agent-changesets
 [`merge-dep-prs`]: ./packages/buddy/skills/merge-dep-prs/SKILL.md
 [`min-release-age`]: ./packages/buddy/skills/min-release-age/SKILL.md
 [`review-permissions`]: ./packages/buddy/skills/review-permissions/SKILL.md
+[`add-astro-website`]: ./packages/buddy/skills/add-astro-website/SKILL.md
 [`setup-github-pages`]: ./packages/buddy/skills/setup-github-pages/SKILL.md
 [`setup-github-repo`]: ./packages/buddy/skills/setup-github-repo/SKILL.md
 [`to-question`]: ./packages/buddy/skills/to-question/SKILL.md
