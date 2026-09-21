@@ -32,5 +32,6 @@ export default defineConfig({
 			},
 		}),
 	],
-	site: 'https://repobuddy.github.io/repobuddy',
+	site: 'https://repobuddy.github.io',
+	base: '/repobuddy',
 })
