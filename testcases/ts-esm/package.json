@@ -22,7 +22,7 @@
 		"jest-watch-toggle-config": "^3.0.0",
 		"jest-watch-typeahead": "^3.0.0",
 		"strip-ansi": "^7.0.1",
-		"ts-jest": "29.4.12",
+		"ts-jest": "29.4.13",
 		"typescript": "^6.0.0"
 	}
 }
