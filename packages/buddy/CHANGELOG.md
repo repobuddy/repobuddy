@@ -1,5 +1,34 @@
 # repobuddy
 
+## 1.10.0
+
+### Minor Changes
+
+- 807df00: Remove the `setup-github-pages` skill. Its GitHub Pages setup is now the `deploy` command of the
+  `website` skill, which also covers GitLab, Codeberg, Bitbucket, and Azure. Run `/website deploy` where
+  you ran `/setup-github-pages`. The generated workflow now uses the current major versions of the Pages
+  actions and runs only for changes under the site directory.
+- 6cacf4b: New `website` skill, a router for work on a repository's docs website. It has two commands.
+  
+  `init` adds an Astro/Starlight docs site to a monorepo as a private workspace package, following the
+  `apps/web` layout of `cyberuni/cyber-sdd`. It picks a location that matches the workspace globs. It
+  chooses versions within Starlight's Astro peer range and the repo's release-age window, and keeps
+  `astro check` on TypeScript 6 when the root uses TypeScript 7. It updates turbo, knip, biome,
+  `.gitignore`, and pnpm build-script approvals so no check fails on the new package, then runs `deploy`.
+  
+  `deploy` publishes a static site from CI to the repo's own git host: GitHub Pages, GitLab Pages,
+  Codeberg Pages, Bitbucket Cloud (`<workspace>.bitbucket.io`), or Azure Static Web Apps from Azure
+  DevOps. It sets the base path the host actually serves at, including GitLab's unique domain setting,
+  which serves new sites from the domain root. Each CI job is limited to changes under the site directory.
+
+### Patch Changes
+
+- 11c3c20: `website deploy` for GitHub Pages now looks for a deploy that is already there, including one inside a
+  called reusable workflow, before adding its own. A job that pushes to a `gh-pages` branch does nothing
+  while Pages uses the `workflow` build type, so the skill replaces it rather than leaving the site at 404.
+  The generated workflow writes `workflow_dispatch: {}` so YAML linters accept it, and the base-path step
+  notes that a path in Astro's `site` does not prefix asset URLs.
+
 ## 1.9.1
 
 ### Patch Changes

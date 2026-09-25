@@ -12,7 +12,7 @@
 			"name": "repobuddy",
 			"source": "./packages/buddy",
 			"description": "Agent skills for managing a repository — issues, dependency PRs, GitHub Pages, repo setup, and npm trusted publishing.",
-			"version": "1.9.1",
+			"version": "1.10.0",
 			"homepage": "https://github.com/repobuddy/repobuddy",
 			"repository": "https://github.com/repobuddy/repobuddy.git",
 			"license": "MIT",
