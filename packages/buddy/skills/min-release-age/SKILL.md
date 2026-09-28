@@ -1,6 +1,6 @@
 ---
 name: min-release-age
-description: "Use this skill when an install fails minimum-release-age, or to lift, restore, or auto-expire a package exemption."
+description: "Use this skill when an install fails minimum-release-age, or to lift a package with a scheduled expiry, or restore."
 argument-hint: "[lift <pkg>[@version|@tag] | restore | setup-ci]"
 ---
 
@@ -8,7 +8,8 @@ argument-hint: "[lift <pkg>[@version|@tag] | restore | setup-ci]"
 
 Manage a repository's minimum-release-age gate: lift it for one package version, remove the lift once
 the version has aged past the gate, and install a scheduled CI job that removes expired lifts on its
-own. Covers pnpm, Yarn Berry, npm, and bun.
+own. A lift always schedules its own removal: the first lift in a repo installs that job in the same
+change. Covers pnpm, Yarn Berry, npm, and bun.
 
 ## When to use
 
@@ -48,13 +49,13 @@ Entries without a marker are permanent policy. Never add, remove, or rewrite the
 | no argument, "status", "what's exempt" | Status |
 | `lift <pkg>`, an age-gate install failure, "let me install X now" | Lift |
 | `restore`, "put the gate back", "clear old exemptions" | Restore |
-| `setup-ci`, "restore it automatically", "add a scheduled job" | Setup CI |
+| `setup-ci`, "restore it automatically", "add a scheduled job" | Setup CI (Lift also runs it when no job is installed) |
 
 ## Status
 
 1. Run `status`. Report the package manager, the gate value, each lift with its expiry, the git host and CI systems, and whether the cleanup job is installed.
 2. If any lift is expired, offer to run Restore now.
-3. If the cleanup job is not installed, ask whether to run Setup CI for the provider `status` names.
+3. If the cleanup job is not installed, ask whether to run Setup CI for the provider `status` names. If there are active lifts, say they will not be removed until the job exists or someone runs Restore.
 4. Change nothing without a yes.
 
 ## Lift
@@ -66,9 +67,9 @@ Entries without a marker are permanent policy. Never add, remove, or rewrite the
    - Report what was checked. If anything looks wrong, stop and tell the user instead of lifting.
 3. **Handle npm and bun.** They cannot exempt a single version. Tell the user that the lift exempts **every** version of the package until it expires, and run with `--name-wide` only after they agree.
 4. Run `lift <pkg@version>`. The script sets the expiry to the publish time plus the gate window. After that time the version passes the gate without the exemption.
-5. Run the install so the lockfile records the version and its integrity hash. Commit the config change with the lockfile.
-6. **Keep the reason neutral.** Commit messages and PR text say which package was lifted, not why. If the reason is an undisclosed vulnerability, keep that detail in a private security advisory.
-7. If `status` shows no cleanup job (`ci.installed` is false), offer Setup CI. Without it, tell the user to run Restore after the expiry.
+5. **Schedule the removal.** `lift` reports `ci`, and its summary ends with a `cleanup job:` line (an older script without them: run `status`). If `ci.installed` is false, run Setup CI now and put the job in the same change as the lift. This step is required, not an offer: without the job, an expired lift stays in the config until someone remembers to run Restore. Setup CI still asks before any change outside the repo (step 7 there). If the user declines that part, commit the job anyway, and tell them which outside step is left and that the lift stays until it is done or they run Restore.
+6. Run the install so the lockfile records the version and its integrity hash. Commit the config change with the lockfile, and with the cleanup job from step 5 when it is new.
+7. **Keep the reason neutral.** Commit messages and PR text say which package was lifted, not why. If the reason is an undisclosed vulnerability, keep that detail in a private security advisory.
 
 ## Restore
 
@@ -79,7 +80,7 @@ Entries without a marker are permanent policy. Never add, remove, or rewrite the
 
 ## Setup CI
 
-1. Run `status --json` and read `ci`:
+1. Read `ci` from `status --json` (or from the `lift --json` result when Lift sent you here):
    - `host`: the git host, from the `origin` remote
    - `systems`: the CI systems found in the repo
    - `provider`: the one to target
@@ -109,6 +110,7 @@ Entries without a marker are permanent policy. Never add, remove, or rewrite the
 - Adding an unmarked entry, which never expires
 - Exempting a whole package name on pnpm or Yarn, where a version pin works
 - Lifting without the release check in Lift step 2
+- Finishing a lift without a cleanup job, or leaving the job for a later change
 
 ## References
 

@@ -1,6 +1,6 @@
 # min-release-age
 
-Lifts a repository's minimum-release-age gate for one package version. It checks the release first, records when the lift expires, and removes the lift after that time. It can also install a daily CI job that does the removal for you, on GitHub, GitLab, Bitbucket, Azure Pipelines, Forgejo, or Gitea.
+Lifts a repository's minimum-release-age gate for one package version. It checks the release first, records when the lift expires, and removes the lift after that time. A lift always schedules its own removal: when the repo has no cleanup job yet, the lift installs a daily CI job in the same change, on GitHub, GitLab, Bitbucket, Azure Pipelines, Forgejo, or Gitea.
 
 Works with pnpm, Yarn Berry, npm, and bun.
 
@@ -17,9 +17,9 @@ Works with pnpm, Yarn Berry, npm, and bun.
 | Mode | Result |
 |---|---|
 | *(no argument)* | Shows the gate, active lifts and their expiry, the git host and CI systems it found, and whether the cleanup job is installed. Offers to restore expired lifts or install the job. |
-| `lift <pkg>[@version\|@tag]` | Resolves the bare name to `latest` (or the given tag or version), checks the release (provenance, publisher, diff from the previous version), then adds an exemption for that exact version with an expiry marker. |
+| `lift <pkg>[@version\|@tag]` | Resolves the bare name to `latest` (or the given tag or version), checks the release (provenance, publisher, diff from the previous version), then adds an exemption for that exact version with an expiry marker. If no cleanup job is installed, it runs `setup-ci` in the same change. |
 | `restore` | Removes lifts whose expiry has passed. |
-| `setup-ci` | Detects the CI provider and adds a daily job that removes expired lifts and opens or updates a PR/MR. |
+| `setup-ci` | Detects the CI provider and adds a daily job that removes expired lifts and opens or updates a PR/MR. The first lift runs it for you. |
 
 A lift is written as two lines, and only lines like these are ever removed:
 
@@ -55,7 +55,7 @@ Ask for it directly, or run `/min-release-age [lift <pkg>[@version|@tag] | resto
 
 ## What it produces
 
-A config change with a lift marker plus the updated lockfile, a restore commit, or a scheduled CI job plus a copy of the script:
+A config change with a lift marker plus the updated lockfile (and, on the first lift, the cleanup job), a restore commit, or a scheduled CI job plus a copy of the script:
 
 | Provider | Job | Script | Also needed |
 |---|---|---|---|
@@ -66,7 +66,7 @@ A config change with a lift marker plus the updated lockfile, a restore commit, 
 | Forgejo / Gitea | `.forgejo/workflows/` or `.gitea/workflows/` | `.forgejo/scripts/` or `.gitea/scripts/` | optional token secret |
 | anything else | written for the repo's own CI system | `ci/` | depends on the system |
 
-The skill detects the provider from the git remote and the CI files in the repo, and loads only that provider's instructions. It asks before creating schedules, registering pipelines, or requesting tokens.
+The skill detects the provider from the git remote and the CI files in the repo, and loads only that provider's instructions. It asks before creating schedules, registering pipelines, or requesting tokens. If you decline, the job is still committed, and the skill tells you which step is left; until it is done, expired lifts stay until you run `restore`.
 
 ## Install
 
