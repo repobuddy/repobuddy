@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { cli } from 'clibuilder'
 import { installMissingConfigWarningFilter } from './cli-noise.js'
+import { testScripts } from './test_scripts.js'
 
 // `cli({ config: true })` below resolves the repobuddy config as a side effect of this module
 // loading, which is also when clibuilder binds `console.warn` for the rest of the process. This
@@ -15,4 +16,4 @@ export const app = cli({
 	version: pkg.version,
 	description: 'Your repo buddy',
 	config: true,
-})
+}).command(testScripts)
