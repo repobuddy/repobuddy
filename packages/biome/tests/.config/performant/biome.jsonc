@@ -1,0 +1,6 @@
+{
+	"$schema": "../../../../../node_modules/@biomejs/biome/configuration_schema.json",
+	// Applies the published `performant` preset to `tests/performant`.
+	// See ../recommended/biome.jsonc.
+	"extends": ["../../../performant.jsonc"]
+}
