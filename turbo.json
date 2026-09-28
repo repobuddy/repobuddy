@@ -38,6 +38,13 @@
 			"inputs": ["src/**", "package.json", "tsconfig.*"],
 			"outputs": ["coverage/**"]
 		},
+		// Runs the built `buddy` bin against a testcase, as a consumer would. `coverage` covers
+		// only the packages' own suites, and the bin loading `@repobuddy/typescript` as a
+		// plugin broke unnoticed while nothing in `verify` ran it.
+		"e2e": {
+			"dependsOn": ["^build"],
+			"outputs": ["cjs/**", "tslib/**", "*.tsbuildinfo"]
+		},
 		"dev": {
 			"cache": false
 		},
