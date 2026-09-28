@@ -171,8 +171,8 @@ importers:
   packages/biome:
     devDependencies:
       '@biomejs/biome':
-        specifier: 2.5.11
-        version: 2.5.11
+        specifier: 2.5.14
+        version: 2.5.14
       '@repobuddy/typescript':
         specifier: workspace:*
         version: link:../typescript
