@@ -10,6 +10,14 @@ export const buddyConfigDefaults = {
 		testNode: [
 			'{src,source,code,tests}/**/*.{spec,test,unit,accept,integrate,system,perf,stress,study}.node*.{js,cjs,mjs,ts,cts,mts}',
 		],
+		/**
+		 * Load/performance test files.
+		 *
+		 * They are recognized as test files, but are not part of the default run.
+		 * Opt in with the `includeLoadTests` preset option,
+		 * or use this as the `include` of a dedicated load test config.
+		 */
+		testLoad: ['{src,source,code,tests}/**/*.load.{js,cjs,mjs,ts,cts,mts}'],
 		testBrowser: [
 			'{src,source,code,tests}/**/*.{spec,test,unit,accept,integrate,system,perf,stress,study}.{jsx,tsx}',
 			'{src,source,code,tests}/**/*.{spec,test,unit,accept,integrate,system,perf,stress,study}.browser*.{js,jsx,cjs,mjs,ts,tsx,cts,mts}',
@@ -18,8 +26,8 @@ export const buddyConfigDefaults = {
 	exclude: {
 		vitestDefault: vitestConfigDefaults.exclude,
 		test: [
-			'**/*.{spec,test,unit,accept,integrate,system,perf,stress,study}.{js,jsx,cjs,mjs,ts,tsx,cts,mts}',
-			'**/*.{spec,test,unit,accept,integrate,system,perf,stress,study}.*.{js,jsx,cjs,mjs,ts,tsx,cts,mts}',
+			'**/*.{spec,test,unit,accept,integrate,system,perf,stress,study,load}.{js,jsx,cjs,mjs,ts,tsx,cts,mts}',
+			'**/*.{spec,test,unit,accept,integrate,system,perf,stress,study,load}.*.{js,jsx,cjs,mjs,ts,tsx,cts,mts}',
 			'**/*.stories.{js,mjs,jsx,tsx}',
 		],
 	},
