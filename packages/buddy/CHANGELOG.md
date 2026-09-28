@@ -1,5 +1,215 @@
 # repobuddy
 
+## 1.10.1
+
+### Patch Changes
+
+- 6c43b3a: Update the bundled `clibuilder` to `11.3.0`.
+
+## 1.10.0
+
+### Minor Changes
+
+- 807df00: Remove the `setup-github-pages` skill. Its GitHub Pages setup is now the `deploy` command of the
+  `website` skill, which also covers GitLab, Codeberg, Bitbucket, and Azure. Run `/website deploy` where
+  you ran `/setup-github-pages`. The generated workflow now uses the current major versions of the Pages
+  actions and runs only for changes under the site directory.
+- 6cacf4b: New `website` skill, a router for work on a repository's docs website. It has two commands.
+  
+  `init` adds an Astro/Starlight docs site to a monorepo as a private workspace package, following the
+  `apps/web` layout of `cyberuni/cyber-sdd`. It picks a location that matches the workspace globs. It
+  chooses versions within Starlight's Astro peer range and the repo's release-age window, and keeps
+  `astro check` on TypeScript 6 when the root uses TypeScript 7. It updates turbo, knip, biome,
+  `.gitignore`, and pnpm build-script approvals so no check fails on the new package, then runs `deploy`.
+  
+  `deploy` publishes a static site from CI to the repo's own git host: GitHub Pages, GitLab Pages,
+  Codeberg Pages, Bitbucket Cloud (`<workspace>.bitbucket.io`), or Azure Static Web Apps from Azure
+  DevOps. It sets the base path the host actually serves at, including GitLab's unique domain setting,
+  which serves new sites from the domain root. Each CI job is limited to changes under the site directory.
+
+### Patch Changes
+
+- 11c3c20: `website deploy` for GitHub Pages now looks for a deploy that is already there, including one inside a
+  called reusable workflow, before adding its own. A job that pushes to a `gh-pages` branch does nothing
+  while Pages uses the `workflow` build type, so the skill replaces it rather than leaving the site at 404.
+  The generated workflow writes `workflow_dispatch: {}` so YAML linters accept it, and the base-path step
+  notes that a path in Astro's `site` does not prefix asset URLs.
+
+## 1.9.1
+
+### Patch Changes
+
+- d0bbd1a: `init-buddy`'s MCP scan (`buddy env` / `detect-env.mjs`) now reads configured MCP servers through
+  `buddy-agent-harness`'s `listMcpServers` instead of its own duplicate JSONC/TOML parsing. Output stays
+  the same shape and covers the same sources — Claude Code (user/project/local/plugin), Cursor, Codex,
+  Copilot CLI, Gemini CLI, VS Code, Windsurf, OpenCode, and Zed — with one behavior change: an unreadable
+  config file is now silently skipped rather than reported as a `{ harness, scope, file, error }` entry,
+  and Windsurf's servers are now reported under the harness name `devin-desktop` (still called "Windsurf"
+  in the skill's docs) instead of `windsurf`.
+
+## 1.9.0
+
+### Minor Changes
+
+- a661bef: Add `buddy detect-state`, `buddy scaffold-workflows`, and `buddy npm-trust <plan|apply>`. They run the
+  same code, with the same flags and output, as the `setup-github-repo` and `setup-npm-trusted-publishing`
+  skill scripts, which now ship as bundled `.mjs` scripts (built from `src/setup-github-repo/` and
+  `src/npm-trust/`) instead of hand-written `.mts` files run through `npx tsx`.
+
+### Patch Changes
+
+- 2bdb450: Point `add-badges`, `create-issue`, `merge-dep-prs`, `setup-github-pages`, `setup-github-repo`, and `setup-npm-trusted-publishing` at the `init-buddy` skill when `gh`/`glab` is missing or not logged in.
+- bb7e17f: `buddy --version` and `buddy --help` no longer print clibuilder's "no config found under ..." warning when run outside a repobuddy-configured repo. Config loading itself is unaffected: a `.repobuddy*` file (or a `repobuddy` key in `package.json`) still loads normally.
+- f5786fb: Fix plugin version drift: `packages/buddy/plugin.json`, its vendor manifests, and both local marketplace catalogs were stuck at 1.3.2 while the package moved to 1.8.0, so `claude plugin update repobuddy@repobuddy` reported the plugin was already up to date and never installed the update. The root `version` script now carries a released version into the plugin automatically, and `pnpm verify` fails if it ever drifts again.
+
+## 1.8.0
+
+### Minor Changes
+
+- 7669e6a: Add `buddy release-age <status|lift|restore|open-pr>` and `buddy env`. They run the same code, with the same flags and output, as the `min-release-age` and `init-buddy` skill scripts.
+- 868c227: New `init-buddy` skill: gets a machine ready to work with the repository's git host.
+  
+  It detects the OS and Linux family (Debian/Ubuntu, Fedora, RHEL-like, Arch, openSUSE, Alpine, NixOS), WSL,
+  `sudo` access, and the package managers on PATH. It then checks each host's CLI (`gh`, `glab`, `tea`, `fj`, or
+  `az` with the Azure DevOps extension) and lists the install commands that fit the machine, official
+  packages first. It also finds MCP servers already configured for the host across Claude Code (including
+  plugins), Cursor, Codex, Copilot CLI, Gemini CLI, VS Code, Windsurf, OpenCode, and Zed, reporting only
+  names, commands, and URL origins. When one is active, it asks whether the CLI is still wanted. Logins are
+  handed to the user to run.
+- 98c16ce: New `min-release-age` skill: lifts the minimum-release-age gate for one package version when a fresh
+  release is needed, and puts it back afterward. Works with pnpm, Yarn Berry, npm, and bun.
+  
+  `lift <pkg>` resolves the bare name to its `latest` dist-tag; a tag or an exact version also works, and
+  the exemption always pins the exact version. Before lifting, it checks the release: provenance, publisher, and the diff from the previous version.
+  Each lift is written with an expiry marker set to the version's publish time plus the gate window. After
+  that time the version passes the gate on its own. `restore` removes only marked, expired lifts and never
+  touches permanent exemptions. npm and bun cannot exempt a single version, so the skill asks before
+  exempting a whole package name. `setup-ci` detects the CI provider and installs a daily job that removes
+  expired lifts and opens or updates a PR/MR. It has templates for GitHub Actions, GitLab CI, Bitbucket Pipelines,
+  Azure Pipelines, and Forgejo/Gitea Actions, and generic steps for other CI systems.
+
+### Patch Changes
+
+- 5392b0e: Add a `repobuddy` bin alongside `buddy` and `bd`. Runners that pick the bin named after the package, such as `upx repobuddy@^1`, can now resolve it.
+- 8637166: `buddy --version` reads the version from its own `package.json`, not from `package.json` in the current directory.
+- 17e9303: The `min-release-age` and `init-buddy` skill scripts are built at release and ship only in the npm package. A skill installed from git, without its `scripts/` folder, runs the same command through `npx -y repobuddy@^1.8.0`.
+
+## 1.7.0
+
+### Minor Changes
+
+- 5d74440: New `add-badges` skill: builds a readme badge row from facts detected in the repo — package name,
+  visibility, workflows, license file, docs URL — instead of a fixed template.
+  
+  It resolves which readme npm and GitHub actually render before writing (in a monorepo that is the
+  published package's, not the root's), badges the workflow that gates the default branch rather than a
+  pull-request workflow whose badge reads stale on `main`, skips build badges on private repos where
+  shields cannot read them, and verifies the badges render on the pushed branch before merge.
+- e414614: Build the CLI with tsdown and inline its dependencies, replacing the `tsc` build.
+  
+  An installed agent plugin is a copy of a source checkout, not an npm install, so its directory has
+  no reliable `node_modules` and a CLI with external dependencies cannot be run from it. `esm/bin.js`
+  is now a bundle that inlines `clibuilder` and runs with no `node_modules` present at all, so
+  `clibuilder` moves from `dependencies` to `devDependencies`.
+  
+  Published paths do not move: the output stays in `esm/` with a `.js` extension, so the tracked
+  `bin/buddy.js` shim keeps resolving `../esm/bin.js`. The declaration files `tsc` used to emit
+  alongside it are gone, which affects nothing — the package exports only `./package.json` and has no
+  library surface.
+  
+  Bundling also required pointing `jsonc-parser` (reached through clibuilder) at its ESM build. Its
+  `main` is a UMD bundle whose factory calls `require("./impl/format")` and three siblings — specifiers
+  a bundler cannot analyse, so those modules were silently left out and the CLI threw
+  `Cannot find module './impl/format'` at startup.
+  
+  Because `tsc` was also typechecking as a side effect of building, the package gains an explicit
+  `typecheck` script, wired into `verify`.
+- a69bcdd: `to-question`: make the content shape a parameter, and add an `unblock` shape.
+  
+  The skill composed into exactly one shape — Context → Use Cases → Problem → Options → Questions —
+  while the platform was already a parameter. That shape assumes the user is undecided between
+  alternatives and wants input. Where that does not hold, the misfire is quiet: the agent
+  manufactures an "Options" section for a request that has no options.
+  
+  Shape and dialect are now chosen independently. `question` stays the default, so a request that
+  names no shape composes exactly as before.
+  
+  The new `unblock` shape is for "can someone unblock me": what you are blocked on, what you have
+  already tried, **what you need from whom**, and by when. The ask is a required slot naming a person
+  or team plus one concrete action — if you have not said who or by when, the skill asks instead of
+  drafting a ping whose ask is "any help appreciated". It picks `unblock` when your own words say you
+  are blocked, stuck, or waiting on someone, and tells you it did so you can ask for the other shape.
+  
+  The frontmatter description now reads "a question or an unblock ping", so a blocked user's request
+  matches it.
+- 3631025: `merge-dep-prs` now gates each merge on **verification reach covering blast radius** instead of on a
+  green check. A green check is evidence about what CI executed and about nothing else — a dependency
+  PR can be correct, pass every check in its own repo, and still break every consumer of the artifact
+  it changed, because no check ever exercised a consumer.
+  
+  A new Step 3 runs between sorting by CI status and merging: detect whether the diff touches a
+  consumed artifact (reusable workflow, composite action, published package or preset, container
+  image, depended-on workspace package); name what shrank CI's reach (no test suite, affected-only
+  selection, path-filtered jobs that skipped); enumerate the consumers when reach falls short — by
+  looping the org repo list, since `gh search code` misses org-internal matches — and check what each
+  one resolves. The gate ends in an explicit decision, hold or merge-with-follow-ups, never a
+  fall-through to merge-on-green. The same gate covers the in-repo case, where `turbo --filter` or
+  `nx affected` deliberately shrinks reach past edges the task graph does not model.
+  
+  The skill also gains a `What NOT to do` section and the `README.md` it was shipping without.
+
+### Patch Changes
+
+- c0fdc06: `to-question`: route public venues to `research-workbench:community-post` instead of the Markdown baseline.
+  
+  An unlisted platform is no longer automatically a fallback case. An unlisted *private* venue —
+  Notion, Teams — still resolves to the Markdown baseline with the fallback announced. An unlisted
+  *public* venue — Stack Overflow, X/Bluesky, Reddit, Discord, Telegram, Facebook/LinkedIn — is now
+  routed to `community-post`, which researches first.
+  
+  Previously the skill would compose a Reddit or Discord post on the Markdown baseline, which looked
+  like a supported target and was not: every `to-question` target writes to an audience that already
+  has the context, so the template opens by asking the question directly and treats Context as what the
+  thread does not already cover. A public audience has none of that, and owes prior art and a check for
+  an existing answer besides — both stated non-goals of this skill.
+- 6094343: `setup-github-repo` no longer leaves `.github/setup-state.json` in the working tree. The run's state
+  artifact is written to a temp path keyed by `owner/repo` instead, so it can't be committed by
+  accident or linger as an untracked file that reads like the repo's settings policy. `detect-state`
+  reports the path in its stdout ack and accepts `--out` to override it; `scaffold-workflows` resolves
+  the same path by default. A leftover `.github/setup-state.json` from an earlier run is deleted.
+- 32f4e72: `to-question`: support the non-Markdown trackers — Bugzilla, Redmine and Trac.
+  
+  Markdown renders in none of them, so the baseline every unlisted platform falls back to is the one
+  dialect that must never be used there. Each gets its own dialect reference, the way Slack mrkdwn and
+  Jira wiki markup already do: `references/plaintext.md` for Bugzilla's default mode, where no markup
+  renders at all, `references/textile.md` for Redmine's, and `references/trac.md` for Trac's one fixed
+  dialect. A Markdown-mode Bugzilla is a row in the capability table instead — GFM minus inline images
+  and inline HTML, both of which Bugzilla strips.
+  
+  These are the first targets whose dialect is a property of the *instance* rather than of the
+  platform. Bugzilla is plain text by default with Markdown switchable per user preference and per
+  comment; Redmine is Textile by default with CommonMark set instance-wide. Nothing in the request
+  reveals which, so the skill composes for the product default and says which mode it assumed, with the
+  one-line switch — the same rule the Slack default and the Markdown fallback already follow.
+  
+  Plain text is the one target where the composition changes rather than only the markup: with no
+  headings and no fenced blocks, sections are carried by blank lines and capitalised labels, and an
+  ASCII diagram loses its monospace guarantee, so `plaintext.md` ships a template variant.
+  
+  `scripts/check-format.mjs` gains `bugzilla`, `bugzilla-markdown`, `redmine` and `trac`. Its
+  verbatim-region detection is now dialect-specific rather than always a ``` fence, which also fixes a
+  Jira rule that could never fire: the "Markdown code fence" scan ran over lines the fence pass had
+  already blanked, so a fenced block in a Jira draft went unreported.
+- ec04657: `to-question`: bundled files move from `assets/` to `references/`.
+  
+  The agentskills layout separates the two by kind rather than by topic — `assets/` holds static
+  resources (templates, images, data files), while documentation the agent reads under a stated
+  condition belongs in `references/`. Every file this skill bundles is the second kind: the dialect
+  files and the shape files are read to inform the draft, never copied into it.
+  
+  No behavior change. The skill loads the same six files under the same conditions; only the paths
+  inside the package move.
+
 ## 1.6.0
 
 ### Minor Changes

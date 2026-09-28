@@ -1,0 +1,43 @@
+name: min-release-age
+
+# Removes minimum-release-age lifts whose window has passed and opens (or updates) a pull request.
+# Only lines carrying a `# min-release-age: lift … until …` marker are touched.
+
+on:
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  restore:
+    # Use the runner label the repo's other workflows use.
+    runs-on: docker
+    container:
+      image: node:22
+    env:
+      BRANCH: chore/min-release-age-restore
+      # A PR opened with the automatic token does not trigger workflows. Set this secret to a
+      # personal access token so the restore PR runs required checks.
+      MIN_RELEASE_AGE_TOKEN: ${{ secrets.MIN_RELEASE_AGE_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      SCRIPT: .forgejo/scripts/min-release-age.mjs
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.MIN_RELEASE_AGE_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - name: Remove expired lifts
+        run: |
+          set -eu
+          node "$SCRIPT" restore --json --body-file /tmp/mra-body.md > /tmp/mra.json
+          if [ "$(node -p "require('/tmp/mra.json').removed.length")" = 0 ]; then exit 0; fi
+          git config user.name 'min-release-age'
+          git config user.email 'min-release-age@noreply.localhost'
+          git switch -C "$BRANCH"
+          git commit -am 'chore: restore minimum release age'
+          git push --force origin "$BRANCH"
+          node "$SCRIPT" open-pr --provider forgejo --branch "$BRANCH" --body-file /tmp/mra-body.md

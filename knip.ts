@@ -57,7 +57,9 @@ const config: KnipConfig = {
 		'packages/buddy': {
 			entry: [
 				'bin/*.js',
-				'src/bin.ts',
+				// src/bin.ts is not listed here: knip's tsdown plugin already infers
+				// it as an entry from tsdown.config.ts's `bin` build target, so
+				// repeating it here triggered knip's "redundant entry pattern" hint.
 				// Shipped skill scripts. Agents invoke these through a shell, so
 				// nothing in the repo imports them.
 				'skills/**/scripts/*.{mjs,mts}',
@@ -112,6 +114,9 @@ const config: KnipConfig = {
 	ignore: [
 		// plop templates: copied into a generated package, never executed here.
 		'plops/**',
+		// Skill scaffold templates: an agent copies them into a consumer's repo,
+		// so nothing here imports them.
+		'packages/buddy/skills/*/assets/**',
 		// Fixtures that exist precisely because nothing imports them — they prove
 		// the coverage reporters still count a non-spec source file.
 		'**/not_a_spec.*',

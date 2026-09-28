@@ -1,6 +1,6 @@
 {
 	"name": "@repobuddy/typescript",
-	"version": "2.2.0",
+	"version": "2.2.1",
 	"description": "Your TypeScript buddy",
 	"keywords": [
 		"repobuddy",
@@ -55,17 +55,17 @@
 		"verify": "npm-run-all -p build coverage -p size"
 	},
 	"dependencies": {
-		"clibuilder": "^11.0.0",
+		"clibuilder": "^11.3.0",
 		"dirname-filename-esm": "^1.1.1",
 		"execa": "^10.0.0"
 	},
 	"devDependencies": {
-		"@size-limit/preset-small-lib": "~13.0.0",
+		"@size-limit/preset-small-lib": "~13.1.0",
 		"@types/node": "^24.0.0",
 		"@vitest/coverage-v8": "^4.0.15",
 		"npm-run-all2": "^9.0.0",
 		"rimraf": "~6.1.0",
-		"size-limit": "~13.0.0",
+		"size-limit": "~13.1.0",
 		"typescript": "^7.0.0",
 		"vitest": "^4.1.4"
 	}
