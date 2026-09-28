@@ -144,4 +144,16 @@ export default defineConfig([
 		minify: true,
 		banner: { js: skillBanner('src/skills/npm-trust.ts') },
 	},
+	{
+		entry: { 'agent-readiness': 'src/skills/agent-readiness.ts' },
+		outDir: 'skills/agent-readiness/scripts',
+		format: 'esm',
+		platform: 'node',
+		target: 'node22',
+		outExtensions: () => ({ js: '.mjs' }),
+		clean: false,
+		dts: false,
+		minify: true,
+		banner: { js: skillBanner('src/skills/agent-readiness.ts') },
+	},
 ])

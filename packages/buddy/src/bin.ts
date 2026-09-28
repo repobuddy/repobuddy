@@ -1,4 +1,5 @@
 import { app } from './app.js'
+import { main as agentReadinessMain } from './skills/agent-readiness.js'
 import { main as detectEnvMain } from './skills/detect-env.js'
 import { main as detectStateMain } from './skills/detect-state.js'
 import { main as releaseAgeMain } from './skills/min-release-age.js'
@@ -20,6 +21,8 @@ if (subcommand === 'release-age') {
 	await scaffoldWorkflowsMain(rest)
 } else if (subcommand === 'npm-trust') {
 	await npmTrustMain(rest)
+} else if (subcommand === 'agent-readiness') {
+	await agentReadinessMain(rest)
 } else {
 	app.parse(process.argv)
 }
