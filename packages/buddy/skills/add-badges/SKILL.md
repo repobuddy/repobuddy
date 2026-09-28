@@ -31,7 +31,7 @@ find . -maxdepth 3 -iname 'readme.md' -not -path '*/node_modules/*'
 
 ### 2. Collect the facts each badge needs
 
-Detect; never assume.
+Detect; never assume. If `gh` is missing or not logged in, run the `init-buddy` skill when it is installed; otherwise tell the user to install and log in.
 
 ```bash
 gh repo view --json nameWithOwner,visibility,defaultBranchRef,homepageUrl
