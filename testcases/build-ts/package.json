@@ -4,6 +4,7 @@
 	"type": "module",
 	"scripts": {
 		"clean": "rimraf cjs esm tslib --glob *.tsbuildinfo",
+		"e2e": "run-p test:*",
 		"nuke": "run-s clean && rimraf node_modules",
 		"test": "run-p test:*",
 		"test:cjs": "buddy ts build cjs",
