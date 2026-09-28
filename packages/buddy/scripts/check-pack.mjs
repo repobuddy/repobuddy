@@ -29,6 +29,7 @@ const SCRIPTS = [
 	{ path: 'skills/setup-github-repo/scripts/detect-state.mjs', args: ['--dir'], exit: 1 },
 	{ path: 'skills/setup-github-repo/scripts/scaffold-workflows.mjs', args: ['no-such-command'], exit: 1 },
 	{ path: 'skills/setup-npm-trusted-publishing/scripts/npm-trust.mjs', args: ['no-such-command'], exit: 2 },
+	{ path: 'skills/agent-readiness/scripts/agent-readiness.mjs', args: ['no-such-command'], exit: 2 },
 ]
 
 const temp = mkdtempSync(join(tmpdir(), 'repobuddy-pack-'))
