@@ -30,6 +30,7 @@ rush add -p --dev @repobuddy/vitest
 - Sets timezone to GMT and automatically restores mocks after tests
 - Provides better config defaults such as test file patterns and coverage configurations
 - Disables screenshot on failure in browser tests to avoid Storybook loading issues
+- Adds `expect.order` for asserting execution order via `@repobuddy/vitest/setup/order`
 
 ## Usage
 
@@ -51,6 +52,36 @@ export default defineConfig({
   plugins: [browserTestPreset()],
 })
 ```
+
+### `expect.order`
+
+Add `@repobuddy/vitest/setup/order` to your setup files
+to get `expect.order`, an [`AssertOrder`](https://github.com/cyberuni/assertron) factory
+for asserting your code executes in the expected order:
+
+```ts
+// vitest.config.node.ts
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: { setupFiles: ['@repobuddy/vitest/setup/order'] },
+})
+```
+
+```ts
+it('calls the callbacks in order', () => {
+  const o = expect.order.plan(2)
+
+  subject.on('start', () => o.once(1))
+  subject.on('end', () => o.once(2))
+
+  subject.run()
+
+  o.end() // throws when the 2 planned steps were not all reached
+})
+```
+
+The setup file augments `vitest`'s `ExpectStatic`, so `expect.order` is typed with no extra wiring.
 
 [downloads-image]: https://img.shields.io/npm/dm/@repobuddy/typescript.svg?style=flat
 [downloads-url]: https://npmjs.org/package/@repobuddy/typescript

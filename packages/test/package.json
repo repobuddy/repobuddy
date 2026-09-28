@@ -1,6 +1,6 @@
 {
 	"name": "@repobuddy/test",
-	"version": "1.0.2",
+	"version": "1.1.0",
 	"description": "Your repository buddy for test",
 	"keywords": [
 		"repobuddy",
@@ -65,5 +65,8 @@
 		"storybook": "10.5.6",
 		"typescript": "^7.0.0",
 		"vitest": "^4.1.4"
+	},
+	"dependencies": {
+		"assertron": "^11.7.0"
 	}
 }

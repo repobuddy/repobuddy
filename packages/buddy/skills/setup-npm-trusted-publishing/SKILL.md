@@ -23,7 +23,7 @@ Not for: adding OIDC support to a release workflow file, or configuring GitHub-s
 | npm >= 11.15.0 | `npm --version` |
 | Logged in to npm | `npm whoami` |
 | Account-level 2FA | required; granular tokens that bypass 2FA are rejected |
-| `gh` authenticated | `gh auth status` |
+| `gh` authenticated | `gh auth status` (if missing or not logged in, run the `init-buddy` skill when it is installed; otherwise tell the user to install and log in) |
 | Workflow already declares `id-token: write` | on the publishing job |
 | Package already exists on the registry | trust cannot be pre-registered |
 
@@ -43,11 +43,18 @@ Ask the user which applies; do not assume.
 ## Step 2 — Plan
 
 ```bash
-node_major=$(node -e "process.stdout.write(String(process.versions.node.split('.')[0]))")
 SKILL_DIR=$(npx skills path setup-npm-trusted-publishing 2>/dev/null || echo "$HOME/.agents/skills/setup-npm-trusted-publishing")
-RUN="npx tsx"; [ "$node_major" -ge 23 ] && RUN=node
-$RUN "$SKILL_DIR/scripts/npm-trust.mts" plan --org <login> --verbose
+if [ -f "$SKILL_DIR/scripts/npm-trust.mjs" ]; then
+  RUN="node $SKILL_DIR/scripts/npm-trust.mjs"
+else
+  RUN="npx -y repobuddy@^1.9.0 npm-trust"
+fi
+$RUN plan --org <login> --verbose
 ```
+
+The script ships in the `repobuddy` npm package. If `scripts/npm-trust.mjs` is missing (the skill was
+installed from git) or cannot be run, use `npx -y repobuddy@^1.9.0 npm-trust <command>` with the same
+arguments.
 
 Writes `.github/npm-trust-plan.json` and prints a JSON ack. **Do not parse stdout for the plan** — read the artifact:
 
@@ -74,7 +81,7 @@ Show the user the `configure` rows and confirm before applying.
 Applying needs a 2FA code. One success opens a window of roughly five minutes / eighty packages, so a batch runs under a single authentication.
 
 ```bash
-$RUN "$SKILL_DIR/scripts/npm-trust.mts" apply --otp=<6-digit code> --verbose
+$RUN apply --otp=<6-digit code> --verbose
 ```
 
 The script stops on the first `EOTP`/`E401`/`E403` rather than repeating an auth failure across the list. On `EOTP`, get a fresh code and re-run — completed rows are skipped.

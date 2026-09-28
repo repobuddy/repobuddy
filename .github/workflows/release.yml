@@ -23,8 +23,3 @@ jobs:
       # Lets changesets/action open the "version packages" PR.
       pull-requests: write
 
-  docgen:
-    uses: repobuddy/.github/.github/workflows/pnpm-docs.yml@v2
-    needs: release
-    with:
-      publish-dir: ./website/dist
