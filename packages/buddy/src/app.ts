@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { cli } from 'clibuilder'
 import { installMissingConfigWarningFilter } from './cli-noise.js'
+import { checkDependenciesCommand } from './deps/check_dependencies_command.js'
 import { testScripts } from './test_scripts.js'
 
 // `cli({ config: true })` below resolves the repobuddy config as a side effect of this module
@@ -15,5 +16,9 @@ export const app = cli({
 	name: 'repobuddy',
 	version: pkg.version,
 	description: 'Your repo buddy',
+	// Load-bearing: this is how clibuilder finds the plugin commands other
+	// packages contribute, such as `buddy ts build cjs` from `@repobuddy/typescript`.
 	config: true,
-}).command(testScripts)
+})
+	.command(testScripts)
+	.command(checkDependenciesCommand)
