@@ -1,5 +1,37 @@
 # repobuddy
 
+## 1.11.0
+
+### Minor Changes
+
+- 7d0d8e6: Add the `agent-readiness` skill: scores how ready a repository is for coding agents. A bundled script runs static checks and reports a gated level (1-4), a score per area, the top three fixes, and the tokens every agent session loads; the skill settles the checks a script cannot decide. Security findings cap the level. Read-only. The script also runs as `repobuddy agent-readiness score`.
+- 2783bd6: Add `buddy check-deps`, which reports packages your jest config uses that your `package.json` does not declare.
+  
+  A preset names the packages it needs, but the project using it has to install them. `check-deps` reads the jest config, follows the preset chain, and names every package no dependency field declares, along with the config field that asked for it and the command to install it. It exits `1` when something is missing, so it can gate a build.
+  
+  It is a command you run, not a `postinstall` hook: the same check on install would run on every consumer's machine, which is intrusive and exactly the shape a supply-chain review flags.
+- f5c0829: `min-release-age`: a lift now schedules its own removal. When the repo has no cleanup job, the skill installs it in the same change as the lift instead of offering it. `release-age lift` reports the `ci` block (`--json`) and ends its summary with a `cleanup job:` line that says whether the job is installed and which provider and reference to use.
+- 19caf0f: Add the `review-api` skill: reviews a library's public API for consistency and completeness against the project's own conventions. It infers the canonical shape from exemplars, audits shape conformance, sibling-justified gaps, and docs against exports, verifies each claim, and reports by priority. Read-only.
+- 3dc80db: New `buddy test-scripts` command: adds or adjusts a project's `test`, `coverage`, and `test:watch`
+  scripts to match the test runner it actually uses.
+  
+  The runner is read off the project's dependencies — `jest` or `@repobuddy/jest` means jest, `vitest`
+  or `@repobuddy/vitest` means vitest — and `--runner` names it when a project depends on both or on
+  neither. `--cwd` points the command at a project other than the working directory.
+  
+  Adjusting never clobbers a script the project meant to keep. A missing script is added; a script
+  still holding one of the values this command writes, for either runner, is adjusted; anything else is
+  left alone and reported as skipped. That makes a second run a no-op and lets a project that moved
+  from jest to vitest pick up the new commands without losing a customized `test`. The manifest keeps
+  its own indentation and script order — only the managed keys are touched.
+  
+  This is the CLI's first authored command, so it also settles the shape the ones after it follow:
+  detect from the project, report every script as added, adjusted, or skipped, and be safe to run twice.
+
+### Patch Changes
+
+- 61ea2ef: Load plugins such as `@repobuddy/typescript` from the project the command runs in. The bundled CLI looked for them next to itself, so `buddy ts build` failed in a workspace, and through `npx` or a global install, with `Cannot find package '@repobuddy/typescript'`. The fix is clibuilder 11.3.2.
+
 ## 1.10.1
 
 ### Patch Changes
