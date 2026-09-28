@@ -252,8 +252,8 @@ importers:
         specifier: ^0.12.0
         version: 0.12.0
       clibuilder:
-        specifier: ^11.3.0
-        version: 11.3.0(typescript@7.0.2)
+        specifier: ^11.3.2
+        version: 11.3.2(typescript@7.0.2)
       cross-env:
         specifier: ^10.1.0
         version: 10.1.0
@@ -4586,6 +4586,10 @@ packages:
     resolution: {integrity: sha512-ESckfItcCYPNnYSb66XRQ831q9N4CA3MvXumH3q8OWk8ExI2zVcZpFbwIdJPMOWjQhQfJtsV0qX+7zTPtN0QsQ==}
     engines: {node: '>= 20.19'}
 
+  clibuilder@11.3.2:
+    resolution: {integrity: sha512-W84b3U2iR1g4ZIRU3ckmfHrSR2LIKNggQgUY9Thuke7UJBle6/+Yo/RgFbheuyJxgTj+NroxtUBwYLlTkLCa3g==}
+    engines: {node: '>= 20.19'}
+
   cliui@8.0.1:
     resolution: {integrity: sha512-BSeNnyus75C4//NQ9gQt1/csTXyo/8Sb+afLAkzAptFuMsod9HFokGNudZpi/oQV73hnVK+sR+5PVRMd+Dr7YQ==}
     engines: {node: '>=12'}
@@ -5094,6 +5098,10 @@ packages:
 
   find-installed-packages@4.0.0:
     resolution: {integrity: sha512-PKkQCxMpOrW1cHEE9oQOTvDOMD++Bw0HT+nQpWrhXQrairaQA4m+cDdosQjAmNGQ0lCkkGWuuPrksDXE9B7Cug==}
+    engines: {bun: '>=1.0', node: '>=20.19'}
+
+  find-installed-packages@4.0.1:
+    resolution: {integrity: sha512-5bQRIhtLkyLRXxDsUX/GzXLx7vlfFJIlrPinxpmDD0s1n26UzA6Fxva1YOWTW3J31mDL683yZUIxohR3n7ZhUg==}
     engines: {bun: '>=1.0', node: '>=20.19'}
 
   find-proc@0.2.0:
@@ -6804,6 +6812,10 @@ packages:
 
   search-packages@2.2.1:
     resolution: {integrity: sha512-ejUjMEDITHiKzfAgtpcIUXAliJK+jLb7DMyUaqVoyY1uwKuDajnccvx8o8woEuKvsDjH3j3mLhy6Uyc8v1UCHA==}
+    engines: {node: '>= 18'}
+
+  search-packages@2.2.3:
+    resolution: {integrity: sha512-yghcqrg0uEXOerdi/jgOVsVojTvLtbhgPTydih0NmbRleXTCnY+LmixbBPV3xM79W5znY9WtzWtxE22nXSgm2Q==}
     engines: {node: '>= 18'}
 
   semver@5.7.2:
@@ -11259,6 +11271,25 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
+  clibuilder@11.3.2(typescript@7.0.2):
+    dependencies:
+      find-installed-packages: 4.0.1
+      import-meta-resolve: 4.2.0
+      js-yaml: 4.3.2
+      jsonc-parser: 3.3.1
+      pad-right: 0.2.2
+      search-packages: 2.2.3
+      standard-log: 13.3.1(typescript@7.0.2)
+      standard-log-color: 13.3.1(standard-log@13.3.1(typescript@7.0.2))
+      tersify: 4.0.8
+      tmp: 0.2.7
+      tslib: 2.8.1
+      type-plus: 8.0.0-beta.12(typescript@7.0.2)
+      wordwrap: 1.0.0
+      zod: 3.25.76
+    transitivePeerDependencies:
+      - typescript
+
   cliui@8.0.1:
     dependencies:
       string-width: 4.2.3
@@ -11774,6 +11805,12 @@ snapshots:
       package-manager-detector: 1.8.0
       temp: 0.9.4
       unpartial: 1.0.7
+
+  find-installed-packages@4.0.1:
+    dependencies:
+      package-manager-detector: 1.8.0
+      temp: 0.9.4
+      unpartial: 1.0.8
 
   find-proc@0.2.0: {}
 
@@ -13930,6 +13967,8 @@ snapshots:
   scheduler@0.27.0: {}
 
   search-packages@2.2.1: {}
+
+  search-packages@2.2.3: {}
 
   semver@5.7.2: {}
 
