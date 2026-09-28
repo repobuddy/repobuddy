@@ -1,5 +1,11 @@
 # repobuddy
 
+## 1.10.1
+
+### Patch Changes
+
+- 6c43b3a: Update the bundled `clibuilder` to `11.3.0`.
+
 ## 1.10.0
 
 ### Minor Changes
