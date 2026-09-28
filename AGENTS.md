@@ -92,6 +92,7 @@ This is a **pnpm monorepo** managed with [Turborepo](https://turbo.build/). It i
 - `repobuddy` — CLI for managing the repository itself
 
 **Public agent skills** (`packages/buddy/skills/`) — shipped as a universal plugin inside the `repobuddy` npm package, and installed by consumers via `npx skills add repobuddy/repobuddy`:
+- `agent-readiness` — score how ready a repo is for coding agents: gated level 1-4, per-area score, top three fixes, tokens loaded per session; a bundled script runs the static checks, the model settles judgment calls; read-only
 - `create-issue` — create GitHub/GitLab issues, dedup check first
 - `init-buddy` — set up the machine for the repo's git host: detect OS, package managers, and existing MCP servers; install and log in `gh`, `glab`, `tea`, `fj`, or `az`
 - `llms-txt` — publish an `llms.txt` generated from the project's public surface; decides whether one is warranted, wires the drift check, reports the documentation gap
