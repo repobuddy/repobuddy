@@ -1,0 +1,63 @@
+# agent-readiness
+
+Score how ready a repository is for coding agents to work in: whether an agent can orient itself,
+check its own work, work without supervision, and work cheaply. The report leads with a level and the
+three fixes worth the most, not a percentage.
+
+## When to use
+
+- "is this repo agent-ready?"
+- "why do agents keep struggling in this repo?"
+- "what should we fix so agents work better here?"
+- "how many tokens does every agent session load before it starts?"
+- before handing a repository to unattended agents
+
+## What it does
+
+1. **Runs a static scan** with a bundled script: no build, no install, no tokens. It checks for a
+   verify command, an instructions file and the commands it names, a pinned toolchain, file sizes,
+   committed build output, committed secrets, literal MCP credentials, and more.
+2. **Settles the judgment calls** the script cannot make, such as whether CI runs the same command an
+   agent runs locally, or whether the instructions file is accurate. It loads only the criteria for
+   the areas that need it.
+3. **Reports a gated level.** Each level has gates. A repo is at level N only when every gate up to N
+   passes, so good docs cannot hide a missing test command.
+
+   | Level | Meaning |
+   | --- | --- |
+   | 1 | An agent can read it |
+   | 2 | An agent can check its own work |
+   | 3 | An agent can work without supervision (the target) |
+   | 4 | An agent works cheaply |
+
+   Security findings cap the level instead of subtracting points. A committed secret holds a repo at
+   level 1 however good everything else is.
+4. **Ranks the fixes.** Security first, then the gate that blocks the next level, then the rest by
+   area weight per unit of effort. The weights are printed in the report as starting estimates, so you
+   can disagree with them.
+5. **Reports the tokens loaded per session**: instruction files plus every installed skill's
+   description.
+
+## What it will not do
+
+- Edit the repository. It offers each fix, and hands the ones other skills own to those skills:
+  `buddy-agent-harness` for instructions and harness config, `review-permissions` for allowlists,
+  `setup-github-repo` for CI and branch protection, `min-release-age` and
+  `setup-npm-trusted-publishing` for supply chain.
+- Print a secret. It names the file and the key.
+
+## How to invoke
+
+Ask for it directly, or run `/agent-readiness score` where slash commands are supported. The script
+also runs on its own:
+
+```sh
+node <skill-dir>/scripts/agent-readiness.mjs score [--dir <repo>] [--json]
+npx -y repobuddy@^1.11.0 agent-readiness score
+```
+
+## Install
+
+```sh
+npx skills add repobuddy/repobuddy --skill agent-readiness
+```

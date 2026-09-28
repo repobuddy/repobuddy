@@ -9,3 +9,4 @@ skills/init-buddy/scripts/detect-env.mjs
 skills/setup-github-repo/scripts/detect-state.mjs
 skills/setup-github-repo/scripts/scaffold-workflows.mjs
 skills/setup-npm-trusted-publishing/scripts/npm-trust.mjs
+skills/agent-readiness/scripts/agent-readiness.mjs
