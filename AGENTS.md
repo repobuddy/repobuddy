@@ -88,6 +88,7 @@ This is a **pnpm monorepo** managed with [Turborepo](https://turbo.build/). It i
 - `llms-txt` — publish an `llms.txt` generated from the project's public surface; decides whether one is warranted, wires the drift check, reports the documentation gap
 - `merge-dep-prs` — merge Dependabot/Renovate PRs; gates each merge on whether CI reached the change's blast radius, handles CI failures
 - `min-release-age` — lift the minimum-release-age gate for one package version, restore it once the version ages past the window, and install a scheduled CI job that expires lifts automatically (pnpm, Yarn, npm, bun; GitHub, GitLab, Bitbucket, Azure, Forgejo/Gitea)
+- `review-api` — review a library's public API against its own conventions: shape conformance, sibling-justified gaps, docs vs exports; read-only, verified, priority-ordered report
 - `review-permissions` — audit harness permissions (Claude Code, Cursor, Codex, Copilot, Gemini): risk, tightening, consolidation
 - `setup-github-repo` — branch protection, Dependabot, CI setup
 - `setup-npm-trusted-publishing` — register npm trusted publishers (OIDC) to retire `NPM_TOKEN`; one package, an org, or every org owned
