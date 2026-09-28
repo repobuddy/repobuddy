@@ -13,6 +13,7 @@
 
 | Skill | Description |
 | --- | --- |
+| [`agent-readiness`] | Score how ready a repo is for coding agents — a gated level, the three fixes worth the most, and the tokens every session loads |
 | [`create-issue`] | Create a bug report or feature request — searches for duplicates first |
 | [`llms-txt`] | Publish an `llms.txt` generated from a project's real public surface, with a CI drift check |
 | [`init-buddy`] | Set up the machine for the repo's git host — detects the OS and existing MCP servers, then installs and logs in `gh`, `glab`, `tea`, `fj`, or `az` |
@@ -166,6 +167,7 @@ npx skills add repobuddy/agent-changesets
 [agent skills]: https://github.com/vercel-labs/skills
 [Skills CLI]: https://github.com/vercel-labs/skills
 [universal plugin]: https://github.com/agentplugins/agent-plugins-spec
+[`agent-readiness`]: ./packages/buddy/skills/agent-readiness/SKILL.md
 [`create-issue`]: ./packages/buddy/skills/create-issue/SKILL.md
 [`llms-txt`]: ./packages/buddy/skills/llms-txt/SKILL.md
 [`init-buddy`]: ./packages/buddy/skills/init-buddy/SKILL.md
