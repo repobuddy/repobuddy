@@ -18,6 +18,7 @@
 | [`init-buddy`] | Set up the machine for the repo's git host — detects the OS and existing MCP servers, then installs and logs in `gh`, `glab`, `tea`, `fj`, or `az` |
 | [`merge-dep-prs`] | Merge pending dependency update PRs — gates each merge on whether CI reached what the change can break, diagnoses CI failures, never merges release PRs |
 | [`min-release-age`] | Lift the minimum-release-age gate for one package version, restore it when the version ages past the window, and schedule the cleanup in CI |
+| [`review-api`] | Review a library's public API for consistency and completeness against its own conventions — drift, sibling-justified gaps, docs vs exports |
 | [`review-permissions`] | Audit what your agents are allowed to do — risk-rank every grant, then tighten and consolidate it |
 | [`setup-github-repo`] | Set up a GitHub repo with branch protection, Dependabot, and CI |
 | [`website`] | Work on a repo's docs website — `init` adds an Astro/Starlight site to a monorepo; `deploy` publishes a static site to GitHub, GitLab, or Codeberg Pages, Bitbucket, or Azure Static Web Apps |
@@ -170,6 +171,7 @@ npx skills add repobuddy/agent-changesets
 [`init-buddy`]: ./packages/buddy/skills/init-buddy/SKILL.md
 [`merge-dep-prs`]: ./packages/buddy/skills/merge-dep-prs/SKILL.md
 [`min-release-age`]: ./packages/buddy/skills/min-release-age/SKILL.md
+[`review-api`]: ./packages/buddy/skills/review-api/SKILL.md
 [`review-permissions`]: ./packages/buddy/skills/review-permissions/SKILL.md
 [`setup-github-repo`]: ./packages/buddy/skills/setup-github-repo/SKILL.md
 [`website`]: ./packages/buddy/skills/website/SKILL.md
