@@ -1,5 +1,11 @@
 # @repobuddy/typescript
 
+## 2.2.1
+
+### Patch Changes
+
+- 6c43b3a: Update `clibuilder` to `^11.3.0`.
+
 ## 2.2.0
 
 ### Minor Changes

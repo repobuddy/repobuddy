@@ -1,0 +1,26 @@
+# Included from .gitlab-ci.yml. Runs only from a pipeline schedule that sets MIN_RELEASE_AGE=restore.
+# Removes minimum-release-age lifts whose window has passed and opens (or updates) a merge request.
+
+min-release-age:
+  image: node:22
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule" && $MIN_RELEASE_AGE == "restore"
+  variables:
+    BRANCH: chore/min-release-age-restore
+  script:
+    - node ci/min-release-age.mjs restore --json --body-file /tmp/mra-body.md > /tmp/mra.json
+    - |
+      if [ "$(node -p "require('/tmp/mra.json').removed.length")" = 0 ]; then exit 0; fi
+      git config user.name 'min-release-age'
+      git config user.email "min-release-age@noreply.${CI_SERVER_HOST}"
+      git switch -C "$BRANCH"
+      git commit -am 'chore: restore minimum release age'
+      # A project access token lets the MR run pipelines under its own identity; the job token
+      # needs "Allow Git push requests to the repository" enabled (GitLab 18.4+).
+      if [ -n "${MIN_RELEASE_AGE_TOKEN:-}" ]; then auth="oauth2:${MIN_RELEASE_AGE_TOKEN}"; else auth="gitlab-ci-token:${CI_JOB_TOKEN}"; fi
+      git push --force "${CI_SERVER_PROTOCOL}://${auth}@${CI_SERVER_HOST}:${CI_SERVER_PORT}/${CI_PROJECT_PATH}.git" "HEAD:refs/heads/${BRANCH}" \
+        -o merge_request.create \
+        -o merge_request.target="$CI_DEFAULT_BRANCH" \
+        -o merge_request.title='chore: restore minimum release age' \
+        -o merge_request.description="$(tr '\n' ' ' < /tmp/mra-body.md)" \
+        -o merge_request.remove_source_branch

@@ -1,5 +1,12 @@
 # @unional/jest-presets
 
+## 7.0.1
+
+### Patch Changes
+
+- 6c43b3a: Update `type-plus` to `8.0.0-beta.12` and `satisfier` to `^5.4.6`.
+  The optional `jest-watch-suspend` peer now also accepts `^2`.
+
 ## 7.0.0
 
 ### Major Changes

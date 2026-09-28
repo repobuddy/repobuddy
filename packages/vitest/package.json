@@ -1,6 +1,6 @@
 {
 	"name": "@repobuddy/vitest",
-	"version": "2.2.0",
+	"version": "2.3.0",
 	"description": "Your repository buddy for Vitest",
 	"keywords": [
 		"repobuddy",
@@ -54,6 +54,12 @@
 				"types": "./esm/setup/browser.d.ts",
 				"default": "./esm/setup/browser.js"
 			}
+		},
+		"./setup/order": {
+			"import": {
+				"types": "./esm/setup/order.d.ts",
+				"default": "./esm/setup/order.js"
+			}
 		}
 	},
 	"files": [
@@ -78,7 +84,7 @@
 	},
 	"devDependencies": {
 		"@repobuddy/typescript": "workspace:*",
-		"@size-limit/preset-small-lib": "~13.0.0",
+		"@size-limit/preset-small-lib": "~13.1.0",
 		"@storybook/addon-vitest": "10.6.0",
 		"@storybook/react-vite": "10.6.0",
 		"@vitest/browser": "^4.0.15",
@@ -87,9 +93,9 @@
 		"react": "^19.1.0",
 		"react-dom": "^19.1.0",
 		"rimraf": "~6.1.0",
-		"size-limit": "~13.0.0",
+		"size-limit": "~13.1.0",
 		"storybook": "10.6.0",
-		"storybook-addon-vis": "^4.0.0",
+		"storybook-addon-vis": "^4.2.9",
 		"typescript": "^7.0.0",
 		"vitest": "^4.1.4"
 	},
