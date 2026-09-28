@@ -31,7 +31,8 @@
  * It sets `until` to the version's publish time plus the configured window: past that moment the
  * version clears the gate on its own and the exemption does nothing. pnpm and Yarn exempt the single
  * version; npm and bun can only exempt the whole package name, which `lift` refuses without
- * `--name-wide`.
+ * `--name-wide`. A successful `lift` also reports `ci` (the same block `status` has): when
+ * `ci.installed` is false, the lift is not done until the cleanup job is installed in the same change.
  *
  * stdout: a human summary, or JSON with --json. stderr: errors.
  * Exit 0 on success, 1 on a failed lift or restore, 2 on bad usage.
@@ -39,6 +40,7 @@
 
 import { appendFileSync, readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
+import { type CiInfo, detectCi } from '../release-age/ci.js'
 import { type LiftOptions, lift, type RestoreOptions, restore, status } from '../release-age/core.js'
 import { detectManager, isPackageManager, type PackageManager } from '../release-age/managers.js'
 import { openPr } from '../release-age/open-pr.js'
@@ -100,6 +102,12 @@ function printStatus(s: Awaited<ReturnType<typeof status>>): void {
 	process.stdout.write(`${lines.join('\n')}\n`)
 }
 
+function cleanupLine(ci: CiInfo): string {
+	return ci.installed
+		? `cleanup job: installed (${ci.provider}, ${ci.job})`
+		: `cleanup job: not installed — install it in this change: setup-ci for ${ci.provider} (${ci.reference})`
+}
+
 function restoreBody(result: { removed: { lift: string; until: string }[] }): string {
 	return [
 		'Removes minimum-release-age lifts whose window has passed. Each version now clears the gate on its own.',
@@ -148,13 +156,14 @@ export async function main(argv: string[] = process.argv.slice(2)): Promise<void
 		return
 	}
 
-	let result: Awaited<ReturnType<typeof lift>> | Awaited<ReturnType<typeof restore>>
+	let result: ReturnType<typeof lift> | (ReturnType<typeof lift> & { ci: CiInfo }) | ReturnType<typeof restore>
 	if (command === 'lift') {
 		if (!spec) usage('lift needs <pkg[@version|@tag]>')
 		const liftOptions: LiftOptions = { nameWide: Boolean(opts['name-wide']), now }
 		if (opts.until !== undefined) liftOptions.until = opts.until
 		try {
-			result = lift(dir, pm, spec, liftOptions)
+			const lifted = lift(dir, pm, spec, liftOptions)
+			result = lifted.ok ? { ...lifted, ci: detectCi(dir) } : lifted
 		} catch (error) {
 			result = { ok: false, error: error instanceof Error ? error.message : String(error) }
 		}
@@ -177,6 +186,7 @@ export async function main(argv: string[] = process.argv.slice(2)): Promise<void
 				? `lifted ${result.spec}${result.tag ? ` (${result.tag})` : ''} as '${result.entry}' in ${result.file} until ${result.until}${result.nameWide ? ' (whole package name)' : ''}\n`
 				: `no change: ${result.reason}\n`,
 		)
+		if ('ci' in result) process.stdout.write(`${cleanupLine(result.ci)}\n`)
 	} else if ('removed' in result) {
 		const verb = result.dryRun ? 'would remove' : 'removed'
 		process.stdout.write(

@@ -151,6 +151,29 @@ test('lift: success prints summary, refusal without --name-wide, range rejection
 	assert.match(stderr.join(''), /range/)
 })
 
+test('lift: reports the cleanup job so a lift without one installs it in the same change', async () => {
+	const args = ['--until', '2026-09-17T10:00:00Z', '--now', '2026-09-16T10:00:00Z']
+	const dir = repo('pnpm-workspace.yaml', 'minimumReleaseAge: 1440\n')
+	execSync(`git -C ${dir} init -q && git -C ${dir} remote add origin git@github.com:acme/widgets.git`)
+	mkdirSync(join(dir, '.github', 'workflows'), { recursive: true })
+	await main(['lift', 'left-pad@1.3.0', '--dir', dir, ...args])
+	assert.match(
+		stdout.join(''),
+		/cleanup job: not installed — install it in this change: setup-ci for github \(references\/ci\/github\.md\)/,
+	)
+
+	stdout = []
+	await main(['lift', 'is-odd@3.0.1', '--dir', dir, '--json', ...args])
+	const pending = JSON.parse(stdout.join(''))
+	assert.equal(pending.ci.installed, false)
+	assert.equal(pending.ci.provider, 'github')
+
+	writeFileSync(join(dir, '.github', 'workflows', 'min-release-age.yml'), 'min-release-age')
+	stdout = []
+	await main(['lift', 'is-even@1.0.0', '--dir', dir, ...args])
+	assert.match(stdout.join(''), /cleanup job: installed \(github, \.github\/workflows\/min-release-age\.yml\)/)
+})
+
 test('lift: already exempt reports no change, and --json emits the result', async () => {
 	const dir = repo('pnpm-workspace.yaml', `minimumReleaseAgeExclude:\n  - 'left-pad'\n`)
 	await main(['lift', 'left-pad@1.3.0', '--dir', dir, '--json'])
