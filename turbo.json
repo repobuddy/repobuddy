@@ -19,6 +19,9 @@
 			]
 		},
 		"//#lint": {},
+		"check:preset": {
+			"inputs": ["*.jsonc", "tests/**", "package.json"]
+		},
 		"build": {
 			"dependsOn": ["^build"],
 			"inputs": ["src/**", "package.json", "tsconfig.*", "tsdown.config.*"],
