@@ -1,7 +1,6 @@
 import { describe, expect, it } from '@jest/globals'
 import type { PackageFacts } from './package-facts.js'
-import { buildPackageChecks, formatPackageReport, scorePackage } from './package-score.js'
-import { MAX_LEVEL } from './score.js'
+import { buildPackageChecks, formatPackageReport, PACKAGE_MAX_LEVEL, scorePackage } from './package-score.js'
 
 /** A package that passes every check the script can decide. */
 function readyFacts(overrides: Partial<PackageFacts> = {}): PackageFacts {
@@ -37,7 +36,7 @@ function check(facts: PackageFacts, id: string) {
 describe('scorePackage', () => {
 	it('awards the highest level when every decidable check passes', () => {
 		const result = scorePackage(readyFacts())
-		expect(result.level).toBe(MAX_LEVEL)
+		expect(result.level).toBe(PACKAGE_MAX_LEVEL)
 		expect(result.levelName).toBe('An agent keeps up with it cheaply')
 		expect(result.topFixes).toEqual([])
 	})

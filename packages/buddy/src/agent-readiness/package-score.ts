@@ -7,7 +7,7 @@
  */
 
 import type { PackageFacts } from './package-facts.js'
-import { type AreaScore, areaScores, type Check, gatedLevel, list, MAX_LEVEL, rankFixes } from './score.js'
+import { type AreaScore, areaScores, type Check, gatedLevel, list, rankFixes } from './score.js'
 
 type PackageArea = 'api' | 'docs' | 'errors' | 'changelog' | 'llms-txt'
 
@@ -19,6 +19,9 @@ const PACKAGE_WEIGHTS: Record<PackageArea, number> = {
 	changelog: 15,
 	'llms-txt': 15,
 }
+
+/** A package has no behavioral level: `bench` measures a repository, not what consumers' agents spend. */
+export const PACKAGE_MAX_LEVEL = 4
 
 const PACKAGE_LEVELS: Record<number, string> = {
 	0: 'An agent cannot find its way in',
@@ -237,7 +240,7 @@ export function buildPackageChecks(facts: PackageFacts): PackageCheck[] {
 
 export function scorePackage(facts: PackageFacts): PackageScoreResult {
 	const checks = buildPackageChecks(facts)
-	const level = gatedLevel(checks)
+	const level = gatedLevel(checks, PACKAGE_MAX_LEVEL)
 	return {
 		package: facts.name,
 		level,
@@ -259,7 +262,9 @@ export function scorePackage(facts: PackageFacts): PackageScoreResult {
 
 export function formatPackageReport(result: PackageScoreResult): string {
 	const lines: string[] = []
-	lines.push(`Package ${result.package ?? '(unnamed)'}: level ${result.level} of ${MAX_LEVEL}: ${result.levelName}`)
+	lines.push(
+		`Package ${result.package ?? '(unnamed)'}: level ${result.level} of ${PACKAGE_MAX_LEVEL}: ${result.levelName}`,
+	)
 	if (result.pendingJudgments.length > 0) {
 		lines.push(
 			`  provisional: ${result.pendingJudgments.length} gate(s) marked JUDGE need a decision, and a fail lowers it`,

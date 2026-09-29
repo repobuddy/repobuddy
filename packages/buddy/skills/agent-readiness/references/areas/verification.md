@@ -12,6 +12,7 @@ quality, so it carries the largest weight.
 | `ci-config` | 2 | no | script: a CI config the repo's host runs |
 | `ci-runs-verify` | 2 | yes | **judgment** |
 | `fast-feedback` | 3 | no | script: a pre-commit hook config (husky, lefthook, pre-commit, simple-git-hooks, lint-staged) |
+| `bench-baseline` | 5 | yes | script: `.agents/readiness/bench/baseline.json` recorded at most 90 days ago (see `bench` in SKILL.md) |
 
 ## Judging `ci-runs-verify`
 

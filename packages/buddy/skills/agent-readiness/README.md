@@ -3,7 +3,8 @@
 Score how ready a repository is for coding agents to work in: whether an agent can orient itself,
 check its own work, work without supervision, and work cheaply. The report leads with a level and the
 three fixes worth the most, not a percentage. Then, if you want, it fixes the findings as a series of
-reviewable commits, one area at a time.
+reviewable commits, one area at a time. It can also benchmark what agents actually cost in the repo,
+before and after a change.
 
 ## When to use
 
@@ -12,6 +13,7 @@ reviewable commits, one area at a time.
 - "what should we fix so agents work better here?"
 - "how many tokens does every agent session load before it starts?"
 - "fix what the readiness score found"
+- "did that change make agents cheaper or more reliable here?"
 - before handing a repository to unattended agents
 
 ## What it does
@@ -34,6 +36,7 @@ reviewable commits, one area at a time.
    | 2 | An agent can check its own work |
    | 3 | An agent can work without supervision (the target) |
    | 4 | An agent works cheaply |
+   | 5 | The cost is measured (a `bench` baseline at most 90 days old) |
 
    Security findings cap the level instead of subtracting points. A committed secret holds a repo at
    level 1 however good everything else is.
@@ -78,22 +81,43 @@ It also reports the public surface size and whether the package ships an agent s
 either. `llms.txt` fixes go to the `llms-txt` skill. Point it at the package folder after a build, or
 at an installed copy under `node_modules`.
 
+## Bench
+
+`bench` runs a fixed set of 3-5 agent tasks stored in the repo (`.agents/readiness/bench/tasks.json`),
+each with a shell check that decides pass or fail. Every run gets a clean checkout of HEAD and a
+headless Claude Code session that loads only the repo's own settings, instructions, skills, and MCP
+servers. It records input, output, and cached tokens, turns, tool calls, wall time, and pass rate,
+and from those the cost per successful task.
+
+- `bench --init` writes a task-set template to edit.
+- `bench` prints the plan and its spend ceiling, and runs nothing.
+- `bench --yes --baseline` records the baseline (`baseline.json`, committed).
+- `bench --yes` runs again and compares against the baseline, task by task.
+
+It spends money, so the skill always shows the plan and waits for a yes. The defaults (Sonnet, 3 runs
+per task, $0.50 cap per run) keep a 4-task bench around $2-5. Change one area at a time between runs,
+so each delta has one cause.
+
 ## What it will not do
 
 - Edit the repository during `score`, or without your yes during `improve`.
+- Spend money on a `bench` run before you have seen its plan and said yes.
 - Make a fix another skill owns.
 - Print a secret. It names the file and the key. For a committed secret, it asks you to rotate it
   before it untracks the file.
 
 ## How to invoke
 
-Ask for it directly, or run `/agent-readiness score` or `/agent-readiness improve [area]` where slash
-commands are supported. The scoring script also runs on its own:
+Ask for it directly, or run `/agent-readiness score`, `/agent-readiness improve [area]`, or
+`/agent-readiness bench [--baseline]` where slash commands are supported. The script also runs on its
+own:
 
 ```sh
 node <skill-dir>/scripts/agent-readiness.mjs score [--dir <repo>] [--json]
 node <skill-dir>/scripts/agent-readiness.mjs score --package <path> [--json]
+node <skill-dir>/scripts/agent-readiness.mjs bench [--init | --baseline] [--runs <n>] [--task <id>] [--yes]
 npx -y repobuddy@^1.11.0 agent-readiness score
+npx -y repobuddy@^1.12.0 agent-readiness bench
 ```
 
 ## Install
