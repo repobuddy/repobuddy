@@ -104,8 +104,8 @@ so each delta has one cause.
   default 3). With `--package` it holds the package at its own level instead (1-4). The judgment calls
   cannot run in CI, so they count as unknown: the level comes from the checks the script decides, and
   the output marks it provisional while judgment gates are still unsettled.
-- To change the area weights for your repo, add `.agents/agent-readiness.json` with
-  `{ "weights": { "<area>": <number> } }`. Weights only reorder fixes and area scores. They never
+- To change the area weights for your repo, add `.agents/readiness/weights.json` with
+  `{ "<area>": <number> }`, beside the `bench` task set whose results justify it. Weights only reorder fixes and area scores. They never
   change the level, so an override cannot weaken the CI check.
 
 ## What it will not do

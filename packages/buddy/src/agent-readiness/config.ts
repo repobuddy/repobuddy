@@ -1,13 +1,14 @@
 /**
- * Reads a repo's optional `.agents/agent-readiness.json`. It holds weight overrides only: weights order
- * fixes and area scores, never gates or the level, so an override cannot lower the bar `--check` holds.
+ * Reads a repo's optional `.agents/readiness/weights.json`, beside the `bench` task set whose results
+ * justify an override. It maps area ids to weights. Weights order fixes and area scores, never gates or
+ * the level, so an override cannot lower the bar `--check` holds.
  */
 
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { AREA_WEIGHTS, type WeightedArea, type Weights } from './score.js'
 
-export const CONFIG_FILE = '.agents/agent-readiness.json'
+export const WEIGHTS_FILE = '.agents/readiness/weights.json'
 
 export interface Config {
 	weights?: Partial<Weights>
@@ -25,7 +26,7 @@ function isObject(value: unknown): value is Record<string, unknown> {
 export function readConfig(dir: string): Config {
 	let text: string
 	try {
-		text = readFileSync(join(dir, CONFIG_FILE), 'utf8')
+		text = readFileSync(join(dir, WEIGHTS_FILE), 'utf8')
 	} catch {
 		return {}
 	}
@@ -33,25 +34,19 @@ export function readConfig(dir: string): Config {
 	try {
 		raw = JSON.parse(text)
 	} catch (e) {
-		throw new ConfigError(`${CONFIG_FILE}: invalid JSON (${(e as Error).message})`)
+		throw new ConfigError(`${WEIGHTS_FILE}: invalid JSON (${(e as Error).message})`)
 	}
-	if (!isObject(raw)) throw new ConfigError(`${CONFIG_FILE}: expected an object`)
-	for (const key of Object.keys(raw)) {
-		if (key !== 'weights') throw new ConfigError(`${CONFIG_FILE}: unknown key "${key}" (only "weights" is read)`)
-	}
-	const rawWeights = raw['weights']
-	if (rawWeights === undefined) return {}
-	if (!isObject(rawWeights)) throw new ConfigError(`${CONFIG_FILE}: "weights" must be an object`)
+	if (!isObject(raw)) throw new ConfigError(`${WEIGHTS_FILE}: expected an object of area weights`)
 
 	const weights: Partial<Weights> = {}
-	for (const [area, value] of Object.entries(rawWeights)) {
+	for (const [area, value] of Object.entries(raw)) {
 		if (!Object.keys(AREA_WEIGHTS).includes(area)) {
-			throw new ConfigError(`${CONFIG_FILE}: unknown area "${area}" (one of ${Object.keys(AREA_WEIGHTS).join(', ')})`)
+			throw new ConfigError(`${WEIGHTS_FILE}: unknown area "${area}" (one of ${Object.keys(AREA_WEIGHTS).join(', ')})`)
 		}
 		if (typeof value !== 'number' || !Number.isFinite(value) || value < 0) {
-			throw new ConfigError(`${CONFIG_FILE}: weight for "${area}" must be a non-negative number`)
+			throw new ConfigError(`${WEIGHTS_FILE}: weight for "${area}" must be a non-negative number`)
 		}
 		weights[area as WeightedArea] = value
 	}
-	return { weights }
+	return Object.keys(weights).length === 0 ? {} : { weights }
 }

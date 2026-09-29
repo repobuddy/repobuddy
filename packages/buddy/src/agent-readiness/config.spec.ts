@@ -2,7 +2,7 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it } from '@jest/globals'
-import { CONFIG_FILE, ConfigError, readConfig } from './config.js'
+import { ConfigError, readConfig, WEIGHTS_FILE } from './config.js'
 
 let dir: string
 
@@ -15,8 +15,8 @@ afterEach(() => {
 })
 
 function writeConfig(text: string) {
-	mkdirSync(join(dir, '.agents'), { recursive: true })
-	writeFileSync(join(dir, CONFIG_FILE), text)
+	mkdirSync(join(dir, '.agents/readiness'), { recursive: true })
+	writeFileSync(join(dir, WEIGHTS_FILE), text)
 }
 
 describe('readConfig', () => {
@@ -25,11 +25,11 @@ describe('readConfig', () => {
 	})
 
 	it('reads partial weight overrides', () => {
-		writeConfig('{ "weights": { "verification": 40, "noise": 0 } }')
+		writeConfig('{ "verification": 40, "noise": 0 }')
 		expect(readConfig(dir)).toEqual({ weights: { verification: 40, noise: 0 } })
 	})
 
-	it('accepts a file without weights', () => {
+	it('accepts an empty file object', () => {
 		writeConfig('{}')
 		expect(readConfig(dir)).toEqual({})
 	})
@@ -37,12 +37,11 @@ describe('readConfig', () => {
 	it.each([
 		['not json', /invalid JSON/],
 		['[]', /expected an object/],
-		['{ "minLevel": 3 }', /unknown key "minLevel"/],
-		['{ "weights": [1] }', /"weights" must be an object/],
-		['{ "weights": { "security": 10 } }', /unknown area "security"/],
-		['{ "weights": { "toString": 10 } }', /unknown area "toString"/],
-		['{ "weights": { "noise": -1 } }', /"noise" must be a non-negative number/],
-		['{ "weights": { "noise": "5" } }', /"noise" must be a non-negative number/],
+		['{ "weights": { "noise": 30 } }', /unknown area "weights"/],
+		['{ "security": 10 }', /unknown area "security"/],
+		['{ "toString": 10 }', /unknown area "toString"/],
+		['{ "noise": -1 }', /"noise" must be a non-negative number/],
+		['{ "noise": "5" }', /"noise" must be a non-negative number/],
 	])('rejects %s', (text, message) => {
 		writeConfig(text)
 		expect(() => readConfig(dir)).toThrow(ConfigError)
