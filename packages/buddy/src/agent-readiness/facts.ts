@@ -6,6 +6,7 @@
 import { spawnSync } from 'node:child_process'
 import { existsSync, readdirSync, readFileSync, realpathSync, statSync } from 'node:fs'
 import { basename, join } from 'node:path'
+import { type CommentFacts, findNameCollisions, measureComments, type NameCollision } from './source.js'
 
 interface InstructionFile {
 	path: string
@@ -49,6 +50,12 @@ export interface Facts {
 	committedSecretFiles: string[]
 	/** `<file>: <key>` for each MCP env entry holding a literal value under a credential-like name. */
 	mcpLiteralCredentials: string[]
+	/** `undefined` when the repo has no non-test source in a language with `//` comments. */
+	comments: CommentFacts | undefined
+	/** `undefined` when the repo has no non-test JS or TS source. */
+	nameCollisions: NameCollision[] | undefined
+	/** The command that runs knip, when the repo has it configured; `undefined` otherwise. */
+	deadCodeCommand: string | undefined
 }
 
 /** A rough, model-agnostic estimate. Real tokenizers land within about 20% of it for English and code. */
@@ -93,6 +100,20 @@ const LOCKFILES = [
 ]
 const HOOK_CONFIGS = ['.husky', 'lefthook.yml', '.lefthook.yml', '.pre-commit-config.yaml', '.simple-git-hooks.json']
 const MCP_FILES = ['.mcp.json', '.cursor/mcp.json', '.vscode/mcp.json']
+/** A script that runs knip itself, not one that names a task called `knip` (`turbo run knip`). */
+const KNIP_SCRIPT = /^\s*((npx|bunx|pnpm exec|pnpm dlx|yarn)\s+)?knip(\s|$)/
+const KNIP_CONFIGS = [
+	'knip.json',
+	'knip.jsonc',
+	'.knip.json',
+	'.knip.jsonc',
+	'knip.ts',
+	'knip.js',
+	'knip.mts',
+	'knip.config.ts',
+	'knip.config.js',
+	'knip.config.mjs',
+]
 
 const BUILD_OUTPUT = /(^|\/)(dist|build|out|coverage|\.next|\.turbo)\/|\.min\.(js|css)$/
 const SECRET_FILE = /(^|\/)(\.env(\.[^/]*)?|id_rsa|id_ed25519|credentials\.json|[^/]*\.(pem|p12|pfx|key))$/
@@ -205,6 +226,9 @@ function readScripts(dir: string): string[] {
 }
 
 interface PackageJson {
+	scripts?: Record<string, unknown>
+	devDependencies?: Record<string, unknown>
+	knip?: unknown
 	packageManager?: unknown
 	engines?: { node?: unknown }
 	workspaces?: unknown
@@ -272,14 +296,13 @@ function readTsStrict(dir: string): boolean | undefined {
 	return /"strict"\s*:\s*true/.test(text) || /"extends"/.test(text)
 }
 
-function countLines(dir: string, file: string): number {
+/** Past this size a file is generated or vendored; it is reported as oversized, never read. */
+function isOversized(dir: string, file: string): boolean {
 	try {
-		if (statSync(join(dir, file)).size > 4 * 1024 * 1024) return Number.POSITIVE_INFINITY
+		return statSync(join(dir, file)).size > 4 * 1024 * 1024
 	} catch {
-		return 0
+		return false
 	}
-	const text = read(dir, file) ?? ''
-	return text.split('\n').length
 }
 
 function readMcpLiteralCredentials(dir: string): string[] {
@@ -303,6 +326,26 @@ function readMcpLiteralCredentials(dir: string): string[] {
 		}
 	}
 	return found
+}
+
+function packageManager(dir: string, pkg: PackageJson): string {
+	if (typeof pkg.packageManager === 'string') return pkg.packageManager.split('@')[0] as string
+	if (exists(dir, 'pnpm-lock.yaml')) return 'pnpm'
+	if (exists(dir, 'yarn.lock')) return 'yarn'
+	if (exists(dir, 'bun.lock') || exists(dir, 'bun.lockb')) return 'bun'
+	return 'npm'
+}
+
+/** Prefers the repo's own knip script, so the run uses its flags. */
+function readDeadCodeCommand(dir: string, pkg: PackageJson): string | undefined {
+	const script = Object.entries(pkg.scripts ?? {}).find(
+		([, command]) => typeof command === 'string' && KNIP_SCRIPT.test(command),
+	)?.[0]
+	const configured = KNIP_CONFIGS.some((f) => exists(dir, f)) || pkg.knip !== undefined || pkg.devDependencies?.['knip']
+	if (!script && !configured) return undefined
+	const pm = packageManager(dir, pkg)
+	if (!script) return pm === 'npm' ? 'npx knip' : pm === 'bun' ? 'bunx knip' : `${pm} exec knip`
+	return pm === 'npm' || pm === 'bun' ? `${pm} run ${script}` : `${pm} ${script}`
 }
 
 export function collectFacts(dir: string): Facts {
@@ -332,9 +375,17 @@ export function collectFacts(dir: string): Facts {
 	const preCommitHooks = HOOK_CONFIGS.filter((f) => exists(dir, f))
 	if (pkg['simple-git-hooks'] || pkg['lint-staged']) preCommitHooks.push('package.json')
 
-	const largeFiles = files
-		.filter((f) => TEXT_EXTENSIONS.test(f) && !LOCK_OR_GENERATED.test(f) && !BUILD_OUTPUT.test(f))
-		.map((path) => ({ path, lines: countLines(dir, path) }))
+	const searched = files.filter((f) => TEXT_EXTENSIONS.test(f) && !LOCK_OR_GENERATED.test(f) && !BUILD_OUTPUT.test(f))
+	const texts = new Map<string, string | undefined>()
+	const readText = (file: string) => {
+		if (!texts.has(file)) texts.set(file, isOversized(dir, file) ? undefined : read(dir, file))
+		return texts.get(file)
+	}
+	const largeFiles = searched
+		.map((path) => ({
+			path,
+			lines: isOversized(dir, path) ? Number.POSITIVE_INFINITY : (readText(path) ?? '').split('\n').length,
+		}))
 		.filter((f) => f.lines > LARGE_FILE_LINES)
 		.sort((a, b) => b.lines - a.lines)
 
@@ -362,5 +413,8 @@ export function collectFacts(dir: string): Facts {
 		envIgnored,
 		committedSecretFiles: files.filter((f) => SECRET_FILE.test(f) && !SECRET_FILE_ALLOWED.test(basename(f))),
 		mcpLiteralCredentials: readMcpLiteralCredentials(dir),
+		comments: measureComments(searched, readText),
+		nameCollisions: findNameCollisions(searched, readText),
+		deadCodeCommand: readDeadCodeCommand(dir, pkg),
 	}
 }

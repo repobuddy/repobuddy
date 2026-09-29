@@ -150,6 +150,48 @@ describe('collectFacts', () => {
 		expect(collectFacts(repo({ 'tsconfig.json': '{ "files": [], "references": [] }' })).tsStrict).toBeUndefined()
 	})
 
+	it('measures comments and name collisions in non-test source', () => {
+		const files: Record<string, string> = {
+			'src/a.ts': '// why\nexport function run() {}\n/** stale */\n',
+			'src/a.spec.ts': '// a test comment\nrun()\n',
+		}
+		for (let i = 0; i < 9; i++) files[`docs/${i}.md`] = 'call run'
+		const facts = collectFacts(repo(files))
+		expect(facts.comments).toEqual({
+			files: 1,
+			codeLines: 1,
+			commentLines: 2,
+			heaviest: [{ path: 'src/a.ts', commentLines: 2, codeLines: 1 }],
+			orphanedJsdoc: ['src/a.ts:3'],
+		})
+		expect(facts.nameCollisions).toEqual([{ name: 'run', declaredIn: 1, matchingFiles: 11 }])
+	})
+
+	it('has no source measures without source', () => {
+		const facts = collectFacts(repo({ 'README.md': '' }))
+		expect(facts.comments).toBeUndefined()
+		expect(facts.nameCollisions).toBeUndefined()
+	})
+
+	it('finds the command that runs knip', () => {
+		const pkg = (json: object) => JSON.stringify(json)
+		const knipScript = { scripts: { verify: 'turbo run knip', 'lint:dead': 'knip --production' } }
+		expect(collectFacts(repo({ 'package.json': pkg(knipScript), 'pnpm-lock.yaml': '' })).deadCodeCommand).toBe(
+			'pnpm lint:dead',
+		)
+		expect(collectFacts(repo({ 'package.json': pkg(knipScript) })).deadCodeCommand).toBe('npm run lint:dead')
+		expect(
+			collectFacts(repo({ 'package.json': pkg({ packageManager: 'yarn@4.0.0' }), 'knip.json': '{}' })).deadCodeCommand,
+		).toBe('yarn exec knip')
+		expect(collectFacts(repo({ 'package.json': pkg({ devDependencies: { knip: '^6' } }) })).deadCodeCommand).toBe(
+			'npx knip',
+		)
+		expect(collectFacts(repo({ 'package.json': pkg({ knip: {} }), 'bun.lock': '' })).deadCodeCommand).toBe('bunx knip')
+		expect(
+			collectFacts(repo({ 'package.json': pkg({ scripts: { verify: 'turbo run knip' } }) })).deadCodeCommand,
+		).toBeUndefined()
+	})
+
 	it('walks the tree outside a git repo, skipping node_modules', () => {
 		const facts = collectFacts(
 			repo({ 'README.md': '', 'node_modules/x/dist/a.js': '', 'dist/b.js': '' }, { git: false }),
