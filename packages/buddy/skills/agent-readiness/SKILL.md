@@ -1,7 +1,7 @@
 ---
 name: agent-readiness
 description: "Use this skill when scoring or improving how ready a repo or package is for coding agents, or benchmarking agent cost."
-argument-hint: "score [--dir <repo> | --package <path>] | improve [area] | bench [--baseline]"
+argument-hint: "score [--dir <repo> | --package <path>] [--check] | improve [area] | bench [--baseline]"
 ---
 
 # Agent Readiness
@@ -23,7 +23,7 @@ writes only its task set, results, and baseline, and spends money only after a y
 
 | Command | What it does | Writes |
 | --- | --- | --- |
-| `score` (default) | Runs the static checks, settles the judgment checks, and reports the level, a score per area, the top fixes, and the tokens loaded per session | nothing |
+| `score` (default) | Runs the static checks, settles the judgment checks, and reports the level, a score per area, the top fixes, and the tokens loaded per session. `--check` is CI mode (see [CI mode](#ci-mode)) | nothing |
 | `score --package <path>` | Scores the consuming side of a package: how cheaply another repo's agent can use it through what ships. Same report shape, its own criteria (see [Package score](#package-score)) | nothing |
 | `improve [area]` | Fixes the findings `score` reports as a reviewable series: one area per commit, each fix approved first, owned fixes handed off. Re-scores after each area | the repo, on approval |
 | `bench [--baseline]` | Runs the repo's fixed agent task set and records tokens, turns, tool calls, wall time, pass rate, and cost per successful task; compares against the stored baseline | results file; `baseline.json` with `--baseline` |
@@ -31,16 +31,16 @@ writes only its task set, results, and baseline, and spends money only after a y
 ## Script
 
 ```bash
-node <this-skill-dir>/scripts/agent-readiness.mjs score [--dir <repo>] [--json]
-node <this-skill-dir>/scripts/agent-readiness.mjs score --package <path> [--json]
+node <this-skill-dir>/scripts/agent-readiness.mjs score [--dir <repo>] [--json] [--check [--min-level <1-5>]]
+node <this-skill-dir>/scripts/agent-readiness.mjs score --package <path> [--json] [--check [--min-level <1-4>]]
 node <this-skill-dir>/scripts/agent-readiness.mjs bench [--dir <repo>] [--init | --baseline] [--runs <n>] [--task <id>] [--yes] [--json]
 ```
 
 `<this-skill-dir>` is the directory holding this SKILL.md, not the current working directory.
 
 The script ships in the `repobuddy` npm package. If `scripts/agent-readiness.mjs` is missing (the skill
-was installed from git) or cannot be run, use `npx -y repobuddy@^1.11.0 agent-readiness score` with the
-same arguments (`bench` needs `repobuddy@^1.12.0`).
+was installed from git) or cannot be run, use `npx -y repobuddy@^1.12.0 agent-readiness score` with the
+same arguments.
 
 `score` reads files and asks `git` which files are tracked and ignored. It builds, installs, and runs
 nothing, so it takes seconds and costs no tokens. It measures the source too: the share of comments,
@@ -67,6 +67,30 @@ the more autonomously agents act in it, so a leak does more damage there.
 The area weights (verification 25, instructions 15, navigability 15, signal-to-noise 15,
 self-describing code 10, environment 10, task discovery 5) only order the fixes and the per-area
 scores. They are starting estimates, not measurements. Say so in the report.
+
+A repository can override them in `.agents/agent-readiness.json`, for example after measuring its own
+agent runs. Name only the areas to change:
+
+```json
+{ "weights": { "verification": 40, "task-discovery": 0 } }
+```
+
+The file holds the repository area weights and nothing else; `--package` does not read it. Weights
+never touch gates or the level, so an override cannot lower the bar CI holds. The report marks each
+overridden weight. A malformed file stops the script (exit 2) rather than scoring with a guess.
+
+## CI mode
+
+`score --check --min-level <n>` holds a repository at a level in CI. It exits 1 when the level is
+below `n` and 0 otherwise. `--min-level` takes 1 to 5 and defaults to 3, the target.
+
+CI cannot settle `judge` checks, so it treats them as **unknown**: only the gates the script decides
+count, and security caps still apply. When the check passes, the script lists the unsettled judgment
+gates at or below `n` as provisional; they never change the exit code. Run `score` without `--check`
+to settle them.
+
+`--check` works the same with `--package`, holding a package at its own level. A package tops out at
+level 4, so there `--min-level` takes 1 to 4.
 
 ## Score
 

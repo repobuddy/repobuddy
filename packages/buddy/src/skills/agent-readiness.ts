@@ -1,8 +1,8 @@
 /*
  * Score how ready a repository is for coding agents, and measure what agents cost working in it.
  *
- *   node scripts/agent-readiness.mjs score [--dir <repo>] [--json]
- *   node scripts/agent-readiness.mjs score --package <path> [--json]
+ *   node scripts/agent-readiness.mjs score [--dir <repo>] [--json] [--check [--min-level <1-5>]]
+ *   node scripts/agent-readiness.mjs score --package <path> [--json] [--check [--min-level <1-4>]]
  *   node scripts/agent-readiness.mjs bench [--dir <repo>] [--init | --baseline] [--runs <n>] [--task <id>] [--yes] [--json]
  *
  * `score` reports the gated level (1-5), a score per area, the top three fixes, and the tokens every
@@ -21,18 +21,24 @@
  * package through what ships (declarations, exports map, README, changelog, llms.txt), with the same
  * gated report shape. Public surface size and a shipped agent skill are reported, not scored.
  *
+ * `score --check` is CI mode: exit 1 when the level is below --min-level (default 3, the target). Only the
+ * gates the script decides count; unsettled `judge` gates are reported as provisional and never fail the
+ * run. Repo area weights default to the skill's; `.agents/agent-readiness.json` can override them.
+ *
  * stdout: a human report, or JSON with --json. stderr: errors and per-run progress.
- * Exit 0 on success, 1 when bench cannot run, 2 on bad usage.
+ * Exit 0 on success, 1 when bench cannot run or `score --check` finds the level below --min-level,
+ * 2 on bad usage or a malformed weights config.
  */
 
 import { resolve } from 'node:path'
 import { BenchError, bench, formatOutcome, formatPlan, initTasks, loadConfig, plan } from '../agent-readiness/bench.js'
+import { ConfigError, readConfig } from '../agent-readiness/config.js'
 import { collectFacts } from '../agent-readiness/facts.js'
 import { collectPackageFacts } from '../agent-readiness/package-facts.js'
-import { formatPackageReport, scorePackage } from '../agent-readiness/package-score.js'
-import { formatReport, score } from '../agent-readiness/score.js'
+import { formatPackageReport, PACKAGE_MAX_LEVEL, scorePackage } from '../agent-readiness/package-score.js'
+import { checkLevel, formatCheck, formatReport, MAX_LEVEL, score } from '../agent-readiness/score.js'
 
-const USAGE = `usage: agent-readiness.mjs score [--dir <repo> | --package <path>] [--json]
+const USAGE = `usage: agent-readiness.mjs score [--dir <repo> | --package <path>] [--json] [--check [--min-level <n>]]
        agent-readiness.mjs bench [--dir <repo>] [--init | --baseline] [--runs <n>] [--task <id>] [--yes] [--json]`
 
 function usage(message: string): never {
@@ -50,9 +56,15 @@ interface Opts {
 	yes: boolean
 	runs?: number
 	task?: string
+	check: boolean
+	minLevel?: number
 }
 
 const BENCH_FLAGS = new Set(['--init', '--baseline', '--yes', '--runs', '--task'])
+const CHECK_FLAGS = new Set(['--check', '--min-level'])
+
+/** The documented target level, and what --check holds a repo or package to unless told otherwise. */
+const DEFAULT_MIN_LEVEL = 3
 
 function parseArgs(argv: string[]): Opts {
 	const [command, ...rest] = argv
@@ -67,6 +79,7 @@ function parseArgs(argv: string[]): Opts {
 		init: false,
 		baseline: false,
 		yes: false,
+		check: false,
 	}
 	let hasDir = false
 	const value = (i: number, flag: string) => {
@@ -77,7 +90,7 @@ function parseArgs(argv: string[]): Opts {
 	for (let i = 0; i < rest.length; i++) {
 		const a = rest[i] as string
 		if (command === 'score' && BENCH_FLAGS.has(a)) usage(`${a} is a bench option`)
-		if (command === 'bench' && a === '--package') usage('--package is a score option')
+		if (command === 'bench' && (a === '--package' || CHECK_FLAGS.has(a))) usage(`${a} is a score option`)
 		if (a === '--dir') {
 			opts.dir = resolve(value(i++, a))
 			hasDir = true
@@ -87,13 +100,26 @@ function parseArgs(argv: string[]): Opts {
 		else if (a === '--baseline') opts.baseline = true
 		else if (a === '--yes') opts.yes = true
 		else if (a === '--task') opts.task = value(i++, a)
-		else if (a === '--runs') {
+		else if (a === '--check') opts.check = true
+		else if (a === '--min-level') {
+			const v = value(i++, a)
+			if (!/^[1-9]\d*$/.test(v)) usage('--min-level needs a whole number from 1')
+			opts.minLevel = Number(v)
+		} else if (a === '--runs') {
 			const n = Number(value(i++, a))
 			if (!Number.isInteger(n) || n < 1) usage('--runs needs a positive whole number')
 			opts.runs = n
 		} else usage(`unknown argument "${a}"`)
 	}
 	if (hasDir && opts.package !== undefined) usage('--dir and --package score different things; pass one')
+	if (opts.minLevel !== undefined) {
+		if (!opts.check) usage('--min-level needs --check')
+		// A repo can reach level 5 (a fresh bench baseline); a package tops out at 4.
+		const max = opts.package === undefined ? MAX_LEVEL : PACKAGE_MAX_LEVEL
+		if (opts.minLevel > max) {
+			usage(`--min-level for ${opts.package === undefined ? 'a repo' : '--package'} is 1 to ${max}`)
+		}
+	}
 	if (opts.init && (opts.baseline || opts.yes)) usage('--init runs nothing; drop --baseline and --yes')
 	if (opts.baseline && opts.task !== undefined) usage('a baseline covers every task; drop --task')
 	return opts
@@ -123,6 +149,24 @@ function runBench(opts: Opts): void {
 	process.stdout.write(opts.json ? `${JSON.stringify(outcome, null, 2)}\n` : formatOutcome(outcome))
 }
 
+function report<R extends { level: number; pendingJudgments: Array<{ id: string; level: number }> }>(
+	opts: Opts,
+	result: R,
+	format: (result: R) => string,
+): void {
+	if (!opts.check) {
+		process.stdout.write(opts.json ? `${JSON.stringify(result, null, 2)}\n` : format(result))
+		return
+	}
+	const check = checkLevel(result, opts.minLevel ?? DEFAULT_MIN_LEVEL)
+	process.stdout.write(
+		opts.json
+			? `${JSON.stringify({ ...result, check }, null, 2)}\n`
+			: `${format(result)}\n${formatCheck(result.level, check)}`,
+	)
+	if (!check.passed) process.exit(1)
+}
+
 export async function main(argv: string[] = process.argv.slice(2)): Promise<void> {
 	const opts = parseArgs(argv)
 	if (opts.command === 'bench') {
@@ -136,12 +180,18 @@ export async function main(argv: string[] = process.argv.slice(2)): Promise<void
 		return
 	}
 	if (opts.package !== undefined) {
-		const result = scorePackage(collectPackageFacts(opts.package))
-		process.stdout.write(opts.json ? `${JSON.stringify(result, null, 2)}\n` : formatPackageReport(result))
+		report(opts, scorePackage(collectPackageFacts(opts.package)), formatPackageReport)
 		return
 	}
-	const result = score(collectFacts(opts.dir))
-	process.stdout.write(opts.json ? `${JSON.stringify(result, null, 2)}\n` : formatReport(result))
+	let config: ReturnType<typeof readConfig>
+	try {
+		config = readConfig(opts.dir)
+	} catch (e) {
+		if (!(e instanceof ConfigError)) throw e
+		process.stderr.write(`${e.message}\n`)
+		process.exit(2)
+	}
+	report(opts, score(collectFacts(opts.dir), { weights: config.weights }), formatReport)
 }
 
 // Resolve the entry check against the built bundle's filename, since this module runs as

@@ -13,7 +13,7 @@
 
 | Skill | Description |
 | --- | --- |
-| [`agent-readiness`] | Score how ready a repo is for coding agents — a gated level, the three fixes worth the most, and the tokens every session loads — then fix the findings one area per commit, and benchmark what agents cost before and after; `--package` scores how easily consumers' agents can use a library |
+| [`agent-readiness`] | Score how ready a repo is for coding agents — a gated level, the three fixes worth the most, and the tokens every session loads — hold a level in CI, then fix the findings one area per commit, and benchmark what agents cost before and after; `--package` scores how easily consumers' agents can use a library |
 | [`create-issue`] | Create a bug report or feature request — searches for duplicates first |
 | [`llms-txt`] | Publish an `llms.txt` generated from a project's real public surface, with a CI drift check |
 | [`init-buddy`] | Set up the machine for the repo's git host — detects the OS and existing MCP servers, then installs and logs in `gh`, `glab`, `tea`, `fj`, or `az` |

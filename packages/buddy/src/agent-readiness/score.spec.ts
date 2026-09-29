@@ -1,6 +1,16 @@
 import { describe, expect, it } from '@jest/globals'
 import type { Facts } from './facts.js'
-import { buildChecks, COMMENT_SHARE_BUDGET, formatReport, INSTRUCTION_TOKEN_BUDGET, MAX_LEVEL, score } from './score.js'
+import {
+	AREA_WEIGHTS,
+	buildChecks,
+	COMMENT_SHARE_BUDGET,
+	checkLevel,
+	formatCheck,
+	formatReport,
+	INSTRUCTION_TOKEN_BUDGET,
+	MAX_LEVEL,
+	score,
+} from './score.js'
 
 /** A repo that passes every check the script can decide. */
 function readyFacts(overrides: Partial<Facts> = {}): Facts {
@@ -72,9 +82,9 @@ describe('score', () => {
 	it('awards level 5 only for a bench baseline at most 90 days old', () => {
 		const now = new Date('2026-09-28T00:00:00Z')
 		const daysAgo = (n: number) => new Date(now.getTime() - n * 86_400_000).toISOString()
-		expect(score(readyFacts({ benchBaselineAt: daysAgo(90) }), now).level).toBe(5)
-		expect(score(readyFacts({ benchBaselineAt: daysAgo(91) }), now).level).toBe(4)
-		const missing = score(readyFacts({ benchBaselineAt: undefined }), now)
+		expect(score(readyFacts({ benchBaselineAt: daysAgo(90) }), { now }).level).toBe(5)
+		expect(score(readyFacts({ benchBaselineAt: daysAgo(91) }), { now }).level).toBe(4)
+		const missing = score(readyFacts({ benchBaselineAt: undefined }), { now })
 		expect(missing.level).toBe(4)
 		expect(missing.topFixes[0]?.id).toBe('bench-baseline')
 	})
@@ -210,5 +220,63 @@ describe('formatReport', () => {
 
 	it('says when the script sees nothing to fix', () => {
 		expect(formatReport(score(readyFacts()))).toMatch(/nothing the script can see/)
+	})
+})
+
+describe('weight overrides', () => {
+	it('uses the default weights when there is no override', () => {
+		const result = score(readyFacts())
+		expect(result.weights).toEqual(AREA_WEIGHTS)
+		expect(result.overriddenWeights).toEqual([])
+	})
+
+	it('merges an override over the defaults and reorders the fixes by it', () => {
+		const facts = readyFacts({ hasContributing: false, hasLockfile: false, preCommitHooks: [] })
+		expect(score(facts).topFixes.map((c) => c.id)).toEqual(['fast-feedback', 'lockfile', 'contributing'])
+		const result = score(facts, { weights: { 'task-discovery': 100, verification: 25 } })
+		expect(result.weights['task-discovery']).toBe(100)
+		expect(result.overriddenWeights).toEqual(['task-discovery'])
+		expect(result.areas.find((a) => a.area === 'task-discovery')?.weight).toBe(100)
+		expect(result.topFixes.map((c) => c.id)).toEqual(['contributing', 'fast-feedback', 'lockfile'])
+	})
+
+	it('never changes the level', () => {
+		const facts = readyFacts({ toolchainPins: [] })
+		const zeroed = Object.fromEntries(Object.keys(AREA_WEIGHTS).map((a) => [a, 0]))
+		expect(score(facts, { weights: zeroed }).level).toBe(score(facts).level)
+	})
+
+	it('marks overridden weights in the report', () => {
+		const text = formatReport(score(readyFacts(), { weights: { noise: 40 } }))
+		expect(text).toMatch(/noise +40: .*\(repo override\)/)
+		expect(text).not.toMatch(/verification.*repo override/)
+	})
+})
+
+describe('checkLevel', () => {
+	it('passes at the threshold and lists the unsettled judgment gates at or below it', () => {
+		const result = score(readyFacts())
+		expect(checkLevel(result, 2)).toEqual({ minLevel: 2, passed: true, provisional: ['ci-runs-verify'] })
+		expect(checkLevel(result, 3).provisional).toEqual(['ci-runs-verify', 'instructions-accurate', 'setup-documented'])
+	})
+
+	it('fails below the threshold on script-decided gates, with nothing provisional', () => {
+		const result = score(readyFacts({ toolchainPins: [] }))
+		expect(checkLevel(result, 3)).toEqual({ minLevel: 3, passed: false, provisional: [] })
+	})
+
+	it('fails when a security finding caps the level below the threshold', () => {
+		expect(checkLevel(score(readyFacts({ envIgnored: false })), 3).passed).toBe(false)
+	})
+
+	it('formats a pass, a provisional pass, and a fail', () => {
+		const ready = score(readyFacts())
+		expect(formatCheck(ready.level, checkLevel(ready, 3))).toBe(
+			'check: ok, level 5 meets --min-level 3 (provisional: unsettled judgment gates ci-runs-verify, instructions-accurate, setup-documented)\n',
+		)
+		const clean = score(readyFacts({ ciConfigs: [], instructionFiles: [] }))
+		expect(formatCheck(clean.level, checkLevel(clean, 1))).toBe('check: ok, level 2 meets --min-level 1\n')
+		const low = score(readyFacts({ scripts: ['test'] }))
+		expect(formatCheck(low.level, checkLevel(low, 3))).toBe('check: FAIL, level 1 is below --min-level 3\n')
 	})
 })

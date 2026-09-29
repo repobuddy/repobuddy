@@ -46,6 +46,13 @@ test.each([
 	[['bench', '--task']],
 	[['bench', '--init', '--yes']],
 	[['bench', '--baseline', '--task', 'a']],
+	[['score', '--check', '--min-level']],
+	[['score', '--check', '--min-level', '0']],
+	[['score', '--check', '--min-level', '6']],
+	[['score', '--package', '.', '--check', '--min-level', '5']],
+	[['bench', '--check']],
+	[['score', '--check', '--min-level', '2.5']],
+	[['score', '--min-level', '2']],
 ])('rejects bad usage %j with exit 2', async (argv) => {
 	await expect(main(argv)).rejects.toThrow('exit:2')
 	expect(stderr.join('')).toMatch(/usage: agent-readiness\.mjs score/)
@@ -108,4 +115,46 @@ test('bench --yes runs the task set and reports each run', async () => {
 	stdout = []
 	await main(['bench', '--dir', dir, '--yes', '--baseline', '--json'])
 	expect(JSON.parse(stdout.join('')).baselinePath).toBe('.agents/readiness/bench/baseline.json')
+})
+
+test('--check exits 1 below the default minimum level of 3', async () => {
+	await expect(main(['score', '--dir', dir, '--check'])).rejects.toThrow('exit:1')
+	expect(stdout.join('')).toMatch(/check: FAIL, level 1 is below --min-level 3\n$/)
+})
+
+test('--check exits 0 at or above --min-level', async () => {
+	await main(['score', '--dir', dir, '--check', '--min-level', '1'])
+	expect(stdout.join('')).toMatch(/check: ok, level 1 meets --min-level 1\n$/)
+})
+
+test('--check --json adds the check result', async () => {
+	await expect(main(['score', '--dir', dir, '--check', '--min-level', '2', '--json'])).rejects.toThrow('exit:1')
+	const result = JSON.parse(stdout.join(''))
+	expect(result.check).toEqual({ minLevel: 2, passed: false, provisional: [] })
+})
+
+test('applies the repo weight override', async () => {
+	mkdirSync(join(dir, '.agents'))
+	writeFileSync(join(dir, '.agents/agent-readiness.json'), '{ "weights": { "noise": 30 } }')
+	await main(['score', '--dir', dir, '--json'])
+	const result = JSON.parse(stdout.join(''))
+	expect(result.weights.noise).toBe(30)
+	expect(result.overriddenWeights).toEqual(['noise'])
+})
+
+test('exits 2 on a malformed config', async () => {
+	mkdirSync(join(dir, '.agents'))
+	writeFileSync(join(dir, '.agents/agent-readiness.json'), '{ "weights": { "bogus": 1 } }')
+	await expect(main(['score', '--dir', dir])).rejects.toThrow('exit:2')
+	expect(stderr.join('')).toMatch(/unknown area "bogus"/)
+})
+
+test('--check holds a package at --min-level too', async () => {
+	await expect(main(['score', '--package', dir, '--check', '--min-level', '1'])).rejects.toThrow('exit:1')
+	expect(stdout.join('')).toMatch(/check: FAIL, level 0 is below --min-level 1\n$/)
+})
+
+test('--min-level accepts 5 for a repo, the level a fresh bench baseline unlocks', async () => {
+	await expect(main(['score', '--dir', dir, '--check', '--min-level', '5'])).rejects.toThrow('exit:1')
+	expect(stdout.join('')).toMatch(/check: FAIL, level 1 is below --min-level 5\n$/)
 })
