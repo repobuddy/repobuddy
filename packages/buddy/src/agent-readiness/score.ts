@@ -6,6 +6,7 @@
  * findings never subtract points; they cap the level.
  */
 
+import { BASELINE_FILE, BASELINE_MAX_AGE_DAYS, baselineAgeDays } from './bench.js'
 import type { Facts } from './facts.js'
 import type { CommentFacts } from './source.js'
 
@@ -36,10 +37,11 @@ const LEVELS: Record<number, string> = {
 	2: 'An agent can check its own work',
 	3: 'An agent can work without supervision',
 	4: 'An agent works cheaply',
+	5: 'The cost is measured',
 }
 
-/** The highest level `score` can award. Level 5 needs a behavioral baseline, which this command does not measure. */
-export const MAX_LEVEL = 4
+/** Level 5 is the only behavioral gate: it needs a `bench` baseline, which `score` reads but never runs. */
+export const MAX_LEVEL = 5
 
 /**
  * `pass` and `fail` are decided by the script. `judge` means the script cannot decide it: the agent
@@ -111,11 +113,13 @@ function commentDetail(comments: CommentFacts): string[] {
 	]
 }
 
-export function buildChecks(facts: Facts): Check[] {
+export function buildChecks(facts: Facts, now: Date = new Date()): Check[] {
 	const { comments } = facts
 	const verifyScript = VERIFY_SCRIPTS.find((s) => facts.scripts.includes(s))
 	const instructionTokens = facts.instructionFiles.reduce((sum, f) => sum + f.tokens, 0)
 	const hasInstructions = facts.instructionFiles.length > 0
+	const baselineAge =
+		facts.benchBaselineAt === undefined ? undefined : baselineAgeDays({ createdAt: facts.benchBaselineAt }, now)
 
 	return [
 		// Level 1: an agent can read it.
@@ -390,6 +394,18 @@ export function buildChecks(facts: Facts): Check[] {
 			...(facts.deadCodeCommand ? { detail: [`run: ${facts.deadCodeCommand}`] } : {}),
 			fix: 'Delete what knip reports as unused, or tell knip why it is used.',
 		},
+		// Level 5: the cost is measured.
+		{
+			id: 'bench-baseline',
+			area: 'verification',
+			level: 5,
+			gate: true,
+			effort: 3,
+			status: baselineAge !== undefined && baselineAge <= BASELINE_MAX_AGE_DAYS ? 'pass' : 'fail',
+			summary: `A \`bench\` baseline exists and is at most ${BASELINE_MAX_AGE_DAYS} days old`,
+			detail: [baselineAge === undefined ? `no ${BASELINE_FILE}` : `${BASELINE_FILE}: ${baselineAge} days old`],
+			fix: 'Write a 3-5 task set and record a baseline with `agent-readiness bench --baseline`; refresh it as the repo changes.',
+		},
 		// Security: these cap the level instead of subtracting points.
 		{
 			id: 'committed-secrets',
@@ -435,9 +451,9 @@ function securityCap(checks: Check<string>[]): number | undefined {
 	return Math.min(...failed.map((c) => c.level))
 }
 
-export function gatedLevel(checks: Check<string>[]): number {
+export function gatedLevel(checks: Check<string>[], maxLevel: number): number {
 	let level = 0
-	for (let n = 1; n <= MAX_LEVEL; n++) {
+	for (let n = 1; n <= maxLevel; n++) {
 		const blocked = checks.some((c) => c.area !== 'security' && c.gate && c.level === n && c.status === 'fail')
 		if (blocked) break
 		level = n
@@ -483,9 +499,9 @@ export function rankFixes<C extends Check<string>>(checks: C[], level: number, w
 		})
 }
 
-export function score(facts: Facts): ScoreResult {
-	const checks = buildChecks(facts)
-	const gated = gatedLevel(checks)
+export function score(facts: Facts, now: Date = new Date()): ScoreResult {
+	const checks = buildChecks(facts, now)
+	const gated = gatedLevel(checks, MAX_LEVEL)
 	const cap = securityCap(checks)
 	const level = cap === undefined ? gated : Math.min(gated, cap)
 	const instructions = facts.instructionFiles.reduce((sum, f) => sum + f.tokens, 0)

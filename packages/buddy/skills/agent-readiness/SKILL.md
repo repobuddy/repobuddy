@@ -1,7 +1,7 @@
 ---
 name: agent-readiness
-description: "Use this skill when scoring or improving how ready a repo or package is for coding agents — gated level, fixes."
-argument-hint: "score [--dir <repo> | --package <path>] | improve [area]"
+description: "Use this skill when scoring or improving how ready a repo or package is for coding agents, or benchmarking agent cost."
+argument-hint: "score [--dir <repo> | --package <path>] | improve [area] | bench [--baseline]"
 ---
 
 # Agent Readiness
@@ -10,12 +10,14 @@ Score how cheaply and reliably coding agents can work in a repository. The repor
 **level** and the **three fixes worth the most**, not a percentage.
 
 Use when asked "is this repo agent-ready", "why do agents struggle here", "what should we fix so
-agents work better", "how many tokens does every session load", "fix the readiness findings", or
-before handing a repo to unattended agents. Use `--package` when asked whether a library is easy for
-*consumers' agents* to use: "can an agent use this package", "is our public API agent-friendly".
+agents work better", "how many tokens does every session load", "fix the readiness findings", "did
+that change make agents cheaper", or before handing a repo to unattended agents. Use `--package` when
+asked whether a library is easy for *consumers' agents* to use: "can an agent use this package", "is
+our public API agent-friendly".
 
 `score` **reads and reports**. It edits nothing. `improve` edits the repository, but only a fix the
-user approved, and only one area per commit. A fix another skill owns goes to that skill.
+user approved, and only one area per commit. A fix another skill owns goes to that skill. `bench`
+writes only its task set, results, and baseline, and spends money only after a yes.
 
 ## Commands
 
@@ -24,24 +26,26 @@ user approved, and only one area per commit. A fix another skill owns goes to th
 | `score` (default) | Runs the static checks, settles the judgment checks, and reports the level, a score per area, the top fixes, and the tokens loaded per session | nothing |
 | `score --package <path>` | Scores the consuming side of a package: how cheaply another repo's agent can use it through what ships. Same report shape, its own criteria (see [Package score](#package-score)) | nothing |
 | `improve [area]` | Fixes the findings `score` reports as a reviewable series: one area per commit, each fix approved first, owned fixes handed off. Re-scores after each area | the repo, on approval |
+| `bench [--baseline]` | Runs the repo's fixed agent task set and records tokens, turns, tool calls, wall time, pass rate, and cost per successful task; compares against the stored baseline | results file; `baseline.json` with `--baseline` |
 
 ## Script
 
 ```bash
 node <this-skill-dir>/scripts/agent-readiness.mjs score [--dir <repo>] [--json]
 node <this-skill-dir>/scripts/agent-readiness.mjs score --package <path> [--json]
+node <this-skill-dir>/scripts/agent-readiness.mjs bench [--dir <repo>] [--init | --baseline] [--runs <n>] [--task <id>] [--yes] [--json]
 ```
 
 `<this-skill-dir>` is the directory holding this SKILL.md, not the current working directory.
 
 The script ships in the `repobuddy` npm package. If `scripts/agent-readiness.mjs` is missing (the skill
 was installed from git) or cannot be run, use `npx -y repobuddy@^1.11.0 agent-readiness score` with the
-same arguments.
+same arguments (`bench` needs `repobuddy@^1.12.0`).
 
-It reads files and asks `git` which files are tracked and ignored. It builds, installs, and runs
+`score` reads files and asks `git` which files are tracked and ignored. It builds, installs, and runs
 nothing, so it takes seconds and costs no tokens. It measures the source too: the share of comments,
 JSDoc blocks that document nothing, and names that flood a grep. Whether a comment or a name is worth
-changing stays a judgment.
+changing stays a judgment. `bench` runs real agents; see [Bench](#bench).
 
 ## Levels
 
@@ -54,6 +58,7 @@ strong docs cannot hide a missing verify command. Level 3 is the target.
 | 2 | An agent can check its own work | one verify command; a test command; CI runs that same command |
 | 3 | An agent can work without supervision | an instructions file that is accurate and names only real commands; a pinned toolchain; one-step, non-interactive setup |
 | 4 | An agent works cheaply | instructions under the token budget; no file over 1000 lines; no committed build output |
+| 5 | The cost is measured | a `bench` baseline at most 90 days old |
 
 Security findings **cap** the level instead of subtracting points: a committed secret file or a
 literal MCP credential caps it at 1, and an unignored `.env` caps it at 2. The more ready a repo is,
@@ -91,7 +96,7 @@ scores. They are starting estimates, not measurements. Say so in the report.
 ## Report
 
 ```markdown
-## Agent readiness: Level <n> of 4 — <meaning>
+## Agent readiness: Level <n> of 5 — <meaning>
 <one line: what holds it at this level, and the security cap if any>
 
 ### Fix first
@@ -206,6 +211,37 @@ Every `llms.txt` fix goes to `llms-txt`, which generates the file and wires its 
 skill never writes one. `improve` works on the repository areas only; for a package finding, offer the
 fix or its owning skill as `score` does.
 
+## Bench
+
+`bench` answers whether `score` means anything: it runs real agents on fixed tasks and measures what
+they cost. Compare runs one area's changes at a time, or the effect of each cannot be told apart:
+to measure an `improve` area, bench before it and again after its commit.
+
+1. **Find the task set** at `.agents/readiness/bench/tasks.json`. If there is none, run `bench --init`
+   for a template, then help the user replace its examples with 3-5 tasks of this repo's own: fix a
+   seeded bug (a committed patch the task's `setup` applies), a small feature, and a question whose
+   answer the `check` can grep. Each `check` is a shell command; exit 0 is a pass, usually "verify is
+   green, plus one assertion". The top-level `setup` (such as the install) runs in every checkout
+   before the agent starts, and its cost is not counted.
+2. **Show the plan and get a yes.** Run `bench` without `--yes`: it prints the runs, the model, the
+   permission mode, and the spend ceiling, and runs nothing. Show that to the user. Only after an
+   explicit yes, run it again with `--yes` (and `--baseline` when recording one). Never add `--yes` on
+   your own.
+3. **Report** the pass rate, cost per success, and the per-task medians; with a baseline, the deltas
+   the script prints. Say when a run was capped or errored, since its numbers are not comparable. With
+   `--baseline`, tell the user to commit `baseline.json`; `results/` is git-ignored.
+
+Each run checks out HEAD into a fresh git worktree, so uncommitted changes are not benched: commit
+the change under test first. The agent is Claude Code (`claude -p`), loading the repo's own settings,
+instructions, skills, and `.mcp.json`, and none of the user's, so the cost measured is the repo's.
+The default permission mode is `bypassPermissions`: the agent runs commands unprompted in the
+throwaway checkout, on the user's machine. Say so in the plan.
+
+Keep a bench affordable. The defaults are Sonnet, 3 runs per task, and a $0.50 cap per run, so 4
+tasks cost about $2-5 and never more than $6. Use `--task <id> --runs 1` to try a new task before a
+full run. The model is part of the baseline: a run on another model is not compared, so change
+`model` only with a new baseline.
+
 ## Anti-patterns
 
 - Reporting an average percentage as the headline, or letting a high area score excuse a failed gate
@@ -217,6 +253,8 @@ fix or its owning skill as `score` does.
 - Committing two areas together, or mixing an owner skill's changes into this area's commit
 - Fixing something an owner skill owns instead of handing it off
 - Reporting an area as improved without re-running `score`
+- Running `bench --yes` before the user has seen the plan and said yes
+- Comparing a bench run against a baseline taken on another model, or with several areas changed at once
 
 ## References
 

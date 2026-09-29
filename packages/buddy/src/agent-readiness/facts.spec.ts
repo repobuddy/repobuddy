@@ -192,6 +192,14 @@ describe('collectFacts', () => {
 		).toBeUndefined()
 	})
 
+	it('reads when the bench baseline was recorded', () => {
+		expect(collectFacts(repo({})).benchBaselineAt).toBeUndefined()
+		const baseline = JSON.stringify({ createdAt: '2026-09-01T00:00:00.000Z' })
+		expect(collectFacts(repo({ '.agents/readiness/bench/baseline.json': baseline })).benchBaselineAt).toBe(
+			'2026-09-01T00:00:00.000Z',
+		)
+	})
+
 	it('walks the tree outside a git repo, skipping node_modules', () => {
 		const facts = collectFacts(
 			repo({ 'README.md': '', 'node_modules/x/dist/a.js': '', 'dist/b.js': '' }, { git: false }),

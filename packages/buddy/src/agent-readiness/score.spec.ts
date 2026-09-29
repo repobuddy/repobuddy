@@ -28,6 +28,7 @@ function readyFacts(overrides: Partial<Facts> = {}): Facts {
 		comments: { files: 10, codeLines: 900, commentLines: 100, heaviest: [], orphanedJsdoc: [] },
 		nameCollisions: [],
 		deadCodeCommand: undefined,
+		benchBaselineAt: new Date().toISOString(),
 		...overrides,
 	}
 }
@@ -68,6 +69,16 @@ describe('score', () => {
 		expect(result.topFixes[0]?.id).toBe('committed-secrets')
 	})
 
+	it('awards level 5 only for a bench baseline at most 90 days old', () => {
+		const now = new Date('2026-09-28T00:00:00Z')
+		const daysAgo = (n: number) => new Date(now.getTime() - n * 86_400_000).toISOString()
+		expect(score(readyFacts({ benchBaselineAt: daysAgo(90) }), now).level).toBe(5)
+		expect(score(readyFacts({ benchBaselineAt: daysAgo(91) }), now).level).toBe(4)
+		const missing = score(readyFacts({ benchBaselineAt: undefined }), now)
+		expect(missing.level).toBe(4)
+		expect(missing.topFixes[0]?.id).toBe('bench-baseline')
+	})
+
 	it('caps the level at 2 when .env is not ignored', () => {
 		expect(score(readyFacts({ envIgnored: false })).level).toBe(2)
 	})
@@ -93,7 +104,7 @@ describe('score', () => {
 
 	it('scores each area over its decided checks only', () => {
 		const areas = score(readyFacts({ scripts: ['test'], tsStrict: undefined })).areas
-		expect(areas.find((a) => a.area === 'verification')).toMatchObject({ passed: 3, total: 4, score: 75 })
+		expect(areas.find((a) => a.area === 'verification')).toMatchObject({ passed: 4, total: 5, score: 80 })
 		expect(areas.find((a) => a.area === 'self-describing')).toMatchObject({ total: 0, score: undefined })
 	})
 })
@@ -186,7 +197,7 @@ describe('buildChecks', () => {
 describe('formatReport', () => {
 	it('leads with the level and the fixes', () => {
 		const text = formatReport(score(readyFacts({ committedSecretFiles: ['.env'], hasContributing: false })))
-		expect(text.split('\n')[0]).toBe('Level 1 of 4: An agent can read it')
+		expect(text.split('\n')[0]).toBe('Level 1 of 5: An agent can read it')
 		expect(text).toMatch(/caps it at 1/)
 		expect(text).toMatch(/1\. \[security\]/)
 		expect(text).toMatch(/Tokens loaded per session: ~830/)

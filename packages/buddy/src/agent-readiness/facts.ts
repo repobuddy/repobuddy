@@ -6,6 +6,7 @@
 import { spawnSync } from 'node:child_process'
 import { existsSync, readdirSync, readFileSync, realpathSync, statSync } from 'node:fs'
 import { basename, join } from 'node:path'
+import { readBaseline } from './bench.js'
 import { type CommentFacts, findNameCollisions, measureComments, type NameCollision } from './source.js'
 
 interface InstructionFile {
@@ -56,6 +57,8 @@ export interface Facts {
 	nameCollisions: NameCollision[] | undefined
 	/** The command that runs knip, when the repo has it configured; `undefined` otherwise. */
 	deadCodeCommand: string | undefined
+	/** When the stored `bench` baseline was recorded; `undefined` when there is none. */
+	benchBaselineAt: string | undefined
 }
 
 /** A rough, model-agnostic estimate. Real tokenizers land within about 20% of it for English and code. */
@@ -416,5 +419,6 @@ export function collectFacts(dir: string): Facts {
 		comments: measureComments(searched, readText),
 		nameCollisions: findNameCollisions(searched, readText),
 		deadCodeCommand: readDeadCodeCommand(dir, pkg),
+		benchBaselineAt: readBaseline(dir)?.createdAt,
 	}
 }
