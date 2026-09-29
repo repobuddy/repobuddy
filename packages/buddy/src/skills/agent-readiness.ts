@@ -23,7 +23,7 @@
  *
  * `score --check` is CI mode: exit 1 when the level is below --min-level (default 3, the target). Only the
  * gates the script decides count; unsettled `judge` gates are reported as provisional and never fail the
- * run. Repo area weights default to the skill's; `.agents/agent-readiness.json` can override them.
+ * run. Repo area weights default to the skill's; `.agents/readiness/weights.json` can override them.
  *
  * stdout: a human report, or JSON with --json. stderr: errors and per-run progress.
  * Exit 0 on success, 1 when bench cannot run or `score --check` finds the level below --min-level,

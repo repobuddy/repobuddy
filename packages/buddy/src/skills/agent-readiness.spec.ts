@@ -134,8 +134,8 @@ test('--check --json adds the check result', async () => {
 })
 
 test('applies the repo weight override', async () => {
-	mkdirSync(join(dir, '.agents'))
-	writeFileSync(join(dir, '.agents/agent-readiness.json'), '{ "weights": { "noise": 30 } }')
+	mkdirSync(join(dir, '.agents/readiness'), { recursive: true })
+	writeFileSync(join(dir, '.agents/readiness/weights.json'), '{ "noise": 30 }')
 	await main(['score', '--dir', dir, '--json'])
 	const result = JSON.parse(stdout.join(''))
 	expect(result.weights.noise).toBe(30)
@@ -143,8 +143,8 @@ test('applies the repo weight override', async () => {
 })
 
 test('exits 2 on a malformed config', async () => {
-	mkdirSync(join(dir, '.agents'))
-	writeFileSync(join(dir, '.agents/agent-readiness.json'), '{ "weights": { "bogus": 1 } }')
+	mkdirSync(join(dir, '.agents/readiness'), { recursive: true })
+	writeFileSync(join(dir, '.agents/readiness/weights.json'), '{ "bogus": 1 }')
 	await expect(main(['score', '--dir', dir])).rejects.toThrow('exit:2')
 	expect(stderr.join('')).toMatch(/unknown area "bogus"/)
 })

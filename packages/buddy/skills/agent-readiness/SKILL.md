@@ -68,11 +68,11 @@ The area weights (verification 25, instructions 15, navigability 15, signal-to-n
 self-describing code 10, environment 10, task discovery 5) only order the fixes and the per-area
 scores. They are starting estimates, not measurements. Say so in the report.
 
-A repository can override them in `.agents/agent-readiness.json`, for example after measuring its own
-agent runs. Name only the areas to change:
+A repository can override them in `.agents/readiness/weights.json`, beside the `bench` task set whose
+results justify the change. Name only the areas to change:
 
 ```json
-{ "weights": { "verification": 40, "task-discovery": 0 } }
+{ "verification": 40, "task-discovery": 0 }
 ```
 
 The file holds the repository area weights and nothing else; `--package` does not read it. Weights
