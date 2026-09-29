@@ -268,6 +268,10 @@ tasks cost about $2-5 and never more than $6. Use `--task <id> --runs 1` to try 
 full run. The model is part of the baseline: a run on another model is not compared, so change
 `model` only with a new baseline.
 
+Each run also stops at 20 minutes of wall-clock. Claude Code has no documented turn limit, so time
+and the spend cap are the only bounds. A task that needs longer can raise `timeoutMinutes` in
+`tasks.json`. A run stopped by either cap is marked capped.
+
 ## Anti-patterns
 
 - Reporting an average percentage as the headline, or letting a high area score excuse a failed gate
