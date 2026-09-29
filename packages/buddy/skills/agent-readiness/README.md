@@ -98,6 +98,16 @@ It spends money, so the skill always shows the plan and waits for a yes. The def
 per task, $0.50 cap per run) keep a 4-task bench around $2-5. Change one area at a time between runs,
 so each delta has one cause.
 
+## CI mode and weight overrides
+
+- `score --check --min-level <n>` fails the run (exit 1) when the repo drops below level `n` (1-5,
+  default 3). With `--package` it holds the package at its own level instead (1-4). The judgment calls
+  cannot run in CI, so they count as unknown: the level comes from the checks the script decides, and
+  the output marks it provisional while judgment gates are still unsettled.
+- To change the area weights for your repo, add `.agents/agent-readiness.json` with
+  `{ "weights": { "<area>": <number> } }`. Weights only reorder fixes and area scores. They never
+  change the level, so an override cannot weaken the CI check.
+
 ## What it will not do
 
 - Edit the repository during `score`, or without your yes during `improve`.
@@ -113,10 +123,10 @@ Ask for it directly, or run `/agent-readiness score`, `/agent-readiness improve 
 own:
 
 ```sh
-node <skill-dir>/scripts/agent-readiness.mjs score [--dir <repo>] [--json]
-node <skill-dir>/scripts/agent-readiness.mjs score --package <path> [--json]
+node <skill-dir>/scripts/agent-readiness.mjs score [--dir <repo>] [--json] [--check [--min-level <1-5>]]
+node <skill-dir>/scripts/agent-readiness.mjs score --package <path> [--json] [--check [--min-level <1-4>]]
 node <skill-dir>/scripts/agent-readiness.mjs bench [--init | --baseline] [--runs <n>] [--task <id>] [--yes]
-npx -y repobuddy@^1.11.0 agent-readiness score
+npx -y repobuddy@^1.12.0 agent-readiness score
 npx -y repobuddy@^1.12.0 agent-readiness bench
 ```
 

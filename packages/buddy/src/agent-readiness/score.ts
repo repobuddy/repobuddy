@@ -20,8 +20,16 @@ type Area =
 	| 'task-discovery'
 	| 'security'
 
-/** Starting weights. They are hypotheses until behavioral measurement revises them, and the report prints them. */
-const AREA_WEIGHTS: Record<Exclude<Area, 'security'>, number> = {
+/** Areas that carry a weight. Security has none: its findings cap the level instead. */
+export type WeightedArea = Exclude<Area, 'security'>
+
+export type Weights = Record<WeightedArea, number>
+
+/**
+ * Starting weights. They are hypotheses until behavioral measurement revises them, and the report prints them.
+ * A repo can override them (see `config.ts`); weights never touch gates or the level.
+ */
+export const AREA_WEIGHTS: Weights = {
 	verification: 25,
 	instructions: 15,
 	navigability: 15,
@@ -85,7 +93,16 @@ export interface ScoreResult {
 	/** Pending `judge` gates at or below the awarded level; each one, if it fails, lowers the level. */
 	pendingJudgments: Check[]
 	tokensPerSession: { instructions: number; skills: number; total: number }
-	weights: typeof AREA_WEIGHTS
+	weights: Weights
+	/** Areas whose weight came from the repo's override instead of the defaults. */
+	overriddenWeights: WeightedArea[]
+}
+
+export interface ScoreOptions {
+	/** Per-repo weight overrides, merged over `AREA_WEIGHTS`. */
+	weights?: Partial<Weights> | undefined
+	/** The clock the bench-baseline freshness gate reads; tests pin it. */
+	now?: Date | undefined
 }
 
 /** Instruction files load on every turn; past this many tokens, each line should be earning its place. */
@@ -499,8 +516,9 @@ export function rankFixes<C extends Check<string>>(checks: C[], level: number, w
 		})
 }
 
-export function score(facts: Facts, now: Date = new Date()): ScoreResult {
-	const checks = buildChecks(facts, now)
+export function score(facts: Facts, options: ScoreOptions = {}): ScoreResult {
+	const weights: Weights = { ...AREA_WEIGHTS, ...options.weights }
+	const checks = buildChecks(facts, options.now ?? new Date())
 	const gated = gatedLevel(checks, MAX_LEVEL)
 	const cap = securityCap(checks)
 	const level = cap === undefined ? gated : Math.min(gated, cap)
@@ -512,12 +530,46 @@ export function score(facts: Facts, now: Date = new Date()): ScoreResult {
 		gatedLevel: gated,
 		securityCap: cap,
 		checks,
-		areas: areaScores(checks, AREA_WEIGHTS),
-		topFixes: rankFixes(checks, level, AREA_WEIGHTS).slice(0, 3),
+		areas: areaScores(checks, weights),
+		topFixes: rankFixes(checks, level, weights).slice(0, 3),
 		pendingJudgments: checks.filter((c) => c.status === 'judge' && c.gate && c.level <= level),
 		tokensPerSession: { instructions, skills, total: instructions + skills },
-		weights: AREA_WEIGHTS,
+		weights,
+		overriddenWeights: (Object.keys(options.weights ?? {}) as WeightedArea[]).filter(
+			(area) => options.weights?.[area] !== AREA_WEIGHTS[area],
+		),
 	}
+}
+
+export interface LevelCheck {
+	minLevel: number
+	passed: boolean
+	/**
+	 * Unsettled `judge` gates at or below `minLevel` when the check passes. CI cannot settle them, so they
+	 * never change the exit code; a failed one would lower the level.
+	 */
+	provisional: string[]
+}
+
+/** CI mode: holds a repo or package at `minLevel` using only the gates the script decides. */
+export function checkLevel(
+	result: { level: number; pendingJudgments: Array<Pick<Check<string>, 'id' | 'level'>> },
+	minLevel: number,
+): LevelCheck {
+	const passed = result.level >= minLevel
+	return {
+		minLevel,
+		passed,
+		provisional: passed ? result.pendingJudgments.filter((c) => c.level <= minLevel).map((c) => c.id) : [],
+	}
+}
+
+export function formatCheck(level: number, check: LevelCheck): string {
+	if (!check.passed) return `check: FAIL, level ${level} is below --min-level ${check.minLevel}\n`
+	const line = `check: ok, level ${level} meets --min-level ${check.minLevel}`
+	return check.provisional.length === 0
+		? `${line}\n`
+		: `${line} (provisional: unsettled judgment gates ${check.provisional.join(', ')})\n`
 }
 
 export function formatReport(result: ScoreResult): string {
@@ -547,7 +599,8 @@ export function formatReport(result: ScoreResult): string {
 	lines.push('Areas (weight: score):')
 	for (const a of result.areas) {
 		const s = a.score === undefined ? 'n/a' : `${a.score}% (${a.passed}/${a.total})`
-		lines.push(`  ${a.area.padEnd(16)} ${String(a.weight).padStart(2)}: ${s}`)
+		const mark = result.overriddenWeights.includes(a.area) ? ' (repo override)' : ''
+		lines.push(`  ${a.area.padEnd(16)} ${String(a.weight).padStart(2)}: ${s}${mark}`)
 	}
 	lines.push('')
 	lines.push('Checks:')
