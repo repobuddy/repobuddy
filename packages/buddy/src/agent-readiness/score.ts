@@ -47,9 +47,9 @@ export const MAX_LEVEL = 4
  */
 type Status = 'pass' | 'fail' | 'judge' | 'n/a'
 
-export interface Check {
+export interface Check<A extends string = Area> {
 	id: string
-	area: Area
+	area: A
 	level: number
 	gate: boolean
 	/** 1 is minutes, 2 is an hour or so, 3 is a project. */
@@ -62,8 +62,8 @@ export interface Check {
 	handoff?: string
 }
 
-interface AreaScore {
-	area: Exclude<Area, 'security'>
+export interface AreaScore<A extends string = Exclude<Area, 'security'>> {
+	area: A
 	weight: number
 	passed: number
 	total: number
@@ -89,7 +89,7 @@ export interface ScoreResult {
 /** Instruction files load on every turn; past this many tokens, each line should be earning its place. */
 export const INSTRUCTION_TOKEN_BUDGET = 3000
 
-function list(items: string[], limit = 10): string[] {
+export function list(items: string[], limit = 10): string[] {
 	return items.length > limit ? [...items.slice(0, limit), `… and ${items.length - limit} more`] : items
 }
 
@@ -429,13 +429,13 @@ export function buildChecks(facts: Facts): Check[] {
 }
 
 /** Security failures cap the level: a committed credential at 1, an unignored `.env` at 2. */
-function securityCap(checks: Check[]): number | undefined {
+function securityCap(checks: Check<string>[]): number | undefined {
 	const failed = checks.filter((c) => c.area === 'security' && c.status === 'fail')
 	if (failed.length === 0) return undefined
 	return Math.min(...failed.map((c) => c.level))
 }
 
-function gatedLevel(checks: Check[]): number {
+export function gatedLevel(checks: Check<string>[]): number {
 	let level = 0
 	for (let n = 1; n <= MAX_LEVEL; n++) {
 		const blocked = checks.some((c) => c.area !== 'security' && c.gate && c.level === n && c.status === 'fail')
@@ -445,13 +445,13 @@ function gatedLevel(checks: Check[]): number {
 	return level
 }
 
-function areaScores(checks: Check[]): AreaScore[] {
-	return (Object.keys(AREA_WEIGHTS) as Array<keyof typeof AREA_WEIGHTS>).map((area) => {
+export function areaScores<A extends string>(checks: Check<string>[], weights: Record<A, number>): AreaScore<A>[] {
+	return (Object.keys(weights) as A[]).map((area) => {
 		const decided = checks.filter((c) => c.area === area && (c.status === 'pass' || c.status === 'fail'))
 		const passed = decided.filter((c) => c.status === 'pass').length
 		return {
 			area,
-			weight: AREA_WEIGHTS[area],
+			weight: weights[area],
 			passed,
 			total: decided.length,
 			score: decided.length === 0 ? undefined : Math.round((passed / decided.length) * 100),
@@ -463,12 +463,13 @@ function areaScores(checks: Check[]): AreaScore[] {
  * Security failures come first, then gates that block the next level, then everything else by area
  * weight per unit of effort.
  */
-function rankFixes(checks: Check[], level: number): Check[] {
-	const rank = (c: Check) => {
+export function rankFixes<C extends Check<string>>(checks: C[], level: number, weights: Record<string, number>): C[] {
+	const rank = (c: C) => {
+		const weight = weights[c.area] ?? 0
 		if (c.area === 'security') return [0, c.level, 0]
-		if (c.gate && c.level === level + 1) return [1, 0, -AREA_WEIGHTS[c.area] / c.effort]
-		if (c.gate) return [2, c.level, -AREA_WEIGHTS[c.area] / c.effort]
-		return [3, 0, -AREA_WEIGHTS[c.area] / c.effort]
+		if (c.gate && c.level === level + 1) return [1, 0, -weight / c.effort]
+		if (c.gate) return [2, c.level, -weight / c.effort]
+		return [3, 0, -weight / c.effort]
 	}
 	return checks
 		.filter((c) => c.status === 'fail')
@@ -495,8 +496,8 @@ export function score(facts: Facts): ScoreResult {
 		gatedLevel: gated,
 		securityCap: cap,
 		checks,
-		areas: areaScores(checks),
-		topFixes: rankFixes(checks, level).slice(0, 3),
+		areas: areaScores(checks, AREA_WEIGHTS),
+		topFixes: rankFixes(checks, level, AREA_WEIGHTS).slice(0, 3),
 		pendingJudgments: checks.filter((c) => c.status === 'judge' && c.gate && c.level <= level),
 		tokensPerSession: { instructions, skills, total: instructions + skills },
 		weights: AREA_WEIGHTS,
