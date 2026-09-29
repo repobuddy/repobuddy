@@ -1,6 +1,6 @@
 import { describe, expect, it } from '@jest/globals'
 import type { Facts } from './facts.js'
-import { buildChecks, formatReport, INSTRUCTION_TOKEN_BUDGET, MAX_LEVEL, score } from './score.js'
+import { buildChecks, COMMENT_SHARE_BUDGET, formatReport, INSTRUCTION_TOKEN_BUDGET, MAX_LEVEL, score } from './score.js'
 
 /** A repo that passes every check the script can decide. */
 function readyFacts(overrides: Partial<Facts> = {}): Facts {
@@ -25,6 +25,9 @@ function readyFacts(overrides: Partial<Facts> = {}): Facts {
 		envIgnored: true,
 		committedSecretFiles: [],
 		mcpLiteralCredentials: [],
+		comments: { files: 10, codeLines: 900, commentLines: 100, heaviest: [], orphanedJsdoc: [] },
+		nameCollisions: [],
+		deadCodeCommand: undefined,
 		...overrides,
 	}
 }
@@ -129,6 +132,48 @@ describe('buildChecks', () => {
 	it('asks for judgment on the monorepo map only in a monorepo', () => {
 		expect(check(readyFacts(), 'monorepo-map')?.status).toBe('n/a')
 		expect(check(readyFacts({ isMonorepo: true }), 'monorepo-map')?.status).toBe('judge')
+	})
+
+	it('asks for judgment on comments only past the comment budget, with the files to sample', () => {
+		const heavy = {
+			files: 2,
+			codeLines: 70,
+			commentLines: 30,
+			heaviest: [{ path: 'src/a.ts', commentLines: 25, codeLines: 20 }],
+			orphanedJsdoc: [],
+		}
+		expect(COMMENT_SHARE_BUDGET).toBeLessThan(0.3)
+		expect(check(readyFacts(), 'comment-signal')?.status).toBe('pass')
+		expect(check(readyFacts({ comments: heavy }), 'comment-signal')).toMatchObject({
+			status: 'judge',
+			detail: ['30% comments: 30 of 100 non-test source lines in 2 files', 'src/a.ts: 25 comment, 20 code lines'],
+		})
+		expect(check(readyFacts({ comments: undefined }), 'comment-signal')?.status).toBe('n/a')
+	})
+
+	it('fails on orphaned JSDoc and lists where each block is', () => {
+		const comments = { files: 1, codeLines: 9, commentLines: 1, heaviest: [], orphanedJsdoc: ['src/a.ts:3'] }
+		expect(check(readyFacts({ comments }), 'orphaned-jsdoc')).toMatchObject({ status: 'fail', detail: ['src/a.ts:3'] })
+		expect(check(readyFacts(), 'orphaned-jsdoc')?.status).toBe('pass')
+		expect(check(readyFacts({ comments: undefined }), 'orphaned-jsdoc')?.status).toBe('n/a')
+	})
+
+	it('asks for judgment on names that flood a grep', () => {
+		const nameCollisions = [{ name: 'run', declaredIn: 3, matchingFiles: 40 }]
+		expect(check(readyFacts({ nameCollisions }), 'generic-names')).toMatchObject({
+			status: 'judge',
+			detail: ['run: declared in 3 file(s), grep matches 40 files'],
+		})
+		expect(check(readyFacts(), 'generic-names')?.status).toBe('pass')
+		expect(check(readyFacts({ nameCollisions: undefined }), 'generic-names')?.status).toBe('n/a')
+	})
+
+	it('names the knip command to run for dead code, and skips it without knip', () => {
+		expect(check(readyFacts({ deadCodeCommand: 'pnpm knip' }), 'dead-code')).toMatchObject({
+			status: 'judge',
+			detail: ['run: pnpm knip'],
+		})
+		expect(check(readyFacts(), 'dead-code')?.status).toBe('n/a')
 	})
 
 	it('skips CI-parity judgment when there is no verify command or CI', () => {

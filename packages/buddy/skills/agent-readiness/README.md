@@ -18,9 +18,12 @@ reviewable commits, one area at a time.
 
 1. **Runs a static scan** with a bundled script: no build, no install, no tokens. It checks for a
    verify command, an instructions file and the commands it names, a pinned toolchain, file sizes,
-   committed build output, committed secrets, literal MCP credentials, and more.
+   committed build output, committed secrets, literal MCP credentials, and more. It also measures the
+   source: the share of comments, JSDoc blocks that document nothing, and names that flood a grep.
 2. **Settles the judgment calls** the script cannot make, such as whether CI runs the same command an
-   agent runs locally, or whether the instructions file is accurate. It loads only the criteria for
+   agent runs locally, whether the instructions file is accurate, or whether heavy comments state
+   constraints or tell history. When the repo has knip configured, it runs knip and reports what is
+   unused. It loads only the criteria for
    the areas that need it.
 3. **Reports a gated level.** Each level has gates. A repo is at level N only when every gate up to N
    passes, so good docs cannot hide a missing test command.

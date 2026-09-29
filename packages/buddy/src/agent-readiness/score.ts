@@ -7,6 +7,7 @@
  */
 
 import type { Facts } from './facts.js'
+import type { CommentFacts } from './source.js'
 
 type Area =
 	| 'verification'
@@ -94,7 +95,24 @@ function list(items: string[], limit = 10): string[] {
 
 const VERIFY_SCRIPTS = ['verify', 'check', 'validate', 'ci', 'precommit', 'pre-commit']
 
+/** Comment lines as a share of non-blank source lines. At or under this, comments cost too little to judge. */
+export const COMMENT_SHARE_BUDGET = 0.15
+
+function commentShare(comments: CommentFacts): number {
+	const total = comments.codeLines + comments.commentLines
+	return total === 0 ? 0 : comments.commentLines / total
+}
+
+function commentDetail(comments: CommentFacts): string[] {
+	const total = comments.codeLines + comments.commentLines
+	return [
+		`${Math.round(commentShare(comments) * 100)}% comments: ${comments.commentLines} of ${total} non-test source lines in ${comments.files} files`,
+		...comments.heaviest.map((f) => `${f.path}: ${f.commentLines} comment, ${f.codeLines} code lines`),
+	]
+}
+
 export function buildChecks(facts: Facts): Check[] {
+	const { comments } = facts
 	const verifyScript = VERIFY_SCRIPTS.find((s) => facts.scripts.includes(s))
 	const instructionTokens = facts.instructionFiles.reduce((sum, f) => sum + f.tokens, 0)
 	const hasInstructions = facts.instructionFiles.length > 0
@@ -326,9 +344,51 @@ export function buildChecks(facts: Facts): Check[] {
 			level: 4,
 			gate: false,
 			effort: 2,
-			status: 'judge',
-			summary: 'Comments state constraints, not history, restated names, or essays',
+			status: !comments ? 'n/a' : commentShare(comments) <= COMMENT_SHARE_BUDGET ? 'pass' : 'judge',
+			summary: `Comments state constraints, not history, restated names, or essays (judged above ${Math.round(COMMENT_SHARE_BUDGET * 100)}% of source)`,
+			...(comments ? { detail: commentDetail(comments) } : {}),
 			fix: 'Cut comments that narrate history or restate the code; keep the ones that state a constraint.',
+		},
+		{
+			id: 'orphaned-jsdoc',
+			area: 'noise',
+			level: 4,
+			gate: false,
+			effort: 1,
+			status: !comments ? 'n/a' : comments.orphanedJsdoc.length === 0 ? 'pass' : 'fail',
+			summary: 'No JSDoc block is left documenting nothing',
+			...(comments && comments.orphanedJsdoc.length > 0 ? { detail: list(comments.orphanedJsdoc) } : {}),
+			fix: 'Delete each orphaned block, or move it onto the declaration it was written for.',
+		},
+		{
+			id: 'generic-names',
+			area: 'navigability',
+			level: 4,
+			gate: false,
+			effort: 2,
+			status: !facts.nameCollisions ? 'n/a' : facts.nameCollisions.length === 0 ? 'pass' : 'judge',
+			summary: 'Top-level names are specific enough that a grep for one finds it, not a flood',
+			...(facts.nameCollisions && facts.nameCollisions.length > 0
+				? {
+						detail: list(
+							facts.nameCollisions.map(
+								(n) => `${n.name}: declared in ${n.declaredIn} file(s), grep matches ${n.matchingFiles} files`,
+							),
+						),
+					}
+				: {}),
+			fix: 'Rename the worst offenders to say what they do (`runMigrations`, not `run`); split `utils` by what each part is for.',
+		},
+		{
+			id: 'dead-code',
+			area: 'noise',
+			level: 4,
+			gate: false,
+			effort: 2,
+			status: facts.deadCodeCommand ? 'judge' : 'n/a',
+			summary: 'No unused files, exports, or dependencies (reported by knip)',
+			...(facts.deadCodeCommand ? { detail: [`run: ${facts.deadCodeCommand}`] } : {}),
+			fix: 'Delete what knip reports as unused, or tell knip why it is used.',
 		},
 		// Security: these cap the level instead of subtracting points.
 		{

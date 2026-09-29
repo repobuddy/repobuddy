@@ -36,7 +36,9 @@ was installed from git) or cannot be run, use `npx -y repobuddy@^1.11.0 agent-re
 same arguments.
 
 It reads files and asks `git` which files are tracked and ignored. It builds, installs, and runs
-nothing, so it takes seconds and costs no tokens.
+nothing, so it takes seconds and costs no tokens. It measures the source too: the share of comments,
+JSDoc blocks that document nothing, and names that flood a grep. Whether a comment or a name is worth
+changing stays a judgment.
 
 ## Levels
 
