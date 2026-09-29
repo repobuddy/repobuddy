@@ -25,7 +25,7 @@ before and after a change.
 2. **Settles the judgment calls** the script cannot make, such as whether CI runs the same command an
    agent runs locally, whether the instructions file is accurate, or whether heavy comments state
    constraints or tell history. When the repo has knip configured, it runs knip and reports what is
-   unused. It loads only the criteria for
+   unused; in CI, `score --run-knip` has the script run knip itself. It loads only the criteria for
    the areas that need it.
 3. **Reports a gated level.** Each level has gates. A repo is at level N only when every gate up to N
    passes, so good docs cannot hide a missing test command.

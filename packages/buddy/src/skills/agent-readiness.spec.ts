@@ -53,6 +53,8 @@ test.each([
 	[['bench', '--check']],
 	[['score', '--check', '--min-level', '2.5']],
 	[['score', '--min-level', '2']],
+	[['score', '--package', '.', '--run-knip']],
+	[['bench', '--run-knip']],
 ])('rejects bad usage %j with exit 2', async (argv) => {
 	await expect(main(argv)).rejects.toThrow('exit:2')
 	expect(stderr.join('')).toMatch(/usage: agent-readiness\.mjs score/)
@@ -131,6 +133,12 @@ test('--check --json adds the check result', async () => {
 	await expect(main(['score', '--dir', dir, '--check', '--min-level', '2', '--json'])).rejects.toThrow('exit:1')
 	const result = JSON.parse(stdout.join(''))
 	expect(result.check).toEqual({ minLevel: 2, passed: false, provisional: [] })
+})
+
+test('--run-knip leaves dead-code n/a in a repo without knip', async () => {
+	await main(['score', '--dir', dir, '--run-knip', '--json'])
+	const result = JSON.parse(stdout.join(''))
+	expect(result.checks.find((c: { id: string }) => c.id === 'dead-code').status).toBe('n/a')
 })
 
 test('applies the repo weight override', async () => {

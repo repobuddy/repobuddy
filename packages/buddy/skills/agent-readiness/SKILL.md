@@ -31,7 +31,7 @@ writes only its task set, results, and baseline, and spends money only after a y
 ## Script
 
 ```bash
-node <this-skill-dir>/scripts/agent-readiness.mjs score [--dir <repo>] [--json] [--check [--min-level <1-5>]]
+node <this-skill-dir>/scripts/agent-readiness.mjs score [--dir <repo>] [--json] [--run-knip] [--check [--min-level <1-5>]]
 node <this-skill-dir>/scripts/agent-readiness.mjs score --package <path> [--json] [--check [--min-level <1-4>]]
 node <this-skill-dir>/scripts/agent-readiness.mjs bench [--dir <repo>] [--init | --baseline] [--runs <n>] [--task <id>] [--yes] [--json]
 ```
@@ -43,7 +43,9 @@ was installed from git) or cannot be run, use `npx -y repobuddy@^1.12.0 agent-re
 same arguments.
 
 `score` reads files and asks `git` which files are tracked and ignored. It builds, installs, and runs
-nothing, so it takes seconds and costs no tokens. It measures the source too: the share of comments,
+nothing, so it takes seconds and costs no tokens. The one exception is opt-in: `--run-knip` runs the
+repo's knip command and settles `dead-code` itself, which needs the dependencies installed. Use it in
+CI, where no agent is there to run knip. It measures the source too: the share of comments,
 JSDoc blocks that document nothing, and names that flood a grep. Whether a comment or a name is worth
 changing stays a judgment. `bench` runs real agents; see [Bench](#bench).
 

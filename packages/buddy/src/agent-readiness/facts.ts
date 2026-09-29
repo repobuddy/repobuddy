@@ -1,12 +1,14 @@
 /**
  * Reads the static facts `score` grades from a repository on disk. Everything here is a file read or
- * a `git` query: nothing is built, installed, or run, so a scan takes seconds and costs no tokens.
+ * a `git` query: nothing is built, installed, or run, so a scan takes seconds and costs no tokens. The
+ * one exception is opt-in: `runKnip` runs the repo's knip command (see `knip.ts`).
  */
 
 import { spawnSync } from 'node:child_process'
 import { existsSync, readdirSync, readFileSync, realpathSync, statSync } from 'node:fs'
 import { basename, join } from 'node:path'
 import { readBaseline } from './bench.js'
+import { type DeadCodeRun, runKnip } from './knip.js'
 import { type CommentFacts, findNameCollisions, measureComments, type NameCollision } from './source.js'
 
 interface InstructionFile {
@@ -57,6 +59,8 @@ export interface Facts {
 	nameCollisions: NameCollision[] | undefined
 	/** The command that runs knip, when the repo has it configured; `undefined` otherwise. */
 	deadCodeCommand: string | undefined
+	/** knip's result, when `score --run-knip` ran it; `undefined` otherwise. */
+	deadCodeRun?: DeadCodeRun | undefined
 	/** When the stored `bench` baseline was recorded; `undefined` when there is none. */
 	benchBaselineAt: string | undefined
 }
@@ -351,11 +355,17 @@ function readDeadCodeCommand(dir: string, pkg: PackageJson): string | undefined 
 	return pm === 'npm' || pm === 'bun' ? `${pm} run ${script}` : `${pm} ${script}`
 }
 
-export function collectFacts(dir: string): Facts {
+export interface CollectOptions {
+	/** Run the repo's knip command to settle `dead-code`. Needs dependencies installed. */
+	runKnip?: boolean | undefined
+}
+
+export function collectFacts(dir: string, options: CollectOptions = {}): Facts {
 	const isGitRepo = git(dir, ['rev-parse', '--is-inside-work-tree']).stdout.trim() === 'true'
 	const files = listFiles(dir, isGitRepo)
 	const scripts = readScripts(dir)
 	const pkg = readPackageJson(dir)
+	const deadCodeCommand = readDeadCodeCommand(dir, pkg)
 
 	const instructionFiles: InstructionFile[] = []
 	const missingInstructionCommands = new Set<string>()
@@ -418,7 +428,8 @@ export function collectFacts(dir: string): Facts {
 		mcpLiteralCredentials: readMcpLiteralCredentials(dir),
 		comments: measureComments(searched, readText),
 		nameCollisions: findNameCollisions(searched, readText),
-		deadCodeCommand: readDeadCodeCommand(dir, pkg),
+		deadCodeCommand,
+		...(options.runKnip && deadCodeCommand ? { deadCodeRun: runKnip(dir, deadCodeCommand) } : {}),
 		benchBaselineAt: readBaseline(dir)?.createdAt,
 	}
 }
