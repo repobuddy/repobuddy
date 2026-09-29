@@ -322,14 +322,15 @@ describe('compare', () => {
 
 	it('skips tasks the baseline never ran and handles a zero baseline', () => {
 		const c = compare(
-			record('sonnet', [result({ wallMs: 0 })]),
-			record('sonnet', [result({ wallMs: 2000 }), result({ task: 'new' })]),
+			record('sonnet', [result({ wallMs: 0, cacheReadTokens: 1000 })]),
+			record('sonnet', [result({ wallMs: 2000, cacheReadTokens: 800 }), result({ task: 'new' })]),
 			now,
 		)
 		expect(c.tasks.map((t) => t.task)).toEqual(['a'])
+		expect(c.tasks[0]?.medianCacheReadTokens).toEqual([1000, 800])
 		expect(c.stale).toBe(false)
 		expect(formatOutcome({ record: record('sonnet', [result({})]), resultsPath: 'r', comparison: c })).toMatch(
-			/wall 0s → 2s\n/,
+			/cache read 1000 → 800 \(-20%\)\n[\s\S]*wall 0s → 2s\n/,
 		)
 	})
 })
