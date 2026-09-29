@@ -32,13 +32,17 @@ afterEach(() => {
 	rmSync(dir, { recursive: true, force: true })
 })
 
-test.each([[[]], [['bogus']], [['score', '--dir']], [['score', '--nope']]])(
-	'rejects bad usage %j with exit 2',
-	async (argv) => {
-		await expect(main(argv)).rejects.toThrow('exit:2')
-		expect(stderr.join('')).toMatch(/usage: agent-readiness\.mjs score/)
-	},
-)
+test.each([
+	[[]],
+	[['bogus']],
+	[['score', '--dir']],
+	[['score', '--nope']],
+	[['score', '--package']],
+	[['score', '--dir', '.', '--package', '.']],
+])('rejects bad usage %j with exit 2', async (argv) => {
+	await expect(main(argv)).rejects.toThrow('exit:2')
+	expect(stderr.join('')).toMatch(/usage: agent-readiness\.mjs score/)
+})
 
 test('prints the human report', async () => {
 	await main(['score', '--dir', dir])
@@ -50,4 +54,16 @@ test('prints JSON with --json', async () => {
 	const result = JSON.parse(stdout.join(''))
 	expect(result.level).toBe(1)
 	expect(result.weights.verification).toBe(25)
+})
+
+test('scores a package with --package', async () => {
+	await main(['score', '--package', dir])
+	expect(stdout.join('')).toMatch(/^Package \(unnamed\): level 0 of 4: An agent cannot find its way in/)
+})
+
+test('prints the package result as JSON with --package --json', async () => {
+	await main(['score', '--package', dir, '--json'])
+	const result = JSON.parse(stdout.join(''))
+	expect(result.level).toBe(0)
+	expect(result.weights.api).toBe(30)
 })

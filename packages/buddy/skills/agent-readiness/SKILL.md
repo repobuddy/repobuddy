@@ -1,7 +1,7 @@
 ---
 name: agent-readiness
-description: "Use this skill when scoring or improving how ready a repo is for coding agents — gated level, fixes, tokens per session."
-argument-hint: "score [--dir <repo>] | improve [area]"
+description: "Use this skill when scoring or improving how ready a repo or package is for coding agents — gated level, fixes."
+argument-hint: "score [--dir <repo> | --package <path>] | improve [area]"
 ---
 
 # Agent Readiness
@@ -11,7 +11,8 @@ Score how cheaply and reliably coding agents can work in a repository. The repor
 
 Use when asked "is this repo agent-ready", "why do agents struggle here", "what should we fix so
 agents work better", "how many tokens does every session load", "fix the readiness findings", or
-before handing a repo to unattended agents.
+before handing a repo to unattended agents. Use `--package` when asked whether a library is easy for
+*consumers' agents* to use: "can an agent use this package", "is our public API agent-friendly".
 
 `score` **reads and reports**. It edits nothing. `improve` edits the repository, but only a fix the
 user approved, and only one area per commit. A fix another skill owns goes to that skill.
@@ -21,12 +22,14 @@ user approved, and only one area per commit. A fix another skill owns goes to th
 | Command | What it does | Writes |
 | --- | --- | --- |
 | `score` (default) | Runs the static checks, settles the judgment checks, and reports the level, a score per area, the top fixes, and the tokens loaded per session | nothing |
+| `score --package <path>` | Scores the consuming side of a package: how cheaply another repo's agent can use it through what ships. Same report shape, its own criteria (see [Package score](#package-score)) | nothing |
 | `improve [area]` | Fixes the findings `score` reports as a reviewable series: one area per commit, each fix approved first, owned fixes handed off. Re-scores after each area | the repo, on approval |
 
 ## Script
 
 ```bash
 node <this-skill-dir>/scripts/agent-readiness.mjs score [--dir <repo>] [--json]
+node <this-skill-dir>/scripts/agent-readiness.mjs score --package <path> [--json]
 ```
 
 `<this-skill-dir>` is the directory holding this SKILL.md, not the current working directory.
@@ -167,6 +170,42 @@ Level <before> → <after>. <area> <score before> → <score after>. Commit <sho
 the user to rotate it first, and untrack and ignore the file only after they confirm. Never print the
 value, in a diff or a message.
 
+## Package score
+
+`score --package <path>` scores a package the way a consumer's agent meets it: through the
+declarations, `exports` map, README, changelog, and `llms.txt` that ship, not the source. `<path>` is
+the package folder, or an installed copy under `node_modules`. It runs the same steps as `score`, with
+these levels:
+
+| Level | Meaning | Gates |
+| --- | --- | --- |
+| 1 | An agent can find it | README; an entry point in package.json |
+| 2 | An agent can call it | type declarations ship; a clean `exports` map |
+| 3 | An agent can use it without reading the source | a doc comment on every export; no `any` in the public API; README examples that run; errors that say what to do |
+| 4 | An agent keeps up with it cheaply | a parseable changelog with breaking changes labelled; an `llms.txt` that is accurate and checked for drift |
+
+The JSDoc rule flips here: inside a repo, comments that restate code are noise, but a one-line doc on an
+exported symbol is often the only prose a consumer's agent sees. Document the surface, cut inside.
+
+If the declarations are declared but not built, the declaration checks come back `judge`. Build the
+package or point `--package` at an installed copy and run again; do not guess them.
+
+Two things are reported, not scored: the **public surface** (distinct exports and the declaration
+tokens an agent reads to learn the API; smaller is cheaper, but size is not a defect), and a
+**shipped agent skill** (useful, not required). Report them in place of the tokens-per-session line.
+
+| Area | Reference | Fixes hand off to |
+| --- | --- | --- |
+| Types and exports | `references/areas/package-api.md` | none |
+| Docs | `references/areas/package-docs.md` | none |
+| Errors | `references/areas/package-errors.md` | none |
+| Changelog | `references/areas/package-changelog.md` | `init-changesets` (repobuddy/agent-changesets) |
+| llms.txt | `references/areas/package-llms-txt.md` | `llms-txt` |
+
+Every `llms.txt` fix goes to `llms-txt`, which generates the file and wires its drift check. This
+skill never writes one. `improve` works on the repository areas only; for a package finding, offer the
+fix or its owning skill as `score` does.
+
 ## Anti-patterns
 
 - Reporting an average percentage as the headline, or letting a high area score excuse a failed gate
@@ -182,4 +221,5 @@ value, in a diff or a message.
 ## References
 
 - Factory's Agent Readiness model, whose gated levels this adapts: https://factory.ai/news/agent-readiness
-- Area criteria: `references/areas/` (load only the areas with `judge` checks or disputed results)
+- Area criteria: `references/areas/` (load only the areas with `judge` checks or disputed results;
+  `package-*.md` apply to `score --package` only)

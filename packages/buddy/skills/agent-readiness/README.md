@@ -61,6 +61,23 @@ order the fix list ranks them.
 
 It starts only from a clean working tree, so each commit holds its own edits and nothing else.
 
+## Scoring a package
+
+`score --package <path>` scores the other side of a library: how cheaply an agent in *another* repo
+can use it. That agent meets the package through what ships, so the checks read the type
+declarations, the `exports` map, the README, the changelog, and `llms.txt`, not the source.
+
+| Level | Meaning |
+| --- | --- |
+| 1 | An agent can find it: a README and an entry point |
+| 2 | An agent can call it: type declarations ship, and the `exports` map is clean |
+| 3 | An agent can use it without reading the source: every export has a doc comment, no `any`, README examples run, errors say what to do |
+| 4 | An agent keeps up with it cheaply: a parseable changelog with breaking changes labelled, and an accurate `llms.txt` checked for drift |
+
+It also reports the public surface size and whether the package ships an agent skill, without scoring
+either. `llms.txt` fixes go to the `llms-txt` skill. Point it at the package folder after a build, or
+at an installed copy under `node_modules`.
+
 ## What it will not do
 
 - Edit the repository during `score`, or without your yes during `improve`.
@@ -75,6 +92,7 @@ commands are supported. The scoring script also runs on its own:
 
 ```sh
 node <skill-dir>/scripts/agent-readiness.mjs score [--dir <repo>] [--json]
+node <skill-dir>/scripts/agent-readiness.mjs score --package <path> [--json]
 npx -y repobuddy@^1.11.0 agent-readiness score
 ```
 
