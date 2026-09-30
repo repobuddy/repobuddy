@@ -31,7 +31,7 @@ writes only its task set, results, and baseline, and spends money only after a y
 ## Script
 
 ```bash
-node <this-skill-dir>/scripts/agent-readiness.mjs score [--dir <repo>] [--json] [--check [--min-level <1-5>]]
+node <this-skill-dir>/scripts/agent-readiness.mjs score [--dir <repo>] [--json] [--run-knip] [--check [--min-level <1-5>]]
 node <this-skill-dir>/scripts/agent-readiness.mjs score --package <path> [--json] [--check [--min-level <1-4>]]
 node <this-skill-dir>/scripts/agent-readiness.mjs bench [--dir <repo>] [--init | --baseline] [--runs <n>] [--task <id>] [--yes] [--json]
 ```
@@ -43,7 +43,9 @@ was installed from git) or cannot be run, use `npx -y repobuddy@^1.12.0 agent-re
 same arguments.
 
 `score` reads files and asks `git` which files are tracked and ignored. It builds, installs, and runs
-nothing, so it takes seconds and costs no tokens. It measures the source too: the share of comments,
+nothing, so it takes seconds and costs no tokens. The one exception is opt-in: `--run-knip` runs the
+repo's knip command and settles `dead-code` itself, which needs the dependencies installed. Use it in
+CI, where no agent is there to run knip. It measures the source too: the share of comments,
 JSDoc blocks that document nothing, and names that flood a grep. Whether a comment or a name is worth
 changing stays a judgment. `bench` runs real agents; see [Bench](#bench).
 
@@ -265,6 +267,10 @@ Keep a bench affordable. The defaults are Sonnet, 3 runs per task, and a $0.50 c
 tasks cost about $2-5 and never more than $6. Use `--task <id> --runs 1` to try a new task before a
 full run. The model is part of the baseline: a run on another model is not compared, so change
 `model` only with a new baseline.
+
+Each run also stops at 20 minutes of wall-clock. Claude Code has no documented turn limit, so time
+and the spend cap are the only bounds. A task that needs longer can raise `timeoutMinutes` in
+`tasks.json`. A run stopped by either cap is marked capped.
 
 ## Anti-patterns
 

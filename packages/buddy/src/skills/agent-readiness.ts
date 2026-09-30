@@ -1,7 +1,7 @@
 /*
  * Score how ready a repository is for coding agents, and measure what agents cost working in it.
  *
- *   node scripts/agent-readiness.mjs score [--dir <repo>] [--json] [--check [--min-level <1-5>]]
+ *   node scripts/agent-readiness.mjs score [--dir <repo>] [--json] [--run-knip] [--check [--min-level <1-5>]]
  *   node scripts/agent-readiness.mjs score --package <path> [--json] [--check [--min-level <1-4>]]
  *   node scripts/agent-readiness.mjs bench [--dir <repo>] [--init | --baseline] [--runs <n>] [--task <id>] [--yes] [--json]
  *
@@ -9,7 +9,8 @@
  * agent session loads before it starts (instruction files plus installed skill descriptions, estimated
  * at four characters per token). Nothing is built, installed, or run; nothing is written. Checks with
  * status `judge` are ones a script cannot decide; the agent running the skill settles them, and a
- * failed judgment can only lower the level.
+ * failed judgment can only lower the level. `--run-knip` is the one opt-in exception: it runs the repo's
+ * knip command (dependencies must be installed) and settles `dead-code` from its result.
  *
  * `bench` runs the task set in `.agents/readiness/bench/tasks.json` with Claude Code, each run in a
  * clean checkout of HEAD, and records tokens, turns, tool calls, wall time, pass rate, and cost per
@@ -38,7 +39,7 @@ import { collectPackageFacts } from '../agent-readiness/package-facts.js'
 import { formatPackageReport, PACKAGE_MAX_LEVEL, scorePackage } from '../agent-readiness/package-score.js'
 import { checkLevel, formatCheck, formatReport, MAX_LEVEL, score } from '../agent-readiness/score.js'
 
-const USAGE = `usage: agent-readiness.mjs score [--dir <repo> | --package <path>] [--json] [--check [--min-level <n>]]
+const USAGE = `usage: agent-readiness.mjs score [--dir <repo> | --package <path>] [--json] [--run-knip] [--check [--min-level <n>]]
        agent-readiness.mjs bench [--dir <repo>] [--init | --baseline] [--runs <n>] [--task <id>] [--yes] [--json]`
 
 function usage(message: string): never {
@@ -58,6 +59,7 @@ interface Opts {
 	task?: string
 	check: boolean
 	minLevel?: number
+	runKnip: boolean
 }
 
 const BENCH_FLAGS = new Set(['--init', '--baseline', '--yes', '--runs', '--task'])
@@ -80,6 +82,7 @@ function parseArgs(argv: string[]): Opts {
 		baseline: false,
 		yes: false,
 		check: false,
+		runKnip: false,
 	}
 	let hasDir = false
 	const value = (i: number, flag: string) => {
@@ -90,7 +93,9 @@ function parseArgs(argv: string[]): Opts {
 	for (let i = 0; i < rest.length; i++) {
 		const a = rest[i] as string
 		if (command === 'score' && BENCH_FLAGS.has(a)) usage(`${a} is a bench option`)
-		if (command === 'bench' && (a === '--package' || CHECK_FLAGS.has(a))) usage(`${a} is a score option`)
+		if (command === 'bench' && (a === '--package' || a === '--run-knip' || CHECK_FLAGS.has(a))) {
+			usage(`${a} is a score option`)
+		}
 		if (a === '--dir') {
 			opts.dir = resolve(value(i++, a))
 			hasDir = true
@@ -101,6 +106,7 @@ function parseArgs(argv: string[]): Opts {
 		else if (a === '--yes') opts.yes = true
 		else if (a === '--task') opts.task = value(i++, a)
 		else if (a === '--check') opts.check = true
+		else if (a === '--run-knip') opts.runKnip = true
 		else if (a === '--min-level') {
 			const v = value(i++, a)
 			if (!/^[1-9]\d*$/.test(v)) usage('--min-level needs a whole number from 1')
@@ -112,6 +118,7 @@ function parseArgs(argv: string[]): Opts {
 		} else usage(`unknown argument "${a}"`)
 	}
 	if (hasDir && opts.package !== undefined) usage('--dir and --package score different things; pass one')
+	if (opts.runKnip && opts.package !== undefined) usage('--run-knip checks a repo; --package reads only what ships')
 	if (opts.minLevel !== undefined) {
 		if (!opts.check) usage('--min-level needs --check')
 		// A repo can reach level 5 (a fresh bench baseline); a package tops out at 4.
@@ -191,7 +198,7 @@ export async function main(argv: string[] = process.argv.slice(2)): Promise<void
 		process.stderr.write(`${e.message}\n`)
 		process.exit(2)
 	}
-	report(opts, score(collectFacts(opts.dir), { weights: config.weights }), formatReport)
+	report(opts, score(collectFacts(opts.dir, { runKnip: opts.runKnip }), { weights: config.weights }), formatReport)
 }
 
 // Resolve the entry check against the built bundle's filename, since this module runs as

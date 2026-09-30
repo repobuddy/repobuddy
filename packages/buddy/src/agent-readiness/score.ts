@@ -130,6 +130,21 @@ function commentDetail(comments: CommentFacts): string[] {
 	]
 }
 
+/** Settled when `--run-knip` ran knip; otherwise a judgment that names the command to run. */
+function deadCode(facts: Facts): Pick<Check, 'status' | 'detail'> {
+	const run = facts.deadCodeRun
+	if (run?.outcome === 'clean') return { status: 'pass', detail: [`ran: ${run.command}`] }
+	if (run?.outcome === 'found') return { status: 'fail', detail: [`ran: ${run.command}`, ...run.groups] }
+	if (!facts.deadCodeCommand) return { status: 'n/a' }
+	return {
+		status: 'judge',
+		detail: [
+			`run: ${facts.deadCodeCommand}`,
+			...(run?.error ? [`--run-knip could not complete it: ${run.error}`] : []),
+		],
+	}
+}
+
 export function buildChecks(facts: Facts, now: Date = new Date()): Check[] {
 	const { comments } = facts
 	const verifyScript = VERIFY_SCRIPTS.find((s) => facts.scripts.includes(s))
@@ -406,9 +421,8 @@ export function buildChecks(facts: Facts, now: Date = new Date()): Check[] {
 			level: 4,
 			gate: false,
 			effort: 2,
-			status: facts.deadCodeCommand ? 'judge' : 'n/a',
+			...deadCode(facts),
 			summary: 'No unused files, exports, or dependencies (reported by knip)',
-			...(facts.deadCodeCommand ? { detail: [`run: ${facts.deadCodeCommand}`] } : {}),
 			fix: 'Delete what knip reports as unused, or tell knip why it is used.',
 		},
 		// Level 5: the cost is measured.

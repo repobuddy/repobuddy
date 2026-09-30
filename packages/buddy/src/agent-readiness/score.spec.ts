@@ -197,6 +197,37 @@ describe('buildChecks', () => {
 		expect(check(readyFacts(), 'dead-code')?.status).toBe('n/a')
 	})
 
+	it('settles dead code from a --run-knip run', () => {
+		const command = 'pnpm knip'
+		expect(
+			check(
+				readyFacts({ deadCodeCommand: command, deadCodeRun: { command, outcome: 'clean', groups: [] } }),
+				'dead-code',
+			),
+		).toMatchObject({ status: 'pass', detail: ['ran: pnpm knip'] })
+		expect(
+			check(
+				readyFacts({
+					deadCodeCommand: command,
+					deadCodeRun: { command, outcome: 'found', groups: ['Unused exports (4)'] },
+				}),
+				'dead-code',
+			),
+		).toMatchObject({ status: 'fail', detail: ['ran: pnpm knip', 'Unused exports (4)'] })
+		expect(
+			check(
+				readyFacts({
+					deadCodeCommand: command,
+					deadCodeRun: { command, outcome: 'error', groups: [], error: 'exit 2: config error' },
+				}),
+				'dead-code',
+			),
+		).toMatchObject({
+			status: 'judge',
+			detail: ['run: pnpm knip', '--run-knip could not complete it: exit 2: config error'],
+		})
+	})
+
 	it('skips CI-parity judgment when there is no verify command or CI', () => {
 		expect(check(readyFacts({ ciConfigs: [] }), 'ci-runs-verify')?.status).toBe('n/a')
 		expect(check(readyFacts({ envIgnored: undefined }), 'env-ignored')?.status).toBe('n/a')
