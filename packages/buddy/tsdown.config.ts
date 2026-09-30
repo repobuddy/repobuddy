@@ -107,6 +107,9 @@ export default defineConfig([
 		// `buddy-agent-harness`'s CLI-version fallback through `./mcp.js`, and ships with no
 		// `package.json` beside it.
 		define: { __PACKAGE_VERSION__: '"0.0.0"' },
+		// Same `jsonc-parser` UMD problem as the `bin.ts` target above: `buddy-agent-harness`
+		// imports it directly since 0.13, so `listMcpServers` pulls it into this bundle too.
+		alias: { 'jsonc-parser': 'jsonc-parser/lib/esm/main.js' },
 	},
 	{
 		entry: { 'detect-state': 'src/skills/detect-state.ts' },
