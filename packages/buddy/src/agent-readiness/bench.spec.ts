@@ -77,19 +77,20 @@ function transcript({ subtype = 'success', tools = 2, cost = 0.1 } = {}) {
 }
 
 /** Runs no agent: `shell` really runs in the checkout, and the agent "writes" `done` when told to pass. */
-function fakeRunner(opts: { pass?: boolean; setupFails?: boolean } = {}): Runner & { calls: string[][] } {
+function fakeRunner(opts: { pass?: boolean; setupFails?: boolean } = {}): Runner & { calls: string[] } {
 	let clock = 0
-	const calls: string[][] = []
+	const calls: string[] = []
 	return {
+		name: 'print',
 		calls,
 		shell(command, cwd) {
 			if (opts.setupFails && command === 'true') return { status: 1, stdout: '' }
 			return { status: spawnSync('sh', ['-c', command], { cwd }).status, stdout: '' }
 		},
-		agent(args, cwd) {
-			calls.push(args)
-			if (opts.pass !== false) writeFileSync(join(cwd, 'done'), '')
-			return { status: 0, stdout: transcript() }
+		agent(_config, task, checkout) {
+			calls.push(task.id)
+			if (opts.pass !== false) writeFileSync(join(checkout, 'done'), '')
+			return parseStreamJson(transcript())
 		},
 		now: () => (clock += 1500),
 	}
@@ -185,9 +186,21 @@ describe('plan', () => {
 		const dir = repo()
 		writeFileSync(join(dir, 'README.md'), 'changed')
 		const p = plan(dir, config, { runs: 3 })
-		expect(p).toMatchObject({ tasks: ['a', 'b'], totalRuns: 6, ceilingUsd: 3, dirty: true, model: 'sonnet' })
+		expect(p).toMatchObject({
+			tasks: ['a', 'b'],
+			totalRuns: 6,
+			ceilingUsd: 3,
+			dirty: true,
+			model: 'sonnet',
+			runner: 'print',
+		})
 		expect(p.commit).toMatch(/^[0-9a-f]{40}$/)
 		expect(formatPlan(p)).toMatch(/uncommitted changes are NOT benched[\s\S]*\$3\.00[\s\S]*--yes/)
+	})
+
+	it('names the runner', () => {
+		const p = plan(repo(), config, { runner: { name: 'interactive' } })
+		expect(formatPlan(p)).toMatch(/model: sonnet \(claude-code, interactive runner\)/)
 	})
 
 	it('narrows to one task, and names the tasks when the id is wrong', () => {
@@ -271,7 +284,12 @@ describe('bench', () => {
 		expect(first.baselinePath).toBe(BASELINE_FILE)
 		expect(existsSync(join(dir, first.resultsPath))).toBe(true)
 		expect(readFileSync(join(dir, '.agents/readiness/bench/.gitignore'), 'utf8')).toBe('results/\n')
-		expect(readBaseline(dir)).toMatchObject({ createdAt: now.toISOString(), model: 'sonnet', harness: 'claude-code' })
+		expect(readBaseline(dir)).toMatchObject({
+			createdAt: now.toISOString(),
+			model: 'sonnet',
+			harness: 'claude-code',
+			runner: 'print',
+		})
 		expect(readBaseline(dir)).not.toHaveProperty('results')
 		expect(formatOutcome(first)).toMatch(/Baseline written/)
 
@@ -302,11 +320,12 @@ describe('bench', () => {
 
 describe('compare', () => {
 	const now = new Date('2026-09-28T00:00:00Z')
-	const record = (model: string, results: RunResult[]) => ({
+	const record = (model: string, results: RunResult[], runner: 'print' | 'interactive' = 'print') => ({
 		createdAt: now.toISOString(),
 		commit: 'x',
 		model,
 		harness: 'claude-code',
+		runner,
 		runsPerTask: 1,
 		summary: summarize(results),
 		results,
@@ -318,6 +337,13 @@ describe('compare', () => {
 		expect(formatOutcome({ record: record('sonnet', [result({})]), resultsPath: 'r', comparison: c })).toMatch(
 			/Not compared/,
 		)
+	})
+
+	it('refuses a baseline another runner took, reading a baseline with no runner as print', () => {
+		const { runner: _, ...legacy } = record('sonnet', [result({})])
+		const c = compare(legacy, record('sonnet', [result({})], 'interactive'), now)
+		expect(c.incomparable).toBe('the baseline ran runner "print", this run "interactive"')
+		expect(compare(legacy, record('sonnet', [result({})]), now).incomparable).toBeUndefined()
 	})
 
 	it('skips tasks the baseline never ran and handles a zero baseline', () => {

@@ -1,7 +1,7 @@
 ---
 name: agent-readiness
 description: "Use this skill when scoring or improving how ready a repo or package is for coding agents, or benchmarking agent cost."
-argument-hint: "score [--dir <repo> | --package <path>] [--check] | improve [area] | bench [--baseline]"
+argument-hint: "score [--dir <repo> | --package <path>] [--check] | improve [area] | bench [--baseline] [--runner interactive]"
 ---
 
 # Agent Readiness
@@ -33,7 +33,7 @@ writes only its task set, results, and baseline, and spends money only after a y
 ```bash
 node <this-skill-dir>/scripts/agent-readiness.mjs score [--dir <repo>] [--json] [--run-knip] [--check [--min-level <1-5>]]
 node <this-skill-dir>/scripts/agent-readiness.mjs score --package <path> [--json] [--check [--min-level <1-4>]]
-node <this-skill-dir>/scripts/agent-readiness.mjs bench [--dir <repo>] [--init | --baseline] [--runs <n>] [--task <id>] [--yes] [--json]
+node <this-skill-dir>/scripts/agent-readiness.mjs bench [--dir <repo>] [--init | --baseline] [--runs <n>] [--task <id>] [--runner print|interactive] [--yes] [--json]
 ```
 
 `<this-skill-dir>` is the directory holding this SKILL.md, not the current working directory.
@@ -266,8 +266,9 @@ to measure an `improve` area, bench before it and again after its commit.
    `--baseline`, tell the user to commit `baseline.json`; `results/` is git-ignored.
 
 Each run checks out HEAD into a fresh git worktree, so uncommitted changes are not benched: commit
-the change under test first. The agent is Claude Code (`claude -p`), loading the repo's own settings,
-instructions, skills, and `.mcp.json`, and none of the user's, so the cost measured is the repo's.
+the change under test first. The agent is Claude Code (`claude -p` by default), loading the repo's
+own settings, instructions, skills, and `.mcp.json`, and none of the user's, so the cost measured is
+the repo's.
 The default permission mode is `bypassPermissions`: the agent runs commands unprompted in the
 throwaway checkout, on the user's machine. Say so in the plan.
 
@@ -279,6 +280,29 @@ full run. The model is part of the baseline: a run on another model is not compa
 Each run also stops at 20 minutes of wall-clock. Claude Code has no documented turn limit, so time
 and the spend cap are the only bounds. A task that needs longer can raise `timeoutMinutes` in
 `tasks.json`. A run stopped by either cap is marked capped.
+
+### Interactive runner
+
+`--runner interactive` runs each task as an interactive Claude Code session in a terminal multiplexer
+pane instead of `claude -p`, the way agents are used day to day. Use it when the user asks for
+interactive runs; `claude -p` stays the default.
+
+- **Multiplexer.** The bench must run inside tmux or herdr (or another multiplexer cyber-mux drives).
+  Without one the script refuses, before the plan, and names the fix. Each session opens in its own
+  workspace (a window on tmux) and is closed after the run.
+- **Credential.** Each session gets a fresh `CLAUDE_CONFIG_DIR`, so none of the user's global
+  instructions, plugins, skills, settings, or MCP servers load, and neither does their login. The
+  session authenticates with `CLAUDE_CODE_OAUTH_TOKEN` (from `claude setup-token`) or
+  `ANTHROPIC_API_KEY` in the environment; without one the script refuses. Never read or copy the
+  user's stored credentials to get around this: ask them to set one.
+- **Measurement.** Tokens, turns, and tool calls come from the session transcript; the cost is Claude
+  Code's own, from its status line. A Stop hook marks the end of the run, a StopFailure hook an API
+  error. The runner passes these with `--settings`; they add nothing to the model's context.
+- **Bounds.** The runner stops the session at `timeoutMinutes` and as soon as the cost reaches
+  `maxBudgetUsd`, so the spend ceiling in the plan still holds. A run that reports no cost could not
+  be capped: say so.
+- **Comparison.** The runner is part of the baseline, like the model: an interactive run is never
+  compared against a `claude -p` baseline, or the reverse. Record a baseline per runner.
 
 ## Anti-patterns
 
@@ -292,7 +316,7 @@ and the spend cap are the only bounds. A task that needs longer can raise `timeo
 - Fixing something an owner skill owns instead of handing it off
 - Reporting an area as improved without re-running `score`
 - Running `bench --yes` before the user has seen the plan and said yes
-- Comparing a bench run against a baseline taken on another model, or with several areas changed at once
+- Comparing a bench run against a baseline taken on another model or runner, or with several areas changed at once
 
 ## References
 
