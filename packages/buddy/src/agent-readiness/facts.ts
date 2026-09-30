@@ -11,6 +11,7 @@ import { readBaseline } from './bench.js'
 import { findUndocumentedEnv, isSetupDoc, type UndocumentedEnv } from './env.js'
 import { type DeadCodeRun, runKnip } from './knip.js'
 import { type CommentFacts, findNameCollisions, measureComments, type NameCollision } from './source.js'
+import { type ReleaseAgeGate, readReleaseAgeGate, readWorkflows, type WorkflowFacts } from './supply-chain.js'
 
 interface InstructionFile {
 	path: string
@@ -54,6 +55,10 @@ export interface Facts {
 	committedSecretFiles: string[]
 	/** `<file>: <key>` for each MCP env entry holding a literal value under a credential-like name. */
 	mcpLiteralCredentials: string[]
+	/** `undefined` when the repo has no `.github/workflows`. */
+	workflows: WorkflowFacts | undefined
+	/** `undefined` when the repo has no JavaScript package manager. */
+	releaseAgeGate: ReleaseAgeGate | undefined
 	/** `undefined` when the repo has no non-test source in a language with `//` comments. */
 	comments: CommentFacts | undefined
 	/** `undefined` when the repo has no non-test JS or TS source. */
@@ -432,6 +437,8 @@ export function collectFacts(dir: string, options: CollectOptions = {}): Facts {
 		envIgnored,
 		committedSecretFiles: files.filter((f) => SECRET_FILE.test(f) && !SECRET_FILE_ALLOWED.test(basename(f))),
 		mcpLiteralCredentials: readMcpLiteralCredentials(dir),
+		workflows: readWorkflows(dir),
+		releaseAgeGate: readReleaseAgeGate(dir),
 		comments: measureComments(searched, readText),
 		nameCollisions: findNameCollisions(searched, readText),
 		undocumentedEnv: findUndocumentedEnv(

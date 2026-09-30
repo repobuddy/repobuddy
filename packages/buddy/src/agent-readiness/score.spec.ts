@@ -12,6 +12,14 @@ import {
 	score,
 } from './score.js'
 
+const PNPM_GATE = {
+	file: 'pnpm-workspace.yaml',
+	setting: 'minimumReleaseAge',
+	value: '1440',
+	minutes: 1440,
+	defaultNote: 'pnpm 11+ defaults to 1440 minutes',
+}
+
 /** A repo that passes every check the script can decide. */
 function readyFacts(overrides: Partial<Facts> = {}): Facts {
 	return {
@@ -35,6 +43,8 @@ function readyFacts(overrides: Partial<Facts> = {}): Facts {
 		envIgnored: true,
 		committedSecretFiles: [],
 		mcpLiteralCredentials: [],
+		workflows: { files: ['.github/workflows/ci.yml'], unpinnedActions: [], missingPermissions: [] },
+		releaseAgeGate: PNPM_GATE,
 		comments: { files: 10, codeLines: 900, commentLines: 100, heaviest: [], orphanedJsdoc: [] },
 		nameCollisions: [],
 		undocumentedEnv: [],
@@ -96,6 +106,51 @@ describe('score', () => {
 
 	it('caps the level at 1 for a literal MCP credential', () => {
 		expect(score(readyFacts({ mcpLiteralCredentials: ['.mcp.json: API_KEY'] })).level).toBe(1)
+	})
+
+	it('reports CI supply-chain findings without capping the level, ranked behind the gates', () => {
+		const result = score(
+			readyFacts({
+				scripts: ['build', 'test'],
+				workflows: {
+					files: ['.github/workflows/ci.yml'],
+					unpinnedActions: ['.github/workflows/ci.yml: pnpm/action-setup@v6'],
+					missingPermissions: ['.github/workflows/ci.yml'],
+				},
+				releaseAgeGate: {
+					file: '.npmrc',
+					setting: 'min-release-age',
+					value: undefined,
+					minutes: undefined,
+					defaultNote: 'npm has no default gate',
+				},
+			}),
+		)
+		expect(result.securityCap).toBeUndefined()
+		expect(result.level).toBe(1)
+		expect(result.topFixes[0]?.id).toBe('verify-command')
+		const ids = ['pinned-actions', 'workflow-permissions', 'release-age-gate']
+		expect(result.checks.filter((c) => ids.includes(c.id)).map((c) => [c.id, c.status, c.handoff])).toEqual([
+			['pinned-actions', 'fail', 'setup-github-repo'],
+			['workflow-permissions', 'fail', 'setup-github-repo'],
+			['release-age-gate', 'fail', 'min-release-age'],
+		])
+		const unset = { ...PNPM_GATE, value: undefined, minutes: undefined }
+		expect(check(readyFacts({ releaseAgeGate: unset }), 'release-age-gate')?.detail).toEqual([
+			'pnpm-workspace.yaml: no minimumReleaseAge (pnpm 11+ defaults to 1440 minutes)',
+		])
+	})
+
+	it('fails the release-age gate when it is set to zero', () => {
+		const gate = { ...PNPM_GATE, value: '0', minutes: 0 }
+		expect(check(readyFacts({ releaseAgeGate: gate }), 'release-age-gate')?.status).toBe('fail')
+	})
+
+	it('skips the CI supply-chain checks without workflows or a package manager', () => {
+		const facts = readyFacts({ workflows: undefined, releaseAgeGate: undefined })
+		expect(check(facts, 'pinned-actions')?.status).toBe('n/a')
+		expect(check(facts, 'workflow-permissions')?.status).toBe('n/a')
+		expect(check(facts, 'release-age-gate')?.status).toBe('n/a')
 	})
 
 	it('ranks the gate that blocks the next level ahead of heavier non-gates', () => {
