@@ -7,10 +7,11 @@
  *
  * `score` reports the gated level (1-5), a score per area, the top three fixes, and the tokens every
  * agent session loads before it starts (instruction files plus installed skill descriptions, estimated
- * at four characters per token). Nothing is built, installed, or run; nothing is written. Checks with
+ * at four characters per token). Nothing is built or installed, and nothing is written. Checks with
  * status `judge` are ones a script cannot decide; the agent running the skill settles them, and a
- * failed judgment can only lower the level. `--run-knip` is the one opt-in exception: it runs the repo's
- * knip command (dependencies must be installed) and settles `dead-code` from its result.
+ * failed judgment can only lower the level. `--run-knip` opts in to running the repo's knip command
+ * (dependencies must be installed) and settles `dead-code` from its result. A repo with
+ * buddy-agent-harness installed also has its read-only `doctor` run, for the instructions area.
  *
  * `bench` runs the task set in `.agents/readiness/bench/tasks.json` with Claude Code, each run in a
  * clean checkout of HEAD, and records tokens, turns, tool calls, wall time, pass rate, and cost per

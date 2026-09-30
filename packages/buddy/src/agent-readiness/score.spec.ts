@@ -306,6 +306,57 @@ describe('buildChecks', () => {
 		})
 	})
 
+	it('names buddy-agent-harness when it is not installed', () => {
+		expect(check(readyFacts(), 'harness-doctor')).toMatchObject({
+			area: 'instructions',
+			gate: false,
+			status: 'n/a',
+			detail: ['buddy-agent-harness is not installed in this repo'],
+			handoff: 'buddy-agent-harness',
+		})
+	})
+
+	it('passes when buddy-agent-harness doctor finds nothing', () => {
+		const facts = readyFacts({ harnessDoctor: { outcome: 'ok', findings: [] } })
+		expect(check(facts, 'harness-doctor')?.status).toBe('pass')
+		expect(score(facts).areas.find((a) => a.area === 'instructions')).toMatchObject({ passed: 5, total: 5 })
+	})
+
+	it('folds doctor findings into the instructions area, one non-gate check per problem', () => {
+		const facts = readyFacts({
+			harnessDoctor: {
+				outcome: 'ok',
+				findings: [
+					{ path: '.claude/skills', problem: 'missing', detail: 'The bridge does not exist.' },
+					{ path: 'GEMINI.md', problem: 'missing', detail: 'No instruction bridge.' },
+					{ path: 'CLAUDE.md', problem: 'shadowing', detail: 'Read instead of AGENTS.md.' },
+				],
+			},
+		})
+		const checks = buildChecks(facts).filter((c) => c.id.startsWith('harness-'))
+		expect(checks.map((c) => c.id)).toEqual(['harness-missing', 'harness-shadowing'])
+		expect(checks[0]).toMatchObject({
+			area: 'instructions',
+			gate: false,
+			status: 'fail',
+			detail: ['.claude/skills: The bridge does not exist.', 'GEMINI.md: No instruction bridge.'],
+			handoff: 'buddy-agent-harness',
+		})
+		const result = score(facts)
+		expect(result.level).toBe(MAX_LEVEL)
+		expect(result.areas.find((a) => a.area === 'instructions')).toMatchObject({ passed: 4, total: 6 })
+		expect(result.topFixes.map((c) => c.id)).toContain('harness-missing')
+	})
+
+	it('leaves the doctor check to judgment when doctor could not complete', () => {
+		const facts = readyFacts({ harnessDoctor: { outcome: 'error', findings: [], error: 'exit 2' } })
+		expect(check(facts, 'harness-doctor')).toMatchObject({
+			status: 'judge',
+			detail: ['run: buddy-agent-harness doctor', 'it could not complete: exit 2'],
+		})
+		expect(score(facts).pendingJudgments.map((c) => c.id)).not.toContain('harness-doctor')
+	})
+
 	it('skips CI-parity judgment when there is no verify command or CI', () => {
 		expect(check(readyFacts({ ciConfigs: [] }), 'ci-runs-verify')?.status).toBe('n/a')
 		expect(check(readyFacts({ envIgnored: undefined }), 'env-ignored')?.status).toBe('n/a')

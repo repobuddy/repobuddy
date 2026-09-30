@@ -8,6 +8,7 @@
 
 import { BASELINE_FILE, BASELINE_MAX_AGE_DAYS, baselineAgeDays } from './bench.js'
 import type { Facts } from './facts.js'
+import type { HarnessFinding } from './harness-doctor.js'
 import type { InjectionSurface } from './injection-surface.js'
 import type { CommentFacts } from './source.js'
 import type { ReleaseAgeGate } from './supply-chain.js'
@@ -149,6 +150,42 @@ function deadCode(facts: Facts): Pick<Check, 'status' | 'detail'> {
 	}
 }
 
+const HARNESS_DOCTOR = 'buddy-agent-harness'
+
+/**
+ * buddy-agent-harness `doctor`'s findings, one check per problem it names. They inform the instructions
+ * area score but never gate: the plugin owns what they mean and how to repair them.
+ */
+function harnessChecks(facts: Facts): Check[] {
+	const base = { area: 'instructions', level: 3, gate: false, effort: 1, handoff: HARNESS_DOCTOR } as const
+	const run = facts.harnessDoctor
+	const doctor = {
+		...base,
+		id: 'harness-doctor',
+		summary: 'buddy-agent-harness doctor finds no problem with bridges, skill layout, or MCP files',
+		fix: 'Run the doctor-buddy-agent-harness skill and apply the repairs it gives.',
+	}
+	if (!run) {
+		return [{ ...doctor, status: 'n/a', detail: ['buddy-agent-harness is not installed in this repo'] }]
+	}
+	if (run.outcome === 'error') {
+		return [
+			{ ...doctor, status: 'judge', detail: [`run: ${HARNESS_DOCTOR} doctor`, `it could not complete: ${run.error}`] },
+		]
+	}
+	if (run.findings.length === 0) return [{ ...doctor, status: 'pass' }]
+	const byProblem = new Map<string, HarnessFinding[]>()
+	for (const f of run.findings) byProblem.set(f.problem, [...(byProblem.get(f.problem) ?? []), f])
+	return [...byProblem].map(([problem, findings]) => ({
+		...base,
+		id: `harness-${problem}`,
+		status: 'fail',
+		summary: `buddy-agent-harness doctor reports ${problem}`,
+		detail: list(findings.map((f) => `${f.path}: ${f.detail}`)),
+		fix: `Run the doctor-buddy-agent-harness skill and apply its repair for ${problem}.`,
+	}))
+}
+
 export function buildChecks(facts: Facts, now: Date = new Date()): Check[] {
 	const { comments } = facts
 	const verifyScript = VERIFY_SCRIPTS.find((s) => facts.scripts.includes(s))
@@ -259,6 +296,7 @@ export function buildChecks(facts: Facts, now: Date = new Date()): Check[] {
 			fix: 'Cut history, restated code, and stale sections; keep commands, layout, and rules an agent cannot infer.',
 			handoff: 'buddy-agent-harness',
 		},
+		...harnessChecks(facts),
 		{
 			id: 'toolchain-pinned',
 			area: 'environment',

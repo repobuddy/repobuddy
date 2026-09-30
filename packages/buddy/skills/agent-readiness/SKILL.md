@@ -43,9 +43,11 @@ was installed from git) or cannot be run, use `npx -y repobuddy@^1.12.0 agent-re
 same arguments.
 
 `score` reads files and asks `git` which files are tracked and ignored. It builds, installs, and runs
-nothing, so it takes seconds and costs no tokens. The one exception is opt-in: `--run-knip` runs the
-repo's knip command and settles `dead-code` itself, which needs the dependencies installed. Use it in
-CI, where no agent is there to run knip. It measures the source too: the share of comments,
+nothing, so it takes seconds and costs no tokens. There are two exceptions. `--run-knip` opts in to
+running the repo's knip command and settles `dead-code` itself, which needs the dependencies
+installed. Use it in CI, where no agent is there to run knip. And when the repo has
+buddy-agent-harness installed, the script runs its read-only `doctor` and reports each finding in the
+instructions area. It measures the source too: the share of comments,
 JSDoc blocks that document nothing, names that flood a grep, and environment variables the code reads
 that no setup document names. Whether a comment or a name is worth
 changing stays a judgment. `bench` runs real agents; see [Bench](#bench).

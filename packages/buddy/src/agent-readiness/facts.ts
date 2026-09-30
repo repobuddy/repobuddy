@@ -1,7 +1,8 @@
 /**
  * Reads the static facts `score` grades from a repository on disk. Everything here is a file read or
- * a `git` query: nothing is built, installed, or run, so a scan takes seconds and costs no tokens. The
- * one exception is opt-in: `runKnip` runs the repo's knip command (see `knip.ts`).
+ * a `git` query: nothing is built, installed, or run, so a scan takes seconds and costs no tokens. Two
+ * exceptions: `runKnip` opts in to running the repo's knip command (see `knip.ts`), and an installed
+ * buddy-agent-harness has its read-only `doctor` run (see `harness-doctor.ts`).
  */
 
 import { spawnSync } from 'node:child_process'
@@ -10,6 +11,7 @@ import { basename, join } from 'node:path'
 import { readBaseline } from './bench.js'
 import { findUndocumentedEnv, isSetupDoc, type UndocumentedEnv } from './env.js'
 import { findSearchedFixtureDirs, type SearchedFixtureDir } from './fixtures.js'
+import { findHarnessDoctor, type HarnessDoctorRun, runHarnessDoctor } from './harness-doctor.js'
 import { type InjectionSurface, readInjectionSurface } from './injection-surface.js'
 import { type DeadCodeRun, runKnip } from './knip.js'
 import { type CommentFacts, findNameCollisions, measureComments, type NameCollision } from './source.js'
@@ -81,6 +83,8 @@ export interface Facts {
 	deadCodeCommand: string | undefined
 	/** knip's result, when `score --run-knip` ran it; `undefined` otherwise. */
 	deadCodeRun?: DeadCodeRun | undefined
+	/** buddy-agent-harness `doctor`'s result; `undefined` when the repo does not have it installed. */
+	harnessDoctor?: HarnessDoctorRun | undefined
 	/** When the stored `bench` baseline was recorded; `undefined` when there is none. */
 	benchBaselineAt: string | undefined
 }
@@ -386,6 +390,7 @@ export function collectFacts(dir: string, options: CollectOptions = {}): Facts {
 	const scripts = readScripts(dir)
 	const pkg = readPackageJson(dir)
 	const deadCodeCommand = readDeadCodeCommand(dir, pkg)
+	const harnessDoctor = findHarnessDoctor(dir)
 
 	const instructionFiles: InstructionFile[] = []
 	const missingInstructionCommands = new Set<string>()
@@ -459,6 +464,7 @@ export function collectFacts(dir: string, options: CollectOptions = {}): Facts {
 		),
 		deadCodeCommand,
 		...(options.runKnip && deadCodeCommand ? { deadCodeRun: runKnip(dir, deadCodeCommand) } : {}),
+		...(harnessDoctor ? { harnessDoctor: runHarnessDoctor(dir, harnessDoctor) } : {}),
 		benchBaselineAt: readBaseline(dir)?.createdAt,
 	}
 }
