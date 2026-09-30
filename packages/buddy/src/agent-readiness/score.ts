@@ -8,6 +8,7 @@
 
 import { BASELINE_FILE, BASELINE_MAX_AGE_DAYS, baselineAgeDays } from './bench.js'
 import type { Facts } from './facts.js'
+import type { InjectionSurface } from './injection-surface.js'
 import type { CommentFacts } from './source.js'
 import type { ReleaseAgeGate } from './supply-chain.js'
 
@@ -94,6 +95,8 @@ export interface ScoreResult {
 	/** Pending `judge` gates at or below the awarded level; each one, if it fails, lowers the level. */
 	pendingJudgments: Check[]
 	tokensPerSession: { instructions: number; skills: number; total: number }
+	/** Reported, not scored: the agent judges which of these pull untrusted content into context. */
+	injectionSurface: InjectionSurface
 	weights: Weights
 	/** Areas whose weight came from the repo's override instead of the defaults. */
 	overriddenWeights: WeightedArea[]
@@ -617,6 +620,7 @@ export function score(facts: Facts, options: ScoreOptions = {}): ScoreResult {
 		topFixes: rankFixes(checks, level, weights).slice(0, 3),
 		pendingJudgments: checks.filter((c) => c.status === 'judge' && c.gate && c.level <= level),
 		tokensPerSession: { instructions, skills, total: instructions + skills },
+		injectionSurface: facts.injectionSurface,
 		weights,
 		overriddenWeights: (Object.keys(options.weights ?? {}) as WeightedArea[]).filter(
 			(area) => options.weights?.[area] !== AREA_WEIGHTS[area],
@@ -678,6 +682,12 @@ export function formatReport(result: ScoreResult): string {
 	lines.push(
 		`Tokens loaded per session: ~${t.total} (instructions ~${t.instructions}, skill descriptions ~${t.skills})`,
 	)
+	lines.push('')
+	const { hooks, mcpServers } = result.injectionSurface
+	lines.push('Prompt-injection surface (reported, not scored):')
+	if (hooks.length === 0 && mcpServers.length === 0) lines.push('  none configured')
+	for (const h of hooks) lines.push(`  hook ${h.event} (${h.file}): ${h.command}`)
+	for (const m of mcpServers) lines.push(`  mcp ${m.name} (${m.file}): ${m.target || 'no command or url'}`)
 	lines.push('')
 	lines.push('Areas (weight: score):')
 	for (const a of result.areas) {

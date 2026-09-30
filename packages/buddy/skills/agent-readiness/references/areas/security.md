@@ -44,6 +44,15 @@ These belong to other skills. Name them in the report when they apply, and offer
 
 ## Report only
 
-Session-start hooks and repo-configured MCP servers that pull outside content (issue bodies, fetched
-pages) into the agent's context are a prompt-injection surface. Report them if you see them. Don't
-block on them.
+Hooks that run at session start or on each prompt, and repo-configured MCP servers, can pull outside
+content (issue bodies, fetched pages) into the agent's context: a prompt-injection surface. The script
+lists them in `injectionSurface`, and never scores them:
+
+- `hooks`: `SessionStart`/`UserPromptSubmit` (Claude Code, `.claude/settings*.json`), `SessionStart`/`BeforeAgent`
+  (Gemini CLI, `.gemini/settings.json`), `sessionStart`/`beforeSubmitPrompt` (Cursor, `.cursor/hooks.json`),
+  and `sessionStart`/`userPromptSubmitted` (Copilot, `.github/hooks/*.json`), each with its command
+- `mcpServers`: every server in `.mcp.json`, `.cursor/mcp.json`, and `.vscode/mcp.json`, with its command or URL
+
+Judge each one: read the command or script, or what the server serves. Name in the report the ones that
+fetch untrusted content, and what they fetch. A hook that prints a local file is not a surface. Don't
+block on them, and don't lower the level.

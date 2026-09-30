@@ -9,6 +9,7 @@ import { existsSync, readdirSync, readFileSync, realpathSync, statSync } from 'n
 import { basename, join } from 'node:path'
 import { readBaseline } from './bench.js'
 import { findUndocumentedEnv, isSetupDoc, type UndocumentedEnv } from './env.js'
+import { type InjectionSurface, readInjectionSurface } from './injection-surface.js'
 import { type DeadCodeRun, runKnip } from './knip.js'
 import { type CommentFacts, findNameCollisions, measureComments, type NameCollision } from './source.js'
 import { type ReleaseAgeGate, readReleaseAgeGate, readWorkflows, type WorkflowFacts } from './supply-chain.js'
@@ -59,6 +60,8 @@ export interface Facts {
 	workflows: WorkflowFacts | undefined
 	/** `undefined` when the repo has no JavaScript package manager. */
 	releaseAgeGate: ReleaseAgeGate | undefined
+	/** Session-start and per-prompt hooks, and MCP servers: reported, never scored. */
+	injectionSurface: InjectionSurface
 	/** `undefined` when the repo has no non-test source in a language with `//` comments. */
 	comments: CommentFacts | undefined
 	/** `undefined` when the repo has no non-test JS or TS source. */
@@ -439,6 +442,7 @@ export function collectFacts(dir: string, options: CollectOptions = {}): Facts {
 		mcpLiteralCredentials: readMcpLiteralCredentials(dir),
 		workflows: readWorkflows(dir),
 		releaseAgeGate: readReleaseAgeGate(dir),
+		injectionSurface: readInjectionSurface(dir),
 		comments: measureComments(searched, readText),
 		nameCollisions: findNameCollisions(searched, readText),
 		undocumentedEnv: findUndocumentedEnv(
