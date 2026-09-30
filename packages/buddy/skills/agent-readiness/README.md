@@ -48,6 +48,9 @@ before and after a change.
    can disagree with them.
 5. **Reports the tokens loaded per session**: instruction files plus every installed skill's
    description.
+6. **Lists the prompt-injection surface**, without scoring it: hooks that run at session start or on
+   each prompt, with the command each runs, and the MCP servers the repo configures. The agent names
+   the ones that fetch untrusted content, such as issue bodies or web pages.
 
 ## Improving
 
