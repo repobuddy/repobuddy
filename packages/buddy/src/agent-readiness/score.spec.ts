@@ -37,6 +37,7 @@ function readyFacts(overrides: Partial<Facts> = {}): Facts {
 		mcpLiteralCredentials: [],
 		comments: { files: 10, codeLines: 900, commentLines: 100, heaviest: [], orphanedJsdoc: [] },
 		nameCollisions: [],
+		undocumentedEnv: [],
 		deadCodeCommand: undefined,
 		benchBaselineAt: new Date().toISOString(),
 		...overrides,
@@ -187,6 +188,16 @@ describe('buildChecks', () => {
 		})
 		expect(check(readyFacts(), 'generic-names')?.status).toBe('pass')
 		expect(check(readyFacts({ nameCollisions: undefined }), 'generic-names')?.status).toBe('n/a')
+	})
+
+	it('fails on environment variables no setup document names', () => {
+		const undocumentedEnv = [{ name: 'API_URL', readIn: 'src/client.ts' }]
+		expect(check(readyFacts({ undocumentedEnv }), 'env-documented')).toMatchObject({
+			status: 'fail',
+			detail: ['API_URL: read in src/client.ts'],
+		})
+		expect(check(readyFacts(), 'env-documented')?.status).toBe('pass')
+		expect(check(readyFacts({ undocumentedEnv: undefined }), 'env-documented')?.status).toBe('n/a')
 	})
 
 	it('names the knip command to run for dead code, and skips it without knip', () => {

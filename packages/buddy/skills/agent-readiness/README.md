@@ -21,7 +21,8 @@ before and after a change.
 1. **Runs a static scan** with a bundled script: no build, no install, no tokens. It checks for a
    verify command, an instructions file and the commands it names, a pinned toolchain, file sizes,
    committed build output, committed secrets, literal MCP credentials, and more. It also measures the
-   source: the share of comments, JSDoc blocks that document nothing, and names that flood a grep.
+   source: the share of comments, JSDoc blocks that document nothing, names that flood a grep, and
+   environment variables the code reads that no setup document names.
 2. **Settles the judgment calls** the script cannot make, such as whether CI runs the same command an
    agent runs locally, whether the instructions file is accurate, or whether heavy comments state
    constraints or tell history. When the repo has knip configured, it runs knip and reports what is

@@ -287,6 +287,19 @@ export function buildChecks(facts: Facts, now: Date = new Date()): Check[] {
 			fix: 'Document one setup command (install, then build if tests need it) that never prompts.',
 		},
 		{
+			id: 'env-documented',
+			area: 'environment',
+			level: 3,
+			gate: false,
+			effort: 1,
+			status: !facts.undocumentedEnv ? 'n/a' : facts.undocumentedEnv.length === 0 ? 'pass' : 'fail',
+			summary: 'Every environment variable the source reads is documented',
+			...(facts.undocumentedEnv && facts.undocumentedEnv.length > 0
+				? { detail: list(facts.undocumentedEnv.map((e) => `${e.name}: read in ${e.readIn}`)) }
+				: {}),
+			fix: 'Name each variable, what it is for, and whether it is required in `.env.example` or the setup docs.',
+		},
+		{
 			id: 'fast-feedback',
 			area: 'verification',
 			level: 3,

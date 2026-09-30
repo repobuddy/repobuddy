@@ -46,7 +46,8 @@ same arguments.
 nothing, so it takes seconds and costs no tokens. The one exception is opt-in: `--run-knip` runs the
 repo's knip command and settles `dead-code` itself, which needs the dependencies installed. Use it in
 CI, where no agent is there to run knip. It measures the source too: the share of comments,
-JSDoc blocks that document nothing, and names that flood a grep. Whether a comment or a name is worth
+JSDoc blocks that document nothing, names that flood a grep, and environment variables the code reads
+that no setup document names. Whether a comment or a name is worth
 changing stays a judgment. `bench` runs real agents; see [Bench](#bench).
 
 ## Levels
