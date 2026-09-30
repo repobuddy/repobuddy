@@ -136,6 +136,9 @@ level 4, so there `--min-level` takes 1 to 4.
 ### Tokens loaded per session
 ~<total> (instructions ~<n>, skill descriptions ~<n>). <one line on the biggest contributor>
 
+### Prompt-injection surface (not scored)
+<hooks and MCP servers from `injectionSurface` that fetch untrusted content, and what they fetch; or "none">
+
 ### Areas
 | Area | Weight | Score | Notes |
 | --- | --- | --- | --- |

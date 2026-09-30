@@ -45,6 +45,7 @@ function readyFacts(overrides: Partial<Facts> = {}): Facts {
 		mcpLiteralCredentials: [],
 		workflows: { files: ['.github/workflows/ci.yml'], unpinnedActions: [], missingPermissions: [] },
 		releaseAgeGate: PNPM_GATE,
+		injectionSurface: { hooks: [], mcpServers: [] },
 		comments: { files: 10, codeLines: 900, commentLines: 100, heaviest: [], orphanedJsdoc: [] },
 		nameCollisions: [],
 		undocumentedEnv: [],
@@ -317,6 +318,24 @@ describe('formatReport', () => {
 
 	it('says when the script sees nothing to fix', () => {
 		expect(formatReport(score(readyFacts()))).toMatch(/nothing the script can see/)
+	})
+
+	it('lists the prompt-injection surface without scoring it', () => {
+		const injectionSurface = {
+			hooks: [{ file: '.claude/settings.json', event: 'SessionStart', command: 'gh issue view' }],
+			mcpServers: [
+				{ file: '.mcp.json', name: 'fetch', target: 'npx fetch-mcp' },
+				{ file: '.mcp.json', name: 'bare', target: '' },
+			],
+		}
+		const result = score(readyFacts({ injectionSurface }))
+		expect(result.level).toBe(MAX_LEVEL)
+		expect(result.injectionSurface).toEqual(injectionSurface)
+		const text = formatReport(result)
+		expect(text).toMatch(/hook SessionStart \(\.claude\/settings\.json\): gh issue view/)
+		expect(text).toMatch(/mcp fetch \(\.mcp\.json\): npx fetch-mcp/)
+		expect(text).toMatch(/mcp bare \(\.mcp\.json\): no command or url/)
+		expect(formatReport(score(readyFacts()))).toMatch(/not scored\):\n {2}none configured/)
 	})
 })
 
