@@ -463,6 +463,7 @@ interface TaskDelta {
 	passRate: [number, number]
 	medianInputTokens: [number, number]
 	medianOutputTokens: [number, number]
+	medianCacheReadTokens: [number, number]
 	medianTurns: [number, number]
 	medianToolCalls: [number, number]
 	medianWallMs: [number, number]
@@ -491,6 +492,7 @@ export function compare(baseline: Baseline, current: BenchRecord, now: Date): Co
 				passRate: [b.passRate, c.passRate],
 				medianInputTokens: [b.medianInputTokens, c.medianInputTokens],
 				medianOutputTokens: [b.medianOutputTokens, c.medianOutputTokens],
+				medianCacheReadTokens: [b.medianCacheReadTokens, c.medianCacheReadTokens],
 				medianTurns: [b.medianTurns, c.medianTurns],
 				medianToolCalls: [b.medianToolCalls, c.medianToolCalls],
 				medianWallMs: [b.medianWallMs, c.medianWallMs],
@@ -630,7 +632,7 @@ export function formatOutcome(outcome: BenchOutcome): string {
 			lines.push(`  ${t.task}:`)
 			lines.push(`    pass rate ${delta(t.passRate, (n) => `${Math.round(n * 100)}%`)}`)
 			lines.push(
-				`    input tokens ${delta(t.medianInputTokens, String)}, output tokens ${delta(t.medianOutputTokens, String)}`,
+				`    input tokens ${delta(t.medianInputTokens, String)}, output tokens ${delta(t.medianOutputTokens, String)}, cache read ${delta(t.medianCacheReadTokens, String)}`,
 			)
 			lines.push(
 				`    turns ${delta(t.medianTurns, String)}, tool calls ${delta(t.medianToolCalls, String)}, wall ${delta(t.medianWallMs, secs)}`,
