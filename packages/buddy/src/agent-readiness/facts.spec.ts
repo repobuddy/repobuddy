@@ -167,10 +167,28 @@ describe('collectFacts', () => {
 		expect(facts.nameCollisions).toEqual([{ name: 'run', declaredIn: 1, matchingFiles: 11 }])
 	})
 
+	it('lists environment variables that no setup document names', () => {
+		const facts = collectFacts(
+			repo({
+				'src/a.ts': 'process.env.API_URL; process.env.NODE_ENV; import.meta.env.MODE',
+				'src/b.ts': "process.env['DB_URL']; process.env.TOKEN; import.meta.env.VITE_KEY; process.env.PORT",
+				'src/b.spec.ts': 'process.env.TEST_ONLY',
+				'README.md': 'Set `PORT`.',
+				'AGENTS.md': 'TOKEN is required.',
+				'.env.example': 'VITE_KEY=\n',
+			}),
+		)
+		expect(facts.undocumentedEnv).toEqual([
+			{ name: 'API_URL', readIn: 'src/a.ts' },
+			{ name: 'DB_URL', readIn: 'src/b.ts' },
+		])
+	})
+
 	it('has no source measures without source', () => {
 		const facts = collectFacts(repo({ 'README.md': '' }))
 		expect(facts.comments).toBeUndefined()
 		expect(facts.nameCollisions).toBeUndefined()
+		expect(facts.undocumentedEnv).toBeUndefined()
 	})
 
 	it('finds the command that runs knip', () => {

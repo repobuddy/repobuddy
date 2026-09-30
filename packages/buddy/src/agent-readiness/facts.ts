@@ -8,6 +8,7 @@ import { spawnSync } from 'node:child_process'
 import { existsSync, readdirSync, readFileSync, realpathSync, statSync } from 'node:fs'
 import { basename, join } from 'node:path'
 import { readBaseline } from './bench.js'
+import { findUndocumentedEnv, isSetupDoc, type UndocumentedEnv } from './env.js'
 import { type DeadCodeRun, runKnip } from './knip.js'
 import { type CommentFacts, findNameCollisions, measureComments, type NameCollision } from './source.js'
 
@@ -57,6 +58,11 @@ export interface Facts {
 	comments: CommentFacts | undefined
 	/** `undefined` when the repo has no non-test JS or TS source. */
 	nameCollisions: NameCollision[] | undefined
+	/**
+	 * Variables the source reads that no instructions file, README, CONTRIBUTING, or `.env.example`
+	 * names; `undefined` when the repo has no non-test JS or TS source.
+	 */
+	undocumentedEnv: UndocumentedEnv[] | undefined
 	/** The command that runs knip, when the repo has it configured; `undefined` otherwise. */
 	deadCodeCommand: string | undefined
 	/** knip's result, when `score --run-knip` ran it; `undefined` otherwise. */
@@ -428,6 +434,11 @@ export function collectFacts(dir: string, options: CollectOptions = {}): Facts {
 		mcpLiteralCredentials: readMcpLiteralCredentials(dir),
 		comments: measureComments(searched, readText),
 		nameCollisions: findNameCollisions(searched, readText),
+		undocumentedEnv: findUndocumentedEnv(
+			searched,
+			[...INSTRUCTION_FILES.filter((f) => exists(dir, f)), ...files.filter(isSetupDoc)],
+			readText,
+		),
 		deadCodeCommand,
 		...(options.runKnip && deadCodeCommand ? { deadCodeRun: runKnip(dir, deadCodeCommand) } : {}),
 		benchBaselineAt: readBaseline(dir)?.createdAt,
