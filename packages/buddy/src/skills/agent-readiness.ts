@@ -3,7 +3,7 @@
  *
  *   node scripts/agent-readiness.mjs score [--dir <repo>] [--json] [--run-knip] [--check [--min-level <1-5>]]
  *   node scripts/agent-readiness.mjs score --package <path> [--json] [--check [--min-level <1-4>]]
- *   node scripts/agent-readiness.mjs bench [--dir <repo>] [--init | --baseline] [--runs <n>] [--task <id>] [--yes] [--json]
+ *   node scripts/agent-readiness.mjs bench [--dir <repo>] [--init | --baseline] [--runs <n>] [--task <id>] [--runner print|interactive] [--yes] [--json]
  *
  * `score` reports the gated level (1-5), a score per area, the top three fixes, and the tokens every
  * agent session loads before it starts (instruction files plus installed skill descriptions, estimated
@@ -17,7 +17,9 @@
  * clean checkout of HEAD, and records tokens, turns, tool calls, wall time, pass rate, and cost per
  * successful task. It spends money, so without `--yes` it only prints the plan and its spend ceiling.
  * `--baseline` stores the summary as the baseline; any other run is compared against it. `--init`
- * writes a task-set template and runs nothing.
+ * writes a task-set template and runs nothing. `--runner interactive` runs each task as an interactive
+ * session in a terminal multiplexer pane (tmux, herdr) instead of `claude -p`; it needs
+ * CLAUDE_CODE_OAUTH_TOKEN or ANTHROPIC_API_KEY, and its runs are never compared with `-p` ones.
  *
  * With --package, it scores the consuming side instead: how cheaply another repo's agent can use the
  * package through what ships (declarations, exports map, README, changelog, llms.txt), with the same
@@ -33,7 +35,18 @@
  */
 
 import { resolve } from 'node:path'
-import { BenchError, bench, formatOutcome, formatPlan, initTasks, loadConfig, plan } from '../agent-readiness/bench.js'
+import {
+	BenchError,
+	bench,
+	formatOutcome,
+	formatPlan,
+	initTasks,
+	loadConfig,
+	plan,
+	printRunner,
+	type RunnerName,
+} from '../agent-readiness/bench.js'
+import { interactiveRunner } from '../agent-readiness/bench-interactive.js'
 import { ConfigError, readConfig } from '../agent-readiness/config.js'
 import { collectFacts } from '../agent-readiness/facts.js'
 import { collectPackageFacts } from '../agent-readiness/package-facts.js'
@@ -41,7 +54,7 @@ import { formatPackageReport, PACKAGE_MAX_LEVEL, scorePackage } from '../agent-r
 import { checkLevel, formatCheck, formatReport, MAX_LEVEL, score } from '../agent-readiness/score.js'
 
 const USAGE = `usage: agent-readiness.mjs score [--dir <repo> | --package <path>] [--json] [--run-knip] [--check [--min-level <n>]]
-       agent-readiness.mjs bench [--dir <repo>] [--init | --baseline] [--runs <n>] [--task <id>] [--yes] [--json]`
+       agent-readiness.mjs bench [--dir <repo>] [--init | --baseline] [--runs <n>] [--task <id>] [--runner print|interactive] [--yes] [--json]`
 
 function usage(message: string): never {
 	process.stderr.write(`${message}\n${USAGE}\n`)
@@ -58,12 +71,13 @@ interface Opts {
 	yes: boolean
 	runs?: number
 	task?: string
+	runner?: RunnerName
 	check: boolean
 	minLevel?: number
 	runKnip: boolean
 }
 
-const BENCH_FLAGS = new Set(['--init', '--baseline', '--yes', '--runs', '--task'])
+const BENCH_FLAGS = new Set(['--init', '--baseline', '--yes', '--runs', '--task', '--runner'])
 const CHECK_FLAGS = new Set(['--check', '--min-level'])
 
 /** The documented target level, and what --check holds a repo or package to unless told otherwise. */
@@ -106,7 +120,11 @@ function parseArgs(argv: string[]): Opts {
 		else if (a === '--baseline') opts.baseline = true
 		else if (a === '--yes') opts.yes = true
 		else if (a === '--task') opts.task = value(i++, a)
-		else if (a === '--check') opts.check = true
+		else if (a === '--runner') {
+			const v = value(i++, a)
+			if (v !== 'print' && v !== 'interactive') usage('--runner is print or interactive')
+			opts.runner = v
+		} else if (a === '--check') opts.check = true
 		else if (a === '--run-knip') opts.runKnip = true
 		else if (a === '--min-level') {
 			const v = value(i++, a)
@@ -140,7 +158,9 @@ function runBench(opts: Opts): void {
 		return
 	}
 	const config = loadConfig(opts.dir)
-	const planOpts = { ...(opts.runs ? { runs: opts.runs } : {}), ...(opts.task ? { task: opts.task } : {}) }
+	// Built before the plan, so a missing multiplexer or credential shows before anyone says yes.
+	const runner = opts.runner === 'interactive' ? interactiveRunner() : printRunner
+	const planOpts = { ...(opts.runs ? { runs: opts.runs } : {}), ...(opts.task ? { task: opts.task } : {}), runner }
 	if (!opts.yes) {
 		const p = plan(opts.dir, config, planOpts)
 		process.stdout.write(opts.json ? `${JSON.stringify({ plan: p }, null, 2)}\n` : formatPlan(p))

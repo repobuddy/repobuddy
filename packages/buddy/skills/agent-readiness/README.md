@@ -102,6 +102,10 @@ and from those the cost per successful task.
 - `bench` prints the plan and its spend ceiling, and runs nothing.
 - `bench --yes --baseline` records the baseline (`baseline.json`, committed).
 - `bench --yes` runs again and compares against the baseline, task by task.
+- `bench --runner interactive` drives interactive Claude Code sessions in tmux or herdr panes instead
+  of `claude -p`. Each session gets a fresh config directory, so none of your own instructions,
+  plugins, or skills load. It needs `CLAUDE_CODE_OAUTH_TOKEN` (from `claude setup-token`) or
+  `ANTHROPIC_API_KEY` set, and its runs are compared only with other interactive runs.
 
 It spends money, so the skill always shows the plan and waits for a yes. The defaults (Sonnet, 3 runs
 per task, $0.50 cap per run) keep a 4-task bench around $2-5. Change one area at a time between runs,
@@ -134,7 +138,7 @@ own:
 ```sh
 node <skill-dir>/scripts/agent-readiness.mjs score [--dir <repo>] [--json] [--check [--min-level <1-5>]]
 node <skill-dir>/scripts/agent-readiness.mjs score --package <path> [--json] [--check [--min-level <1-4>]]
-node <skill-dir>/scripts/agent-readiness.mjs bench [--init | --baseline] [--runs <n>] [--task <id>] [--yes]
+node <skill-dir>/scripts/agent-readiness.mjs bench [--init | --baseline] [--runs <n>] [--task <id>] [--runner print|interactive] [--yes]
 npx -y repobuddy@^1.12.0 agent-readiness score
 npx -y repobuddy@^1.12.0 agent-readiness bench
 ```

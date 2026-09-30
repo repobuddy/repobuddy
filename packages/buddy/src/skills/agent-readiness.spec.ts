@@ -2,7 +2,7 @@ import { spawnSync } from 'node:child_process'
 import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { afterEach, beforeEach, expect, jest, test } from '@jest/globals'
+import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globals'
 import { main } from './agent-readiness.js'
 
 let stdout: string[]
@@ -55,6 +55,8 @@ test.each([
 	[['score', '--min-level', '2']],
 	[['score', '--package', '.', '--run-knip']],
 	[['bench', '--run-knip']],
+	[['bench', '--runner', 'bogus']],
+	[['score', '--runner', 'print']],
 ])('rejects bad usage %j with exit 2', async (argv) => {
 	await expect(main(argv)).rejects.toThrow('exit:2')
 	expect(stderr.join('')).toMatch(/usage: agent-readiness\.mjs score/)
@@ -75,6 +77,39 @@ test('bench --init writes a task set, and without --yes bench only prints the pl
 	await main(['bench', '--dir', dir, '--json'])
 	expect(JSON.parse(stdout.join('')).plan.totalRuns).toBe(9)
 	expect(existsSync(join(dir, '.agents/readiness/bench/results'))).toBe(false)
+})
+
+describe('bench --runner interactive', () => {
+	const saved = { ...process.env }
+	afterEach(() => {
+		process.env = { ...saved }
+	})
+	beforeEach(async () => {
+		delete process.env['CLAUDE_CODE_OAUTH_TOKEN']
+		delete process.env['ANTHROPIC_API_KEY']
+		await main(['bench', '--dir', dir, '--init'])
+		stdout = []
+	})
+
+	test('exits 1 outside a terminal multiplexer, before planning', async () => {
+		process.env['CYBER_MUX'] = 'none'
+		await expect(main(['bench', '--dir', dir, '--runner', 'interactive'])).rejects.toThrow('exit:1')
+		expect(stderr.join('')).toMatch(/none was found: run the bench from inside tmux or herdr/)
+		expect(stdout.join('')).toBe('')
+	})
+
+	test('exits 1 without a credential for the isolated session', async () => {
+		process.env['CYBER_MUX'] = 'tmux'
+		await expect(main(['bench', '--dir', dir, '--runner', 'interactive'])).rejects.toThrow('exit:1')
+		expect(stderr.join('')).toMatch(/claude setup-token/)
+	})
+
+	test('plans with the interactive runner and runs nothing', async () => {
+		process.env['CYBER_MUX'] = 'tmux'
+		process.env['CLAUDE_CODE_OAUTH_TOKEN'] = 't'
+		await main(['bench', '--dir', dir, '--runner', 'interactive', '--json'])
+		expect(JSON.parse(stdout.join('')).plan.runner).toBe('interactive')
+	})
 })
 
 test('prints the human report', async () => {

@@ -2,8 +2,9 @@
  * Runs a repository's fixed agent task set and records what each run cost.
  *
  * Each run gets a clean checkout of HEAD (a detached git worktree), runs the task's setup, runs the
- * agent headless, then runs the task's check: exit 0 is a pass. The numbers come from the agent's own
- * run report, so they are the harness's count, not an estimate.
+ * agent, then runs the task's check: exit 0 is a pass. The agent runs headless (`claude -p`) by
+ * default, or as an interactive session in a terminal multiplexer (`bench-interactive.ts`). The numbers
+ * come from the agent's own run report or transcript, so they are the harness's count, not an estimate.
  *
  * The task set lives in the repository at `.agents/readiness/bench/tasks.json`. `--baseline` stores a
  * summary in `baseline.json` beside it; every other run is compared against that baseline.
@@ -24,6 +25,13 @@ export const BASELINE_MAX_AGE_DAYS = 90
 
 /** Claude Code is the only harness so far; the name is part of the baseline key. */
 const HARNESS = 'claude-code'
+
+/**
+ * How the agent is driven: `print` is headless `claude -p`; `interactive` is a real session in a
+ * terminal multiplexer pane. They count turns and wall time differently, so the runner is part of the
+ * baseline key and a run is never compared against a baseline another runner took.
+ */
+export type RunnerName = 'print' | 'interactive'
 
 export interface BenchTask {
 	id: string
@@ -133,6 +141,7 @@ export function loadConfig(dir: string): BenchConfig {
 export interface BenchPlan {
 	model: string
 	harness: string
+	runner: RunnerName
 	permissionMode: string
 	runsPerTask: number
 	tasks: string[]
@@ -147,6 +156,7 @@ export interface BenchPlan {
 export interface PlanOptions {
 	runs?: number
 	task?: string
+	runner?: Pick<Runner, 'name'>
 }
 
 function git(dir: string, args: string[]) {
@@ -169,6 +179,7 @@ export function plan(dir: string, config: BenchConfig, opts: PlanOptions = {}): 
 	return {
 		model: config.model,
 		harness: HARNESS,
+		runner: opts.runner?.name ?? 'print',
 		permissionMode: config.permissionMode,
 		runsPerTask,
 		tasks: tasks.map((t) => t.id),
@@ -248,42 +259,53 @@ export interface RunResult extends RunMetrics {
 	run: number
 	pass: boolean
 	wallMs: number
-	/** Why the run did not produce a verdict from its check, such as a setup failure. */
+	/** What went wrong in the run, such as a failed setup or an agent session that ended on an error. */
 	error?: string
 }
 
-interface ShellResult {
+export interface ShellResult {
 	status: number | null
 	stdout: string
 }
 
+/** What one agent run reports: its metrics, or why it could not run. */
+export interface AgentRun extends RunMetrics {
+	error?: string
+}
+
 /** The seams a run touches, so tests can drive a run without an agent or a real shell. */
 export interface Runner {
+	name: RunnerName
 	shell(command: string, cwd: string, timeoutMs: number): ShellResult
-	agent(args: string[], cwd: string, timeoutMs: number): ShellResult
+	/** Runs the agent on the task in the checkout, stopping it at `timeoutMs`. */
+	agent(config: BenchConfig, task: BenchTask, checkout: string, timeoutMs: number): AgentRun
 	now(): number
 }
 
+/* istanbul ignore next -- runs real commands; tests drive runs through a fake Runner */
+export function hostShell(command: string, cwd: string, timeoutMs: number): ShellResult {
+	const r = spawnSync('sh', ['-c', command], {
+		cwd,
+		encoding: 'utf8',
+		timeout: timeoutMs,
+		stdio: ['ignore', 'pipe', 'pipe'],
+	})
+	return { status: r.status, stdout: r.stdout ?? '' }
+}
+
 /* istanbul ignore next -- spawns the real agent; tests drive runs through a fake Runner */
-const defaultRunner: Runner = {
-	shell(command, cwd, timeoutMs) {
-		const r = spawnSync('sh', ['-c', command], {
-			cwd,
-			encoding: 'utf8',
-			timeout: timeoutMs,
-			stdio: ['ignore', 'pipe', 'pipe'],
-		})
-		return { status: r.status, stdout: r.stdout ?? '' }
-	},
-	agent(args, cwd, timeoutMs) {
-		const r = spawnSync('claude', args, {
-			cwd,
+export const printRunner: Runner = {
+	name: 'print',
+	shell: hostShell,
+	agent(config, task, checkout, timeoutMs) {
+		const r = spawnSync('claude', agentArgs(config, task, checkout), {
+			cwd: checkout,
 			encoding: 'utf8',
 			timeout: timeoutMs,
 			maxBuffer: 256 * 1024 * 1024,
 			stdio: ['ignore', 'pipe', 'pipe'],
 		})
-		return { status: r.status, stdout: r.stdout ?? '' }
+		return parseStreamJson(r.stdout ?? '')
 	},
 	now: () => Date.now(),
 }
@@ -321,7 +343,7 @@ export function runTask(
 	config: BenchConfig,
 	task: BenchTask,
 	run: number,
-	runner: Runner = defaultRunner,
+	runner: Runner = printRunner,
 ): RunResult {
 	const parent = mkdtempSync(join(tmpdir(), 'agent-readiness-bench-'))
 	const checkout = join(parent, 'repo')
@@ -345,11 +367,10 @@ export function runTask(
 			if (runner.shell(command, checkout, SETUP_TIMEOUT_MS).status !== 0) return failed(`${name} failed: ${command}`)
 		}
 		const start = runner.now()
-		const agent = runner.agent(agentArgs(config, task, checkout), checkout, config.timeoutMinutes * 60 * 1000)
+		const agent = runner.agent(config, task, checkout, config.timeoutMinutes * 60 * 1000)
 		const wallMs = runner.now() - start
-		const metrics = parseStreamJson(agent.stdout)
 		const pass = runner.shell(task.check, checkout, SETUP_TIMEOUT_MS).status === 0
-		return { ...base, ...metrics, pass, wallMs }
+		return { ...base, ...agent, pass, wallMs }
 	} finally {
 		git(dir, ['worktree', 'remove', '--force', checkout])
 		rmSync(parent, { recursive: true, force: true })
@@ -436,12 +457,14 @@ export interface BenchRecord {
 	commit: string | undefined
 	model: string
 	harness: string
+	runner: RunnerName
 	runsPerTask: number
 	summary: BenchSummary
 	results: RunResult[]
 }
 
-export type Baseline = Omit<BenchRecord, 'results'>
+/** A baseline written before the runner was recorded has no `runner`: it was taken with `claude -p`. */
+export type Baseline = Omit<BenchRecord, 'results' | 'runner'> & { runner?: RunnerName }
 
 export function readBaseline(dir: string): Baseline | undefined {
 	const path = join(dir, BASELINE_FILE)
@@ -471,7 +494,7 @@ interface TaskDelta {
 }
 
 export interface Comparison {
-	/** Why the two cannot be compared, when they cannot: a different model or harness measures something else. */
+	/** Why the two cannot be compared, when they cannot: a different model, harness, or runner measures something else. */
 	incomparable?: string
 	baselineAgeDays: number
 	stale: boolean
@@ -482,7 +505,9 @@ export interface Comparison {
 
 export function compare(baseline: Baseline, current: BenchRecord, now: Date): Comparison {
 	const age = baselineAgeDays(baseline, now)
-	const mismatch = (['model', 'harness'] as const).find((k) => baseline[k] !== current[k])
+	// A baseline from before the runner was recorded was taken with `claude -p`.
+	const recorded = { ...baseline, runner: baseline.runner ?? 'print' }
+	const mismatch = (['model', 'harness', 'runner'] as const).find((k) => recorded[k] !== current[k])
 	const tasks = current.summary.tasks.flatMap((c): TaskDelta[] => {
 		const b = baseline.summary.tasks.find((t) => t.task === c.task)
 		if (!b) return []
@@ -502,7 +527,7 @@ export function compare(baseline: Baseline, current: BenchRecord, now: Date): Co
 	})
 	return {
 		...(mismatch
-			? { incomparable: `the baseline ran ${mismatch} "${baseline[mismatch]}", this run "${current[mismatch]}"` }
+			? { incomparable: `the baseline ran ${mismatch} "${recorded[mismatch]}", this run "${current[mismatch]}"` }
 			: {}),
 		baselineAgeDays: age,
 		stale: age > BASELINE_MAX_AGE_DAYS,
@@ -551,6 +576,7 @@ export function bench(dir: string, config: BenchConfig, opts: BenchOptions = {})
 		commit: p.commit,
 		model: config.model,
 		harness: HARNESS,
+		runner: p.runner,
 		runsPerTask: p.runsPerTask,
 		summary: summarize(results),
 		results,
@@ -585,7 +611,7 @@ export function formatPlan(p: BenchPlan): string {
 	const lines = [
 		`Bench plan: ${p.tasks.length} task(s) × ${p.runsPerTask} run(s) = ${p.totalRuns} agent run(s)`,
 		`  tasks: ${p.tasks.join(', ')}`,
-		`  model: ${p.model} (${p.harness}), permission mode: ${p.permissionMode}`,
+		`  model: ${p.model} (${p.harness}, ${p.runner} runner), permission mode: ${p.permissionMode}`,
 		`  commit: ${p.commit ?? 'unknown'}${p.dirty ? ' (uncommitted changes are NOT benched: each run checks out HEAD)' : ''}`,
 		`  spend ceiling: ${usd(p.ceilingUsd)} (every run at its budget cap)`,
 		'',
@@ -607,7 +633,7 @@ export function formatOutcome(outcome: BenchOutcome): string {
 	const s = record.summary
 	const lines = [
 		`Bench: ${s.passes}/${s.runs} passed (${Math.round(s.passRate * 100)}%), spent ${usd(s.totalCostUsd)}, cost per success ${usd(s.costPerSuccessUsd)}`,
-		`  model ${record.model} (${record.harness}), commit ${record.commit ?? 'unknown'}`,
+		`  model ${record.model} (${record.harness}, ${record.runner} runner), commit ${record.commit ?? 'unknown'}`,
 		'',
 		'Per task (medians):',
 	]
@@ -616,7 +642,8 @@ export function formatOutcome(outcome: BenchOutcome): string {
 			`  ${t.task}: ${t.passes}/${t.runs} passed; in ${t.medianInputTokens}, out ${t.medianOutputTokens}, cache read ${t.medianCacheReadTokens} tokens; ${t.medianTurns} turns; ${t.medianToolCalls} tool calls; ${secs(t.medianWallMs)}; ${usd(t.costPerSuccessUsd)} per success`,
 		)
 		if (t.capped > 0) lines.push(`    ${t.capped} run(s) stopped on the budget cap or an error`)
-		if (t.errors > 0) lines.push(`    ${t.errors} run(s) failed before the agent ran; see ${outcome.resultsPath}`)
+		if (t.errors > 0)
+			lines.push(`    ${t.errors} run(s) reported an error, such as a failed setup; see ${outcome.resultsPath}`)
 	}
 	lines.push('')
 	if (outcome.baselinePath) lines.push(`Baseline written: ${outcome.baselinePath}. Commit it.`)
