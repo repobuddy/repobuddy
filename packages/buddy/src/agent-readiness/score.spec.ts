@@ -323,7 +323,10 @@ describe('formatReport', () => {
 	it('lists the prompt-injection surface without scoring it', () => {
 		const injectionSurface = {
 			hooks: [{ file: '.claude/settings.json', event: 'SessionStart', command: 'gh issue view' }],
-			mcpServers: [{ file: '.mcp.json', name: 'fetch', target: 'npx fetch-mcp' }],
+			mcpServers: [
+				{ file: '.mcp.json', name: 'fetch', target: 'npx fetch-mcp' },
+				{ file: '.mcp.json', name: 'bare', target: '' },
+			],
 		}
 		const result = score(readyFacts({ injectionSurface }))
 		expect(result.level).toBe(MAX_LEVEL)
@@ -331,6 +334,7 @@ describe('formatReport', () => {
 		const text = formatReport(result)
 		expect(text).toMatch(/hook SessionStart \(\.claude\/settings\.json\): gh issue view/)
 		expect(text).toMatch(/mcp fetch \(\.mcp\.json\): npx fetch-mcp/)
+		expect(text).toMatch(/mcp bare \(\.mcp\.json\): no command or url/)
 		expect(formatReport(score(readyFacts()))).toMatch(/not scored\):\n {2}none configured/)
 	})
 })

@@ -66,4 +66,22 @@ describe('readInjectionSurface', () => {
 			{ file: '.vscode/mcp.json', name: 'github', target: 'https://api.githubcopilot.com/mcp/' },
 		])
 	})
+
+	it('skips malformed entries and falls back to the PowerShell command', () => {
+		const dir = repo({
+			'.claude/settings.json': {
+				hooks: { SessionStart: ['x', { hooks: 'x' }, { hooks: [{ type: 'prompt' }] }], UserPromptSubmit: 'x' },
+			},
+			'.github/hooks/ps.json': { hooks: { sessionStart: [{ powershell: 'ctx.ps1' }] } },
+			'.mcp.json': { mcpServers: { bad: 'x', bare: {}, local: { command: 'srv', args: ['--a', 1] } } },
+			'.cursor/mcp.json': { mcpServers: [] },
+		})
+		expect(readInjectionSurface(dir)).toEqual({
+			hooks: [{ file: '.github/hooks/ps.json', event: 'sessionStart', command: 'ctx.ps1' }],
+			mcpServers: [
+				{ file: '.mcp.json', name: 'bare', target: '' },
+				{ file: '.mcp.json', name: 'local', target: 'srv --a' },
+			],
+		})
+	})
 })
