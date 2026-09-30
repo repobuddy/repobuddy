@@ -15,41 +15,47 @@ import type { PresetOptions } from './types.ts'
 export function browserTestPreset(options?: PresetOptions | undefined): Plugin {
 	return {
 		name: '@repobuddy/vitest/browser-preset',
-		config(userConfig?: ViteUserConfig | undefined) {
-			const include = options?.includeGeneralTests
-				? [...buddyConfigDefaults.include.testGeneral, ...buddyConfigDefaults.include.testBrowser]
-				: [...buddyConfigDefaults.include.testBrowser]
-			if (options?.includeLoadTests) {
-				include.push(...buddyConfigDefaults.include.testLoad)
-			}
-			return {
-				test: {
-					...buddyConfigDefaults.test,
-					include,
-					browser: {
-						enabled: true,
-						headless: true,
-						//
-						provider: playwright() as any,
-						...(userConfig?.test?.browser?.instances
-							? undefined
-							: {
-									instances: [
-										{
-											name: (userConfig?.test?.name ? `${userConfig.test.name} (chromium)` : undefined) as string,
-											browser: 'chromium',
-											screenshotFailures: false,
-										},
-									],
-								}),
+		config: {
+			// Vitest's browser loader builds the browser server in its own `enforce: 'pre'` config hook,
+			// and only when `test.browser.enabled` is already set.
+			// `order: 'pre'` runs this hook ahead of it.
+			order: 'pre',
+			handler(userConfig?: ViteUserConfig | undefined) {
+				const include = options?.includeGeneralTests
+					? [...buddyConfigDefaults.include.testGeneral, ...buddyConfigDefaults.include.testBrowser]
+					: [...buddyConfigDefaults.include.testBrowser]
+				if (options?.includeLoadTests) {
+					include.push(...buddyConfigDefaults.include.testLoad)
+				}
+				return {
+					test: {
+						...buddyConfigDefaults.test,
+						include,
+						browser: {
+							enabled: true,
+							headless: true,
+							//
+							provider: playwright() as any,
+							...(userConfig?.test?.browser?.instances
+								? undefined
+								: {
+										instances: [
+											{
+												name: (userConfig?.test?.name ? `${userConfig.test.name} (chromium)` : undefined) as string,
+												browser: 'chromium',
+												screenshotFailures: false,
+											},
+										],
+									}),
+						},
+						coverage: {
+							include: buddyConfigDefaults.include.source,
+							exclude: buddyConfigDefaults.exclude.test,
+						},
+						setupFiles: ['@repobuddy/vitest/setup/browser'],
 					},
-					coverage: {
-						include: buddyConfigDefaults.include.source,
-						exclude: buddyConfigDefaults.exclude.test,
-					},
-					setupFiles: ['@repobuddy/vitest/setup/browser'],
-				},
-			} satisfies ViteUserConfig
+				} satisfies ViteUserConfig
+			},
 		},
 	}
 }

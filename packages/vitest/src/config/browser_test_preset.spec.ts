@@ -49,6 +49,14 @@ describe(`${browserTestPreset.name}()`, () => {
 		expect(callConfig(r, { test: {} }).test?.browser?.instances?.[0]?.name).toBeUndefined()
 	})
 
+	// vitest 5 builds the browser server in its own `enforce: 'pre'` config hook,
+	// which only fires when `test.browser.enabled` is already set.
+	// A normal-order hook would enable browser mode too late.
+	it('runs its config hook before vitest sets up the browser server', () => {
+		const hook = browserTestPreset().config
+		expect(typeof hook === 'object' ? hook.order : undefined).toBe('pre')
+	})
+
 	it('supports config with name', () => {
 		const r = browserTestPreset()
 		expect(callConfig(r, { test: { name: 'My Test' } }).test?.browser?.instances?.[0]?.name).toEqual(
