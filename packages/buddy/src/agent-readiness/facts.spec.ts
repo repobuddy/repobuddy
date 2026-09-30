@@ -188,7 +188,8 @@ describe('collectFacts', () => {
 		const facts = collectFacts(
 			repo({
 				'.gitignore': 'third_party/\n',
-				'.ignore': 'testcases/\n',
+				'.ignore': 'testcases/\nsrc/__fixtures__/*\n',
+				'.rgignore': '!src/__fixtures__/e.json\n',
 				'packages/a/.rgignore': 'vendor/\n',
 				'testcases/x/a.ts': '',
 				'packages/a/vendor/b.js': '',
@@ -198,8 +199,8 @@ describe('collectFacts', () => {
 			}),
 		)
 		expect(facts.searchedFixtureDirs).toEqual([
-			{ path: 'src/__fixtures__/', searchedFiles: 2 },
 			{ path: 'packages/b/vendor/', searchedFiles: 1 },
+			{ path: 'src/__fixtures__/', searchedFiles: 1 },
 		])
 	})
 
