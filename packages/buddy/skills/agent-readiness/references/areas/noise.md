@@ -9,7 +9,7 @@ Everything search returns that is not source costs tokens and can mislead.
 | `build-output-untracked` | 4 | yes | script: tracked files under `dist/`, `build/`, `out/`, `coverage/`, `.next/`, `.turbo/`, or named `*.min.js`/`*.min.css` |
 | `comment-signal` | 4 | no | script: comment-only lines as a share of non-test source; **judgment** above 15% |
 | `orphaned-jsdoc` | 4 | no | script: a `/** */` block followed by another one, a closing brace, or the end of the file, outside a file header |
-| `dead-code` | 4 | no | **judgment**, when the repo has knip configured |
+| `dead-code` | 4 | no | **judgment**, when the repo has knip configured; script with `--run-knip` |
 
 The script measures comments in languages that use `//` and `/* */`. It skips tests, fixtures,
 `.d.ts` files, and build output.
@@ -33,6 +33,9 @@ shows it. It is usually stale, left behind when its declaration moved. A module 
 a first declaration also lands here; move it to the top of the file.
 
 ## Judging `dead-code`
+
+With `--run-knip`, the script ran knip already: `pass` and `fail` are settled, and the detail lists
+knip's report headings. A `judge` result after `--run-knip` says why knip did not complete. Without it:
 
 The check names the command that runs knip. Run it; it reads the repo and changes nothing, but it needs
 the dependencies installed. Report the count of unused files, exports, and dependencies, and name the
