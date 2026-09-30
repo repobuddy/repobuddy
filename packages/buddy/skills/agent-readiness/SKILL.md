@@ -65,7 +65,9 @@ strong docs cannot hide a missing verify command. Level 3 is the target.
 
 Security findings **cap** the level instead of subtracting points: a committed secret file or a
 literal MCP credential caps it at 1, and an unignored `.env` caps it at 2. The more ready a repo is,
-the more autonomously agents act in it, so a leak does more damage there.
+the more autonomously agents act in it, so a leak does more damage there. The CI supply-chain checks
+(pinned actions, workflow `permissions:`, a release-age gate) are security checks too, but they only
+report: they never cap the level.
 
 The area weights (verification 25, instructions 15, navigability 15, signal-to-noise 15,
 self-describing code 10, environment 10, task discovery 5) only order the fixes and the per-area

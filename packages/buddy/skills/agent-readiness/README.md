@@ -40,8 +40,10 @@ before and after a change.
    | 5 | The cost is measured (a `bench` baseline at most 90 days old) |
 
    Security findings cap the level instead of subtracting points. A committed secret holds a repo at
-   level 1 however good everything else is.
-4. **Ranks the fixes.** Security first, then the gate that blocks the next level, then the rest by
+   level 1 however good everything else is. The CI supply-chain checks (third-party actions pinned to
+   a commit SHA, a `permissions:` block on every workflow or job, a package-manager release-age gate)
+   are reported but never cap the level.
+4. **Ranks the fixes.** Security caps first, then the gate that blocks the next level, then the rest by
    area weight per unit of effort. The weights are printed in the report as starting estimates, so you
    can disagree with them.
 5. **Reports the tokens loaded per session**: instruction files plus every installed skill's

@@ -9,6 +9,7 @@
 import { BASELINE_FILE, BASELINE_MAX_AGE_DAYS, baselineAgeDays } from './bench.js'
 import type { Facts } from './facts.js'
 import type { CommentFacts } from './source.js'
+import type { ReleaseAgeGate } from './supply-chain.js'
 
 type Area =
 	| 'verification'
@@ -485,12 +486,67 @@ export function buildChecks(facts: Facts, now: Date = new Date()): Check[] {
 			summary: '`.env` is ignored by git',
 			fix: 'Add `.env` and `.env.*` (with `!.env.example`) to `.gitignore`.',
 		},
+		// Security, report only: CI supply-chain settings. Not gates, so they never cap the level.
+		{
+			id: 'pinned-actions',
+			area: 'security',
+			level: 3,
+			gate: false,
+			effort: 2,
+			status: !facts.workflows ? 'n/a' : facts.workflows.unpinnedActions.length === 0 ? 'pass' : 'fail',
+			summary: 'Third-party actions in `.github/workflows` are pinned to a commit SHA',
+			...(facts.workflows && facts.workflows.unpinnedActions.length > 0
+				? { detail: list(facts.workflows.unpinnedActions) }
+				: {}),
+			fix: 'Pin each third-party `uses:` to a full commit SHA, with the tag in a trailing comment, and let the dependency bot bump it.',
+			handoff: 'setup-github-repo',
+		},
+		{
+			id: 'workflow-permissions',
+			area: 'security',
+			level: 3,
+			gate: false,
+			effort: 1,
+			status: !facts.workflows ? 'n/a' : facts.workflows.missingPermissions.length === 0 ? 'pass' : 'fail',
+			summary: 'Each workflow, or each of its jobs, declares `permissions:` for its token',
+			...(facts.workflows && facts.workflows.missingPermissions.length > 0
+				? { detail: list(facts.workflows.missingPermissions) }
+				: {}),
+			fix: 'Add `permissions: contents: read` at the top of each workflow and widen it only in the job that needs more.',
+			handoff: 'setup-github-repo',
+		},
+		{
+			id: 'release-age-gate',
+			area: 'security',
+			level: 3,
+			gate: false,
+			effort: 1,
+			status: releaseAgeStatus(facts.releaseAgeGate),
+			summary: 'The package manager holds back releases younger than a minimum age',
+			...(facts.releaseAgeGate ? { detail: [releaseAgeDetail(facts.releaseAgeGate)] } : {}),
+			fix: 'Set the minimum release age explicitly (a day or more), so a freshly hijacked version never installs.',
+			handoff: 'min-release-age',
+		},
 	]
 }
 
-/** Security failures cap the level: a committed credential at 1, an unignored `.env` at 2. */
+function releaseAgeStatus(gate: ReleaseAgeGate | undefined): Status {
+	if (!gate) return 'n/a'
+	return gate.minutes !== undefined && gate.minutes > 0 ? 'pass' : 'fail'
+}
+
+function releaseAgeDetail(gate: ReleaseAgeGate): string {
+	return gate.value === undefined
+		? `${gate.file}: no ${gate.setting} (${gate.defaultNote})`
+		: `${gate.file}: ${gate.setting} ${gate.value}`
+}
+
+/**
+ * Failed security gates cap the level: a committed credential at 1, an unignored `.env` at 2. Security
+ * checks that are not gates only report.
+ */
 function securityCap(checks: Check<string>[]): number | undefined {
-	const failed = checks.filter((c) => c.area === 'security' && c.status === 'fail')
+	const failed = checks.filter((c) => c.area === 'security' && c.gate && c.status === 'fail')
 	if (failed.length === 0) return undefined
 	return Math.min(...failed.map((c) => c.level))
 }
@@ -520,13 +576,13 @@ export function areaScores<A extends string>(checks: Check<string>[], weights: R
 }
 
 /**
- * Security failures come first, then gates that block the next level, then everything else by area
- * weight per unit of effort.
+ * Security gate failures come first, then gates that block the next level, then everything else by area
+ * weight per unit of effort. Report-only security checks carry no weight, so they rank last.
  */
 export function rankFixes<C extends Check<string>>(checks: C[], level: number, weights: Record<string, number>): C[] {
 	const rank = (c: C) => {
 		const weight = weights[c.area] ?? 0
-		if (c.area === 'security') return [0, c.level, 0]
+		if (c.area === 'security' && c.gate) return [0, c.level, 0]
 		if (c.gate && c.level === level + 1) return [1, 0, -weight / c.effort]
 		if (c.gate) return [2, c.level, -weight / c.effort]
 		return [3, 0, -weight / c.effort]
