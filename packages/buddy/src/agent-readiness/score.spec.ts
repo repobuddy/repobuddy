@@ -49,6 +49,7 @@ function readyFacts(overrides: Partial<Facts> = {}): Facts {
 		comments: { files: 10, codeLines: 900, commentLines: 100, heaviest: [], orphanedJsdoc: [] },
 		nameCollisions: [],
 		undocumentedEnv: [],
+		searchedFixtureDirs: [],
 		deadCodeCommand: undefined,
 		benchBaselineAt: new Date().toISOString(),
 		...overrides,
@@ -244,6 +245,16 @@ describe('buildChecks', () => {
 		})
 		expect(check(readyFacts(), 'generic-names')?.status).toBe('pass')
 		expect(check(readyFacts({ nameCollisions: undefined }), 'generic-names')?.status).toBe('n/a')
+	})
+
+	it('lists fixture and vendored folders search still reads, for the agent to judge', () => {
+		const searchedFixtureDirs = [{ path: 'testcases/', searchedFiles: 12 }]
+		expect(check(readyFacts({ searchedFixtureDirs }), 'fixtures-excluded')).toMatchObject({
+			status: 'judge',
+			detail: ['testcases/: 12 file(s) in search'],
+		})
+		expect(check(readyFacts(), 'fixtures-excluded')?.status).toBe('pass')
+		expect(check(readyFacts({ searchedFixtureDirs: undefined }), 'fixtures-excluded')?.status).toBe('n/a')
 	})
 
 	it('fails on environment variables no setup document names', () => {
