@@ -184,6 +184,25 @@ describe('collectFacts', () => {
 		])
 	})
 
+	it('lists tracked fixture and vendored folders that no ignore file excludes from search', () => {
+		const facts = collectFacts(
+			repo({
+				'.gitignore': 'third_party/\n',
+				'.ignore': 'testcases/\n',
+				'packages/a/.rgignore': 'vendor/\n',
+				'testcases/x/a.ts': '',
+				'packages/a/vendor/b.js': '',
+				'packages/b/vendor/c.js': '',
+				'src/__fixtures__/d.json': '',
+				'src/__fixtures__/e.json': '',
+			}),
+		)
+		expect(facts.searchedFixtureDirs).toEqual([
+			{ path: 'src/__fixtures__/', searchedFiles: 2 },
+			{ path: 'packages/b/vendor/', searchedFiles: 1 },
+		])
+	})
+
 	it('has no source measures without source', () => {
 		const facts = collectFacts(repo({ 'README.md': '' }))
 		expect(facts.comments).toBeUndefined()
@@ -226,5 +245,6 @@ describe('collectFacts', () => {
 		expect(facts.hasReadme).toBe(true)
 		expect(facts.trackedBuildOutput).toEqual(['dist/b.js'])
 		expect(facts.envIgnored).toBeUndefined()
+		expect(facts.searchedFixtureDirs).toBeUndefined()
 	})
 })

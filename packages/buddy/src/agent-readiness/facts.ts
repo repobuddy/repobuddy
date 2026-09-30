@@ -9,6 +9,7 @@ import { existsSync, readdirSync, readFileSync, realpathSync, statSync } from 'n
 import { basename, join } from 'node:path'
 import { readBaseline } from './bench.js'
 import { findUndocumentedEnv, isSetupDoc, type UndocumentedEnv } from './env.js'
+import { findSearchedFixtureDirs, type SearchedFixtureDir } from './fixtures.js'
 import { type InjectionSurface, readInjectionSurface } from './injection-surface.js'
 import { type DeadCodeRun, runKnip } from './knip.js'
 import { type CommentFacts, findNameCollisions, measureComments, type NameCollision } from './source.js'
@@ -51,6 +52,11 @@ export interface Facts {
 	tsStrict: boolean | undefined
 	largeFiles: LargeFile[]
 	trackedBuildOutput: string[]
+	/**
+	 * Tracked fixture and vendored folders whose files no ignore file excludes from search; `undefined`
+	 * outside a git repo, where ignore rules cannot be asked.
+	 */
+	searchedFixtureDirs: SearchedFixtureDir[] | undefined
 	/** `undefined` outside a git repo, where ignore rules cannot be asked. */
 	envIgnored: boolean | undefined
 	committedSecretFiles: string[]
@@ -437,6 +443,7 @@ export function collectFacts(dir: string, options: CollectOptions = {}): Facts {
 		tsStrict: readTsStrict(dir),
 		largeFiles,
 		trackedBuildOutput: files.filter((f) => BUILD_OUTPUT.test(f)),
+		searchedFixtureDirs: isGitRepo ? findSearchedFixtureDirs(dir, files) : undefined,
 		envIgnored,
 		committedSecretFiles: files.filter((f) => SECRET_FILE.test(f) && !SECRET_FILE_ALLOWED.test(basename(f))),
 		mcpLiteralCredentials: readMcpLiteralCredentials(dir),

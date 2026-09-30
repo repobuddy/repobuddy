@@ -382,6 +382,19 @@ export function buildChecks(facts: Facts, now: Date = new Date()): Check[] {
 			fix: 'Untrack them and add the folders to `.gitignore`; if they must stay, add them to `.ignore` so search skips them.',
 		},
 		{
+			id: 'fixtures-excluded',
+			area: 'noise',
+			level: 4,
+			gate: false,
+			effort: 1,
+			status: !facts.searchedFixtureDirs ? 'n/a' : facts.searchedFixtureDirs.length === 0 ? 'pass' : 'judge',
+			summary: 'Tracked fixture and vendored folders are excluded from search, or are worth searching',
+			...(facts.searchedFixtureDirs && facts.searchedFixtureDirs.length > 0
+				? { detail: list(facts.searchedFixtureDirs.map((d) => `${d.path}: ${d.searchedFiles} file(s) in search`)) }
+				: {}),
+			fix: 'Add the folders search should skip to a root `.ignore` file; git still tracks them.',
+		},
+		{
 			id: 'monorepo-map',
 			area: 'navigability',
 			level: 4,
