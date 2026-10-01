@@ -17,6 +17,10 @@ describe(`${browserTestPreset.name}()`, () => {
 		expect(r.name).toBe('@repobuddy/vitest/browser-preset')
 	})
 
+	it('runs in the pre phase so Vitest sees browser mode enabled', () => {
+		expect(browserTestPreset().enforce).toBe('pre')
+	})
+
 	it('uses playwright', () => {
 		const r = browserTestPreset()
 		expect(callConfig(r).test?.browser?.provider).toSatisfy((v: { name: string }) => v.name === 'playwright')
