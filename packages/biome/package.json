@@ -42,7 +42,7 @@
 		"publish:jsr": "pnpm dlx jsr publish"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.5.14",
+		"@biomejs/biome": "2.5.15",
 		"@repobuddy/typescript": "workspace:*",
 		"@types/react": "^19.0.0",
 		"react": "^19.0.0"
