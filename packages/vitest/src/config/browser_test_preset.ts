@@ -11,10 +11,14 @@ import type { PresetOptions } from './types.ts'
  * Inferring it structurally leaks the config shape into the emitted `.d.ts`,
  * which then depends on which browser provider augments `_BrowserNames` at build time.
  * See https://github.com/repobuddy/repobuddy/issues/610
+ *
+ * The plugin runs in the `pre` phase because Vitest 5 sets up Browser Mode in its own
+ * `pre` plugin, which reads `test.browser.enabled` before normal plugins run.
  */
 export function browserTestPreset(options?: PresetOptions | undefined): Plugin {
 	return {
 		name: '@repobuddy/vitest/browser-preset',
+		enforce: 'pre',
 		config(userConfig?: ViteUserConfig | undefined) {
 			const include = options?.includeGeneralTests
 				? [...buddyConfigDefaults.include.testGeneral, ...buddyConfigDefaults.include.testBrowser]
