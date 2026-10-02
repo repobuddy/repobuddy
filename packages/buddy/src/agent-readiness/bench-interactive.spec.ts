@@ -407,6 +407,7 @@ describe('runSession', () => {
 		const r = run(mux)
 		expect(r).toMatchObject({ turns: 2, toolCalls: 2, inputTokens: 5, costUsd: 0.12, capped: false })
 		expect(r.error).toBeUndefined()
+		expect(r.transcript).toBe(`${MAIN}\n`)
 		expect(mux.opened[0]).toMatchObject({ at: 'workspace', label: 'bench a' })
 		expect(mux.torn).toEqual(['p1'])
 		const launch = /^sh '(.*)'$/.exec(mux.opened[0]?.launch ?? '')?.[1] as string
@@ -426,7 +427,9 @@ describe('runSession', () => {
 	})
 
 	it('reads no metrics when there is no transcript', () => {
-		expect(run(fakeMux({ stop: false, cost: 0.1, transcript: false }))).toMatchObject({ capped: true, turns: 0 })
+		const r = run(fakeMux({ stop: false, cost: 0.1, transcript: false }))
+		expect(r).toMatchObject({ capped: true, turns: 0 })
+		expect(r).not.toHaveProperty('transcript')
 	})
 
 	it('reports a session whose pane closed before the agent finished', () => {

@@ -100,8 +100,13 @@ and from those the cost per successful task.
 
 - `bench --init` writes a task-set template to edit.
 - `bench` prints the plan and its spend ceiling, and runs nothing.
-- `bench --yes --baseline` records the baseline (`baseline.json`, committed).
+- `bench --yes --baseline` records the baseline (`baseline.json`, committed). It is indented like
+  `tasks.json` beside it, so it fits the repo's formatter; run the formatter on it before committing anyway.
 - `bench --yes` runs again and compares against the baseline, task by task.
+- Each run's transcript is kept, gzipped, beside the results file in the git-ignored `results/`, so a
+  cost change can be traced to what the agent read and ran.
+- `bench --ref <commit>` benches a past commit on today's task set: each run checks that commit out
+  and overlays HEAD's `.agents/readiness/bench/` on it. The results record both commits.
 - `bench --runner interactive` drives interactive Claude Code sessions in tmux or herdr panes instead
   of `claude -p`. Each session gets a fresh config directory, so none of your own instructions,
   plugins, or skills load. It needs `CLAUDE_CODE_OAUTH_TOKEN` (from `claude setup-token`) or
@@ -138,7 +143,7 @@ own:
 ```sh
 node <skill-dir>/scripts/agent-readiness.mjs score [--dir <repo>] [--json] [--check [--min-level <1-5>]]
 node <skill-dir>/scripts/agent-readiness.mjs score --package <path> [--json] [--check [--min-level <1-4>]]
-node <skill-dir>/scripts/agent-readiness.mjs bench [--init | --baseline] [--runs <n>] [--task <id>] [--runner print|interactive] [--yes]
+node <skill-dir>/scripts/agent-readiness.mjs bench [--init | --baseline] [--runs <n>] [--task <id>] [--ref <commit>] [--runner print|interactive] [--yes]
 npx -y repobuddy@^1.12.0 agent-readiness score
 npx -y repobuddy@^1.12.0 agent-readiness bench
 ```
