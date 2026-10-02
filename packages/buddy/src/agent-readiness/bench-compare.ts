@@ -12,8 +12,8 @@
  * Both `bench compare` and the comparison a bench run prints against its baseline go through here.
  */
 
-import { existsSync, readFileSync } from 'node:fs'
-import { dirname, join } from 'node:path'
+import { existsSync, readdirSync, readFileSync } from 'node:fs'
+import { basename, dirname, join } from 'node:path'
 import { type BenchSummary, type RunnerName, type RunResult, SCHEMA_VERSION } from './bench.js'
 
 /** What a comparison reads: a results file, or a baseline (which keeps the summary but not the runs). */
@@ -410,6 +410,52 @@ export function withRuns(record: ComparableRecord, resultsDir: string): Comparab
 	} catch {
 		return record
 	}
+}
+
+/**
+ * The mean cost of one run of each task, from every stored results file taken on this model and runner.
+ * With none on this machine, the baseline's summary stands in. Errored runs are left out: they cost
+ * nothing and say nothing about what a run costs.
+ */
+export function storedCostPerRun(
+	resultsDir: string,
+	baseline: ComparableRecord | undefined,
+	model: string,
+	runner: RunnerName,
+): { perTask: Map<string, number>; runs: number } {
+	const costs = new Map<string, number[]>()
+	const files = existsSync(resultsDir) ? readdirSync(resultsDir).filter((f) => f.endsWith('.json')) : []
+	for (const file of files) {
+		let record: ComparableRecord
+		try {
+			record = JSON.parse(readFileSync(join(resultsDir, basename(file)), 'utf8'))
+		} catch {
+			continue
+		}
+		if (
+			record?.model !== model ||
+			runnerOf(record) !== runner ||
+			!knownVersion(record) ||
+			!Array.isArray(record.results)
+		)
+			continue
+		for (const r of record.results) {
+			if (r.error !== undefined || typeof r.costUsd !== 'number') continue
+			costs.set(r.task, [...(costs.get(r.task) ?? []), r.costUsd])
+		}
+	}
+	if (costs.size > 0) {
+		const perTask = new Map([...costs].map(([task, cs]) => [task, mean(cs)]))
+		return { perTask, runs: sum([...costs.values()].map((cs) => cs.length)) }
+	}
+	if (baseline && baseline.model === model && runnerOf(baseline) === runner) {
+		const tasks = baseline.summary.tasks.filter((t) => t.runs > 0)
+		return {
+			perTask: new Map(tasks.map((t) => [t.task, t.totalCostUsd / t.runs])),
+			runs: sum(tasks.map((t) => t.runs)),
+		}
+	}
+	return { perTask: new Map(), runs: 0 }
 }
 
 const LABELS: Record<Metric, string> = {

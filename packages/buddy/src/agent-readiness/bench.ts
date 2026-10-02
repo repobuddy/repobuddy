@@ -17,7 +17,14 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { gzipSync } from 'node:zlib'
-import { compareRecords, formatComparison, median, type RecordComparison, withRuns } from './bench-compare.js'
+import {
+	compareRecords,
+	formatComparison,
+	median,
+	type RecordComparison,
+	storedCostPerRun,
+	withRuns,
+} from './bench-compare.js'
 
 const BENCH_DIR = '.agents/readiness/bench'
 const TASKS_FILE = `${BENCH_DIR}/tasks.json`
@@ -158,6 +165,10 @@ export interface BenchPlan {
 	totalRuns: number
 	/** The most the bench can spend: every run hitting its budget cap. */
 	ceilingUsd: number
+	/** The likely spend: each task's mean cost per run in stored results, or its cap with none. */
+	estimateUsd: number
+	/** How many stored runs the estimate comes from; 0 means it is the ceiling. */
+	estimateFromRuns: number
 	/** The ref given with `--ref`, as given; absent when benching HEAD. */
 	ref?: string
 	/** The commit each run checks out: HEAD, or what `ref` resolves to. */
@@ -200,15 +211,20 @@ export function plan(dir: string, config: BenchConfig, opts: PlanOptions = {}): 
 		commit = resolved.stdout.trim()
 	}
 	const status = git(dir, ['status', '--porcelain'])
+	const runner = opts.runner?.name ?? 'print'
+	const stored = storedCostPerRun(join(dir, RESULTS_DIR), readBaseline(dir), config.model, runner)
+	const estimate = tasks.reduce((s, t) => s + runsPerTask * (stored.perTask.get(t.id) ?? config.maxBudgetUsd), 0)
 	return {
 		model: config.model,
 		harness: HARNESS,
-		runner: opts.runner?.name ?? 'print',
+		runner,
 		permissionMode: config.permissionMode,
 		runsPerTask,
 		tasks: tasks.map((t) => t.id),
 		totalRuns: tasks.length * runsPerTask,
 		ceilingUsd: round(tasks.length * runsPerTask * config.maxBudgetUsd),
+		estimateUsd: round(estimate),
+		estimateFromRuns: tasks.some((t) => stored.perTask.has(t.id)) ? stored.runs : 0,
 		...(opts.ref !== undefined ? { ref: opts.ref } : {}),
 		commit,
 		taskSetCommit,
@@ -681,6 +697,9 @@ export function formatPlan(p: BenchPlan): string {
 		p.ref === undefined
 			? `  commit: ${p.commit ?? 'unknown'}${p.dirty ? ' (uncommitted changes are NOT benched: each run checks out HEAD)' : ''}`
 			: `  commit: ${p.commit} (--ref ${p.ref}), task set from ${p.taskSetCommit ?? 'unknown'} (HEAD)${p.dirty ? '; uncommitted changes are NOT benched' : ''}`,
+		p.estimateFromRuns > 0
+			? `  estimated spend: ${usd(p.estimateUsd)} (mean cost per run of ${p.estimateFromRuns} stored run(s); a task with none counts at its cap)`
+			: `  estimated spend: ${usd(p.estimateUsd)} (no stored runs on this model and runner: every run at its cap)`,
 		`  spend ceiling: ${usd(p.ceilingUsd)} (every run at its budget cap)`,
 		'',
 		'Nothing has run. Re-run with --yes to spend it.',

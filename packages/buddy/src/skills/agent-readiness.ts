@@ -21,6 +21,7 @@
  * writes a task-set template and runs nothing. `--runner interactive` runs each task as an interactive
  * session in a terminal multiplexer pane (tmux, herdr) instead of `claude -p`; it needs
  * CLAUDE_CODE_OAUTH_TOKEN or ANTHROPIC_API_KEY, and its runs are never compared with `-p` ones.
+ * The plan's estimated spend is the mean cost per run of the stored results, or the cap without any.
  *
  * `bench compare` compares two stored results files (or a baseline) and runs nothing, so it is free:
  * per task and pooled, the mean and median change, the min-max of each side, and an exact permutation
