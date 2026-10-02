@@ -102,7 +102,9 @@ and from those the cost per successful task.
 - `bench` prints the plan and its spend ceiling, and runs nothing.
 - `bench --yes --baseline` records the baseline (`baseline.json`, committed). It is indented like
   `tasks.json` beside it, so it fits the repo's formatter; run the formatter on it before committing anyway.
-- `bench --yes` runs again and compares against the baseline, task by task.
+- `bench --yes` runs again and compares against the baseline, task by task and pooled.
+- `bench compare <before.json> <after.json>` compares two stored results without running anything, so
+  it is free.
 - Each run's transcript is kept, gzipped, beside the results file in the git-ignored `results/`, so a
   cost change can be traced to what the agent read and ran.
 - `bench --ref <commit>` benches a past commit on today's task set: each run checks that commit out
@@ -111,6 +113,11 @@ and from those the cost per successful task.
   of `claude -p`. Each session gets a fresh config directory, so none of your own instructions,
   plugins, or skills load. It needs `CLAUDE_CODE_OAUTH_TOKEN` (from `claude setup-token`) or
   `ANTHROPIC_API_KEY` set, and its runs are compared only with other interactive runs.
+
+A comparison shows, for each metric, the change in the mean and median, the min-max of each side,
+and an exact permutation-test p-value; a pooled row combines the tasks. With 3-5 runs a side, run-to-run
+noise is large, so it flags a result too small to call and counts its tests: among many, a p below
+0.05 or two is expected by chance.
 
 It spends money, so the skill always shows the plan and waits for a yes. The defaults (Sonnet, 3 runs
 per task, $0.50 cap per run) keep a 4-task bench around $2-5. Change one area at a time between runs,
@@ -144,6 +151,7 @@ own:
 node <skill-dir>/scripts/agent-readiness.mjs score [--dir <repo>] [--json] [--check [--min-level <1-5>]]
 node <skill-dir>/scripts/agent-readiness.mjs score --package <path> [--json] [--check [--min-level <1-4>]]
 node <skill-dir>/scripts/agent-readiness.mjs bench [--init | --baseline] [--runs <n>] [--task <id>] [--ref <commit>] [--runner print|interactive] [--yes]
+node <skill-dir>/scripts/agent-readiness.mjs bench compare <before.json> <after.json> [--json]
 npx -y repobuddy@^1.12.0 agent-readiness score
 npx -y repobuddy@^1.12.0 agent-readiness bench
 ```

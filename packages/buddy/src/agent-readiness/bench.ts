@@ -17,6 +17,7 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { gzipSync } from 'node:zlib'
+import { compareRecords, formatComparison, median, type RecordComparison, withRuns } from './bench-compare.js'
 
 const BENCH_DIR = '.agents/readiness/bench'
 const TASKS_FILE = `${BENCH_DIR}/tasks.json`
@@ -30,7 +31,7 @@ export const BASELINE_MAX_AGE_DAYS = 90
  * The shape of a results file and of `baseline.json`. A file with no `schemaVersion` is version 1,
  * which had no `taskSetCommit`. Bump it on any change a reader of the files must know about.
  */
-const SCHEMA_VERSION = 2
+export const SCHEMA_VERSION = 2
 
 /** Claude Code is the only harness so far; the name is part of the baseline key. */
 const HARNESS = 'claude-code'
@@ -482,13 +483,6 @@ export interface BenchSummary {
 	costPerSuccessUsd: number | undefined
 }
 
-function median(values: number[]): number {
-	if (values.length === 0) return 0
-	const sorted = [...values].sort((a, b) => a - b)
-	const mid = Math.floor(sorted.length / 2)
-	return sorted.length % 2 ? (sorted[mid] as number) : ((sorted[mid - 1] as number) + (sorted[mid] as number)) / 2
-}
-
 function round(n: number, places = 4): number {
 	const f = 10 ** places
 	return Math.round(n * f) / f
@@ -570,59 +564,21 @@ export function baselineAgeDays(baseline: Pick<Baseline, 'createdAt'>, now: Date
 	return Math.floor((now.getTime() - new Date(baseline.createdAt).getTime()) / 86_400_000)
 }
 
-interface TaskDelta {
-	task: string
-	passRate: [number, number]
-	medianInputTokens: [number, number]
-	medianOutputTokens: [number, number]
-	medianCacheReadTokens: [number, number]
-	medianTurns: [number, number]
-	medianToolCalls: [number, number]
-	medianWallMs: [number, number]
-	costPerSuccessUsd: [number | undefined, number | undefined]
-}
-
-export interface Comparison {
-	/** Why the two cannot be compared, when they cannot: a different model, harness, or runner measures something else. */
-	incomparable?: string
+export interface Comparison extends RecordComparison {
 	baselineAgeDays: number
 	stale: boolean
-	passRate: [number, number]
-	costPerSuccessUsd: [number | undefined, number | undefined]
-	tasks: TaskDelta[]
 }
 
-export function compare(baseline: Baseline, current: BenchRecord, now: Date): Comparison {
+/**
+ * Compares a run against the baseline. The baseline file keeps only its summary, so its runs are read
+ * from the results file that bench wrote beside it; without that, the comparison has medians only.
+ */
+export function compare(dir: string, baseline: Baseline, current: BenchRecord, now: Date): Comparison {
 	const age = baselineAgeDays(baseline, now)
-	// A baseline from before the runner was recorded was taken with `claude -p`.
-	const recorded = { ...baseline, runner: baseline.runner ?? 'print' }
-	const mismatch = (['model', 'harness', 'runner'] as const).find((k) => recorded[k] !== current[k])
-	const tasks = current.summary.tasks.flatMap((c): TaskDelta[] => {
-		const b = baseline.summary.tasks.find((t) => t.task === c.task)
-		if (!b) return []
-		return [
-			{
-				task: c.task,
-				passRate: [b.passRate, c.passRate],
-				medianInputTokens: [b.medianInputTokens, c.medianInputTokens],
-				medianOutputTokens: [b.medianOutputTokens, c.medianOutputTokens],
-				medianCacheReadTokens: [b.medianCacheReadTokens, c.medianCacheReadTokens],
-				medianTurns: [b.medianTurns, c.medianTurns],
-				medianToolCalls: [b.medianToolCalls, c.medianToolCalls],
-				medianWallMs: [b.medianWallMs, c.medianWallMs],
-				costPerSuccessUsd: [b.costPerSuccessUsd, c.costPerSuccessUsd],
-			},
-		]
-	})
 	return {
-		...(mismatch
-			? { incomparable: `the baseline ran ${mismatch} "${recorded[mismatch]}", this run "${current[mismatch]}"` }
-			: {}),
+		...compareRecords(withRuns(baseline, join(dir, RESULTS_DIR)), current),
 		baselineAgeDays: age,
 		stale: age > BASELINE_MAX_AGE_DAYS,
-		passRate: [baseline.summary.passRate, current.summary.passRate],
-		costPerSuccessUsd: [baseline.summary.costPerSuccessUsd, current.summary.costPerSuccessUsd],
-		tasks,
 	}
 }
 
@@ -702,7 +658,7 @@ export function bench(dir: string, config: BenchConfig, opts: BenchOptions = {})
 		return { record, resultsPath, baselinePath: BASELINE_FILE }
 	}
 	const baseline = readBaseline(dir)
-	return { record, resultsPath, ...(baseline ? { comparison: compare(baseline, record, now) } : {}) }
+	return { record, resultsPath, ...(baseline ? { comparison: compare(dir, baseline, record, now) } : {}) }
 }
 
 export function initTasks(dir: string): string {
@@ -732,14 +688,6 @@ export function formatPlan(p: BenchPlan): string {
 	return `${lines.join('\n')}\n`
 }
 
-function delta(pair: [number | undefined, number | undefined], fmt: (n: number) => string): string {
-	const [b, c] = pair
-	if (b === undefined || c === undefined)
-		return `${b === undefined ? 'n/a' : fmt(b)} → ${c === undefined ? 'n/a' : fmt(c)}`
-	const pct = b === 0 ? '' : ` (${c >= b ? '+' : ''}${Math.round(((c - b) / b) * 100)}%)`
-	return `${fmt(b)} → ${fmt(c)}${pct}`
-}
-
 export function formatOutcome(outcome: BenchOutcome): string {
 	const { record, comparison } = outcome
 	const s = record.summary
@@ -767,20 +715,8 @@ export function formatOutcome(outcome: BenchOutcome): string {
 	else {
 		lines.push(
 			`Against the baseline (${comparison.baselineAgeDays} days old${comparison.stale ? ', stale: refresh it' : ''}):`,
+			...formatComparison(comparison),
 		)
-		lines.push(`  pass rate ${delta(comparison.passRate, (n) => `${Math.round(n * 100)}%`)}`)
-		lines.push(`  cost per success ${delta(comparison.costPerSuccessUsd, (n) => usd(n))}`)
-		for (const t of comparison.tasks) {
-			lines.push(`  ${t.task}:`)
-			lines.push(`    pass rate ${delta(t.passRate, (n) => `${Math.round(n * 100)}%`)}`)
-			lines.push(
-				`    input tokens ${delta(t.medianInputTokens, String)}, output tokens ${delta(t.medianOutputTokens, String)}, cache read ${delta(t.medianCacheReadTokens, String)}`,
-			)
-			lines.push(
-				`    turns ${delta(t.medianTurns, String)}, tool calls ${delta(t.medianToolCalls, String)}, wall ${delta(t.medianWallMs, secs)}`,
-			)
-			lines.push(`    cost per success ${delta(t.costPerSuccessUsd, (n) => usd(n))}`)
-		}
 	}
 	lines.push(`Results: ${outcome.resultsPath}`)
 	if (record.results.some((r) => r.transcript !== undefined))

@@ -4,6 +4,7 @@
  *   node scripts/agent-readiness.mjs score [--dir <repo>] [--json] [--run-knip] [--check [--min-level <1-5>]]
  *   node scripts/agent-readiness.mjs score --package <path> [--json] [--check [--min-level <1-4>]]
  *   node scripts/agent-readiness.mjs bench [--dir <repo>] [--init | --baseline] [--runs <n>] [--task <id>] [--ref <commit>] [--runner print|interactive] [--yes] [--json]
+ *   node scripts/agent-readiness.mjs bench compare <before.json> <after.json> [--json]
  *
  * `score` reports the gated level (1-5), a score per area, the top three fixes, and the tokens every
  * agent session loads before it starts (instruction files plus installed skill descriptions, estimated
@@ -21,6 +22,10 @@
  * session in a terminal multiplexer pane (tmux, herdr) instead of `claude -p`; it needs
  * CLAUDE_CODE_OAUTH_TOKEN or ANTHROPIC_API_KEY, and its runs are never compared with `-p` ones.
  *
+ * `bench compare` compares two stored results files (or a baseline) and runs nothing, so it is free:
+ * per task and pooled, the mean and median change, the min-max of each side, and an exact permutation
+ * p-value. A bench run compares against its baseline the same way.
+ *
  * With --package, it scores the consuming side instead: how cheaply another repo's agent can use the
  * package through what ships (declarations, exports map, README, changelog, llms.txt), with the same
  * gated report shape. Public surface size and a shipped agent skill are reported, not scored.
@@ -34,7 +39,7 @@
  * 2 on bad usage or a malformed weights config.
  */
 
-import { resolve } from 'node:path'
+import { relative, resolve } from 'node:path'
 import {
 	BenchError,
 	bench,
@@ -46,6 +51,7 @@ import {
 	printRunner,
 	type RunnerName,
 } from '../agent-readiness/bench.js'
+import { compareRecords, formatRecordComparison, loadRecord, RecordError } from '../agent-readiness/bench-compare.js'
 import { interactiveRunner } from '../agent-readiness/bench-interactive.js'
 import { ConfigError, readConfig } from '../agent-readiness/config.js'
 import { collectFacts } from '../agent-readiness/facts.js'
@@ -54,7 +60,8 @@ import { formatPackageReport, PACKAGE_MAX_LEVEL, scorePackage } from '../agent-r
 import { checkLevel, formatCheck, formatReport, MAX_LEVEL, score } from '../agent-readiness/score.js'
 
 const USAGE = `usage: agent-readiness.mjs score [--dir <repo> | --package <path>] [--json] [--run-knip] [--check [--min-level <n>]]
-       agent-readiness.mjs bench [--dir <repo>] [--init | --baseline] [--runs <n>] [--task <id>] [--ref <commit>] [--runner print|interactive] [--yes] [--json]`
+       agent-readiness.mjs bench [--dir <repo>] [--init | --baseline] [--runs <n>] [--task <id>] [--ref <commit>] [--runner print|interactive] [--yes] [--json]
+       agent-readiness.mjs bench compare <before.json> <after.json> [--json]`
 
 function usage(message: string): never {
 	process.stderr.write(`${message}\n${USAGE}\n`)
@@ -62,7 +69,9 @@ function usage(message: string): never {
 }
 
 interface Opts {
-	command: 'score' | 'bench'
+	command: 'score' | 'bench' | 'compare'
+	/** `bench compare`'s two files, before and after. */
+	files: string[]
 	dir: string
 	package: string | undefined
 	json: boolean
@@ -84,13 +93,38 @@ const CHECK_FLAGS = new Set(['--check', '--min-level'])
 /** The documented target level, and what --check holds a repo or package to unless told otherwise. */
 const DEFAULT_MIN_LEVEL = 3
 
+function parseCompare(rest: string[]): Opts {
+	const files: string[] = []
+	let json = false
+	for (const a of rest) {
+		if (a === '--json') json = true
+		else if (a.startsWith('--')) usage(`bench compare takes two files and --json, not ${a}`)
+		else files.push(resolve(a))
+	}
+	if (files.length !== 2) usage('bench compare needs two files: before, then after')
+	return {
+		command: 'compare',
+		files,
+		dir: process.cwd(),
+		package: undefined,
+		json,
+		init: false,
+		baseline: false,
+		yes: false,
+		check: false,
+		runKnip: false,
+	}
+}
+
 function parseArgs(argv: string[]): Opts {
 	const [command, ...rest] = argv
 	if (command !== 'score' && command !== 'bench') {
 		usage(command === undefined ? 'missing command' : `unknown command "${command}"`)
 	}
+	if (command === 'bench' && rest[0] === 'compare') return parseCompare(rest.slice(1))
 	const opts: Opts = {
 		command,
+		files: [],
 		dir: process.cwd(),
 		package: undefined,
 		json: false,
@@ -202,8 +236,29 @@ function report<R extends { level: number; pendingJudgments: Array<{ id: string;
 	if (!check.passed) process.exit(1)
 }
 
+function runCompare(opts: Opts): void {
+	const [before, after] = opts.files as [string, string]
+	let comparison: ReturnType<typeof compareRecords>
+	try {
+		comparison = compareRecords(loadRecord(before), loadRecord(after))
+	} catch (e) {
+		if (!(e instanceof RecordError)) throw e
+		process.stderr.write(`${e.message}\n`)
+		process.exit(1)
+	}
+	process.stdout.write(
+		opts.json
+			? `${JSON.stringify({ before, after, comparison }, null, 2)}\n`
+			: formatRecordComparison(comparison, relative(process.cwd(), before), relative(process.cwd(), after)),
+	)
+}
+
 export async function main(argv: string[] = process.argv.slice(2)): Promise<void> {
 	const opts = parseArgs(argv)
+	if (opts.command === 'compare') {
+		runCompare(opts)
+		return
+	}
 	if (opts.command === 'bench') {
 		try {
 			runBench(opts)
