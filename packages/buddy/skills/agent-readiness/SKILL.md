@@ -46,8 +46,8 @@ same arguments.
 nothing, so it takes seconds and costs no tokens. There are two exceptions. `--run-knip` opts in to
 running the repo's knip command and settles `dead-code` itself, which needs the dependencies
 installed. Use it in CI, where no agent is there to run knip. And when the repo has
-buddy-agent-harness installed, the script runs its read-only `doctor` and reports each finding in the
-instructions area. It measures the source too: the share of comments,
+buddy-agent-harness installed, or is buddy-agent-harness itself, the script runs its read-only
+`doctor` and reports each finding in the instructions area. It measures the source too: the share of comments,
 JSDoc blocks that document nothing, names that flood a grep, and environment variables the code reads
 that no setup document names. Whether a comment or a name is worth
 changing stays a judgment. `bench` runs real agents; see [Bench](#bench).

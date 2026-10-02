@@ -24,8 +24,8 @@ before and after a change.
    source: the share of comments, JSDoc blocks that document nothing, names that flood a grep, and
    environment variables the code reads that no setup document names.
    When the repo has [buddy-agent-harness](https://github.com/repobuddy/buddy-agent-harness)
-   installed, it also runs that plugin's read-only `doctor` and reports each finding under agent
-   instructions.
+   installed, or is that plugin's own repo, it also runs the plugin's read-only `doctor` and reports
+   each finding under agent instructions.
 2. **Settles the judgment calls** the script cannot make, such as whether CI runs the same command an
    agent runs locally, whether the instructions file is accurate, or whether heavy comments state
    constraints or tell history. When the repo has knip configured, it runs knip and reports what is
