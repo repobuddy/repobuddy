@@ -99,7 +99,7 @@ servers. It records input, output, and cached tokens, turns, tool calls, wall ti
 and from those the cost per successful task.
 
 - `bench --init` writes a task-set template to edit.
-- `bench` prints the plan and its spend ceiling, and runs nothing.
+- `bench` prints the plan, its estimated spend, and its spend ceiling, and runs nothing.
 - `bench --yes --baseline` records the baseline (`baseline.json`, committed). It is indented like
   `tasks.json` beside it, so it fits the repo's formatter; run the formatter on it before committing anyway.
 - `bench --yes` runs again and compares against the baseline, task by task and pooled.
@@ -119,9 +119,10 @@ and an exact permutation-test p-value; a pooled row combines the tasks. With 3-5
 noise is large, so it flags a result too small to call and counts its tests: among many, a p below
 0.05 or two is expected by chance.
 
-It spends money, so the skill always shows the plan and waits for a yes. The defaults (Sonnet, 3 runs
-per task, $0.50 cap per run) keep a 4-task bench around $2-5. Change one area at a time between runs,
-so each delta has one cause.
+It spends money, so the skill always shows the plan and waits for a yes. The defaults are Sonnet, 3
+runs per task, and a $0.50 cap per run; a pilot measured about $0.07 per run, so a 4-task bench costs
+about $1. The plan estimates the spend from your stored results when there are any. Change one area
+at a time between runs, so each delta has one cause.
 
 ## CI mode and weight overrides
 

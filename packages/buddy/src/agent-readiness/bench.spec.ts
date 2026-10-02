@@ -191,12 +191,26 @@ describe('plan', () => {
 			tasks: ['a', 'b'],
 			totalRuns: 6,
 			ceilingUsd: 3,
+			estimateUsd: 3,
+			estimateFromRuns: 0,
 			dirty: true,
 			model: 'sonnet',
 			runner: 'print',
 		})
 		expect(p.commit).toMatch(/^[0-9a-f]{40}$/)
-		expect(formatPlan(p)).toMatch(/uncommitted changes are NOT benched[\s\S]*\$3\.00[\s\S]*--yes/)
+		expect(formatPlan(p)).toMatch(
+			/uncommitted changes are NOT benched[\s\S]*estimated spend: \$3\.00 \(no stored runs[\s\S]*ceiling: \$3\.00[\s\S]*--yes/,
+		)
+	})
+
+	it('estimates the spend from stored runs, counting a task with none at its cap', () => {
+		const dir = repo()
+		bench(dir, config, { task: 'a', runs: 2, now: new Date('2026-09-28T00:00:00Z'), runner: fakeRunner() })
+		const p = plan(dir, config, { runs: 3 })
+		// Task a's stored runs cost $0.10 each; b has none, so it counts at the $0.50 cap.
+		expect(p).toMatchObject({ estimateUsd: 1.8, estimateFromRuns: 2, ceilingUsd: 3 })
+		expect(formatPlan(p)).toMatch(/estimated spend: \$1\.80 \(mean cost per run of 2 stored run\(s\)/)
+		expect(plan(dir, config, { runs: 3, runner: { name: 'interactive' } }).estimateFromRuns).toBe(0)
 	})
 
 	it('names the runner', () => {

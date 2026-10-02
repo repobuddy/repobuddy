@@ -260,7 +260,7 @@ to measure an `improve` area, bench before it and again after its commit.
    green, plus one assertion". The top-level `setup` (such as the install) runs in every checkout
    before the agent starts, and its cost is not counted.
 2. **Show the plan and get a yes.** Run `bench` without `--yes`: it prints the runs, the model, the
-   permission mode, and the spend ceiling, and runs nothing. Show that to the user. Only after an
+   permission mode, the estimated spend, and the spend ceiling, and runs nothing. Show that to the user. Only after an
    explicit yes, run it again with `--yes` (and `--baseline` when recording one). Never add `--yes` on
    your own.
 3. **Report** the pass rate, cost per success, and the per-task medians; with a baseline, the
@@ -286,9 +286,12 @@ the repo's.
 The default permission mode is `bypassPermissions`: the agent runs commands unprompted in the
 throwaway checkout, on the user's machine. Say so in the plan.
 
-Keep a bench affordable. The defaults are Sonnet, 3 runs per task, and a $0.50 cap per run, so 4
-tasks cost about $2-5 and never more than $6. Use `--task <id> --runs 1` to try a new task before a
-full run. The model is part of the baseline: a run on another model is not compared, so change
+Keep a bench affordable. The defaults are Sonnet, 3 runs per task, and a $0.50 cap per run. A pilot
+on a TypeScript monorepo measured about $0.07 per `claude -p` run, so 4 tasks × 3 runs cost about $1,
+and never more than the $6 ceiling. Costs vary with the repo and the tasks, so quote the plan's
+estimated spend: it is the mean cost per run of the stored results on the same model and runner (or
+the baseline's), and a task with none counts at its cap. Use `--task <id> --runs 1` to try a new task
+before a full run. Since runs are cheap, prefer 5 or more per task when a comparison matters. The model is part of the baseline: a run on another model is not compared, so change
 `model` only with a new baseline.
 
 Each run also stops at 20 minutes of wall-clock. Claude Code has no documented turn limit, so time

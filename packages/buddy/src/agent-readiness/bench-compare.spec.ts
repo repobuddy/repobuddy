@@ -11,6 +11,7 @@ import {
 	loadRecord,
 	RecordError,
 	resultsFileName,
+	storedCostPerRun,
 } from './bench-compare.js'
 
 const dirs: string[] = []
@@ -248,5 +249,35 @@ describe('loadRecord', () => {
 		expect(() => loadRecord(join(dir, 'missing.json'))).toThrow(RecordError)
 		expect(() => loadRecord(join(dir, 'bad.json'))).toThrow(/not valid JSON/)
 		expect(() => loadRecord(join(dir, 'other.json'))).toThrow(/not a bench results file or baseline/)
+	})
+})
+
+describe('storedCostPerRun', () => {
+	it('averages each task over stored runs on the same model and runner', () => {
+		const dir = tmp()
+		writeFileSync(join(dir, '1.json'), JSON.stringify(record(runs('a', [0.06, 0.08]))))
+		writeFileSync(
+			join(dir, '2.json'),
+			JSON.stringify(record([...runs('a', [0.1]), result({ task: 'a', costUsd: 0, error: 'x' })])),
+		)
+		writeFileSync(join(dir, '3.json'), JSON.stringify(record(runs('a', [9]), { model: 'opus' })))
+		writeFileSync(join(dir, '5.json'), JSON.stringify(record(runs('a', [9]), { schemaVersion: 3 })))
+		writeFileSync(join(dir, '4.json'), '{')
+		writeFileSync(join(dir, 'notes.txt'), 'x')
+		const stored = storedCostPerRun(dir, undefined, 'sonnet', 'print')
+		expect(stored.runs).toBe(3)
+		expect(stored.perTask.get('a')).toBeCloseTo(0.08)
+		expect(storedCostPerRun(dir, undefined, 'sonnet', 'interactive').runs).toBe(0)
+	})
+
+	it('falls back to the baseline summary, then to nothing', () => {
+		const { results: _, ...baseline } = record(runs('a', [0.06, 0.08]))
+		const missing = join(tmp(), 'results')
+		expect(storedCostPerRun(missing, baseline, 'sonnet', 'print')).toEqual({
+			perTask: new Map([['a', 0.07]]),
+			runs: 2,
+		})
+		expect(storedCostPerRun(missing, baseline, 'opus', 'print').runs).toBe(0)
+		expect(storedCostPerRun(missing, undefined, 'sonnet', 'print').runs).toBe(0)
 	})
 })
