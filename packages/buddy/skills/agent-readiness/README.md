@@ -100,7 +100,8 @@ and from those the cost per successful task.
 
 - `bench --init` writes a task-set template to edit.
 - `bench` prints the plan and its spend ceiling, and runs nothing.
-- `bench --yes --baseline` records the baseline (`baseline.json`, committed).
+- `bench --yes --baseline` records the baseline (`baseline.json`, committed). It is indented like
+  `tasks.json` beside it, so it fits the repo's formatter; run the formatter on it before committing anyway.
 - `bench --yes` runs again and compares against the baseline, task by task.
 - `bench --runner interactive` drives interactive Claude Code sessions in tmux or herdr panes instead
   of `claude -p`. Each session gets a fresh config directory, so none of your own instructions,

@@ -263,7 +263,10 @@ to measure an `improve` area, bench before it and again after its commit.
    your own.
 3. **Report** the pass rate, cost per success, and the per-task medians; with a baseline, the deltas
    the script prints. Say when a run was capped or errored, since its numbers are not comparable. With
-   `--baseline`, tell the user to commit `baseline.json`; `results/` is git-ignored.
+   `--baseline`, tell the user to commit `baseline.json`; `results/` is git-ignored. The script
+   indents `baseline.json` like the bench files beside it (an existing baseline, else `tasks.json`),
+   so it usually passes the repo's formatter as written; still run the repo's formatter on it (such as
+   `biome format --write`) before committing, since a formatter can disagree on more than indent.
 
 Each run checks out HEAD into a fresh git worktree, so uncommitted changes are not benched: commit
 the change under test first. The agent is Claude Code (`claude -p` by default), loading the repo's

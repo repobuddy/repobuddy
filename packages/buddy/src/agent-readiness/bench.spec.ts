@@ -311,6 +311,28 @@ describe('bench', () => {
 		expect(formatOutcome(outcome)).toMatch(/Record one with --baseline/)
 	})
 
+	it('indents the baseline like the task set the repo already formats', () => {
+		const dir = repo({ '.agents/readiness/bench/tasks.json': '{\n    "tasks": []\n}\n' })
+		bench(dir, config, { baseline: true, now, runs: 1, runner: fakeRunner() })
+		expect(readFileSync(join(dir, BASELINE_FILE), 'utf8')).toMatch(/^\{\n {4}"createdAt"/)
+	})
+
+	it('keeps the indent of an existing baseline, which the repo may have reformatted', () => {
+		const dir = repo({
+			'.agents/readiness/bench/tasks.json': '{\n  "tasks": []\n}\n',
+			[BASELINE_FILE]: '{\n\t"createdAt": "2026-01-01T00:00:00.000Z"\n}\n',
+		})
+		const outcome = bench(dir, config, { baseline: true, now, runs: 1, runner: fakeRunner() })
+		expect(readFileSync(join(dir, BASELINE_FILE), 'utf8')).toMatch(/^\{\n\t"createdAt"/)
+		expect(formatOutcome(outcome)).toMatch(/Run the repo's formatter on it if it has one, then commit it/)
+	})
+
+	it('indents with tabs, as `bench --init` writes, when there is nothing to match', () => {
+		const dir = repo()
+		bench(dir, config, { baseline: true, now, runs: 1, runner: fakeRunner() })
+		expect(readFileSync(join(dir, BASELINE_FILE), 'utf8')).toMatch(/^\{\n\t"createdAt"/)
+	})
+
 	it('keeps an existing results ignore rule', () => {
 		const dir = repo({ '.agents/readiness/bench/.gitignore': 'results/' })
 		bench(dir, config, { now, runs: 1, runner: fakeRunner() })

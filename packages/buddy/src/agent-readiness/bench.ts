@@ -559,6 +559,20 @@ function ensureResultsIgnored(dir: string) {
 		writeFileSync(path, `${text}${text && !text.endsWith('\n') ? '\n' : ''}results/\n`)
 }
 
+/**
+ * The indent the repository formats its bench files with, so a committed `baseline.json` passes its
+ * formatter: an existing baseline's (the repo may have reformatted it), else the task set's, which
+ * the repo already commits and formats. Tabs, as `bench --init` writes, when neither shows one.
+ */
+function repoIndent(dir: string): string {
+	for (const file of [BASELINE_FILE, TASKS_FILE]) {
+		const path = join(dir, file)
+		const indent = existsSync(path) ? /^\{\r?\n([ \t]+)"/.exec(readFileSync(path, 'utf8'))?.[1] : undefined
+		if (indent) return indent
+	}
+	return '\t'
+}
+
 export function bench(dir: string, config: BenchConfig, opts: BenchOptions = {}): BenchOutcome {
 	const now = opts.now ?? new Date()
 	const p = plan(dir, config, opts)
@@ -588,7 +602,7 @@ export function bench(dir: string, config: BenchConfig, opts: BenchOptions = {})
 
 	if (opts.baseline) {
 		const { results: _, ...baseline } = record
-		writeFileSync(join(dir, BASELINE_FILE), `${JSON.stringify(baseline, null, 2)}\n`)
+		writeFileSync(join(dir, BASELINE_FILE), `${JSON.stringify(baseline, null, repoIndent(dir))}\n`)
 		return { record, resultsPath, baselinePath: BASELINE_FILE }
 	}
 	const baseline = readBaseline(dir)
@@ -646,7 +660,10 @@ export function formatOutcome(outcome: BenchOutcome): string {
 			lines.push(`    ${t.errors} run(s) reported an error, such as a failed setup; see ${outcome.resultsPath}`)
 	}
 	lines.push('')
-	if (outcome.baselinePath) lines.push(`Baseline written: ${outcome.baselinePath}. Commit it.`)
+	if (outcome.baselinePath)
+		lines.push(
+			`Baseline written: ${outcome.baselinePath}, indented like the bench files beside it. Run the repo's formatter on it if it has one, then commit it.`,
+		)
 	else if (!comparison) lines.push('No baseline to compare against. Record one with --baseline.')
 	else if (comparison.incomparable) lines.push(`Not compared: ${comparison.incomparable}. Record a new baseline.`)
 	else {
