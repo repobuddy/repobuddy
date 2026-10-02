@@ -311,7 +311,7 @@ describe('buildChecks', () => {
 			area: 'instructions',
 			gate: false,
 			status: 'n/a',
-			detail: ['buddy-agent-harness is not installed in this repo'],
+			detail: ['buddy-agent-harness is neither installed in this repo nor one of its packages'],
 			handoff: 'buddy-agent-harness',
 		})
 	})

@@ -25,13 +25,21 @@ missing. Confirm each reported one before calling it wrong.
 
 ## buddy-agent-harness doctor
 
-When the repo has buddy-agent-harness installed (`node_modules/buddy-agent-harness`), the script runs
-its `doctor --format json`, which is read-only. With no findings, `harness-doctor` passes. Each
-problem `doctor` names becomes a failing `harness-<problem>` check that lists the affected paths, and
+When the repo has buddy-agent-harness, the script runs its `doctor --format json`, which is
+read-only. It looks in this order:
+
+1. the repo root, when its `package.json` is named `buddy-agent-harness`
+2. a workspace package of that name, from `pnpm-workspace.yaml` or `package.json` `workspaces`
+3. an installed copy in `node_modules/buddy-agent-harness`
+
+The repo's own package runs from `src/cli.ts` with node's `--experimental-transform-types`, so it
+needs no build. Otherwise, and always for an installed copy, it runs the package's `bin`.
+
+With no findings, `harness-doctor` passes. Each problem `doctor` names becomes a failing `harness-<problem>` check that lists the affected paths, and
 `harness-doctor` is left out. These checks count toward the area score but never gate the level.
 Their fixes belong to the `doctor-buddy-agent-harness` skill, which knows each repair.
 
-When buddy-agent-harness is not installed, `harness-doctor` is `n/a` and names the plugin. When
+When none of these exists, `harness-doctor` is `n/a` and names the plugin. When
 `doctor` fails or its output cannot be read, `harness-doctor` is `judge`: run the
 `doctor-buddy-agent-harness` skill and settle it from its report.
 

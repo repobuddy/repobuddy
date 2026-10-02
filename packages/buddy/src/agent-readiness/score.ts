@@ -166,7 +166,13 @@ function harnessChecks(facts: Facts): Check[] {
 		fix: 'Run the doctor-buddy-agent-harness skill and apply the repairs it gives.',
 	}
 	if (!run) {
-		return [{ ...doctor, status: 'n/a', detail: ['buddy-agent-harness is not installed in this repo'] }]
+		return [
+			{
+				...doctor,
+				status: 'n/a',
+				detail: ['buddy-agent-harness is neither installed in this repo nor one of its packages'],
+			},
+		]
 	}
 	if (run.outcome === 'error') {
 		return [
