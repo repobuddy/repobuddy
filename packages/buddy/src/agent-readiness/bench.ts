@@ -8,13 +8,15 @@
  * come from the agent's own run report or transcript, so they are the harness's count, not an estimate.
  *
  * The task set lives in the repository at `.agents/readiness/bench/tasks.json`. `--baseline` stores a
- * summary in `baseline.json` beside it; every other run is compared against that baseline.
+ * summary in `baseline.json` beside it; every other run is compared against that baseline. Each run's
+ * transcript is kept, gzipped, in the git-ignored `results/` beside its results file.
  */
 
 import { spawnSync } from 'node:child_process'
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
-import { join } from 'node:path'
+import { dirname, join } from 'node:path'
+import { gzipSync } from 'node:zlib'
 
 const BENCH_DIR = '.agents/readiness/bench'
 const TASKS_FILE = `${BENCH_DIR}/tasks.json`
@@ -284,6 +286,8 @@ export interface RunResult extends RunMetrics {
 	wallMs: number
 	/** What went wrong in the run, such as a failed setup or an agent session that ended on an error. */
 	error?: string
+	/** The run's gzipped transcript, relative to the repository; absent when the agent never ran. */
+	transcript?: string
 }
 
 export interface ShellResult {
@@ -294,6 +298,8 @@ export interface ShellResult {
 /** What one agent run reports: its metrics, or why it could not run. */
 export interface AgentRun extends RunMetrics {
 	error?: string
+	/** The raw transcript: the `-p` runner's stream-json, or the session's JSONL. */
+	transcript?: string
 }
 
 /** The seams a run touches, so tests can drive a run without an agent or a real shell. */
@@ -328,7 +334,8 @@ export const printRunner: Runner = {
 			maxBuffer: 256 * 1024 * 1024,
 			stdio: ['ignore', 'pipe', 'pipe'],
 		})
-		return parseStreamJson(r.stdout ?? '')
+		const stdout = r.stdout ?? ''
+		return { ...parseStreamJson(stdout), ...(stdout ? { transcript: stdout } : {}) }
 	},
 	now: () => Date.now(),
 }
@@ -366,6 +373,15 @@ export interface RunTaskOptions {
 	commit?: string
 	/** The commit to take the task set from, when it differs from `commit`. */
 	taskSetCommit?: string
+	/** Where to keep the run's transcript, relative to the repository; not kept when absent. */
+	transcriptDir?: string
+}
+
+function saveTranscript(dir: string, transcriptDir: string, task: BenchTask, run: number, text: string): string {
+	const path = `${transcriptDir}/${task.id}-${run}.jsonl.gz`
+	mkdirSync(dirname(join(dir, path)), { recursive: true })
+	writeFileSync(join(dir, path), gzipSync(text))
+	return path
 }
 
 /**
@@ -427,10 +443,12 @@ export function runTask(
 			if (runner.shell(command, checkout, SETUP_TIMEOUT_MS).status !== 0) return failed(`${name} failed: ${command}`)
 		}
 		const start = runner.now()
-		const agent = runner.agent(config, task, checkout, config.timeoutMinutes * 60 * 1000)
+		const { transcript, ...agent } = runner.agent(config, task, checkout, config.timeoutMinutes * 60 * 1000)
 		const wallMs = runner.now() - start
 		const pass = runner.shell(task.check, checkout, SETUP_TIMEOUT_MS).status === 0
-		return { ...base, ...agent, pass, wallMs }
+		const kept =
+			transcript && opts.transcriptDir ? saveTranscript(dir, opts.transcriptDir, task, run, transcript) : undefined
+		return { ...base, ...agent, pass, wallMs, ...(kept ? { transcript: kept } : {}) }
 	} finally {
 		git(dir, ['worktree', 'remove', '--force', checkout])
 		rmSync(parent, { recursive: true, force: true })
@@ -648,12 +666,16 @@ export function bench(dir: string, config: BenchConfig, opts: BenchOptions = {})
 	const now = opts.now ?? new Date()
 	const p = plan(dir, config, opts)
 	const tasks = selectTasks(config, opts.task)
+	const resultsStem = `${RESULTS_DIR}/${now.toISOString().replace(/[:.]/g, '-')}`
+	mkdirSync(join(dir, RESULTS_DIR), { recursive: true })
+	ensureResultsIgnored(dir)
 	const results: RunResult[] = []
 	for (const task of tasks) {
 		for (let run = 1; run <= p.runsPerTask; run++) {
 			const result = runTask(dir, config, task, run, opts.runner, {
 				...(p.commit !== undefined ? { commit: p.commit } : {}),
 				...(p.taskSetCommit !== undefined ? { taskSetCommit: p.taskSetCommit } : {}),
+				transcriptDir: resultsStem,
 			})
 			results.push(result)
 			opts.onRun?.(result)
@@ -671,9 +693,7 @@ export function bench(dir: string, config: BenchConfig, opts: BenchOptions = {})
 		summary: summarize(results),
 		results,
 	}
-	mkdirSync(join(dir, RESULTS_DIR), { recursive: true })
-	ensureResultsIgnored(dir)
-	const resultsPath = `${RESULTS_DIR}/${record.createdAt.replace(/[:.]/g, '-')}.json`
+	const resultsPath = `${resultsStem}.json`
 	writeFileSync(join(dir, resultsPath), `${JSON.stringify(record, null, 2)}\n`)
 
 	if (opts.baseline) {
@@ -763,5 +783,9 @@ export function formatOutcome(outcome: BenchOutcome): string {
 		}
 	}
 	lines.push(`Results: ${outcome.resultsPath}`)
+	if (record.results.some((r) => r.transcript !== undefined))
+		lines.push(
+			`Transcripts: ${outcome.resultsPath.replace(/\.json$/, '')}/ (gzipped JSONL, git-ignored; read with zcat)`,
+		)
 	return `${lines.join('\n')}\n`
 }

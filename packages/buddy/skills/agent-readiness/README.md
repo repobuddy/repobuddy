@@ -103,6 +103,8 @@ and from those the cost per successful task.
 - `bench --yes --baseline` records the baseline (`baseline.json`, committed). It is indented like
   `tasks.json` beside it, so it fits the repo's formatter; run the formatter on it before committing anyway.
 - `bench --yes` runs again and compares against the baseline, task by task.
+- Each run's transcript is kept, gzipped, beside the results file in the git-ignored `results/`, so a
+  cost change can be traced to what the agent read and ran.
 - `bench --ref <commit>` benches a past commit on today's task set: each run checks that commit out
   and overlays HEAD's `.agents/readiness/bench/` on it. The results record both commits.
 - `bench --runner interactive` drives interactive Claude Code sessions in tmux or herdr panes instead

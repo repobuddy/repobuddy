@@ -2,7 +2,8 @@
 
 `bench --yes` writes one results file per bench to
 `.agents/readiness/bench/results/<createdAt>.json`, with `:` and `.` in the timestamp replaced by `-`.
-`results/` is git-ignored. `bench --yes --baseline` also writes `baseline.json` beside `tasks.json`:
+Each run's transcript is kept beside it, gzipped, at `results/<createdAt>/<task>-<run>.jsonl.gz`.
+`results/` is git-ignored, so neither is committed. `bench --yes --baseline` also writes `baseline.json` beside `tasks.json`:
 the same record without `results`, committed.
 
 ## Versions
@@ -12,7 +13,7 @@ the same record without `results`, committed.
 | Version | Change |
 |---|---|
 | 1 | The first shape. No `schemaVersion` and no `taskSetCommit`; `commit` is HEAD. `runner` may be absent: read it as `print`. |
-| 2 | Adds `schemaVersion` and `taskSetCommit`. With `--ref`, `commit` is the ref's commit, not HEAD. |
+| 2 | Adds `schemaVersion`, `taskSetCommit`, and `results[].transcript`. With `--ref`, `commit` is the ref's commit, not HEAD. |
 
 A reader should accept every version it knows and refuse a higher one, rather than guess at it.
 
@@ -45,6 +46,17 @@ A reader should accept every version it knows and refuse a higher one, rather th
 | `costUsd` | number | The harness's own cost for the run. |
 | `capped` | boolean | The run stopped on its budget, timeout, or an error before finishing. |
 | `error` | string, optional | Why the run failed to run, such as a failed setup. |
+| `transcript` | string, optional | The run's gzipped transcript, relative to the repository root. Absent when the agent never ran or produced no output. |
+
+## Transcripts
+
+A transcript is the runner's own record, gzipped JSONL:
+
+- `print` runner: the `claude -p --output-format stream-json` output, ending in a `result` event.
+- `interactive` runner: the session's transcript, then each subagent's, one JSON object per line.
+
+They are compressed because one run's transcript can run to megabytes uncompressed. Delete old
+result folders when they are no longer needed; nothing reads them but you.
 
 ## `summary`
 

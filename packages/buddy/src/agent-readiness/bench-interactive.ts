@@ -372,10 +372,13 @@ export function runSession(
 			completion === 'failed' ? files.stopFailure : files.stop,
 		)
 		const transcript = stop?.transcript_path ?? findTranscript(files.configDir, sessionId)
-		const metrics = parseTranscript(...(transcript ? readTranscripts(transcript) : []))
+		const texts = transcript ? readTranscripts(transcript) : []
+		const metrics = parseTranscript(...texts)
 		const costUsd = cost()
 		return {
 			...metrics,
+			// The main session's lines, then each subagent's, as one JSONL.
+			...(texts.length > 0 ? { transcript: texts.map((t) => (t.endsWith('\n') ? t : `${t}\n`)).join('') } : {}),
 			costUsd: costUsd ?? 0,
 			capped: completion !== 'done',
 			...(completion === 'exited' ? { error: 'the session closed before the agent finished' } : {}),

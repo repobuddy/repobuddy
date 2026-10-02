@@ -263,7 +263,11 @@ to measure an `improve` area, bench before it and again after its commit.
    your own.
 3. **Report** the pass rate, cost per success, and the per-task medians; with a baseline, the deltas
    the script prints. Say when a run was capped or errored, since its numbers are not comparable. With
-   `--baseline`, tell the user to commit `baseline.json`; `results/` is git-ignored. The script
+   `--baseline`, tell the user to commit `baseline.json`; `results/` is git-ignored.
+   When a task's cost moved, read its transcripts to say why: each run's is kept, gzipped, in
+   `results/<timestamp>/<task>-<run>.jsonl.gz` beside its results file (`zcat` reads it). They are
+   the runner's own record: `claude -p` stream-json, or the interactive session's JSONL with its
+   subagents' lines after it. The script
    indents `baseline.json` like the bench files beside it (an existing baseline, else `tasks.json`),
    so it usually passes the repo's formatter as written; still run the repo's formatter on it (such as
    `biome format --write`) before committing, since a formatter can disagree on more than indent.

@@ -2,6 +2,7 @@ import { spawnSync } from 'node:child_process'
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
+import { gunzipSync } from 'node:zlib'
 import { afterEach, describe, expect, it } from '@jest/globals'
 import {
 	agentArgs,
@@ -90,7 +91,7 @@ function fakeRunner(opts: { pass?: boolean; setupFails?: boolean } = {}): Runner
 		agent(_config, task, checkout) {
 			calls.push(task.id)
 			if (opts.pass !== false) writeFileSync(join(checkout, 'done'), '')
-			return parseStreamJson(transcript())
+			return { ...parseStreamJson(transcript()), transcript: transcript() }
 		},
 		now: () => (clock += 1500),
 	}
@@ -331,6 +332,24 @@ describe('bench', () => {
 		const dir = repo()
 		bench(dir, config, { baseline: true, now, runs: 1, runner: fakeRunner() })
 		expect(readFileSync(join(dir, BASELINE_FILE), 'utf8')).toMatch(/^\{\n\t"schemaVersion"/)
+	})
+
+	it("keeps each run's transcript, gzipped, beside its results file", () => {
+		const dir = repo()
+		const outcome = bench(dir, config, { baseline: true, now, task: 'a', runs: 1, runner: fakeRunner() })
+		const path = outcome.record.results[0]?.transcript as string
+		expect(path).toBe(`${outcome.resultsPath.replace(/\.json$/, '')}/a-1.jsonl.gz`)
+		expect(gunzipSync(readFileSync(join(dir, path))).toString('utf8')).toBe(transcript())
+		expect(JSON.stringify(outcome.record)).not.toContain('num_turns')
+		expect(readFileSync(join(dir, BASELINE_FILE), 'utf8')).not.toContain('jsonl')
+		expect(formatOutcome(outcome)).toMatch(/\nTranscripts: \.agents\/readiness\/bench\/results\/[\w-]+\/ \(gzipped/)
+	})
+
+	it('records no transcript for a run that never reached the agent', () => {
+		const r = runTask(repo(), config, config.tasks[1]!, 1, fakeRunner({ setupFails: true }), {
+			transcriptDir: '.agents/readiness/bench/results/x',
+		})
+		expect(r).not.toHaveProperty('transcript')
 	})
 
 	it('keeps an existing results ignore rule', () => {
