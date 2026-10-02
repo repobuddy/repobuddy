@@ -59,6 +59,10 @@ test.each([
 	[['bench', '--run-knip']],
 	[['bench', '--runner', 'bogus']],
 	[['score', '--runner', 'print']],
+	[['bench', 'compare']],
+	[['bench', 'compare', 'a.json']],
+	[['bench', 'compare', 'a.json', 'b.json', 'c.json']],
+	[['bench', 'compare', 'a.json', 'b.json', '--yes']],
 ])('rejects bad usage %j with exit 2', async (argv) => {
 	await expect(main(argv)).rejects.toThrow('exit:2')
 	expect(stderr.join('')).toMatch(/usage: agent-readiness\.mjs score/)
@@ -207,4 +211,52 @@ test('--check holds a package at --min-level too', async () => {
 test('--min-level accepts 5 for a repo, the level a fresh bench baseline unlocks', async () => {
 	await expect(main(['score', '--dir', dir, '--check', '--min-level', '5'])).rejects.toThrow('exit:1')
 	expect(stdout.join('')).toMatch(/check: FAIL, level 1 is below --min-level 5\n$/)
+})
+
+test('bench compare compares two stored results and runs nothing', async () => {
+	const results = (costs: number[]) =>
+		costs.map((costUsd, i) => ({
+			task: 'a',
+			run: i + 1,
+			pass: true,
+			wallMs: 1000,
+			inputTokens: 100,
+			outputTokens: 50,
+			cacheReadTokens: 0,
+			cacheCreationTokens: 0,
+			turns: 3,
+			toolCalls: 2,
+			costUsd,
+			capped: false,
+		}))
+	const write = (name: string, costs: number[]) => {
+		const rs = results(costs)
+		const summary = {
+			tasks: [{ task: 'a', runs: rs.length, passes: rs.length, passRate: 1, capped: 0, errors: 0, totalCostUsd: 0 }],
+			passRate: 1,
+		}
+		const record = {
+			createdAt: name,
+			commit: 'x',
+			model: 'sonnet',
+			harness: 'claude-code',
+			runsPerTask: 5,
+			summary,
+			results: rs,
+		}
+		writeFileSync(join(dir, `${name}.json`), JSON.stringify(record))
+		return join(dir, `${name}.json`)
+	}
+	const before = write('before', [1, 2, 3, 4, 5])
+	const after = write('after', [6, 7, 8, 9, 10])
+	await main(['bench', 'compare', before, after])
+	expect(stdout.join('')).toMatch(
+		/^Bench compare: .*before\.json → .*after\.json\n[\s\S]*cost: mean \+167%[\s\S]*p 0\.008 \*/,
+	)
+	stdout = []
+	await main(['bench', 'compare', before, after, '--json'])
+	expect(JSON.parse(stdout.join('')).comparison.tasks[0].task).toBe('a')
+
+	await expect(main(['bench', 'compare', before, join(dir, 'missing.json')])).rejects.toThrow('exit:1')
+	expect(stderr.join('')).toMatch(/missing\.json does not exist/)
 })

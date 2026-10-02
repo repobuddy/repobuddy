@@ -303,7 +303,9 @@ describe('bench', () => {
 		})
 		expect(seen).toEqual(['a1', 'a2', 'b1', 'b2'])
 		expect(second.comparison).toMatchObject({ stale: true, passRate: [1, 0] })
-		expect(formatOutcome(second)).toMatch(/stale: refresh it[\s\S]*pass rate 100% → 0% \(-100%\)[\s\S]*n\/a/)
+		expect(formatOutcome(second)).toMatch(
+			/stale: refresh it[\s\S]*a: passed 2\/2 → 0\/2[\s\S]*pass rate 100% → 0%; cost per success \$0\.100 → n\/a/,
+		)
 	})
 
 	it('says there is no baseline yet', () => {
@@ -441,32 +443,34 @@ describe('compare', () => {
 	})
 
 	it('refuses a baseline taken on another model', () => {
-		const c = compare(record('haiku', [result({})]), record('sonnet', [result({})]), now)
-		expect(c.incomparable).toBe('the baseline ran model "haiku", this run "sonnet"')
+		const c = compare(repo(), record('haiku', [result({})]), record('sonnet', [result({})]), now)
+		expect(c.incomparable).toBe('the before side ran model "haiku", the after side "sonnet"')
 		expect(formatOutcome({ record: record('sonnet', [result({})]), resultsPath: 'r', comparison: c })).toMatch(
 			/Not compared/,
 		)
 	})
 
 	it('refuses a baseline another runner took, reading a baseline with no runner as print', () => {
-		const { runner: _, ...legacy } = record('sonnet', [result({})])
-		const c = compare(legacy, record('sonnet', [result({})], 'interactive'), now)
-		expect(c.incomparable).toBe('the baseline ran runner "print", this run "interactive"')
-		expect(compare(legacy, record('sonnet', [result({})]), now).incomparable).toBeUndefined()
+		const dir = repo()
+		const { runner: _, results: __, ...legacy } = record('sonnet', [result({})])
+		const c = compare(dir, legacy, record('sonnet', [result({})], 'interactive'), now)
+		expect(c.incomparable).toMatch(/runner "print", the after side "interactive"/)
+		expect(compare(dir, legacy, record('sonnet', [result({})]), now).incomparable).toBeUndefined()
 	})
 
-	it('skips tasks the baseline never ran and handles a zero baseline', () => {
-		const c = compare(
-			record('sonnet', [result({ wallMs: 0, cacheReadTokens: 1000 })]),
-			record('sonnet', [result({ wallMs: 2000, cacheReadTokens: 800 }), result({ task: 'new' })]),
-			now,
+	it('reads the baseline runs from its results file, for spread and p-values', () => {
+		const dir = repo()
+		bench(dir, config, { baseline: true, now, runner: fakeRunner() })
+		const later = bench(dir, config, { now: new Date('2026-10-01T00:00:00Z'), runner: fakeRunner() })
+		expect(later.comparison).toMatchObject({ perRun: true, baselineAgeDays: 3, stale: false })
+		expect(formatOutcome(later)).toMatch(
+			/Against the baseline \(3 days old\):\n {2}a: passed 2\/2 → 2\/2\n[\s\S]*p 1\.00/,
 		)
-		expect(c.tasks.map((t) => t.task)).toEqual(['a'])
-		expect(c.tasks[0]?.medianCacheReadTokens).toEqual([1000, 800])
-		expect(c.stale).toBe(false)
-		expect(formatOutcome({ record: record('sonnet', [result({})]), resultsPath: 'r', comparison: c })).toMatch(
-			/cache read 1000 → 800 \(-20%\)\n[\s\S]*wall 0s → 2s\n/,
-		)
+
+		rmSync(join(dir, '.agents/readiness/bench/results'), { recursive: true })
+		const fresh = bench(dir, config, { now: new Date('2026-10-01T00:00:00Z'), runner: fakeRunner() })
+		expect(fresh.comparison?.perRun).toBe(false)
+		expect(formatOutcome(fresh)).toMatch(/medians only/)
 	})
 })
 

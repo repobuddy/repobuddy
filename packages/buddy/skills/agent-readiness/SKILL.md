@@ -1,7 +1,7 @@
 ---
 name: agent-readiness
 description: "Use this skill when scoring or improving how ready a repo or package is for coding agents, or benchmarking agent cost."
-argument-hint: "score [--dir <repo> | --package <path>] [--check] | improve [area] | bench [--baseline] [--ref <commit>] [--runner interactive]"
+argument-hint: "score [--dir <repo> | --package <path>] [--check] | improve [area] | bench [--baseline] [--ref <commit>] [--runner interactive] | bench compare <before> <after>"
 ---
 
 # Agent Readiness
@@ -27,6 +27,7 @@ writes only its task set, results, and baseline, and spends money only after a y
 | `score --package <path>` | Scores the consuming side of a package: how cheaply another repo's agent can use it through what ships. Same report shape, its own criteria (see [Package score](#package-score)) | nothing |
 | `improve [area]` | Fixes the findings `score` reports as a reviewable series: one area per commit, each fix approved first, owned fixes handed off. Re-scores after each area | the repo, on approval |
 | `bench [--baseline]` | Runs the repo's fixed agent task set and records tokens, turns, tool calls, wall time, pass rate, and cost per successful task; compares against the stored baseline | results file; `baseline.json` with `--baseline` |
+| `bench compare <before> <after>` | Compares two stored results files (or a baseline) per task and pooled, with the spread and a permutation p-value. Runs no agent and costs nothing (see [Reading a comparison](#reading-a-comparison)) | nothing |
 
 ## Script
 
@@ -34,6 +35,7 @@ writes only its task set, results, and baseline, and spends money only after a y
 node <this-skill-dir>/scripts/agent-readiness.mjs score [--dir <repo>] [--json] [--run-knip] [--check [--min-level <1-5>]]
 node <this-skill-dir>/scripts/agent-readiness.mjs score --package <path> [--json] [--check [--min-level <1-4>]]
 node <this-skill-dir>/scripts/agent-readiness.mjs bench [--dir <repo>] [--init | --baseline] [--runs <n>] [--task <id>] [--ref <commit>] [--runner print|interactive] [--yes] [--json]
+node <this-skill-dir>/scripts/agent-readiness.mjs bench compare <before.json> <after.json> [--json]
 ```
 
 `<this-skill-dir>` is the directory holding this SKILL.md, not the current working directory.
@@ -261,9 +263,10 @@ to measure an `improve` area, bench before it and again after its commit.
    permission mode, and the spend ceiling, and runs nothing. Show that to the user. Only after an
    explicit yes, run it again with `--yes` (and `--baseline` when recording one). Never add `--yes` on
    your own.
-3. **Report** the pass rate, cost per success, and the per-task medians; with a baseline, the deltas
-   the script prints. Say when a run was capped or errored, since its numbers are not comparable. With
-   `--baseline`, tell the user to commit `baseline.json`; `results/` is git-ignored.
+3. **Report** the pass rate, cost per success, and the per-task medians; with a baseline, the
+   comparison the script prints (see [Reading a comparison](#reading-a-comparison)). Say when a run
+   was capped or errored, since its numbers are not comparable. With `--baseline`, tell the user to
+   commit `baseline.json`; `results/` is git-ignored.
    When a task's cost moved, read its transcripts to say why: each run's is kept, gzipped, in
    `results/<timestamp>/<task>-<run>.jsonl.gz` beside its results file (`zcat` reads it). They are
    the runner's own record: `claude -p` stream-json, or the interactive session's JSONL with its
@@ -291,6 +294,31 @@ full run. The model is part of the baseline: a run on another model is not compa
 Each run also stops at 20 minutes of wall-clock. Claude Code has no documented turn limit, so time
 and the spend cap are the only bounds. A task that needs longer can raise `timeoutMinutes` in
 `tasks.json`. A run stopped by either cap is marked capped.
+
+### Reading a comparison
+
+A bench run against its baseline, and `bench compare <before> <after>` on any two stored results
+files, print the same comparison. `bench compare` runs no agent, so it is free: use it to re-read a
+past pair, or to compare two runs neither of which is the baseline. Paths are results files under
+`.agents/readiness/bench/results/` or a `baseline.json`.
+
+- **Per task**, each metric shows the change in the mean and the median, the min-max of each side, and
+  `p`: a two-sided exact permutation test on the mean (with 5 runs a side, all 252 relabellings).
+- **Pooled** is the geometric mean of the task ratios, so each task weighs the same, and its `p`
+  relabels runs within each task only.
+- **Too few runs to call** means even the most lopsided result these run counts allow has p above 0.05
+  (3 runs a side tops out at 0.10). Report it as no evidence either way, and suggest more `--runs`.
+- **Multiple comparisons.** The output counts its tests: 7 metrics per task plus 7 pooled. Four tasks make 35
+  tests, one or two land below 0.05 by chance. Lead with the pooled row, and call a lone per-task `*`
+  tentative.
+- A `baseline.json` keeps only medians. Spread and p-values need its runs, which come from the matching
+  results file when it is still on this machine; otherwise the comparison says medians only.
+- `bench compare` warns, but still compares, when the two differ in model, harness, or runner. A
+  bench run refuses to compare against such a baseline.
+- `bench compare` heads its output with each side's commit and, when it differs, its task-set commit.
+  When the two task sets come from different commits, it says so: check the tasks did not change, or
+  bench the older commit on today's tasks with `--ref`. It reads results files of every
+  [schema version](references/bench-results.md) it knows and refuses a newer one.
 
 ### Interactive runner
 
@@ -327,6 +355,7 @@ interactive runs; `claude -p` stays the default.
 - Fixing something an owner skill owns instead of handing it off
 - Reporting an area as improved without re-running `score`
 - Running `bench --yes` before the user has seen the plan and said yes
+- Reporting a median change as an effect when the comparison says it is noise or too few runs to call
 - Comparing a bench run against a baseline taken on another model or runner, or with several areas changed at once
 
 ## References
