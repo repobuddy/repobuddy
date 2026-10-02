@@ -1,7 +1,7 @@
 ---
 name: agent-readiness
 description: "Use this skill when scoring or improving how ready a repo or package is for coding agents, or benchmarking agent cost."
-argument-hint: "score [--dir <repo> | --package <path>] [--check] | improve [area] | bench [--baseline] [--runner interactive]"
+argument-hint: "score [--dir <repo> | --package <path>] [--check] | improve [area] | bench [--baseline] [--ref <commit>] [--runner interactive]"
 ---
 
 # Agent Readiness
@@ -33,7 +33,7 @@ writes only its task set, results, and baseline, and spends money only after a y
 ```bash
 node <this-skill-dir>/scripts/agent-readiness.mjs score [--dir <repo>] [--json] [--run-knip] [--check [--min-level <1-5>]]
 node <this-skill-dir>/scripts/agent-readiness.mjs score --package <path> [--json] [--check [--min-level <1-4>]]
-node <this-skill-dir>/scripts/agent-readiness.mjs bench [--dir <repo>] [--init | --baseline] [--runs <n>] [--task <id>] [--runner print|interactive] [--yes] [--json]
+node <this-skill-dir>/scripts/agent-readiness.mjs bench [--dir <repo>] [--init | --baseline] [--runs <n>] [--task <id>] [--ref <commit>] [--runner print|interactive] [--yes] [--json]
 ```
 
 `<this-skill-dir>` is the directory holding this SKILL.md, not the current working directory.
@@ -269,7 +269,11 @@ to measure an `improve` area, bench before it and again after its commit.
    `biome format --write`) before committing, since a formatter can disagree on more than indent.
 
 Each run checks out HEAD into a fresh git worktree, so uncommitted changes are not benched: commit
-the change under test first. The agent is Claude Code (`claude -p` by default), loading the repo's
+the change under test first. To bench a past commit, such as the parent of a change that already
+landed, pass `--ref <commit>`: each run checks that commit out and overlays HEAD's committed task set
+(`.agents/readiness/bench/`) on it, so two commits are measured on the same tasks without
+cherry-picking. The results record the real commit benched (`commit`) and the task set's
+(`taskSetCommit`); [references/bench-results.md](references/bench-results.md) describes the file. The agent is Claude Code (`claude -p` by default), loading the repo's
 own settings, instructions, skills, and `.mcp.json`, and none of the user's, so the cost measured is
 the repo's.
 The default permission mode is `bypassPermissions`: the agent runs commands unprompted in the
@@ -326,3 +330,5 @@ interactive runs; `claude -p` stays the default.
 - Factory's Agent Readiness model, whose gated levels this adapts: https://factory.ai/news/agent-readiness
 - Area criteria: `references/areas/` (load only the areas with `judge` checks or disputed results;
   `package-*.md` apply to `score --package` only)
+- Bench results and baseline format: `references/bench-results.md` (load when reading or comparing
+  results files)

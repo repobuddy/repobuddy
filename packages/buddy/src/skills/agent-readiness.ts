@@ -3,7 +3,7 @@
  *
  *   node scripts/agent-readiness.mjs score [--dir <repo>] [--json] [--run-knip] [--check [--min-level <1-5>]]
  *   node scripts/agent-readiness.mjs score --package <path> [--json] [--check [--min-level <1-4>]]
- *   node scripts/agent-readiness.mjs bench [--dir <repo>] [--init | --baseline] [--runs <n>] [--task <id>] [--runner print|interactive] [--yes] [--json]
+ *   node scripts/agent-readiness.mjs bench [--dir <repo>] [--init | --baseline] [--runs <n>] [--task <id>] [--ref <commit>] [--runner print|interactive] [--yes] [--json]
  *
  * `score` reports the gated level (1-5), a score per area, the top three fixes, and the tokens every
  * agent session loads before it starts (instruction files plus installed skill descriptions, estimated
@@ -14,7 +14,7 @@
  * buddy-agent-harness installed also has its read-only `doctor` run, for the instructions area.
  *
  * `bench` runs the task set in `.agents/readiness/bench/tasks.json` with Claude Code, each run in a
- * clean checkout of HEAD, and records tokens, turns, tool calls, wall time, pass rate, and cost per
+ * clean checkout of HEAD (or of `--ref <commit>`, with HEAD's task set overlaid), and records tokens, turns, tool calls, wall time, pass rate, and cost per
  * successful task. It spends money, so without `--yes` it only prints the plan and its spend ceiling.
  * `--baseline` stores the summary as the baseline; any other run is compared against it. `--init`
  * writes a task-set template and runs nothing. `--runner interactive` runs each task as an interactive
@@ -54,7 +54,7 @@ import { formatPackageReport, PACKAGE_MAX_LEVEL, scorePackage } from '../agent-r
 import { checkLevel, formatCheck, formatReport, MAX_LEVEL, score } from '../agent-readiness/score.js'
 
 const USAGE = `usage: agent-readiness.mjs score [--dir <repo> | --package <path>] [--json] [--run-knip] [--check [--min-level <n>]]
-       agent-readiness.mjs bench [--dir <repo>] [--init | --baseline] [--runs <n>] [--task <id>] [--runner print|interactive] [--yes] [--json]`
+       agent-readiness.mjs bench [--dir <repo>] [--init | --baseline] [--runs <n>] [--task <id>] [--ref <commit>] [--runner print|interactive] [--yes] [--json]`
 
 function usage(message: string): never {
 	process.stderr.write(`${message}\n${USAGE}\n`)
@@ -71,13 +71,14 @@ interface Opts {
 	yes: boolean
 	runs?: number
 	task?: string
+	ref?: string
 	runner?: RunnerName
 	check: boolean
 	minLevel?: number
 	runKnip: boolean
 }
 
-const BENCH_FLAGS = new Set(['--init', '--baseline', '--yes', '--runs', '--task', '--runner'])
+const BENCH_FLAGS = new Set(['--init', '--baseline', '--yes', '--runs', '--task', '--ref', '--runner'])
 const CHECK_FLAGS = new Set(['--check', '--min-level'])
 
 /** The documented target level, and what --check holds a repo or package to unless told otherwise. */
@@ -120,6 +121,7 @@ function parseArgs(argv: string[]): Opts {
 		else if (a === '--baseline') opts.baseline = true
 		else if (a === '--yes') opts.yes = true
 		else if (a === '--task') opts.task = value(i++, a)
+		else if (a === '--ref') opts.ref = value(i++, a)
 		else if (a === '--runner') {
 			const v = value(i++, a)
 			if (v !== 'print' && v !== 'interactive') usage('--runner is print or interactive')
@@ -160,7 +162,12 @@ function runBench(opts: Opts): void {
 	const config = loadConfig(opts.dir)
 	// Built before the plan, so a missing multiplexer or credential shows before anyone says yes.
 	const runner = opts.runner === 'interactive' ? interactiveRunner() : printRunner
-	const planOpts = { ...(opts.runs ? { runs: opts.runs } : {}), ...(opts.task ? { task: opts.task } : {}), runner }
+	const planOpts = {
+		...(opts.runs ? { runs: opts.runs } : {}),
+		...(opts.task ? { task: opts.task } : {}),
+		...(opts.ref ? { ref: opts.ref } : {}),
+		runner,
+	}
 	if (!opts.yes) {
 		const p = plan(opts.dir, config, planOpts)
 		process.stdout.write(opts.json ? `${JSON.stringify({ plan: p }, null, 2)}\n` : formatPlan(p))

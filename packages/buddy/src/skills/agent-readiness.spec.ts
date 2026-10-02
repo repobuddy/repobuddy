@@ -44,6 +44,8 @@ test.each([
 	[['bench', '--package', '.']],
 	[['bench', '--runs', '0']],
 	[['bench', '--task']],
+	[['bench', '--ref']],
+	[['score', '--ref', 'HEAD']],
 	[['bench', '--init', '--yes']],
 	[['bench', '--baseline', '--task', 'a']],
 	[['score', '--check', '--min-level']],
@@ -152,6 +154,11 @@ test('bench --yes runs the task set and reports each run', async () => {
 	stdout = []
 	await main(['bench', '--dir', dir, '--yes', '--baseline', '--json'])
 	expect(JSON.parse(stdout.join('')).baselinePath).toBe('.agents/readiness/bench/baseline.json')
+	stdout = []
+	await main(['bench', '--dir', dir, '--ref', 'HEAD', '--json'])
+	expect(JSON.parse(stdout.join('')).plan).toMatchObject({ ref: 'HEAD' })
+	await expect(main(['bench', '--dir', dir, '--ref', 'nope'])).rejects.toThrow('exit:1')
+	expect(stderr.join('')).toMatch(/--ref "nope" names no commit/)
 })
 
 test('--check exits 1 below the default minimum level of 3', async () => {

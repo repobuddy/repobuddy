@@ -1,8 +1,9 @@
 /**
  * Runs a repository's fixed agent task set and records what each run cost.
  *
- * Each run gets a clean checkout of HEAD (a detached git worktree), runs the task's setup, runs the
- * agent, then runs the task's check: exit 0 is a pass. The agent runs headless (`claude -p`) by
+ * Each run gets a clean checkout of HEAD, or of `--ref` (a detached git worktree), runs the task's
+ * setup, runs the agent, then runs the task's check: exit 0 is a pass. A `--ref` checkout gets HEAD's
+ * task set overlaid and committed on top, so a past commit is benched on today's tasks. The agent runs headless (`claude -p`) by
  * default, or as an interactive session in a terminal multiplexer (`bench-interactive.ts`). The numbers
  * come from the agent's own run report or transcript, so they are the harness's count, not an estimate.
  *
@@ -22,6 +23,12 @@ const RESULTS_DIR = `${BENCH_DIR}/results`
 
 /** A baseline older than this no longer counts as measured: the repo has moved on since. */
 export const BASELINE_MAX_AGE_DAYS = 90
+
+/**
+ * The shape of a results file and of `baseline.json`. A file with no `schemaVersion` is version 1,
+ * which had no `taskSetCommit`. Bump it on any change a reader of the files must know about.
+ */
+const SCHEMA_VERSION = 2
 
 /** Claude Code is the only harness so far; the name is part of the baseline key. */
 const HARNESS = 'claude-code'
@@ -148,7 +155,12 @@ export interface BenchPlan {
 	totalRuns: number
 	/** The most the bench can spend: every run hitting its budget cap. */
 	ceilingUsd: number
+	/** The ref given with `--ref`, as given; absent when benching HEAD. */
+	ref?: string
+	/** The commit each run checks out: HEAD, or what `ref` resolves to. */
 	commit: string | undefined
+	/** The commit the task set comes from: always HEAD. */
+	taskSetCommit: string | undefined
 	/** Uncommitted changes are not in the checkouts the agent works in. */
 	dirty: boolean
 }
@@ -156,6 +168,8 @@ export interface BenchPlan {
 export interface PlanOptions {
 	runs?: number
 	task?: string
+	/** A commit to bench instead of HEAD, with HEAD's task set overlaid. */
+	ref?: string
 	runner?: Pick<Runner, 'name'>
 }
 
@@ -175,6 +189,13 @@ export function plan(dir: string, config: BenchConfig, opts: PlanOptions = {}): 
 	const tasks = selectTasks(config, opts.task)
 	const runsPerTask = opts.runs ?? config.runs
 	const head = git(dir, ['rev-parse', 'HEAD'])
+	const taskSetCommit = head.status === 0 ? head.stdout.trim() : undefined
+	let commit = taskSetCommit
+	if (opts.ref !== undefined) {
+		const resolved = git(dir, ['rev-parse', '--verify', '--quiet', `${opts.ref}^{commit}`])
+		if (resolved.status !== 0) throw new BenchError(`--ref "${opts.ref}" names no commit in this repository`)
+		commit = resolved.stdout.trim()
+	}
 	const status = git(dir, ['status', '--porcelain'])
 	return {
 		model: config.model,
@@ -185,7 +206,9 @@ export function plan(dir: string, config: BenchConfig, opts: PlanOptions = {}): 
 		tasks: tasks.map((t) => t.id),
 		totalRuns: tasks.length * runsPerTask,
 		ceilingUsd: round(tasks.length * runsPerTask * config.maxBudgetUsd),
-		commit: head.status === 0 ? head.stdout.trim() : undefined,
+		...(opts.ref !== undefined ? { ref: opts.ref } : {}),
+		commit,
+		taskSetCommit,
 		dirty: status.status === 0 && status.stdout.trim() !== '',
 	}
 }
@@ -338,12 +361,45 @@ export function agentArgs(config: BenchConfig, task: BenchTask, checkout: string
 
 const SETUP_TIMEOUT_MS = 15 * 60 * 1000
 
+export interface RunTaskOptions {
+	/** The commit to check out; HEAD when absent. */
+	commit?: string
+	/** The commit to take the task set from, when it differs from `commit`. */
+	taskSetCommit?: string
+}
+
+/**
+ * Puts the task set from `from` into the checkout and commits it, so the agent starts on a clean tree
+ * as it does on HEAD. The commit exists only in the throwaway checkout; the results record the real
+ * commit benched.
+ */
+function overlayTaskSet(checkout: string, from: string): string | undefined {
+	const take = git(checkout, ['checkout', from, '--', BENCH_DIR])
+	if (take.status !== 0) return `could not overlay the task set from ${from}: ${take.stderr.trim()}`
+	if (git(checkout, ['diff', '--cached', '--quiet']).status === 0) return undefined
+	const commit = git(checkout, [
+		'-c',
+		'user.name=agent-readiness',
+		'-c',
+		'user.email=agent-readiness@localhost',
+		'-c',
+		'commit.gpgsign=false',
+		'commit',
+		'--quiet',
+		'--no-verify',
+		'-m',
+		`bench: task set from ${from}`,
+	])
+	return commit.status === 0 ? undefined : `could not commit the overlaid task set: ${commit.stderr.trim()}`
+}
+
 export function runTask(
 	dir: string,
 	config: BenchConfig,
 	task: BenchTask,
 	run: number,
 	runner: Runner = printRunner,
+	opts: RunTaskOptions = {},
 ): RunResult {
 	const parent = mkdtempSync(join(tmpdir(), 'agent-readiness-bench-'))
 	const checkout = join(parent, 'repo')
@@ -357,8 +413,12 @@ export function runTask(
 		error,
 	})
 	try {
-		const add = git(dir, ['worktree', 'add', '--detach', checkout, 'HEAD'])
+		const add = git(dir, ['worktree', 'add', '--detach', checkout, opts.commit ?? 'HEAD'])
 		if (add.status !== 0) return failed(`git worktree add failed: ${add.stderr.trim()}`)
+		if (opts.taskSetCommit !== undefined && opts.taskSetCommit !== opts.commit) {
+			const overlayError = overlayTaskSet(checkout, opts.taskSetCommit)
+			if (overlayError) return failed(overlayError)
+		}
 		for (const [name, command] of [
 			['setup', config.setup],
 			[`${task.id} setup`, task.setup],
@@ -453,8 +513,12 @@ export function summarize(results: RunResult[]): BenchSummary {
 }
 
 export interface BenchRecord {
+	schemaVersion: typeof SCHEMA_VERSION
 	createdAt: string
+	/** The commit benched: HEAD, or the `--ref` commit. */
 	commit: string | undefined
+	/** The commit the task set came from (HEAD). Equals `commit` unless `--ref` named another. */
+	taskSetCommit: string | undefined
 	model: string
 	harness: string
 	runner: RunnerName
@@ -463,8 +527,15 @@ export interface BenchRecord {
 	results: RunResult[]
 }
 
-/** A baseline written before the runner was recorded has no `runner`: it was taken with `claude -p`. */
-export type Baseline = Omit<BenchRecord, 'results' | 'runner'> & { runner?: RunnerName }
+/**
+ * A baseline written before the runner was recorded has no `runner`: it was taken with `claude -p`.
+ * One written before version 2 has no `schemaVersion` or `taskSetCommit`.
+ */
+export type Baseline = Omit<BenchRecord, 'results' | 'runner' | 'schemaVersion' | 'taskSetCommit'> & {
+	runner?: RunnerName
+	schemaVersion?: number
+	taskSetCommit?: string
+}
 
 export function readBaseline(dir: string): Baseline | undefined {
 	const path = join(dir, BASELINE_FILE)
@@ -580,14 +651,19 @@ export function bench(dir: string, config: BenchConfig, opts: BenchOptions = {})
 	const results: RunResult[] = []
 	for (const task of tasks) {
 		for (let run = 1; run <= p.runsPerTask; run++) {
-			const result = runTask(dir, config, task, run, opts.runner)
+			const result = runTask(dir, config, task, run, opts.runner, {
+				...(p.commit !== undefined ? { commit: p.commit } : {}),
+				...(p.taskSetCommit !== undefined ? { taskSetCommit: p.taskSetCommit } : {}),
+			})
 			results.push(result)
 			opts.onRun?.(result)
 		}
 	}
 	const record: BenchRecord = {
+		schemaVersion: SCHEMA_VERSION,
 		createdAt: now.toISOString(),
 		commit: p.commit,
+		taskSetCommit: p.taskSetCommit,
 		model: config.model,
 		harness: HARNESS,
 		runner: p.runner,
@@ -626,7 +702,9 @@ export function formatPlan(p: BenchPlan): string {
 		`Bench plan: ${p.tasks.length} task(s) × ${p.runsPerTask} run(s) = ${p.totalRuns} agent run(s)`,
 		`  tasks: ${p.tasks.join(', ')}`,
 		`  model: ${p.model} (${p.harness}, ${p.runner} runner), permission mode: ${p.permissionMode}`,
-		`  commit: ${p.commit ?? 'unknown'}${p.dirty ? ' (uncommitted changes are NOT benched: each run checks out HEAD)' : ''}`,
+		p.ref === undefined
+			? `  commit: ${p.commit ?? 'unknown'}${p.dirty ? ' (uncommitted changes are NOT benched: each run checks out HEAD)' : ''}`
+			: `  commit: ${p.commit} (--ref ${p.ref}), task set from ${p.taskSetCommit ?? 'unknown'} (HEAD)${p.dirty ? '; uncommitted changes are NOT benched' : ''}`,
 		`  spend ceiling: ${usd(p.ceilingUsd)} (every run at its budget cap)`,
 		'',
 		'Nothing has run. Re-run with --yes to spend it.',
@@ -647,7 +725,7 @@ export function formatOutcome(outcome: BenchOutcome): string {
 	const s = record.summary
 	const lines = [
 		`Bench: ${s.passes}/${s.runs} passed (${Math.round(s.passRate * 100)}%), spent ${usd(s.totalCostUsd)}, cost per success ${usd(s.costPerSuccessUsd)}`,
-		`  model ${record.model} (${record.harness}, ${record.runner} runner), commit ${record.commit ?? 'unknown'}`,
+		`  model ${record.model} (${record.harness}, ${record.runner} runner), commit ${record.commit ?? 'unknown'}${record.taskSetCommit !== record.commit ? `, task set from ${record.taskSetCommit ?? 'unknown'}` : ''}`,
 		'',
 		'Per task (medians):',
 	]

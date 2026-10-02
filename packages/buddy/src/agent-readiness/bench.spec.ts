@@ -314,7 +314,7 @@ describe('bench', () => {
 	it('indents the baseline like the task set the repo already formats', () => {
 		const dir = repo({ '.agents/readiness/bench/tasks.json': '{\n    "tasks": []\n}\n' })
 		bench(dir, config, { baseline: true, now, runs: 1, runner: fakeRunner() })
-		expect(readFileSync(join(dir, BASELINE_FILE), 'utf8')).toMatch(/^\{\n {4}"createdAt"/)
+		expect(readFileSync(join(dir, BASELINE_FILE), 'utf8')).toMatch(/^\{\n {4}"schemaVersion"/)
 	})
 
 	it('keeps the indent of an existing baseline, which the repo may have reformatted', () => {
@@ -323,14 +323,14 @@ describe('bench', () => {
 			[BASELINE_FILE]: '{\n\t"createdAt": "2026-01-01T00:00:00.000Z"\n}\n',
 		})
 		const outcome = bench(dir, config, { baseline: true, now, runs: 1, runner: fakeRunner() })
-		expect(readFileSync(join(dir, BASELINE_FILE), 'utf8')).toMatch(/^\{\n\t"createdAt"/)
+		expect(readFileSync(join(dir, BASELINE_FILE), 'utf8')).toMatch(/^\{\n\t"schemaVersion"/)
 		expect(formatOutcome(outcome)).toMatch(/Run the repo's formatter on it if it has one, then commit it/)
 	})
 
 	it('indents with tabs, as `bench --init` writes, when there is nothing to match', () => {
 		const dir = repo()
 		bench(dir, config, { baseline: true, now, runs: 1, runner: fakeRunner() })
-		expect(readFileSync(join(dir, BASELINE_FILE), 'utf8')).toMatch(/^\{\n\t"createdAt"/)
+		expect(readFileSync(join(dir, BASELINE_FILE), 'utf8')).toMatch(/^\{\n\t"schemaVersion"/)
 	})
 
 	it('keeps an existing results ignore rule', () => {
@@ -340,11 +340,79 @@ describe('bench', () => {
 	})
 })
 
+describe('bench --ref', () => {
+	const now = new Date('2026-09-28T00:00:00Z')
+	const sh = (dir: string, ...args: string[]) => spawnSync('git', args, { cwd: dir, encoding: 'utf8' }).stdout.trim()
+
+	/** A past commit with no task set, then HEAD adding one and changing the code. */
+	function history() {
+		const dir = repo({ 'code.txt': 'before' })
+		const past = sh(dir, 'rev-parse', 'HEAD')
+		mkdirSync(join(dir, '.agents/readiness/bench'), { recursive: true })
+		writeFileSync(join(dir, '.agents/readiness/bench/tasks.json'), '{}')
+		writeFileSync(join(dir, '.agents/readiness/bench/seed.patch'), 'x')
+		writeFileSync(join(dir, 'code.txt'), 'after')
+		sh(dir, 'add', '-A')
+		sh(dir, '-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-qm', 'task set')
+		return { dir, past, head: sh(dir, 'rev-parse', 'HEAD') }
+	}
+
+	it('plans the ref it will bench and the task set it takes from HEAD', () => {
+		const { dir, past, head } = history()
+		const p = plan(dir, config, { ref: past.slice(0, 7) })
+		expect(p).toMatchObject({ ref: past.slice(0, 7), commit: past, taskSetCommit: head })
+		expect(formatPlan(p)).toMatch(new RegExp(`commit: ${past} \\(--ref ${past.slice(0, 7)}\\), task set from ${head}`))
+		expect(() => plan(dir, config, { ref: 'no-such-ref' })).toThrow(/--ref "no-such-ref" names no commit/)
+	})
+
+	it('runs the agent on the ref with the current task set overlaid, and records both commits', () => {
+		const { dir, past, head } = history()
+		const seen: Array<{ code: string; seed: boolean; status: string; parent: string }> = []
+		const runner: Runner = {
+			...fakeRunner(),
+			agent(_config, _task, checkout) {
+				seen.push({
+					code: readFileSync(join(checkout, 'code.txt'), 'utf8'),
+					seed: existsSync(join(checkout, '.agents/readiness/bench/seed.patch')),
+					status: sh(checkout, 'status', '--porcelain'),
+					parent: sh(checkout, 'rev-parse', 'HEAD~1'),
+				})
+				writeFileSync(join(checkout, 'done'), '')
+				return parseStreamJson(transcript())
+			},
+		}
+		const outcome = bench(dir, config, { ref: past, now, task: 'a', runs: 1, runner })
+		expect(seen).toEqual([{ code: 'before', seed: true, status: '', parent: past }])
+		expect(outcome.record).toMatchObject({ schemaVersion: 2, commit: past, taskSetCommit: head })
+		expect(outcome.record.results[0]?.pass).toBe(true)
+		expect(formatOutcome(outcome)).toMatch(new RegExp(`commit ${past}, task set from ${head}`))
+	})
+
+	it('records the same commit for both when benching HEAD', () => {
+		const { dir, head } = history()
+		const outcome = bench(dir, config, { now, task: 'a', runs: 1, runner: fakeRunner() })
+		expect(outcome.record).toMatchObject({ schemaVersion: 2, commit: head, taskSetCommit: head })
+	})
+
+	it('reports a task set that is not committed at HEAD', () => {
+		const dir = repo()
+		const head = sh(dir, 'rev-parse', 'HEAD')
+		sh(dir, '-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-q', '--allow-empty', '-m', 'next')
+		const r = runTask(dir, config, config.tasks[0]!, 1, fakeRunner(), {
+			commit: head,
+			taskSetCommit: sh(dir, 'rev-parse', 'HEAD'),
+		})
+		expect(r.error).toMatch(/could not overlay the task set/)
+	})
+})
+
 describe('compare', () => {
 	const now = new Date('2026-09-28T00:00:00Z')
 	const record = (model: string, results: RunResult[], runner: 'print' | 'interactive' = 'print') => ({
+		schemaVersion: 2 as const,
 		createdAt: now.toISOString(),
 		commit: 'x',
+		taskSetCommit: 'x',
 		model,
 		harness: 'claude-code',
 		runner,
