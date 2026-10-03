@@ -28,8 +28,9 @@ doesn't collide with it. Typing `/resume` lists both.
 3. Reloads the working method and the settled decisions, and raises any open question that blocks the
    next step.
 4. Runs the next step and keeps the checkpoint current as decisions are made.
-5. Deletes the checkpoint once the work is done. Anything worth keeping goes into a commit, an ADR or an
-   issue.
+5. Deletes the checkpoint once the work is done, not when it resumes. On resume it only marks the file
+   `status: resumed`, so if the resumed session dies before pausing again, the state is still there.
+   Anything worth keeping goes into a commit, an ADR or an issue.
 
 Give it another repo's path instead (`/resume-session ../other-repo`) and it lists that repo's paused
 checkpoints, lets you pick, and hands back the command that starts a fresh session there, such as

@@ -48,7 +48,9 @@ from its `## NEXT` without going back over what it records as settled.
    - Any `## Not in git` item that is missing here, such as uncommitted changes from another machine
      or a process that is no longer running: name it before going on.
 
-3. **Mark it resumed.** Set `status: resumed` and update `updated`.
+3. **Mark it resumed, don't delete it.** Set `status: resumed` and update `updated`. The file stays
+   until the goal is met: deleting it now would lose the state if this session dies before it pauses
+   again.
 
 4. **Reload the working method and the settled decisions.** Treat `## Settled decisions` as settled.
    Reopen one only on new evidence, and say that you are reopening it and why. Follow
