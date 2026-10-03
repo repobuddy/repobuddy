@@ -20,7 +20,7 @@ doesn't collide with it. Typing `/resume` lists both.
 
 ## What it does
 
-1. Finds the checkpoint in `.agents/checkpoints/`. It uses the one you named, or the single paused
+1. Finds the checkpoint in `.agents/repobuddy/checkpoints/`. It uses the one you named, or the single paused
    checkpoint on your current branch. Otherwise it lists them newest first and asks.
 2. Checks the checkpoint against the repo. It flags a different branch, commits that landed since the
    pause, and state from `## Not in git` that isn't here.

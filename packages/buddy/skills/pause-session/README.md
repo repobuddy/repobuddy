@@ -19,7 +19,7 @@ checkpoint that a fresh session can pick up without going back over settled grou
 
 ## What it does
 
-1. Writes `.agents/checkpoints/<slug>.md` at the repo root (`~/.agents/checkpoints/` outside a repo).
+1. Writes `.agents/repobuddy/checkpoints/<slug>.md` at the repo root (`~/.agents/repobuddy/checkpoints/` outside a repo).
    The next action comes first, followed by the goal, settled decisions, open questions, working method,
    the files, commits and issues touched, the state that isn't in git, and the skills the next session
    should use.

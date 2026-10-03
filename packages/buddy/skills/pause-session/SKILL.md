@@ -25,9 +25,9 @@ opens the file has to be able to continue.
    Otherwise checkpoint the whole live frontier.
 
 3. **Pick the location.**
-   - Inside a git repo: `<repo root>/.agents/checkpoints/<slug>.md`, where the repo root is
+   - Inside a git repo: `<repo root>/.agents/repobuddy/checkpoints/<slug>.md`, where the repo root is
      `git rev-parse --show-toplevel`.
-   - Outside a repo: `~/.agents/checkpoints/<slug>.md`.
+   - Outside a repo: `~/.agents/repobuddy/checkpoints/<slug>.md`.
 
    `<slug>` is a short kebab-case name for the work (`flaky-login-test`, `auth-refactor`), not a
    timestamp. If a checkpoint for the same work already exists, update it rather than creating a

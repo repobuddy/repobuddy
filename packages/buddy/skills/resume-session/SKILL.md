@@ -11,8 +11,8 @@ from its `## NEXT` without going back over what it records as settled.
 
 ## Procedure
 
-1. **Find the checkpoint.** Checkpoints live in `<repo root>/.agents/checkpoints/` (the repo root is
-   `git rev-parse --show-toplevel`), or in `~/.agents/checkpoints/` outside a repo. Take the first
+1. **Find the checkpoint.** Checkpoints live in `<repo root>/.agents/repobuddy/checkpoints/` (the repo root is
+   `git rev-parse --show-toplevel`), or in `~/.agents/repobuddy/checkpoints/` outside a repo. Take the first
    rule that matches:
    1. The user gave a path or slug: open that one.
    2. Exactly one checkpoint has `status: paused` and a `branch` equal to the current branch: open it.
