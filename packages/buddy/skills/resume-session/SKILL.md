@@ -1,7 +1,7 @@
 ---
 name: resume-session
 description: "Use this skill when resuming paused work from a checkpoint — continues from its next step without relitigating."
-argument-hint: "[checkpoint slug or path]"
+argument-hint: "[checkpoint slug or path | repo path]"
 ---
 
 # Resume a session from its checkpoint
@@ -11,13 +11,29 @@ from its `## NEXT` without going back over what it records as settled.
 
 ## Procedure
 
-1. **Find the checkpoint.** Checkpoints live in `<repo root>/.agents/checkpoints/` (the repo root is
-   `git rev-parse --show-toplevel`), or in `~/.agents/checkpoints/` outside a repo. Take the first
-   rule that matches:
-   1. The user gave a path or slug: open that one.
-   2. Exactly one checkpoint has `status: paused` and a `branch` equal to the current branch: open it.
-   3. Otherwise, list the checkpoints newest `updated` first, each with its title, branch and `## NEXT`
-      line, and ask which one to resume.
+1. **Find the checkpoint.** Checkpoints live in `<repo root>/.agents/repobuddy/checkpoints/` (the
+   repo root is `git rev-parse --show-toplevel`), or in `~/.agents/repobuddy/checkpoints/` outside a
+   repo. Take the first rule that matches:
+   1. The user gave a checkpoint path or slug: open that one.
+   2. The user gave the path of another repo: go to step 1a.
+   3. Exactly one checkpoint has `status: paused`: open it.
+   4. More than one has `status: paused`: list only those, newest `updated` first, each with its
+      title, branch and `## NEXT` line, and ask which one to resume. Ask even when one of them
+      matches the current branch; a branch match is a hint to mention, not a choice to make.
+
+   **1a. Another repo.** List that repo's paused checkpoints (root from
+   `git -C <repo-path> rev-parse --show-toplevel`) the same way and let the user pick, even if only
+   one is paused. Then stop and hand back the command that starts a fresh session there:
+   - Claude Code: `cd <repo-root> && claude "/resume-session <slug>"`
+   - Codex: `cd <repo-root> && codex "resume-session <slug>"`
+   - Gemini CLI: `cd <repo-root> && gemini -i "resume-session <slug>"`
+   - Copilot CLI: `cd <repo-root> && copilot -i "resume-session <slug>"`
+
+   Give the one for the current harness first. Don't `cd` there and continue in this session: the
+   harness would still run with this repo's working directory, AGENTS.md, skills and permissions.
+
+   **If none is paused** but one has `status: resumed`, the session that resumed it may have ended
+   without pausing again. Name it and ask before opening it.
 
    **If there is no checkpoint** but an `.agents/plans/*.plan.md` has todos `in_progress`, the work is
    an SDD mission. Use `resume-mission` if it is available, or read that plan's `## NEXT` yourself.
@@ -32,7 +48,9 @@ from its `## NEXT` without going back over what it records as settled.
    - Any `## Not in git` item that is missing here, such as uncommitted changes from another machine
      or a process that is no longer running: name it before going on.
 
-3. **Mark it resumed.** Set `status: resumed` and update `updated`.
+3. **Mark it resumed, don't delete it.** Set `status: resumed` and update `updated`. The file stays
+   until the goal is met: deleting it now would lose the state if this session dies before it pauses
+   again.
 
 4. **Reload the working method and the settled decisions.** Treat `## Settled decisions` as settled.
    Reopen one only on new evidence, and say that you are reopening it and why. Follow

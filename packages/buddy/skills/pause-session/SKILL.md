@@ -25,13 +25,19 @@ opens the file has to be able to continue.
    Otherwise checkpoint the whole live frontier.
 
 3. **Pick the location.**
-   - Inside a git repo: `<repo root>/.agents/checkpoints/<slug>.md`, where the repo root is
+   - Inside a git repo: `<repo root>/.agents/repobuddy/checkpoints/<slug>.md`, where the repo root is
      `git rev-parse --show-toplevel`.
-   - Outside a repo: `~/.agents/checkpoints/<slug>.md`.
+   - Outside a repo: `~/.agents/repobuddy/checkpoints/<slug>.md`.
 
    `<slug>` is a short kebab-case name for the work (`flaky-login-test`, `auth-refactor`), not a
    timestamp. If a checkpoint for the same work already exists, update it rather than creating a
    second one.
+
+   **Ignore the folder locally.** Inside a repo, make sure `.agents/repobuddy/checkpoints/` is listed
+   in `<git common dir>/info/exclude`, where the common dir is `git rev-parse --git-common-dir`, so the
+   one entry covers every worktree. Append it only if no line already names it, and create the file if
+   it is missing. Never add it to the tracked `.gitignore`: that would change the user's repo for a
+   local note.
 
 4. **Write the checkpoint** in the format below, in this order: **action first**, history after.
 
@@ -46,8 +52,9 @@ opens the file has to be able to continue.
 
 7. **Commit only with `--commit`.** By default the checkpoint is written and left uncommitted, because a
    note from a debugging session should not land on a feature branch by accident. With `--commit`, stage
-   only the checkpoint file and commit it as `docs: checkpoint <slug>`, so it follows the branch to
-   another machine or another person.
+   only the checkpoint file with `git add -f <path>` (the folder is excluded, so a plain `git add` skips
+   it) and commit it as `docs: checkpoint <slug>`, so it follows the branch to another machine or
+   another person.
 
 8. **Report.** Give the checkpoint path, its `## NEXT` line, and whether it was committed. If there are
    uncommitted changes, say that they won't travel with an uncommitted checkpoint.
