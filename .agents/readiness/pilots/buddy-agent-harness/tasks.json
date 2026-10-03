@@ -1,0 +1,30 @@
+{
+	"model": "sonnet",
+	"runs": 3,
+	"maxBudgetUsd": 0.5,
+	"setup": "pnpm install --frozen-lockfile",
+	"tasks": [
+		{
+			"id": "fix-credential-segments",
+			"prompt": "The test suite fails. Find the cause and fix it without changing the tests.",
+			"setup": "sed -i 's/.map((segment) => segment.toLowerCase())/.map((segment) => segment)/' packages/buddy-agent-harness/src/diagnose-mcp/mcp-secrets.ts",
+			"check": "git diff --quiet HEAD -- '*.test.ts' && pnpm verify"
+		},
+		{
+			"id": "fix-divergence-direction",
+			"prompt": "The test suite fails. Find the cause and fix it without changing the tests.",
+			"setup": "sed -i \"s/if (bridgeMoved) return 'bridge'/if (bridgeMoved) return 'canonical'/\" packages/buddy-agent-harness/src/diagnose-bridges/git-bridge-state.ts",
+			"check": "git diff --quiet HEAD -- '*.test.ts' && pnpm verify"
+		},
+		{
+			"id": "pat-credential-segment",
+			"prompt": "doctor misses a personal access token in MCP configuration: a field named GITHUB_PAT holding a literal value is not reported. Treat a `pat` segment of a field name as credential-bearing, the same way `key` and `auth` are, so `GITHUB_PAT` is reported and a name that only contains the letters, like `MY_PATH`, is not. Add tests.",
+			"check": "pnpm verify && node --experimental-strip-types .agents/readiness/bench/checks/pat-credential-segment.mts"
+		},
+		{
+			"id": "skills-projection-answer",
+			"prompt": "Which harnesses does this package project `.agents/skills` into at project scope, and at which directory for each? Write the answer to ANSWER.md at the repository root, one line per harness in the form `<harness name>: <directory>`, and nothing else.",
+			"check": "grep -Eq '^claude-code: \\.claude/skills$' ANSWER.md && grep -Eq '^windsurf: \\.windsurf/skills$' ANSWER.md && test \"$(grep -c . ANSWER.md)\" -eq 2"
+		}
+	]
+}
