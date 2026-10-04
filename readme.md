@@ -19,10 +19,9 @@
 | [`init-buddy`] | Set up the machine for the repo's git host — detects the OS and existing MCP servers, then installs and logs in `gh`, `glab`, `tea`, `fj`, or `az`, and proposes a starting harness allow list |
 | [`merge-dep-prs`] | Merge pending dependency update PRs — gates each merge on whether CI reached what the change can break, diagnoses CI failures, never merges release PRs |
 | [`min-release-age`] | Lift the minimum-release-age gate for one package version, restore it when the version ages past the window, and schedule the cleanup in CI |
-| [`pause-session`] | Pause any agent session into a checkpoint a fresh session can continue from: next step first, settled decisions, open questions |
-| [`resume-session`] | Resume paused work from its checkpoint, continuing from the next step without reopening settled decisions |
 | [`review-api`] | Review a library's public API for consistency and completeness against its own conventions — drift, sibling-justified gaps, docs vs exports |
 | [`review-permissions`] | Audit what your agents are allowed to do — risk-rank every grant, then tighten and consolidate it |
+| [`session`] | `pause` any agent session into checkpoints a fresh session can continue from — next step first, settled decisions, open questions, in another repo when the work belongs there — and `resume` one without reopening settled decisions |
 | [`setup-github-repo`] | Set up a GitHub repo with branch protection, a merge backstop, Dependabot, and CI |
 | [`website`] | Work on a repo's docs website — `init` adds an Astro/Starlight site to a monorepo; `deploy` publishes a static site to GitHub, GitLab, or Codeberg Pages, Bitbucket, or Azure Static Web Apps |
 | [`to-question`] | Word a question for Slack, Jira, Linear, Asana, GitHub, GitLab, Bugzilla, Redmine, Trac, or email — checks the markup before you paste |
@@ -175,10 +174,9 @@ npx skills add repobuddy/agent-changesets
 [`init-buddy`]: ./packages/buddy/skills/init-buddy/SKILL.md
 [`merge-dep-prs`]: ./packages/buddy/skills/merge-dep-prs/SKILL.md
 [`min-release-age`]: ./packages/buddy/skills/min-release-age/SKILL.md
-[`pause-session`]: ./packages/buddy/skills/pause-session/SKILL.md
-[`resume-session`]: ./packages/buddy/skills/resume-session/SKILL.md
 [`review-api`]: ./packages/buddy/skills/review-api/SKILL.md
 [`review-permissions`]: ./packages/buddy/skills/review-permissions/SKILL.md
+[`session`]: ./packages/buddy/skills/session/SKILL.md
 [`setup-github-repo`]: ./packages/buddy/skills/setup-github-repo/SKILL.md
 [`website`]: ./packages/buddy/skills/website/SKILL.md
 [`to-question`]: ./packages/buddy/skills/to-question/SKILL.md

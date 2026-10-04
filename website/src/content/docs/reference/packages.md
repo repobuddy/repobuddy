@@ -29,10 +29,9 @@ coding assistants:
 | `llms-txt` | Publish an `llms.txt` generated from a project's public surface, with a CI drift check |
 | `merge-dep-prs` | Merge pending dependency update PRs — gates each merge on whether CI reached what the change can break, fixes the ones that fail, never touches release PRs |
 | `min-release-age` | Lift the minimum-release-age gate for one package version, and schedule its removal once the version ages past the window |
-| `pause-session` | Pause an agent session into one checkpoint per topic that a fresh session can pick up |
-| `resume-session` | Pick up work that `pause-session` checkpointed, without reopening settled decisions |
 | `review-api` | Review a library's public API for consistency and completeness, against the library's own conventions |
 | `review-permissions` | Review what your coding agents are allowed to do across every harness — a risk-ranked list and a tighter config |
+| `session` | `pause` an agent session into one checkpoint per topic, in another repo when the work belongs there, and `resume` one without reopening settled decisions |
 | `setup-github-repo` | Set up a GitHub repo with branch protection, a merge backstop, Dependabot, and CI |
 | `setup-npm-trusted-publishing` | Register npm trusted publishers (OIDC) so CI publishes without `NPM_TOKEN` — one package, an org, or every org you own |
 | `to-question` | Word a technical question for a platform — Slack, Jira, GitHub, email, and more — and copy it to the clipboard |

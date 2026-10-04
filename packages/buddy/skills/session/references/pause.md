@@ -1,17 +1,14 @@
----
-name: pause-session
-description: "Use this skill when pausing any agent session to pick up later — writes topic checkpoints a cold session resumes from."
-argument-hint: "[what the next session should focus on] [--commit]"
----
+# `session pause`: pause a session into checkpoints
 
-# Pause a session into checkpoints
+Arguments: `[what the next session should focus on] [--commit]`.
 
 Write this session's unfinished work to checkpoint files so a fresh session, in any harness, on any
 machine the files reach, can continue without going back over settled ground. Capture *enough to
 continue, nothing to relitigate.* A session often holds more than one thread of work, so sort it by
-topic first: finished work gets no checkpoint, and each live topic can get its own.
+topic first: finished work gets no checkpoint, and each live topic can get its own. A topic can belong
+to another repo than the one this session runs in; its checkpoint then goes to that repo.
 
-`resume-session` is the matching reader, but each checkpoint must stand on its own. A session that only
+`session resume` is the matching reader, but each checkpoint must stand on its own. A session that only
 opens the file has to be able to continue.
 
 ## Procedure
@@ -58,20 +55,36 @@ opens the file has to be able to continue.
    Kept as one, `## NEXT` holds the first topic's action and `## Remaining topics` holds the others'
    next steps, in the order they should run.
 
-5. **Pick the location.**
-   - Inside a git repo: `<repo root>/.agents/repobuddy/checkpoints/<slug>.md`, where the repo root is
-     `git rev-parse --show-toplevel`.
-   - Outside a repo: `~/.agents/repobuddy/checkpoints/<slug>.md`.
+5. **Pick the location.** Each topic has a **home repo**: the repo its work changes. It is usually the
+   current repo, but a session in one repo can drift into work on another (a fix to a shared tool, a
+   dependency, a sibling package), and that topic's checkpoint belongs where a session in *that* repo
+   will look. When the topic's work changes files in one other repo, that repo is its home. When it
+   spans two repos, split it if it splits cleanly; otherwise its home is the repo `## NEXT` acts in.
+   - **Home is the current repo:** `<repo root>/.agents/repobuddy/checkpoints/<slug>.md`, where the
+     repo root is `git rev-parse --show-toplevel`.
+   - **Home is another repo on disk:** `<home repo root>/.agents/repobuddy/checkpoints/<slug>.md`,
+     where the root is `git -C <path in that repo> rev-parse --show-toplevel`. Find the path from the
+     session: files it read or edited there, or a path the user named.
+   - **Home is another repo not found on disk:** ask the user where it is. With no one to ask, write to
+     `~/.agents/repobuddy/checkpoints/<slug>.md` and say so in the report.
+   - **No repo at all** (the session runs outside one and the topic has no home repo):
+     `~/.agents/repobuddy/checkpoints/<slug>.md`.
 
    `<slug>` is a short kebab-case name for the topic (`flaky-login-test`, `auth-refactor`), not a
-   timestamp. If a checkpoint for the same topic already exists, update it rather than creating a
-   second one.
+   timestamp. If a checkpoint for the same topic already exists in that folder, update it rather than
+   creating a second one.
 
-   **Ignore the folder locally.** Inside a repo, make sure `.agents/repobuddy/checkpoints/` is listed
-   in `<git common dir>/info/exclude`, where the common dir is `git rev-parse --git-common-dir`, so the
-   one entry covers every worktree. Append it only if no line already names it, and create the file if
-   it is missing. Never add it to the tracked `.gitignore`: that would change the user's repo for a
-   local note.
+   **Read the repo state from the home repo.** Take `branch` and `commit` from the home repo
+   (`git -C <home repo root> branch --show-current` and `rev-parse --short HEAD`), take `## Not in git`
+   from its `git status --short`, and write every path relative to its root. Set `repo:` to the home
+   repo's root folder name or its `origin` remote (`owner/name`), never an absolute path, so a resume
+   can tell whose checkpoint it is.
+
+   **Ignore the folder locally.** In the repo that receives the checkpoint, make sure
+   `.agents/repobuddy/checkpoints/` is listed in `<git common dir>/info/exclude`, where the common dir
+   is `git -C <that repo root> rev-parse --git-common-dir`, so the one entry covers every worktree.
+   Append it only if no line already names it, and create the file if it is missing. Never add it to
+   the tracked `.gitignore`: that would change the user's repo for a local note.
 
 6. **Write each checkpoint** in the format below, in this order: **action first**, history after.
    When split, every checkpoint stands alone:
@@ -110,6 +123,10 @@ opens the file has to be able to continue.
    a plain `git add` skips them) and commit them together as `docs: checkpoint <slug>[, <slug>...]`,
    so they follow the branch to another machine or another person.
 
+   `--commit` covers only checkpoints written to the current repo. A checkpoint written to another
+   repo (or to `~/.agents/repobuddy/checkpoints/`) stays uncommitted: committing there would put a
+   note on a branch in a repo this session was not asked to change. The report says so.
+
    Before committing, check the redaction mechanically, since prose alone misses a path:
 
    ```sh
@@ -125,6 +142,16 @@ opens the file has to be able to continue.
     to `pause-mission`. If the split was decided without asking, say which option was taken and why. If
     there are uncommitted changes, say that they won't travel with an uncommitted checkpoint.
 
+    For each checkpoint written to another repo, name that repo and say it was left uncommitted, then
+    give the line the user types to resume it there. Load only the reference for the current harness
+    and use its hand-off lines, with `<repo-root>` as that repo's root and `<slug>` as the checkpoint's:
+    [Claude Code](harness/claude-code.md), [Codex](harness/codex.md),
+    [Gemini CLI](harness/gemini.md), [Copilot CLI](harness/copilot.md),
+    [Cursor](harness/cursor.md). For any other harness, give the fresh-session form: `cd <repo-root>`,
+    then start the harness with a prompt that runs `session resume <slug>`. For a checkpoint that fell
+    back to `~/.agents/repobuddy/checkpoints/`, give its path instead, to pass to `session resume` from
+    a session in the home repo.
+
 ## Checkpoint format
 
 ```markdown
@@ -132,8 +159,9 @@ opens the file has to be able to continue.
 status: paused
 focus: <the topic this checkpoint covers, or "whole frontier">
 depends-on: [<slug of a topic that must finish first>]   # omit when independent
-branch: <current branch, or none>
-commit: <short HEAD sha at pause time, or none>
+repo: <home repo's root folder name or origin owner/name; never an absolute path; omit when there is no repo>
+branch: <home repo's current branch, or none>
+commit: <home repo's short HEAD sha at pause time, or none>
 created: <ISO date>
 updated: <ISO date>
 ---
@@ -206,7 +234,7 @@ appears only in a checkpoint kept as one over several topics.
   it by path or URL and don't paste it.
 - **Not buried.** The next action comes first. If a reader has to hunt for where to start, the pause
   failed.
-- **Not self-referential.** Don't tell the reader to "run `resume-session`" or explain how to resume.
+- **Not self-referential.** Don't tell the reader to "run `session resume`" or explain how to resume.
   Whoever opens the file is already past that point. Open `## NEXT` with the work itself.
 - **Not final-sounding.** A pause is resumable. Keep the open questions and the live frontier explicit;
   don't smooth them into a summary that hides where to begin.

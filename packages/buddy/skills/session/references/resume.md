@@ -1,19 +1,19 @@
----
-name: resume-session
-description: "Use this skill when resuming paused work from a checkpoint — continues from its next step without relitigating."
-argument-hint: "[checkpoint slug or path | repo path]"
----
+# `session resume`: resume a session from its checkpoint
 
-# Resume a session from its checkpoint
+Arguments: `[checkpoint slug or path | repo path]`.
 
-Pick up work that `pause-session` checkpointed: find the checkpoint, reload its context, and continue
-from its `## NEXT` without going back over what it records as settled.
+Pick up work that `session pause` checkpointed: find the checkpoint, reload its context, and continue
+from its `## NEXT` without going back over what it records as settled. The checkpoint may have been
+paused from a session in another repo: `session pause` writes each topic to its home repo, so a topic
+that drifted in elsewhere is already here.
 
 ## Procedure
 
 1. **Find the checkpoint.** Checkpoints live in `<repo root>/.agents/repobuddy/checkpoints/` (the
    repo root is `git rev-parse --show-toplevel`), or in `~/.agents/repobuddy/checkpoints/` outside a
-   repo. Take the first rule that matches:
+   repo. Inside a repo, also count the checkpoints in `~/.agents/repobuddy/checkpoints/` whose `repo:`
+   names this repo: a pause that couldn't find this repo on disk left them there. Take the first rule
+   that matches:
    1. The user gave a checkpoint path or slug: open that one.
    2. The user gave the path of another repo: go to step 1a.
    3. Exactly one checkpoint has `status: paused`: open it.
@@ -33,10 +33,10 @@ from its `## NEXT` without going back over what it records as settled.
    or as the fallback, give the command that starts a fresh session in that repo. A command that only
    adds a readable directory doesn't count as a move. The exact lines are in the reference for the
    current harness. Load only that one:
-   [Claude Code](references/claude-code.md), [Codex](references/codex.md),
-   [Gemini CLI](references/gemini.md), [Copilot CLI](references/copilot.md),
-   [Cursor](references/cursor.md). For any other harness, give the fresh-session form: `cd <repo-root>`,
-   then start the harness with a prompt that runs `resume-session <slug>`.
+   [Claude Code](harness/claude-code.md), [Codex](harness/codex.md),
+   [Gemini CLI](harness/gemini.md), [Copilot CLI](harness/copilot.md),
+   [Cursor](harness/cursor.md). For any other harness, give the fresh-session form: `cd <repo-root>`,
+   then start the harness with a prompt that runs `session resume <slug>`.
 
    **If none is paused** but one has `status: resumed`, the session that resumed it may have ended
    without pausing again. Name it and ask before opening it.
@@ -45,8 +45,13 @@ from its `## NEXT` without going back over what it records as settled.
    an SDD mission. Use `resume-mission` if it is available, or read that plan's `## NEXT` yourself.
    If there is neither, say so and stop. Don't reconstruct a checkpoint from guesses.
 
-2. **Read it in full, then check it against the repo.** Compare the checkpoint's `branch` and `commit`
-   with the current ones:
+2. **Read it in full, then check it against the repo.** First compare the checkpoint's `repo:` with
+   the current repo (its root folder name and its `origin` remote). If they differ, say so before
+   going on: the `branch`, `commit` and paths in the checkpoint belong to that repo, so the checks
+   below would run against the wrong history. If the user means to resume it there, hand back the
+   lines from step 1a and stop; otherwise ask how to go on. A checkpoint with no `repo:` predates the
+   field: treat it as this repo's. Then compare the checkpoint's `branch` and `commit` with the
+   current ones:
    - On a different branch: say so, and ask before switching, because switching branches can disturb
      the user's work.
    - The branch has moved past `commit`: read `git log <commit>..HEAD --oneline` and check whether
@@ -83,5 +88,5 @@ from its `## NEXT` without going back over what it records as settled.
 8. **Delete it when the work is done.** A checkpoint is a handoff, not a record. Once its goal is met,
    move anything worth keeping into a commit message, an ADR or an issue, then delete the file. Use
    `git rm` if it was committed, and commit the deletion along with the work's final unit. If the
-   session ends before the goal is met, run `pause-session` to rewrite `## NEXT` instead of leaving a
+   session ends before the goal is met, run `session pause` to rewrite `## NEXT` instead of leaving a
    stale one behind.
