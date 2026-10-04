@@ -3,7 +3,7 @@
  * `scaffold-workflows` reads. See `state-path.ts` for why the artifact lives outside the repo tree.
  */
 
-import { existsSync, mkdirSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { dirname, extname, join, resolve } from 'node:path'
 import { type Exec, realExec, runJson } from './exec.js'
 import { stateArtifactPath } from './state-path.js'
@@ -18,6 +18,8 @@ interface RepoSettings {
 	has_wiki: boolean
 	has_projects: boolean
 	has_discussions: boolean
+	private?: boolean
+	owner?: { type?: string }
 	security_and_analysis?: {
 		dependabot_security_updates?: { status: string }
 		secret_scanning?: { status: string }
@@ -33,6 +35,39 @@ interface Ruleset {
 	conditions?: unknown
 	rules?: Array<{ type: string }>
 }
+
+/** One rule as `GET repos/{repo}/rules/branches/{branch}` reports it: every active rule on the branch, from any ruleset. */
+interface BranchRule {
+	type: string
+	parameters?: { strict_required_status_checks_policy?: boolean }
+}
+
+/**
+ * Whether a merge into the default branch is tested against the latest default branch before it lands,
+ * whoever runs the merge. Any one of the three is a backstop.
+ */
+interface MergeBackstop {
+	/** A ruleset requires the native GitHub merge queue on the default branch. */
+	mergeQueue: boolean
+	/** A ruleset or classic branch protection requires the branch to be up to date before merging. */
+	strictUpToDate: boolean
+	/** A third-party merge queue's config file in the repo, e.g. `{ tool: 'mergify', config: '.mergify.yml' }`. */
+	thirdPartyQueue: { tool: string; config: string } | null
+	/**
+	 * Whether GitHub offers a merge queue on this repo: public organization repos have it; private
+	 * organization repos have it only on GitHub Enterprise Cloud, which the API does not report; personal
+	 * repos never have it.
+	 */
+	mergeQueueAvailability: 'available' | 'enterprise-cloud-only' | 'unavailable'
+}
+
+const THIRD_PARTY_QUEUE_CONFIGS: Array<{ tool: string; config: string }> = [
+	{ tool: 'mergify', config: '.mergify.yml' },
+	{ tool: 'mergify', config: '.mergify/config.yml' },
+	{ tool: 'mergify', config: '.github/mergify.yml' },
+	{ tool: 'kodiak', config: '.kodiak.toml' },
+	{ tool: 'kodiak', config: '.github/.kodiak.toml' },
+]
 
 interface Row {
 	setting: string
@@ -58,6 +93,7 @@ interface State {
 		secretScanning: string
 		secretScanningPushProtection: string
 		defaultBranchRuleset: { id: number; name: string } | null
+		mergeBackstop: MergeBackstop
 	}
 	detected: {
 		language: string | null
@@ -66,6 +102,8 @@ interface State {
 		hasPackageJson: boolean
 		hasDependabotConfig: boolean
 		existingWorkflows: string[]
+		/** Existing workflows that trigger on `merge_group`, the event a native merge queue runs CI on. */
+		mergeGroupWorkflows: string[]
 	}
 	rows: Row[]
 }
@@ -150,6 +188,30 @@ function detectPackageManager(dir: string): string | null {
 	return null
 }
 
+function detectThirdPartyQueue(dir: string): MergeBackstop['thirdPartyQueue'] {
+	return THIRD_PARTY_QUEUE_CONFIGS.find(({ config }) => existsSync(join(dir, config))) ?? null
+}
+
+function mergeQueueAvailability(settings: RepoSettings): MergeBackstop['mergeQueueAvailability'] {
+	if (settings.owner?.type !== 'Organization') return 'unavailable'
+	return settings.private ? 'enterprise-cloud-only' : 'available'
+}
+
+function describeBackstop(backstop: MergeBackstop): string {
+	if (backstop.mergeQueue) return 'merge queue'
+	if (backstop.thirdPartyQueue) return `${backstop.thirdPartyQueue.tool} (${backstop.thirdPartyQueue.config})`
+	if (backstop.strictUpToDate) return 'require up to date'
+	return 'none'
+}
+
+function triggersOnMergeGroup(file: string): boolean {
+	try {
+		return /^\s*merge_group\s*:|^on:.*\bmerge_group\b|^\s*-\s*merge_group\s*$/m.test(readFileSync(file, 'utf8'))
+	} catch {
+		return false
+	}
+}
+
 function buildRows(current: State['current']): Row[] {
 	return [
 		{
@@ -200,6 +262,12 @@ function buildRows(current: State['current']): Row[] {
 			target: 'default-branch-protection',
 			action: current.defaultBranchRuleset ? 'already set' : 'will create',
 		},
+		{
+			setting: 'merge backstop',
+			current: describeBackstop(current.mergeBackstop),
+			target: current.mergeBackstop.mergeQueueAvailability === 'unavailable' ? 'require up to date' : 'merge queue',
+			action: describeBackstop(current.mergeBackstop) === 'none' ? 'will offer' : 'already set',
+		},
 	]
 }
 
@@ -223,8 +291,29 @@ export function detectState(options: DetectStateOptions = {}): DetectStateResult
 			r.target === 'branch' && r.enforcement === 'active' && JSON.stringify(r.conditions)?.includes('~DEFAULT_BRANCH'),
 	)
 
+	const reportedRules = runJson<BranchRule[]>(
+		exec,
+		`gh api repos/${nameWithOwner}/rules/branches/${encodeURIComponent(defaultBranch)}`,
+	)
+	const branchRules = Array.isArray(reportedRules) ? reportedRules : []
+	// Classic branch protection can also require an up-to-date branch; the call fails (404) when there is none.
+	const classicChecks = runJson<{ strict?: boolean }>(
+		exec,
+		`gh api repos/${nameWithOwner}/branches/${encodeURIComponent(defaultBranch)}/protection/required_status_checks`,
+	)
+	const mergeBackstop: MergeBackstop = {
+		mergeQueue: branchRules.some((r) => r.type === 'merge_queue'),
+		strictUpToDate:
+			branchRules.some(
+				(r) => r.type === 'required_status_checks' && r.parameters?.strict_required_status_checks_policy === true,
+			) || classicChecks?.strict === true,
+		thirdPartyQueue: detectThirdPartyQueue(dir),
+		mergeQueueAvailability: mergeQueueAvailability(repoSettings),
+	}
+
 	const workflowsDir = join(dir, '.github', 'workflows')
 	const existingWorkflows = existsSync(workflowsDir) ? readdirSync(workflowsDir) : []
+	const mergeGroupWorkflows = existingWorkflows.filter((f) => triggersOnMergeGroup(join(workflowsDir, f)))
 
 	const language = detectLanguage(dir)
 	const packageManager = detectPackageManager(dir)
@@ -248,6 +337,7 @@ export function detectState(options: DetectStateOptions = {}): DetectStateResult
 		defaultBranchRuleset: defaultBranchRuleset
 			? { id: defaultBranchRuleset.id, name: defaultBranchRuleset.name }
 			: null,
+		mergeBackstop,
 	}
 
 	const rows = buildRows(current)
@@ -263,6 +353,7 @@ export function detectState(options: DetectStateOptions = {}): DetectStateResult
 			hasPackageJson,
 			hasDependabotConfig,
 			existingWorkflows,
+			mergeGroupWorkflows,
 		},
 		rows,
 	}

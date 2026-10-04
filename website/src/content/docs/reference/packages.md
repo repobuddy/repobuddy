@@ -33,7 +33,7 @@ coding assistants:
 | `resume-session` | Pick up work that `pause-session` checkpointed, without reopening settled decisions |
 | `review-api` | Review a library's public API for consistency and completeness, against the library's own conventions |
 | `review-permissions` | Review what your coding agents are allowed to do across every harness — a risk-ranked list and a tighter config |
-| `setup-github-repo` | Set up a GitHub repo with branch protection, Dependabot, and CI |
+| `setup-github-repo` | Set up a GitHub repo with branch protection, a merge backstop, Dependabot, and CI |
 | `setup-npm-trusted-publishing` | Register npm trusted publishers (OIDC) so CI publishes without `NPM_TOKEN` — one package, an org, or every org you own |
 | `to-question` | Word a technical question for a platform — Slack, Jira, GitHub, email, and more — and copy it to the clipboard |
 | `website` | Work on a repo's docs website — `init` adds an Astro/Starlight site to a monorepo; `deploy` publishes a static site to GitHub, GitLab, or Codeberg Pages, Bitbucket, or Azure Static Web Apps |

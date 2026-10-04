@@ -132,7 +132,8 @@ Gets a machine ready to work with a repository's git host. It detects the OS and
 
 10. **Lists the next setup skills.** It ends with the other installed skills that set up a repo, one line
    each, grouped by what they touch. It lists them; it never runs them. It leaves out itself and any
-   skill already set up here.
+   skill already set up here. On a GitHub repo, the `setup-github-repo` line mentions its merge backstop,
+   which tests every merge, including one an agent runs, against the latest default branch.
 
 ## For skill authors: naming a setup skill
 

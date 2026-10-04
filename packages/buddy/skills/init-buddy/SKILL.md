@@ -259,6 +259,9 @@ List them only. Never run them.
    tell without running the skill, list it; the skill's own checks decide when it runs.
 4. **Show one line per skill**, under its group: the name as the user would invoke it, and a few words
    on what it sets up. If nothing matches, say there are no other setup skills installed.
+5. **On a GitHub repo, name the merge backstop.** When `setup-github-repo` is listed, its line says it
+   also offers a merge backstop: a merge queue or a require-up-to-date rule, so a pull request an agent
+   merges is tested against the latest default branch first.
 
 ## Out of scope
 

@@ -83,6 +83,8 @@ function pullRequestYml(detected: ScaffoldState['detected']): string {
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+  # Runs the same checks on the merged result when the repo uses a GitHub merge queue; inert otherwise.
+  merge_group:
 
 jobs:
   ci:

@@ -23,7 +23,7 @@
 | [`resume-session`] | Resume paused work from its checkpoint, continuing from the next step without reopening settled decisions |
 | [`review-api`] | Review a library's public API for consistency and completeness against its own conventions — drift, sibling-justified gaps, docs vs exports |
 | [`review-permissions`] | Audit what your agents are allowed to do — risk-rank every grant, then tighten and consolidate it |
-| [`setup-github-repo`] | Set up a GitHub repo with branch protection, Dependabot, and CI |
+| [`setup-github-repo`] | Set up a GitHub repo with branch protection, a merge backstop, Dependabot, and CI |
 | [`website`] | Work on a repo's docs website — `init` adds an Astro/Starlight site to a monorepo; `deploy` publishes a static site to GitHub, GitLab, or Codeberg Pages, Bitbucket, or Azure Static Web Apps |
 | [`to-question`] | Word a question for Slack, Jira, Linear, Asana, GitHub, GitLab, Bugzilla, Redmine, Trac, or email — checks the markup before you paste |
 

@@ -70,6 +70,7 @@ describe('detectState', () => {
 					conditions: { ref_name: { include: ['~DEFAULT_BRANCH'] } },
 				},
 			]),
+			'rules/branches/main': JSON.stringify([{ type: 'merge_queue', parameters: {} }]),
 			'repos/octo/repo': JSON.stringify({
 				delete_branch_on_merge: true,
 				allow_auto_merge: true,
@@ -213,5 +214,110 @@ describe('detectState', () => {
 		const rebase = state.rows.find((r) => r.setting === 'allow_rebase_merge')
 		expect(squash?.action).toBe('will set')
 		expect(rebase?.action).toBe('will set')
+	})
+
+	describe('merge backstop', () => {
+		function backstopExec(extra: Record<string, string>, repo: object = {}): Exec {
+			return fakeExec({
+				nameWithOwner: 'octo/repo',
+				defaultBranchRef: 'main',
+				'repos/octo/repo/rulesets': '[]',
+				...extra,
+				'repos/octo/repo/rules/branches/main': extra['rules/branches/main'] ?? '[]',
+				'protection/required_status_checks': extra['protection/required_status_checks'] ?? 'not found',
+				'repos/octo/repo': JSON.stringify(repo),
+			})
+		}
+
+		it('reports none and offers one when nothing gates merges', () => {
+			const { state } = detectState({ dir, out, exec: backstopExec({}) })
+			expect(state.current.mergeBackstop).toEqual({
+				mergeQueue: false,
+				strictUpToDate: false,
+				thirdPartyQueue: null,
+				mergeQueueAvailability: 'unavailable',
+			})
+			const row = state.rows.find((r) => r.setting === 'merge backstop')
+			expect(row).toEqual({
+				setting: 'merge backstop',
+				current: 'none',
+				target: 'require up to date',
+				action: 'will offer',
+			})
+		})
+
+		it('detects a native merge queue from the branch rules', () => {
+			const exec = backstopExec(
+				{ 'rules/branches/main': JSON.stringify([{ type: 'deletion' }, { type: 'merge_queue', parameters: {} }]) },
+				{ owner: { type: 'Organization' }, private: false },
+			)
+			const { state } = detectState({ dir, out, exec })
+			expect(state.current.mergeBackstop.mergeQueue).toBe(true)
+			expect(state.current.mergeBackstop.mergeQueueAvailability).toBe('available')
+			expect(state.rows.find((r) => r.setting === 'merge backstop')).toMatchObject({
+				current: 'merge queue',
+				target: 'merge queue',
+				action: 'already set',
+			})
+		})
+
+		it('detects a strict up-to-date rule from a ruleset', () => {
+			const exec = backstopExec({
+				'rules/branches/main': JSON.stringify([
+					{ type: 'required_status_checks', parameters: { strict_required_status_checks_policy: true } },
+				]),
+			})
+			const { state } = detectState({ dir, out, exec })
+			expect(state.current.mergeBackstop.strictUpToDate).toBe(true)
+			expect(state.rows.find((r) => r.setting === 'merge backstop')?.current).toBe('require up to date')
+		})
+
+		it('does not count required checks that are not strict', () => {
+			const exec = backstopExec({
+				'rules/branches/main': JSON.stringify([
+					{ type: 'required_status_checks', parameters: { strict_required_status_checks_policy: false } },
+				]),
+			})
+			expect(detectState({ dir, out, exec }).state.current.mergeBackstop.strictUpToDate).toBe(false)
+		})
+
+		it('detects a strict up-to-date rule from classic branch protection', () => {
+			const exec = backstopExec({ 'protection/required_status_checks': JSON.stringify({ strict: true }) })
+			expect(detectState({ dir, out, exec }).state.current.mergeBackstop.strictUpToDate).toBe(true)
+		})
+
+		it('detects a third-party merge queue by its config file', () => {
+			writeFileSync(join(dir, '.mergify.yml'), 'queue_rules: []')
+			const { state } = detectState({ dir, out, exec: backstopExec({}) })
+			expect(state.current.mergeBackstop.thirdPartyQueue).toEqual({ tool: 'mergify', config: '.mergify.yml' })
+			expect(state.rows.find((r) => r.setting === 'merge backstop')).toMatchObject({
+				current: 'mergify (.mergify.yml)',
+				action: 'already set',
+			})
+		})
+
+		it('reports a private organization repo as needing GitHub Enterprise Cloud for a merge queue', () => {
+			const exec = backstopExec({}, { owner: { type: 'Organization' }, private: true })
+			const { state } = detectState({ dir, out, exec })
+			expect(state.current.mergeBackstop.mergeQueueAvailability).toBe('enterprise-cloud-only')
+			expect(state.rows.find((r) => r.setting === 'merge backstop')?.target).toBe('merge queue')
+		})
+
+		it('treats branch rules the CLI did not return as a list as none', () => {
+			const exec = backstopExec({ 'rules/branches/main': '{"message":"Not Found"}' })
+			expect(detectState({ dir, out, exec }).state.current.mergeBackstop.mergeQueue).toBe(false)
+		})
+
+		it('lists the workflows that trigger on merge_group', () => {
+			const workflows = join(dir, '.github', 'workflows')
+			mkdirSync(workflows, { recursive: true })
+			writeFileSync(join(workflows, 'ci.yml'), 'on:\n  pull_request:\n  merge_group:\n')
+			writeFileSync(join(workflows, 'list.yml'), 'on: [pull_request, merge_group]\n')
+			writeFileSync(join(workflows, 'seq.yml'), 'on:\n  - pull_request\n  - merge_group\n')
+			writeFileSync(join(workflows, 'release.yml'), 'on:\n  push:\n')
+			mkdirSync(join(workflows, 'not-a-file.yml'))
+			const { state } = detectState({ dir, out, exec: backstopExec({}) })
+			expect(state.detected.mergeGroupWorkflows.sort()).toEqual(['ci.yml', 'list.yml', 'seq.yml'])
+		})
 	})
 })
