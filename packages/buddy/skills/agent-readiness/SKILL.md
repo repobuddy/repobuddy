@@ -75,7 +75,10 @@ report: they never cap the level.
 
 The area weights (verification 25, instructions 15, navigability 15, signal-to-noise 15,
 self-describing code 10, environment 10, task discovery 5) only order the fixes and the per-area
-scores. They are starting estimates, not measurements. Say so in the report.
+scores. They are starting estimates. One pilot benched `noise` and found no reason to change it; the
+rest are unmeasured. Say so in the report. [references/weights.md](references/weights.md) records
+which bench runs each weight rests on: load it when a user disputes a weight or asks where one comes
+from.
 
 A repository can override them in `.agents/readiness/weights.json`, beside the `bench` task set whose
 results justify the change. Name only the areas to change:
@@ -151,7 +154,7 @@ level 4, so there `--min-level` takes 1 to 4.
 | Check | Result | Reason |
 | --- | --- | --- |
 
-Weights are starting estimates; they are not yet measured against agent runs.
+Weights are starting estimates; bench results have not yet revised any.
 ```
 
 Keep the fix list to three. The full check list is in the script output if the user asks for it.
@@ -368,3 +371,4 @@ interactive runs; `claude -p` stays the default.
   `package-*.md` apply to `score --package` only)
 - Bench results and baseline format: `references/bench-results.md` (load when reading or comparing
   results files)
+- Weight provenance: `references/weights.md` (load when a weight is disputed or its source asked for)
