@@ -8,6 +8,12 @@
 	"platformAutomerge": true,
 	"packageRules": [
 		{
+			"description": "The toolchain pins (mise, nvm) move with packageManager, so they merge themselves too.",
+			"matchManagers": ["mise"],
+			"matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+			"automerge": true
+		},
+		{
 			"description": "type-plus 8.x is an in-progress major rewrite published only to the `beta` dist-tag; `latest` is 7.x. `ignoreUnstable` alone does not cover this once something is already pinned to a prerelease, so bound it explicitly.",
 			"matchPackageNames": ["type-plus"],
 			"allowedVersions": "<8.0.0-0"
