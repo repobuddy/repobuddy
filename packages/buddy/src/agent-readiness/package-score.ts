@@ -299,6 +299,6 @@ export function formatPackageReport(result: PackageScoreResult): string {
 		for (const d of c.detail ?? []) lines.push(`             ${d}`)
 	}
 	lines.push('')
-	lines.push('* gate. Weights are starting estimates, not measured values.')
+	lines.push('* gate. Weights are starting estimates; bench results have not yet revised any.')
 	return `${lines.join('\n')}\n`
 }

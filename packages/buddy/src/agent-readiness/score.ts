@@ -30,6 +30,7 @@ export type Weights = Record<WeightedArea, number>
 
 /**
  * Starting weights. They are hypotheses until behavioral measurement revises them, and the report prints them.
+ * `skills/agent-readiness/references/weights.md` records the bench runs behind each one.
  * A repo can override them (see `config.ts`); weights never touch gates or the level.
  */
 export const AREA_WEIGHTS: Weights = {
@@ -760,6 +761,6 @@ export function formatReport(result: ScoreResult): string {
 		for (const d of c.detail ?? []) lines.push(`             ${d}`)
 	}
 	lines.push('')
-	lines.push('* gate. Weights are starting estimates, not measured values.')
+	lines.push('* gate. Weights are starting estimates; bench results have not yet revised any.')
 	return `${lines.join('\n')}\n`
 }
