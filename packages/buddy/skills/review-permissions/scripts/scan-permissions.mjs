@@ -413,7 +413,18 @@ const COMMAND_RISK = [
 		'system-level destruction or a permissions hole',
 	],
 	[/\bsudo\b/, 'critical', 'runs as root, which puts the whole machine inside the grant'],
-	[/\bgit\s+push\b.*(--force|-f\b)|--force-with-lease/, 'high', 'rewrites published history'],
+	[
+		/\bgit\s+push\b.*(--force(?![\w-])|\s-(?!-)\w*f)/,
+		'high',
+		'rewrites published history, overwriting whatever is on the remote',
+	],
+	// The lease refuses to overwrite commits the pusher has not seen, which is what makes it the
+	// routine way to update a rebased branch — still a rewrite, but not a blind one.
+	[
+		/\bgit\s+push\b.*--force-(with-lease|if-includes)/,
+		'medium',
+		'rewrites published history, but refuses to overwrite commits the pusher has not seen',
+	],
 	[/\bgit\s+(reset\s+--hard|clean\b|checkout\s+--\s|restore\b)/, 'high', 'discards uncommitted work irrecoverably'],
 	[
 		/\b(gh|glab)\s+(repo\s+delete|release|pr\s+merge|workflow\s+run|secret|auth)/,
@@ -641,8 +652,24 @@ function analyzeDenyBaseline() {
 	const missing = []
 	if (!covers(/\.env/)) missing.push('`Read(./.env)` and `Read(./**/.env*)` — keep secrets out of the transcript')
 	if (!covers(/\.ssh|id_rsa/)) missing.push('`Read(~/.ssh/**)` — private keys')
-	if (!covers(/force/)) missing.push('`Bash(git push --force*)` — history rewrites')
+	if (!covers(/force|\s-f\b/))
+		missing.push(
+			'`Bash(git push --force *)` and `Bash(git push -f *)` — blind history rewrites (the space before `*` keeps `--force-with-lease` allowed)',
+		)
 	if (!covers(/rm\s+-rf|rm -rf/)) missing.push('`Bash(rm -rf *)` — recursive deletion')
+	// `Bash(git push --force*)` — no space before the `*` — also matches `--force-with-lease`,
+	// the safe push after a rebase, so an agent can no longer update a rebased branch.
+	for (const d of denies) {
+		if (!/\bgit\s+push\s+--force\*/.test(d.arg)) continue
+		addFinding(
+			'low',
+			'deny-overmatch',
+			`\`${d.raw}\` also blocks \`git push --force-with-lease\``,
+			'With no space before the `*`, the rule matches any command that starts with `git push --force`, including `--force-with-lease` — the push that refuses to overwrite commits it has not seen, and the routine way to update a rebased branch. It also misses `-f`.',
+			`${d.harness} ${d.scope} (${d.file})`,
+			'Replace it with `Bash(git push --force *)` and `Bash(git push -f *)`; a trailing ` *` also matches the bare flag. A prefix rule cannot tell `main` from a feature branch (that is branch protection\u2019s job), and a flag after the arguments (`git push origin main --force`) escapes all of these rules.',
+		)
+	}
 	if (missing.length)
 		addFinding(
 			denies.length ? 'low' : 'medium',
