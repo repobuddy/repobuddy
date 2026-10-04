@@ -22,7 +22,8 @@ doesn't collide with it. Typing `/resume` lists both.
 
 1. Finds the checkpoint in `.agents/repobuddy/checkpoints/`. It uses the one you named, or the only
    paused one. When several are paused, it lists them newest first, with title, branch and next step,
-   and asks, even if one matches your current branch.
+   and asks, even if one matches your current branch. A checkpoint that waits on another topic is
+   marked `waits on <slug>`.
 2. Checks the checkpoint against the repo. It flags a different branch, commits that landed since the
    pause, and state from `## Not in git` that isn't here.
 3. Reloads the working method and the settled decisions, and raises any open question that blocks the
