@@ -101,10 +101,11 @@ Gets a machine ready to work with a repository's git host. It detects the OS and
 
 9. **Records the setup.** In a repo, it writes `.agents/repobuddy/init-buddy.json` with the date, the
    hosts it set up, and whether you declined. The file is kept out of git through `.git/info/exclude`,
-   because setup differs per clone and machine. Once per machine, it offers to add one line to your
-   global instruction file (`~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`, or `~/.gemini/GEMINI.md`),
-   limited to the owners you name. In a repo with no marker, the agent then mentions `init-buddy` once
-   per session, and never runs it unasked. A repo where you declined stays quiet.
+   because setup differs per clone and machine. If your global instructions have no reminder yet, it
+   gives you one line for `~/.agents/AGENTS.md`, limited to the owners you name, for you to add
+   yourself. With it, in a repo with no marker the agent mentions `init-buddy` once per session and
+   never runs it unasked. A repo where you declined stays quiet. Your harness reads that file only if
+   its own user-level file loads it (on Claude Code, `~/.claude/CLAUDE.md`).
 
 10. **Lists the next setup skills.** It ends with the other installed skills that set up a repo, one line
    each, grouped by what they touch. It lists them; it never runs them. It leaves out itself and any
@@ -136,7 +137,7 @@ metadata:
 - MCP servers are reported by name, command, and URL origin only. Environment values, headers, and URL query strings in those config files are never shown.
 - It never asks you to paste a token into the chat.
 - It does not install, enable, or edit MCP servers, and does not change repository settings.
-- It writes to your global instruction file only the one reminder line, only on your yes, appended at the end.
+- It never writes to your global instruction file. The reminder line is handed to you to add.
 - It only adds allow and deny entries you approved. It never removes an entry or a deny rule, and never adds a remote or destructive command unless you name it and confirm it. An advanced entry is written only with its guard. To audit the allow list you already have, use [`review-permissions`](../review-permissions/README.md).
 - It does not run `curl | sh` installers beyond the ones it lists by name. The one listed, Microsoft's Azure CLI script for Debian/Ubuntu, is shown to you before it runs.
 
@@ -146,7 +147,7 @@ Ask for it directly, or run `/init-buddy [github|gitlab|bitbucket|azure|gitea|fo
 
 ## What it produces
 
-An installed, logged-in CLI for each host you chose, a summary of the environment and of the MCP servers already available, and, if you accepted, the allow and deny entries (and the `gh-api-guard` hook) you approved, written to the scope you picked, a local setup marker for the repo, and the reminder line if you wanted it.
+An installed, logged-in CLI for each host you chose, a summary of the environment and of the MCP servers already available, and, if you accepted, the allow and deny entries (and the `gh-api-guard` hook) you approved, written to the scope you picked, a local setup marker for the repo, and a reminder line for you to add to `~/.agents/AGENTS.md`.
 
 ## Install
 

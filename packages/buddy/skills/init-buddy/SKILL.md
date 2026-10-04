@@ -214,24 +214,22 @@ reminder for repos that were not.
    `<git common dir>/info/exclude` (from `git rev-parse --git-common-dir`), appended only if no line
    names it yet. Never add it to the tracked `.gitignore`.
 
-2. **Offer the reminder once per machine.** If the user's global instruction file has no reminder
-   line yet, offer to add one. Ask which owners it covers, so it stays quiet in third-party clones and
-   forks. Show the diff, and write only on a yes:
+2. **Hand over the reminder.** If the instructions you loaded from outside the repository carry no
+   such reminder yet, offer the user a line for their global instruction file. You can tell without
+   opening a file: those instructions are already in front of you. Ask which owners it covers, so it
+   stays quiet in third-party clones and forks:
 
    ```markdown
    - In a git repo owned by <owners> with no `.agents/repobuddy/init-buddy.json`, mention once per
      session that `init-buddy` can set this repo up. Don't run it unless the user asks.
    ```
 
-   | Harness | Global instruction file |
-   |---|---|
-   | Claude Code | `~/.claude/CLAUDE.md` |
-   | Codex | `~/.codex/AGENTS.md` |
-   | Gemini CLI | `~/.gemini/GEMINI.md` |
+   The global file is `~/.agents/AGENTS.md`, the user-scope counterpart of the root `AGENTS.md`, and
+   the line goes at its end. Say that a harness reads it only where a user-scope instruction file of
+   its own loads it. On Claude Code that file is `~/.claude/CLAUDE.md`.
 
-   For any other harness, give the line and let the user paste it into their user rules. Append it to
-   the end of the file. Never edit or reorder what is already there. If the user declines, don't offer
-   it again in this run.
+   **Write nothing outside the repo.** Give the line and the path, and stop. The user places it. A
+   hand-off is an outcome, not a decline, so report it as handed over.
 
 ## List the next setup skills
 
@@ -259,7 +257,8 @@ List them only. Never run them.
 ## Out of scope
 
 - Installing, enabling, or editing MCP servers
-- Editing harness config beyond the allow entries, deny entries, `gh-api-guard` hook, and reminder line the user approved
+- Editing harness config beyond the allow entries, deny entries, and `gh-api-guard` hook the user approved
+- Writing to a global instruction file. The reminder line is handed over, never written
 - Auditing or tightening an existing allow list (that is `review-permissions`)
 - Storing, printing, or moving tokens
 - Changing git remotes or repository settings
