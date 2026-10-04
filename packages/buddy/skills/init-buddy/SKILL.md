@@ -113,21 +113,27 @@ already has, use the `review-permissions` skill instead. This step only adds a s
    - **Ask every time:** do not propose these. Add one only if the user names it and says yes again
      after you state what it permits.
      - anything that acts on the remote: `git push`, `gh pr merge`, `gh release`, `glab mr merge`,
-       publish, deploy
-     - raw API access: `gh api *` and `glab api *` can send any POST, PATCH, or DELETE the token allows
+       `az repos pr update`, `tea pulls merge`, `fj pr merge`, publish, deploy
+     - raw API access: `gh api *`, `glab api *`, `tea api *`, `az devops invoke`, and `az rest` can send
+       any POST, PATCH, or DELETE the credential allows
      - commands that run code chosen at call time: `npx`, `pnpm dlx`, `bash -c`, `node -e`
      - destructive local commands: `git stash drop`, `git stash clear`, `git reset --hard`, `git clean`
      - any bare wildcard such as `Bash(git *)` or `Bash(gh *)`
    - **Advanced (opt-in):** offer only when the user asks, and only for Claude Code. Each entry names
      its risk and comes with the guard that makes it acceptable. Read
-     [references/advanced-tier.md](references/advanced-tier.md) before you offer one.
-     - `Bash(gh pr merge --auto *)`: GitHub waits for the branch's required checks before it merges.
-       Offer it only when the default branch requires a status check. With none, `--auto` merges at once.
+     [references/advanced-tier.md](references/advanced-tier.md) before you offer one; its host table
+     says which entry each detected host gets. Where a host has none, say so and offer nothing for it.
+     - Queued merge (`gh pr merge --auto`, `glab mr merge --auto-merge`,
+       `az repos pr update --auto-complete true`): the host merges once the branch's own rules are met.
+       Offer it only when the host's settings require a check or pipeline; with none, it merges at once.
+       Not for Gitea, Forgejo, or Bitbucket, whose CLIs cannot queue a merge.
      - Merges in auto mode: an `autoMode.allow` rule in `~/.claude/settings.json`, because auto
-       mode's classifier blocks `gh pr merge` on an unreviewed PR even when `permissions.allow`
-       lists it. User scope only; the rule names the owners and conditions, with the `--admin` deny entries.
-     - `gh api` reads: through a read-only token for the session, or the `gh-api-guard` hook this skill
-       ships, which allows GET and GraphQL queries and asks for everything else
+       mode's classifier blocks a merge of an unreviewed PR even when `permissions.allow` lists the
+       command. User scope only; the rule names each detected host's merge commands, its owners, the
+       conditions, and the bypass forms it excludes, with that host's bypass deny entries.
+     - Raw API reads: `gh api` and `glab api` through a read-only token for the session, or the
+       `gh-api-guard` hook this skill ships, which allows GET and GraphQL queries and asks for
+       everything else
      - **Never write an entry without its guard.** If the user declines the guard, do not write the entry.
 
    | Host | Read-only commands |
@@ -152,13 +158,13 @@ already has, use the `review-permissions` skill instead. This step only adds a s
 
    | Scope | Where | What belongs here |
    |---|---|---|
-   | **user** | every repo the user opens | entries that are safe in any repo: safe-tier `git` and host CLI reads, the deny list's secrets, admin merge, repo delete and API delete groups, and the auto-mode merge rule, which works only here |
+   | **user** | every repo the user opens | entries that are safe in any repo: safe-tier `git` and host CLI reads, the deny list's secrets, bypass merge, repo delete and API delete groups, and the auto-mode merge rule, which works only here |
    | **project, shared** | committed, every contributor | entries that depend on this repo's own files: its package scripts, such as `pnpm test *` or `pnpm check:fix *` |
-   | **project, local** | this repo on this machine (Claude Code's `settings.local.json`) | entries whose guard is this repo's settings: `gh pr merge --auto`, and the `gh-api-guard` hook when the user wants it in one repo only |
+   | **project, local** | this repo on this machine (Claude Code's `settings.local.json`) | entries whose guard is this repo's settings: the queued-merge entry, and the `gh-api-guard` hook when the user wants it in one repo only |
 
-   - **Never write a repo-guarded entry at user scope.** `gh pr merge --auto` is safe only where the
-     default branch requires a status check. At user scope it would also apply in a repo with no
-     required check, where it merges at once.
+   - **Never write a repo-guarded entry at user scope.** A queued merge is safe only where this repo
+     requires a check or pipeline. At user scope it would also apply in a repo that requires none,
+     where it merges at once.
    - **Never write a script entry at user scope.** `pnpm test *` runs whatever each repo's `test`
      script says, and you read only this repo's.
    - The user may move an entry from user scope down to a project scope, never the other way.
@@ -169,8 +175,8 @@ already has, use the `review-permissions` skill instead. This step only adds a s
    - Add entries. Never remove or reorder the ones already there.
    - Never remove a deny entry, and never add an entry from the ask-every-time tier, unless the user
      said yes to that exact entry.
-   - Write an advanced entry in the same change as its guard: the `--admin` deny entries for
-     `gh pr merge --auto` and for the auto-mode merge rule, and the hook for `gh api`.
+   - Write an advanced entry in the same change as its guard: the host's bypass deny entries for
+     the queued merge and for the auto-mode merge rule, and the hook for `gh api` or `glab api`.
    - Keep the file valid: read it back and parse it after writing. For Codex, run
      `codex execpolicy check --pretty --rules <file> -- <command>` on one entry if the command exists.
    - Report the files you changed and what each one now allows.
@@ -184,8 +190,8 @@ if the user declines. The candidates and what each one misses are in
 1. **Say what deny rules can and cannot do** before the user picks. They are text matches, so a
    reworded command gets past them. `Read(...)` denies do not stop a script from reading the file; the
    sandbox or a hook does. Deny beats allow. The reference has the details and the mode behavior.
-2. **Show the candidates** by group: force push, admin merge, repo delete, API delete, recursive
-   delete, publish, and secrets. Give one line per entry on what it blocks. Leave out entries the user
+2. **Show the candidates** by group: force push, bypass merge, repo delete, API delete, recursive
+   delete, publish, and secrets, with only the detected hosts' entries in each. Give one line per entry on what it blocks. Leave out entries the user
    already has.
 3. **Let the user pick** groups or single entries, and the scope. Suggest user scope for the secrets
    group.
@@ -278,5 +284,11 @@ List them only. Never run them.
 - Codex hooks: https://developers.openai.com/codex/hooks
 - `gh api`: https://cli.github.com/manual/gh_api
 - GitHub auto-merge: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/automatically-merging-a-pull-request
+- `glab mr merge`: https://docs.gitlab.com/cli/mr/merge/
+- `glab api`: https://docs.gitlab.com/cli/api/
+- GitLab auto-merge: https://docs.gitlab.com/user/project/merge_requests/auto_merge/
+- `az repos pr`: https://learn.microsoft.com/cli/azure/repos/pr
+- `az repos policy`: https://learn.microsoft.com/cli/azure/repos/policy
+- `tea` commands: https://gitea.com/gitea/tea/src/branch/main/docs/CLI.md
 - Cursor CLI permissions: https://cursor.com/docs/cli/reference/permissions
 - Codex rules: https://developers.openai.com/codex/rules
