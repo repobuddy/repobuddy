@@ -1,6 +1,6 @@
 ---
 name: init-buddy
-description: "Use this skill when setting up gh, glab, or another git host CLI here, when one is missing or logged out, or when seeding a harness allow list for it."
+description: "Use this skill when setting up gh, glab, or another git host CLI here, when one is missing or logged out, or when seeding a harness allow or deny list for it."
 argument-hint: "[github|gitlab|bitbucket|azure|gitea|forgejo[=hostname]]"
 ---
 
@@ -9,7 +9,7 @@ argument-hint: "[github|gitlab|bitbucket|azure|gitea|forgejo[=hostname]]"
 Set up this machine so an agent can work with the repository's git host: detect the OS and package
 managers, find the host's CLI and any MCP server already configured for it, then install and
 authenticate the CLI the user wants. Last, offer a starting allow list so the harness stops prompting
-for the read-only commands the agent runs most.
+for the read-only commands the agent runs most, and a deny list for the commands it should never run.
 
 ## When to use
 
@@ -17,6 +17,7 @@ for the read-only commands the agent runs most.
 - A skill needs `gh`, `glab`, `tea`, `fj`, or `az` and the command is missing or not logged in
 - The user asks whether their machine is ready to work with a git host
 - "Stop asking me before every `gh pr view`": set up a starting allow list
+- "Never let the agent force push or publish": set up a deny list
 
 ## Detect
 
@@ -95,7 +96,7 @@ already has, use the `review-permissions` skill instead. This step only adds a s
    Write new Claude Code entries with ` *` (space, star). `:*` means the same thing, but pick one
    style per file so duplicates are easy to see. Keep the space: `Bash(ls *)` matches `ls -la` but not `lsof`, and `Bash(ls*)` matches both.
 
-2. **Build the candidates in three tiers.** Use only commands that exist on this machine and in this
+2. **Build the candidates in four tiers.** Use only commands that exist on this machine and in this
    repo. Read each package script before offering it; a script is only as safe as what it runs.
 
    - **Safe:** read-only, so allow it anywhere.
@@ -116,6 +117,14 @@ already has, use the `review-permissions` skill instead. This step only adds a s
      - commands that run code chosen at call time: `npx`, `pnpm dlx`, `bash -c`, `node -e`
      - destructive local commands: `git stash drop`, `git stash clear`, `git reset --hard`, `git clean`
      - any bare wildcard such as `Bash(git *)` or `Bash(gh *)`
+   - **Advanced (opt-in):** offer only when the user asks, and only for Claude Code. Each entry names
+     its risk and comes with the guard that makes it acceptable. Read
+     [references/advanced-tier.md](references/advanced-tier.md) before you offer one.
+     - `Bash(gh pr merge --auto *)`: GitHub waits for the branch's required checks before it merges.
+       Offer it only when the default branch requires a status check. With none, `--auto` merges at once.
+     - `gh api` reads: through a read-only token for the session, or the `gh-api-guard` hook this skill
+       ships, which allows GET and GraphQL queries and asks for everything else
+     - **Never write an entry without its guard.** If the user declines the guard, do not write the entry.
 
    | Host | Read-only commands |
    |---|---|
@@ -129,7 +138,8 @@ already has, use the `review-permissions` skill instead. This step only adds a s
    commands change between releases. Never offer a bare `az *`, because `az` controls the whole Azure
    account.
 
-3. **Show the tiers.** List every candidate as entry, tier, and a one-line reason. Leave out entries
+3. **Show the tiers.** Show safe, good to have, and ask-every-time. Add advanced only if the user
+   asked for it. List every candidate as entry, tier, and a one-line reason. Leave out entries
    the user already has. If an existing entry is broader or riskier than the tiers allow, point to
    `review-permissions`. Do not change it here.
 
@@ -145,14 +155,33 @@ already has, use the `review-permissions` skill instead. This step only adds a s
    - Add entries. Never remove or reorder the ones already there.
    - Never remove a deny entry, and never add an entry from the ask-every-time tier, unless the user
      said yes to that exact entry.
+   - Write an advanced entry in the same change as its guard: the `--admin` deny entries for
+     `gh pr merge --auto`, and the hook for `gh api`.
    - Keep the file valid: read it back and parse it after writing. For Codex, run
      `codex execpolicy check --pretty --rules <file> -- <command>` on one entry if the command exists.
    - Report the files you changed and what each one now allows.
 
+## Propose a deny list
+
+Offer this beside the allow list, with the same harnesses, files, and scopes. It is optional; skip it
+if the user declines. The candidates and what each one misses are in
+[references/deny-list.md](references/deny-list.md).
+
+1. **Say what deny rules can and cannot do** before the user picks. They are text matches, so a
+   reworded command gets past them. `Read(...)` denies do not stop a script from reading the file; the
+   sandbox or a hook does. Deny beats allow. The reference has the details and the mode behavior.
+2. **Show the candidates** by group: force push, admin merge, repo delete, API delete, recursive
+   delete, publish, and secrets. Give one line per entry on what it blocks. Leave out entries the user
+   already has.
+3. **Let the user pick** groups or single entries, and the scope. Suggest user scope for the secrets
+   group.
+4. **Append only.** Show the diff and ask before you write. Never remove, reorder, or loosen an existing
+   deny entry, and never turn a deny into an ask or an allow. Read the file back and parse it after writing.
+
 ## Out of scope
 
 - Installing, enabling, or editing MCP servers
-- Editing harness config beyond the allow-list entries the user approved
+- Editing harness config beyond the allow entries, deny entries, and `gh-api-guard` hook the user approved
 - Auditing or tightening an existing allow list (that is `review-permissions`)
 - Storing, printing, or moving tokens
 - Changing git remotes or repository settings
@@ -166,5 +195,11 @@ already has, use the `review-permissions` skill instead. This step only adds a s
 - Azure CLI install: https://learn.microsoft.com/cli/azure/install-azure-cli
 - Atlassian remote MCP server: https://github.com/atlassian/atlassian-mcp-server
 - Claude Code permissions: https://code.claude.com/docs/en/permissions
+- Claude Code permission modes: https://code.claude.com/docs/en/permission-modes
+- Claude Code hooks: https://code.claude.com/docs/en/hooks
+- Cursor hooks: https://cursor.com/docs/agent/hooks
+- Codex hooks: https://developers.openai.com/codex/hooks
+- `gh api`: https://cli.github.com/manual/gh_api
+- GitHub auto-merge: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/automatically-merging-a-pull-request
 - Cursor CLI permissions: https://cursor.com/docs/cli/reference/permissions
 - Codex rules: https://developers.openai.com/codex/rules

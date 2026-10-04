@@ -112,6 +112,18 @@ export default defineConfig([
 		alias: { 'jsonc-parser': 'jsonc-parser/lib/esm/main.js' },
 	},
 	{
+		entry: { 'gh-api-guard': 'src/skills/gh-api-guard.ts' },
+		outDir: 'skills/init-buddy/scripts',
+		format: 'esm',
+		platform: 'node',
+		target: 'node22',
+		outExtensions: () => ({ js: '.mjs' }),
+		clean: false,
+		dts: false,
+		minify: true,
+		banner: { js: skillBanner('src/skills/gh-api-guard.ts') },
+	},
+	{
 		entry: { 'detect-state': 'src/skills/detect-state.ts' },
 		outDir: 'skills/setup-github-repo/scripts',
 		format: 'esm',
