@@ -96,7 +96,7 @@ already has, use the `review-permissions` skill instead. This step only adds a s
    Write new Claude Code entries with ` *` (space, star). `:*` means the same thing, but pick one
    style per file so duplicates are easy to see. Keep the space: `Bash(ls *)` matches `ls -la` but not `lsof`, and `Bash(ls*)` matches both.
 
-2. **Build the candidates in three tiers.** Use only commands that exist on this machine and in this
+2. **Build the candidates in four tiers.** Use only commands that exist on this machine and in this
    repo. Read each package script before offering it; a script is only as safe as what it runs.
 
    - **Safe:** read-only, so allow it anywhere.
@@ -117,6 +117,14 @@ already has, use the `review-permissions` skill instead. This step only adds a s
      - commands that run code chosen at call time: `npx`, `pnpm dlx`, `bash -c`, `node -e`
      - destructive local commands: `git stash drop`, `git stash clear`, `git reset --hard`, `git clean`
      - any bare wildcard such as `Bash(git *)` or `Bash(gh *)`
+   - **Advanced (opt-in):** offer only when the user asks, and only for Claude Code. Each entry names
+     its risk and comes with the guard that makes it acceptable. Read
+     [references/advanced-tier.md](references/advanced-tier.md) before you offer one.
+     - `Bash(gh pr merge --auto *)`: GitHub waits for the branch's required checks before it merges.
+       Offer it only when the default branch requires a status check. With none, `--auto` merges at once.
+     - `gh api` reads: through a read-only token for the session, or the `gh-api-guard` hook this skill
+       ships, which allows GET and GraphQL queries and asks for everything else
+     - **Never write an entry without its guard.** If the user declines the guard, do not write the entry.
 
    | Host | Read-only commands |
    |---|---|
@@ -130,7 +138,8 @@ already has, use the `review-permissions` skill instead. This step only adds a s
    commands change between releases. Never offer a bare `az *`, because `az` controls the whole Azure
    account.
 
-3. **Show the tiers.** List every candidate as entry, tier, and a one-line reason. Leave out entries
+3. **Show the tiers.** Show safe, good to have, and ask-every-time. Add advanced only if the user
+   asked for it. List every candidate as entry, tier, and a one-line reason. Leave out entries
    the user already has. If an existing entry is broader or riskier than the tiers allow, point to
    `review-permissions`. Do not change it here.
 
@@ -146,6 +155,8 @@ already has, use the `review-permissions` skill instead. This step only adds a s
    - Add entries. Never remove or reorder the ones already there.
    - Never remove a deny entry, and never add an entry from the ask-every-time tier, unless the user
      said yes to that exact entry.
+   - Write an advanced entry in the same change as its guard: the `--admin` deny entries for
+     `gh pr merge --auto`, and the hook for `gh api`.
    - Keep the file valid: read it back and parse it after writing. For Codex, run
      `codex execpolicy check --pretty --rules <file> -- <command>` on one entry if the command exists.
    - Report the files you changed and what each one now allows.
@@ -170,7 +181,7 @@ if the user declines. The candidates and what each one misses are in
 ## Out of scope
 
 - Installing, enabling, or editing MCP servers
-- Editing harness config beyond the allow and deny entries the user approved
+- Editing harness config beyond the allow entries, deny entries, and `gh-api-guard` hook the user approved
 - Auditing or tightening an existing allow list (that is `review-permissions`)
 - Storing, printing, or moving tokens
 - Changing git remotes or repository settings
@@ -185,5 +196,10 @@ if the user declines. The candidates and what each one misses are in
 - Atlassian remote MCP server: https://github.com/atlassian/atlassian-mcp-server
 - Claude Code permissions: https://code.claude.com/docs/en/permissions
 - Claude Code permission modes: https://code.claude.com/docs/en/permission-modes
+- Claude Code hooks: https://code.claude.com/docs/en/hooks
+- Cursor hooks: https://cursor.com/docs/agent/hooks
+- Codex hooks: https://developers.openai.com/codex/hooks
+- `gh api`: https://cli.github.com/manual/gh_api
+- GitHub auto-merge: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/automatically-merging-a-pull-request
 - Cursor CLI permissions: https://cursor.com/docs/cli/reference/permissions
 - Codex rules: https://developers.openai.com/codex/rules

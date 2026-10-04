@@ -19,7 +19,8 @@ Tell the user these four things before they pick. Do not soften them.
    itself. The real guard is the sandbox (`/sandbox`), which blocks the path for every process, or a
    PreToolUse hook. Say this every time a `Read(...)` entry is offered.
 3. **Deny beats allow.** Claude Code checks deny rules first, then ask, then allow. A deny rule blocks
-   in every mode, including `bypassPermissions`, and no allow rule can make an exception to it.
+   in every mode, including `bypassPermissions`, and no allow rule can make an exception to it. A hook
+   cannot either: a hook's `allow` still goes through the deny rules.
 4. **Modes change what "ask" means, not what "deny" means.** In `auto` mode, ask rules still prompt.
    In `dontAsk` mode, and in `claude -p` runs with nothing to answer a prompt, anything that would
    prompt is denied instead. So ask-every-time commands are denied there even without a deny entry.
@@ -29,9 +30,9 @@ Tell the user these four things before they pick. Do not soften them.
 | Group | Entries | Note |
 |---|---|---|
 | Force push | `Bash(git push --force*)`, `Bash(git push -f*)`, `Bash(git push * --force*)`, `Bash(git push * -f*)`, `Bash(git push * +*)` | `--force*` also covers `--force-with-lease` and `--force-if-includes`. `+*` covers a `+refspec` such as `git push origin +main`. A combined flag (`-uf`) still gets past |
-| Admin merge | `Bash(gh pr merge --admin*)`, `Bash(gh pr merge * --admin*)` | |
+| Admin merge | `Bash(gh pr merge --admin*)`, `Bash(gh pr merge * --admin*)` | Required with the advanced `gh pr merge --auto` entry |
 | Repo delete | `Bash(gh repo delete*)` | |
-| API delete | `Bash(gh api *-X DELETE*)`, `Bash(gh api *-XDELETE*)`, `Bash(gh api *--method DELETE*)`, `Bash(gh api *--method=DELETE*)` | A lowercase `delete` gets past |
+| API delete | `Bash(gh api *-X DELETE*)`, `Bash(gh api *-XDELETE*)`, `Bash(gh api *--method DELETE*)`, `Bash(gh api *--method=DELETE*)` | A lowercase `delete` gets past. The `gh-api-guard` hook asks for every non-GET method |
 | Recursive delete | `Bash(rm -rf*)`, `Bash(rm -fr*)`, `Bash(rm -Rf*)`, `Bash(rm -fR*)`, `Bash(rm -r -f*)`, `Bash(rm -f -r*)`, `Bash(rm --recursive --force*)`, `Bash(rm --force --recursive*)` | The agent can no longer clean `node_modules` or build output. You run those yourself with the `!` prefix |
 | Publish | `Bash(npm publish*)`, `Bash(pnpm publish*)`, plus `Bash(yarn npm publish*)` and `Bash(bun publish*)` when those are installed | Also deny any package script that publishes (`release`, `changeset publish`). Read the scripts to find them. `pnpm -r publish` gets past the first form |
 | Secrets | `Read(**/.env*)`, `Read(~/.ssh/**)`, `Read(~/.aws/**)`, `Read(~/.npmrc)`, `Read(~/.config/gh/hosts.yml)` | `**/.env*` also hides `.env.example`. See point 2 above for what these do not cover |

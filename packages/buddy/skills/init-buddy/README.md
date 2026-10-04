@@ -36,17 +36,38 @@ Gets a machine ready to work with a repository's git host. It detects the OS and
    If one is active, it shows you and asks whether you still want the CLI.
 5. **Installs the CLI** with the option that fits your machine. It prefers the vendor's official package, shows the commands first, and asks you to run `sudo` commands yourself when they need a password.
 6. **Walks you through login.** Logins are interactive, so it gives you the command to run (`! gh auth login`), then checks the result.
-7. **Proposes an allow list** for Claude Code, Cursor CLI, or Codex CLI, in three tiers:
+7. **Proposes an allow list** for Claude Code, Cursor CLI, or Codex CLI, in four tiers:
 
    | Tier | What goes in it | Examples |
    |---|---|---|
    | Safe | read-only commands | `git status`, `gh pr view`, `glab mr list`, the repo's `test` and `lint` scripts |
    | Good to have | local writes that git can undo | `git add`, `git commit`, `git mv`, format scripts |
    | Ask every time | remote, destructive, or open-ended commands, never proposed | `git push`, `gh pr merge`, `gh api`, `npx`, `git stash drop` |
+   | Advanced (opt-in, Claude Code only) | a riskier entry, offered only when you ask, and written only together with its guard | `gh pr merge --auto` when the default branch requires a status check; `gh api` reads through a read-only token or the `gh-api-guard` hook |
 
    You pick the entries and the scope: user (every repo), project shared (committed), or project local
    (this repo on this machine). It shows the diff and writes only what you approved.
 
+   In the advanced tier, an entry is never written without its guard. If you decline the guard, the
+   entry is not written either:
+
+   - **`gh pr merge --auto`**: GitHub waits until the branch's rules are met, then merges. If the branch
+     requires no status check, the rules are already met and `--auto` merges at once. So the skill
+     reads the default branch's rules first and offers the entry only when a required check exists. It
+     writes the entry together with the deny entries for `gh pr merge --admin`.
+   - **`gh api`**: GET is the default, but any `-f`/`-F` field switches it to POST, and `graphql` is
+     always POST. The skill first points to the read commands that already cover most needs
+     (`gh pr view --json`, `gh run view`, `gh search`). Then it offers one of two guards. The first is
+     a fine-grained read-only token for one session; the agent then cannot push or merge in that
+     session. The second is the `gh-api-guard` PreToolUse hook. It allows GET requests and GraphQL
+     queries with no `mutation`, and asks for everything else, including `@file` fields, pipes, and
+     variables it cannot see through.
+
+   The hook is for **Claude Code only**. It ships with the skill as `scripts/gh-api-guard.mjs`, a
+   dependency-free Node script, and is copied to `.claude/hooks/` or `~/.claude/hooks/` so that a
+   plugin update does not move it. Cursor has a similar hook (`beforeShellExecution`) with a different
+   format, which this script does not speak. Codex hooks can deny a command but not ask, so there is no
+   equivalent there.
 8. **Proposes a deny list**, in the same files and scopes. It covers force push in every common form,
    `gh pr merge --admin`, `gh repo delete`, `gh api` DELETE requests, `rm -rf` and its variants, package
    publish, and reading secrets (`.env*`, `~/.ssh`, `~/.aws`, `~/.npmrc`, `gh`'s `hosts.yml`). You pick
@@ -74,7 +95,7 @@ Gets a machine ready to work with a repository's git host. It detects the OS and
 - MCP servers are reported by name, command, and URL origin only. Environment values, headers, and URL query strings in those config files are never shown.
 - It never asks you to paste a token into the chat.
 - It does not install, enable, or edit MCP servers, and does not change repository settings.
-- It only adds allow and deny entries you approved. It never removes an entry or a deny rule, and never adds a remote or destructive command unless you name it and confirm it. To audit the allow list you already have, use [`review-permissions`](../review-permissions/README.md).
+- It only adds allow and deny entries you approved. It never removes an entry or a deny rule, and never adds a remote or destructive command unless you name it and confirm it. An advanced entry is written only with its guard. To audit the allow list you already have, use [`review-permissions`](../review-permissions/README.md).
 - It does not run `curl | sh` installers beyond the ones it lists by name. The one listed, Microsoft's Azure CLI script for Debian/Ubuntu, is shown to you before it runs.
 
 ## How to invoke
@@ -83,7 +104,7 @@ Ask for it directly, or run `/init-buddy [github|gitlab|bitbucket|azure|gitea|fo
 
 ## What it produces
 
-An installed, logged-in CLI for each host you chose, a summary of the environment and of the MCP servers already available, and, if you accepted, the allow and deny entries you approved, written to the scope you picked.
+An installed, logged-in CLI for each host you chose, a summary of the environment and of the MCP servers already available, and, if you accepted, the allow and deny entries (and the `gh-api-guard` hook) you approved, written to the scope you picked.
 
 ## Install
 
@@ -96,4 +117,5 @@ npx skills add repobuddy/repobuddy --skill init-buddy
 
 A skill installed with `skills add` comes from git and has no built `scripts/` folder. It runs its
 script through `npx -y repobuddy@^1.8.0` instead, which needs network access. The plugin install
-ships the script with the skill.
+ships the script with the skill. The `gh-api-guard` hook has no `npx` fallback, because a hook runs on every
+`gh api` call; install the plugin, or copy the script out of the npm package, to use it.

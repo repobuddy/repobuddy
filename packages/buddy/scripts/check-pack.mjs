@@ -25,6 +25,8 @@ const packageDir = dirname(dirname(fileURLToPath(import.meta.url)))
 const SCRIPTS = [
 	{ path: 'skills/min-release-age/scripts/min-release-age.mjs', args: ['no-such-command'], exit: 2 },
 	{ path: 'skills/init-buddy/scripts/detect-env.mjs', args: ['--json', '--host', 'github'], exit: 0 },
+	// Reads hook JSON from stdin; with none (empty stdin) it prints nothing and exits 0.
+	{ path: 'skills/init-buddy/scripts/gh-api-guard.mjs', args: [], exit: 0 },
 	// These reject bad usage before shelling out to `gh`, so they run without a git remote or auth.
 	{ path: 'skills/setup-github-repo/scripts/detect-state.mjs', args: ['--dir'], exit: 1 },
 	{ path: 'skills/setup-github-repo/scripts/scaffold-workflows.mjs', args: ['no-such-command'], exit: 1 },
