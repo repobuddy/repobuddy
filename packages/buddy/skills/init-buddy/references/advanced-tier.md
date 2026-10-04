@@ -40,6 +40,9 @@ Write the entry only together with the `--admin` deny entries from the [deny lis
 allow pattern also matches `gh pr merge --auto --admin 12`, and a deny rule is what stops that. Deny
 beats allow.
 
+Write the entry at project local scope only. Its guard is this repo's branch rules, so at user scope it
+would also apply in a repo that requires no check, where `--auto` merges at once.
+
 The rules check covers the default branch. A PR into another branch follows that branch's rules, so
 say this when the repo merges into release or long-lived branches.
 

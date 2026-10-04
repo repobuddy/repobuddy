@@ -45,8 +45,12 @@ Gets a machine ready to work with a repository's git host. It detects the OS and
    | Ask every time | remote, destructive, or open-ended commands, never proposed | `git push`, `gh pr merge`, `gh api`, `npx`, `git stash drop` |
    | Advanced (opt-in, Claude Code only) | a riskier entry, offered only when you ask, and written only together with its guard | `gh pr merge --auto` when the default branch requires a status check; `gh api` reads through a read-only token or the `gh-api-guard` hook |
 
-   You pick the entries and the scope: user (every repo), project shared (committed), or project local
-   (this repo on this machine). It shows the diff and writes only what you approved.
+   You pick the entries. Each one goes where its safety comes from. Entries that are safe in any repo
+   go to user scope (every repo): read commands, the deny list, and the auto-mode merge rule. Your
+   repo's scripts go to project shared (committed), because only this repo's scripts were read.
+   `gh pr merge --auto` goes to project local (this repo on this machine), because its guard is this
+   repo's branch rules. You can move an entry down to a project scope, never up to user scope. It shows
+   the diff and writes only what you approved.
 
    In the advanced tier, an entry is never written without its guard. If you decline the guard, the
    entry is not written either:

@@ -146,13 +146,23 @@ already has, use the `review-permissions` skill instead. This step only adds a s
    the user already has. If an existing entry is broader or riskier than the tiers allow, point to
    `review-permissions`. Do not change it here.
 
-4. **Ask what to write and where.** Let the user pick entries, or a whole tier. Then ask for the scope:
-   - **user**: applies to every repo the user opens. Only safe entries that are not tied to this repo
-     belong here.
-   - **project, shared**: committed with the repo, so it applies to every contributor
-   - **project, local**: this repo, this machine only (Claude Code's `settings.local.json`)
+4. **Ask what to write and where.** Let the user pick entries, or a whole tier. Then place each entry
+   by what its safety depends on: the machine, or this repo.
 
-   Without an answer, write safe entries at user scope and the rest at project local.
+   | Scope | Where | What belongs here |
+   |---|---|---|
+   | **user** | every repo the user opens | entries that are safe in any repo: safe-tier `git` and host CLI reads, the deny list's secrets, admin merge, repo delete and API delete groups, and the auto-mode merge rule, which works only here |
+   | **project, shared** | committed, every contributor | entries that depend on this repo's own files: its package scripts, such as `pnpm test *` or `pnpm check:fix *` |
+   | **project, local** | this repo on this machine (Claude Code's `settings.local.json`) | entries whose guard is this repo's settings: `gh pr merge --auto`, and the `gh-api-guard` hook when the user wants it in one repo only |
+
+   - **Never write a repo-guarded entry at user scope.** `gh pr merge --auto` is safe only where the
+     default branch requires a status check. At user scope it would also apply in a repo with no
+     required check, where it merges at once.
+   - **Never write a script entry at user scope.** `pnpm test *` runs whatever each repo's `test`
+     script says, and you read only this repo's.
+   - The user may move an entry from user scope down to a project scope, never the other way.
+
+   Without an answer, use the placement in the table.
 
 5. **Write only what was approved.** Show the diff for each file and ask before you write.
    - Add entries. Never remove or reorder the ones already there.

@@ -37,8 +37,9 @@ Tell the user these four things before they pick. Do not soften them.
 | Publish | `Bash(npm publish*)`, `Bash(pnpm publish*)`, plus `Bash(yarn npm publish*)` and `Bash(bun publish*)` when those are installed | Also deny any package script that publishes (`release`, `changeset publish`). Read the scripts to find them. `pnpm -r publish` gets past the first form |
 | Secrets | `Read(**/.env*)`, `Read(~/.ssh/**)`, `Read(~/.aws/**)`, `Read(~/.npmrc)`, `Read(~/.config/gh/hosts.yml)` | `**/.env*` also hides `.env.example`. See point 2 above for what these do not cover |
 
-Put the secrets group at user scope, because it guards files outside the repo. Put the rest where the
-user wants them. User scope protects every repo.
+Suggest user scope for every group, because none depends on this repo: the secrets group guards files
+outside the repo, and the rest block commands that are as dangerous in any repo. A project scope fits
+only when the user wants a group in one repo alone, such as a publish deny in a repo they release by hand.
 
 ## Other harnesses
 
