@@ -1,5 +1,21 @@
 # repobuddy
 
+## 1.14.0
+
+### Minor Changes
+
+- 8977ce7: `init-buddy`'s `gh-api-guard` hook now also guards `glab api`. It reads `glab`'s own flags (`--form` counts as a field that switches the request to POST, and any `@file` field is asked about) and allows only GET requests and GraphQL queries with no mutation, asking for everything else. The skill registers it for GitLab with a second `if: "Bash(glab api *)"` hook entry.
+- dd442f0: `init-buddy`'s advanced tier now offers a rule for merging in Claude Code auto mode. Auto mode's classifier blocks `gh pr merge` on a PR with no approving review even when `permissions.allow` lists the command. The new rule goes in `autoMode.allow` in `~/.claude/settings.json` (the classifier ignores project settings). It covers only the owners the user names and only PRs the agent has confirmed have no conflicts, green checks and no requested changes, never `--admin`. The `--admin` deny entries are written with it.
+- 49e3219: `init-buddy`'s advanced tier and deny list now cover every git host it detects, not only GitHub. The queued-merge entry has a GitLab form (`glab mr merge --auto-merge`, offered when the project requires a successful pipeline) and an Azure DevOps form (`az repos pr update --auto-complete true`, offered when the branch has a blocking build validation policy), each written with that host's deny entries. Gitea, Forgejo, and Bitbucket Cloud are told plainly that they get no queued-merge entry, because their CLIs cannot queue one. The auto-mode merge rule now names each detected host's merge commands, its owners (GitHub users and organizations, GitLab groups, Azure DevOps organizations or projects, Gitea and Forgejo organizations and users) and the bypass forms it excludes. `glab api` reads can be allowed for one session through a `read_api` token. The deny list adds `--bypass-policy`, a Gitea `force_merge`, repo delete and API DELETE for every host CLI, and each CLI's login file.
+- dd442f0: `init-buddy` now places each allow and deny entry by what its safety depends on. Entries that are safe in any repo go to user scope: read commands, the deny list, and the auto-mode merge rule. The repo's package scripts go to project shared. `gh pr merge --auto` goes to project local, because its guard is that repo's branch rules. A repo-guarded entry or a script entry is never written at user scope.
+- dd442f0: `init-buddy` now records each run in a local, git-excluded `.agents/repobuddy/init-buddy.json`. It also hands the user a reminder line for `~/.agents/AGENTS.md`, limited to the owners they name; the skill never writes it. In a repo with no marker, the agent then mentions `init-buddy` once per session. A repo where the user declined stays quiet.
+- 9169e34: `pause-session` checkpoints now keep what a cold session needs to stay on course: every user request, including ones not started; the user's latest instruction quoted word for word, with their corrections recorded as settled decisions; dead ends not to retry; the harness's pending todo items as remaining steps; and what a half-finished edit does and lacks. With `--commit`, a grep checks for leaked paths, usernames and hostnames before committing. `resume-session` reads the dead ends before acting and works through the remaining steps.
+
+### Patch Changes
+
+- 790512e: `setup-github-repo` now names the CodeQL workflow the scaffold actually writes, `codeql.yml`, instead of `codeql-analysis.yml`.
+- f2e83c1: Add a `README.md` to the `create-issue`, `llms-txt`, `setup-github-repo`, and `setup-npm-trusted-publishing` skills, explaining what each does, how to invoke it, and what it produces.
+
 ## 1.13.0
 
 ### Minor Changes
