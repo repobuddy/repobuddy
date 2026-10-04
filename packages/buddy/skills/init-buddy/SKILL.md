@@ -1,6 +1,6 @@
 ---
 name: init-buddy
-description: "Use this skill when setting up gh, glab, or another git host CLI here, when one is missing or logged out, or when seeding a harness allow list for it."
+description: "Use this skill when setting up gh, glab, or another git host CLI here, when one is missing or logged out, or when seeding a harness allow or deny list for it."
 argument-hint: "[github|gitlab|bitbucket|azure|gitea|forgejo[=hostname]]"
 ---
 
@@ -9,7 +9,7 @@ argument-hint: "[github|gitlab|bitbucket|azure|gitea|forgejo[=hostname]]"
 Set up this machine so an agent can work with the repository's git host: detect the OS and package
 managers, find the host's CLI and any MCP server already configured for it, then install and
 authenticate the CLI the user wants. Last, offer a starting allow list so the harness stops prompting
-for the read-only commands the agent runs most.
+for the read-only commands the agent runs most, and a deny list for the commands it should never run.
 
 ## When to use
 
@@ -17,6 +17,7 @@ for the read-only commands the agent runs most.
 - A skill needs `gh`, `glab`, `tea`, `fj`, or `az` and the command is missing or not logged in
 - The user asks whether their machine is ready to work with a git host
 - "Stop asking me before every `gh pr view`": set up a starting allow list
+- "Never let the agent force push or publish": set up a deny list
 
 ## Detect
 
@@ -149,10 +150,27 @@ already has, use the `review-permissions` skill instead. This step only adds a s
      `codex execpolicy check --pretty --rules <file> -- <command>` on one entry if the command exists.
    - Report the files you changed and what each one now allows.
 
+## Propose a deny list
+
+Offer this beside the allow list, with the same harnesses, files, and scopes. It is optional; skip it
+if the user declines. The candidates and what each one misses are in
+[references/deny-list.md](references/deny-list.md).
+
+1. **Say what deny rules can and cannot do** before the user picks. They are text matches, so a
+   reworded command gets past them. `Read(...)` denies do not stop a script from reading the file; the
+   sandbox or a hook does. Deny beats allow. The reference has the details and the mode behavior.
+2. **Show the candidates** by group: force push, admin merge, repo delete, API delete, recursive
+   delete, publish, and secrets. Give one line per entry on what it blocks. Leave out entries the user
+   already has.
+3. **Let the user pick** groups or single entries, and the scope. Suggest user scope for the secrets
+   group.
+4. **Append only.** Show the diff and ask before you write. Never remove, reorder, or loosen an existing
+   deny entry, and never turn a deny into an ask or an allow. Read the file back and parse it after writing.
+
 ## Out of scope
 
 - Installing, enabling, or editing MCP servers
-- Editing harness config beyond the allow-list entries the user approved
+- Editing harness config beyond the allow and deny entries the user approved
 - Auditing or tightening an existing allow list (that is `review-permissions`)
 - Storing, printing, or moving tokens
 - Changing git remotes or repository settings
@@ -166,5 +184,6 @@ already has, use the `review-permissions` skill instead. This step only adds a s
 - Azure CLI install: https://learn.microsoft.com/cli/azure/install-azure-cli
 - Atlassian remote MCP server: https://github.com/atlassian/atlassian-mcp-server
 - Claude Code permissions: https://code.claude.com/docs/en/permissions
+- Claude Code permission modes: https://code.claude.com/docs/en/permission-modes
 - Cursor CLI permissions: https://cursor.com/docs/cli/reference/permissions
 - Codex rules: https://developers.openai.com/codex/rules

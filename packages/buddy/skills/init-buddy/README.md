@@ -1,6 +1,6 @@
 # init-buddy
 
-Gets a machine ready to work with a repository's git host. It detects the OS and package managers, checks the host's CLI, and finds any MCP server already configured for the host. Then it installs and logs in the CLI you want, and offers a starting allow list so your agent harness stops prompting for the read-only commands it runs most.
+Gets a machine ready to work with a repository's git host. It detects the OS and package managers, checks the host's CLI, and finds any MCP server already configured for the host. Then it installs and logs in the CLI you want. Last, it offers a starting allow list so your agent harness stops prompting for the read-only commands it runs most, and a deny list for the commands it should never run.
 
 ## When to use
 
@@ -9,6 +9,7 @@ Gets a machine ready to work with a repository's git host. It detects the OS and
 - another skill stopped because `gh` or `glab` is missing or logged out
 - "is my machine ready to work with Azure DevOps?"
 - "stop asking me before every `gh pr view`"
+- "never let the agent force push or publish"
 
 ## What it does
 
@@ -46,12 +47,34 @@ Gets a machine ready to work with a repository's git host. It detects the OS and
    You pick the entries and the scope: user (every repo), project shared (committed), or project local
    (this repo on this machine). It shows the diff and writes only what you approved.
 
+8. **Proposes a deny list**, in the same files and scopes. It covers force push in every common form,
+   `gh pr merge --admin`, `gh repo delete`, `gh api` DELETE requests, `rm -rf` and its variants, package
+   publish, and reading secrets (`.env*`, `~/.ssh`, `~/.aws`, `~/.npmrc`, `gh`'s `hosts.yml`). You pick
+   the groups or entries. It only appends; it never removes or loosens a deny entry you already have.
+
+   What a deny list can and cannot do:
+
+   - **Deny rules match text.** They are tripwires: a reworded command such as `git -C . push --force`,
+     `/bin/rm -rf`, or `sh -c '…'` gets past them.
+   - **`Read(...)` denies do not cover every read.** Claude Code applies them to its Read tool and to
+     the Bash file commands it recognizes, such as `cat`. A script that opens the file itself, or a
+     `grep -r` from a parent directory, still reads it. The sandbox, or a hook, is the real guard.
+   - **Deny beats allow.** Deny rules are checked first and apply in every mode, including
+     `bypassPermissions`. No allow rule or hook overrides them.
+   - **Modes.** In `auto` mode, ask rules still prompt. In `dontAsk` mode and headless `claude -p` runs,
+     anything that would prompt is denied instead.
+
+   In Cursor, deny entries go in `permissions.deny`, where deny also beats allow. In Codex they are
+   `forbidden` prefix rules, which match only the leading words of a command, so a flag later in the
+   command (`git push origin --force`) cannot be expressed. Codex has no read-deny rule; its sandbox
+   decides what a command can read.
+
 ## Safety
 
 - MCP servers are reported by name, command, and URL origin only. Environment values, headers, and URL query strings in those config files are never shown.
 - It never asks you to paste a token into the chat.
 - It does not install, enable, or edit MCP servers, and does not change repository settings.
-- It only adds allow-list entries you approved. It never removes an entry or a deny rule, and never adds a remote or destructive command unless you name it and confirm it. To audit the allow list you already have, use [`review-permissions`](../review-permissions/README.md).
+- It only adds allow and deny entries you approved. It never removes an entry or a deny rule, and never adds a remote or destructive command unless you name it and confirm it. To audit the allow list you already have, use [`review-permissions`](../review-permissions/README.md).
 - It does not run `curl | sh` installers beyond the ones it lists by name. The one listed, Microsoft's Azure CLI script for Debian/Ubuntu, is shown to you before it runs.
 
 ## How to invoke
@@ -60,7 +83,7 @@ Ask for it directly, or run `/init-buddy [github|gitlab|bitbucket|azure|gitea|fo
 
 ## What it produces
 
-An installed, logged-in CLI for each host you chose, a summary of the environment and of the MCP servers already available, and, if you accepted, the allow-list entries you approved, written to the scope you picked.
+An installed, logged-in CLI for each host you chose, a summary of the environment and of the MCP servers already available, and, if you accepted, the allow and deny entries you approved, written to the scope you picked.
 
 ## Install
 
