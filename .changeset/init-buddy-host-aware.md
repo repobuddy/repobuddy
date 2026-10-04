@@ -1,5 +1,0 @@
----
-"repobuddy": minor
----
-
-`init-buddy`'s advanced tier and deny list now cover every git host it detects, not only GitHub. The queued-merge entry has a GitLab form (`glab mr merge --auto-merge`, offered when the project requires a successful pipeline) and an Azure DevOps form (`az repos pr update --auto-complete true`, offered when the branch has a blocking build validation policy), each written with that host's deny entries. Gitea, Forgejo, and Bitbucket Cloud are told plainly that they get no queued-merge entry, because their CLIs cannot queue one. The auto-mode merge rule now names each detected host's merge commands, its owners (GitHub users and organizations, GitLab groups, Azure DevOps organizations or projects, Gitea and Forgejo organizations and users) and the bypass forms it excludes. `glab api` reads can be allowed for one session through a `read_api` token. The deny list adds `--bypass-policy`, a Gitea `force_merge`, repo delete and API DELETE for every host CLI, and each CLI's login file.
