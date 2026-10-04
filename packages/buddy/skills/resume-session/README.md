@@ -33,9 +33,21 @@ doesn't collide with it. Typing `/resume` lists both.
    Anything worth keeping goes into a commit, an ADR or an issue.
 
 Give it another repo's path instead (`/resume-session ../other-repo`) and it lists that repo's paused
-checkpoints, lets you pick, and hands back the command that starts a fresh session there, such as
-`cd ../other-repo && claude "/resume-session <slug>"`. It doesn't switch the current session over,
-because the session would keep this repo's working directory, instructions, skills and permissions.
+checkpoints, lets you pick, and hands back what to type to resume there. It never runs `cd` itself,
+because a shell `cd` leaves the session on this repo's working directory, instructions, skills and
+permissions.
+
+| Harness | Moves the live session? | Hand-off |
+| --- | --- | --- |
+| Claude Code | Yes: `/cd` (v2.1.246+) | `/cd <repo>` then `/resume-session <slug>`; fresh `claude` session as fallback |
+| Codex CLI | Yes: `/cd` (0.150.0+) | `/cd <repo>` then `$resume-session <slug>`; `codex -C <repo>` as fallback |
+| Copilot CLI | Partly: `/cd` changes directory, but no instruction reload is documented | `/cd <repo>`, check `/env`, then `/resume-session <slug>`; `copilot -C <repo> -i` as fallback |
+| Gemini CLI | No (`/directory add` only adds a directory) | `cd <repo> && gemini -i "…"` |
+| Cursor | No | `cd <repo> && agent "/resume-session <slug>"`, or open the folder in the editor |
+
+After an in-session move, the previous repo's conversation stays in context. Start a fresh session
+instead if that conversation is long or unrelated. Each harness's exact lines, caveats and sources are
+in [`references/`](references/).
 
 With no checkpoint but an in-progress SDD mission plan, it hands off to cyber-sdd's `resume-mission`
 (when installed).
