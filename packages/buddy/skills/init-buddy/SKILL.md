@@ -18,6 +18,7 @@ for the read-only commands the agent runs most, and a deny list for the commands
 - The user asks whether their machine is ready to work with a git host
 - "Stop asking me before every `gh pr view`": set up a starting allow list
 - "Never let the agent force push or publish": set up a deny list
+- The global reminder says this repo has no `.agents/repobuddy/init-buddy.json` marker
 
 ## Detect
 
@@ -191,6 +192,47 @@ if the user declines. The candidates and what each one misses are in
 4. **Append only.** Show the diff and ask before you write. Never remove, reorder, or loosen an existing
    deny entry, and never turn a deny into an ask or an allow. Read the file back and parse it after writing.
 
+## Record the setup
+
+Inside a git repo, leave a marker so a later session can tell this repo was set up, and offer a
+reminder for repos that were not.
+
+1. **Write the marker** at `<repo root>/.agents/repobuddy/init-buddy.json`, where the repo root is
+   `git rev-parse --show-toplevel`. Write it at the end of every run, including one where the user
+   declined everything:
+
+   ```json
+   { "version": 1, "updated": "<ISO date>", "hosts": ["github"], "declined": false }
+   ```
+
+   - `hosts`: the hosts whose CLI is now installed and logged in.
+   - `declined`: `true` when the user said no to the setup itself, so the reminder stops for this repo.
+     It is not about single entries the user turned down.
+
+   Update the file if it exists. Never commit it. Setup differs per clone and per machine, so the
+   marker stays local: make sure `.agents/repobuddy/init-buddy.json` is listed in
+   `<git common dir>/info/exclude` (from `git rev-parse --git-common-dir`), appended only if no line
+   names it yet. Never add it to the tracked `.gitignore`.
+
+2. **Offer the reminder once per machine.** If the user's global instruction file has no reminder
+   line yet, offer to add one. Ask which owners it covers, so it stays quiet in third-party clones and
+   forks. Show the diff, and write only on a yes:
+
+   ```markdown
+   - In a git repo owned by <owners> with no `.agents/repobuddy/init-buddy.json`, mention once per
+     session that `init-buddy` can set this repo up. Don't run it unless the user asks.
+   ```
+
+   | Harness | Global instruction file |
+   |---|---|
+   | Claude Code | `~/.claude/CLAUDE.md` |
+   | Codex | `~/.codex/AGENTS.md` |
+   | Gemini CLI | `~/.gemini/GEMINI.md` |
+
+   For any other harness, give the line and let the user paste it into their user rules. Append it to
+   the end of the file. Never edit or reorder what is already there. If the user declines, don't offer
+   it again in this run.
+
 ## List the next setup skills
 
 End by listing the other installed skills that set up a repo, so the user knows what to run next.
@@ -217,7 +259,7 @@ List them only. Never run them.
 ## Out of scope
 
 - Installing, enabling, or editing MCP servers
-- Editing harness config beyond the allow entries, deny entries, and `gh-api-guard` hook the user approved
+- Editing harness config beyond the allow entries, deny entries, `gh-api-guard` hook, and reminder line the user approved
 - Auditing or tightening an existing allow list (that is `review-permissions`)
 - Storing, printing, or moving tokens
 - Changing git remotes or repository settings
