@@ -1,6 +1,6 @@
 ---
 name: init-buddy
-description: "Use this skill when setting up gh, glab, or another git host CLI here, or when one is missing or logged out."
+description: "Use this skill when setting up gh, glab, or another git host CLI here, when one is missing or logged out, or when seeding a harness allow list for it."
 argument-hint: "[github|gitlab|bitbucket|azure|gitea|forgejo[=hostname]]"
 ---
 
@@ -8,13 +8,15 @@ argument-hint: "[github|gitlab|bitbucket|azure|gitea|forgejo[=hostname]]"
 
 Set up this machine so an agent can work with the repository's git host: detect the OS and package
 managers, find the host's CLI and any MCP server already configured for it, then install and
-authenticate the CLI the user wants.
+authenticate the CLI the user wants. Last, offer a starting allow list so the harness stops prompting
+for the read-only commands the agent runs most.
 
 ## When to use
 
 - First use of repobuddy skills in a repo, or "set up my environment for GitHub/GitLab/…"
 - A skill needs `gh`, `glab`, `tea`, `fj`, or `az` and the command is missing or not logged in
 - The user asks whether their machine is ready to work with a git host
+- "Stop asking me before every `gh pr view`": set up a starting allow list
 
 ## Detect
 
@@ -74,9 +76,84 @@ Login commands are interactive. The agent cannot complete them.
 4. **GitHub over HTTPS:** offer `gh auth setup-git` so git uses the same credentials.
 5. Re-run detection. For `tea` and `fj`, the login check is not reliable and shows `auth unknown`. Confirm with a read-only command from the CLI's `--help`, such as listing the user's repositories.
 
+## Propose an allow list
+
+Once a CLI is ready, offer to add allow-list entries so the agent stops prompting for the commands it
+runs most. This is optional; skip it if the user declines. To audit or clean up an allow list the user
+already has, use the `review-permissions` skill instead. This step only adds a starting set.
+
+1. **Find the harnesses.** Use the one running this session, plus any the user names. Read only the
+   permission keys of the files below. Never print other keys, because these files can hold MCP
+   tokens and hook commands.
+
+   | Harness | User scope | Project scope | Entry syntax |
+   |---|---|---|---|
+   | Claude Code | `~/.claude/settings.json` | `.claude/settings.json` (shared), `.claude/settings.local.json` (yours) | `permissions.allow`: `"Bash(gh pr view *)"` |
+   | Cursor CLI | `~/.cursor/cli-config.json` | `.cursor/cli.json` | `permissions.allow`: `"Shell(gh)"` matches every command whose first word is `gh`. Narrow it with the `command:args` form from the Cursor docs |
+   | Codex CLI | `~/.codex/rules/default.rules` | `.codex/rules/*.rules` (loaded only in a trusted project) | `prefix_rule(pattern = ["gh", "pr", "view"], decision = "allow")` |
+
+   Write new Claude Code entries with ` *` (space, star). `:*` means the same thing, but pick one
+   style per file so duplicates are easy to see. Keep the space: `Bash(ls *)` matches `ls -la` but not `lsof`, and `Bash(ls*)` matches both.
+
+2. **Build the candidates in three tiers.** Use only commands that exist on this machine and in this
+   repo. Read each package script before offering it; a script is only as safe as what it runs.
+
+   - **Safe:** read-only, so allow it anywhere.
+     - git: `git status`, `git diff`, `git log`, `git show`, `git branch`, `git stash list`
+     - the host CLI's read commands, from the table below
+     - the repo's check scripts that only read (`test`, `lint`, `check`, `typecheck`), run through
+       its package manager (`pnpm test *`, `npm run lint *`)
+   - **Good to have:** writes, but stays local and can be undone. Say the condition with each one.
+     - `git add *`, `git mv *`, `git stash push *`: the change stays in the working tree or index
+     - `git commit *`: recoverable until pushed. It also covers `--no-verify` and `--amend`, so offer it
+       only where commit hooks are not the user's last check
+     - format or fix scripts (`pnpm format *`, `pnpm check:fix *`): they rewrite files, which git can restore
+   - **Ask every time:** do not propose these. Add one only if the user names it and says yes again
+     after you state what it permits.
+     - anything that acts on the remote: `git push`, `gh pr merge`, `gh release`, `glab mr merge`,
+       publish, deploy
+     - raw API access: `gh api *` and `glab api *` can send any POST, PATCH, or DELETE the token allows
+     - commands that run code chosen at call time: `npx`, `pnpm dlx`, `bash -c`, `node -e`
+     - destructive local commands: `git stash drop`, `git stash clear`, `git reset --hard`, `git clean`
+     - any bare wildcard such as `Bash(git *)` or `Bash(gh *)`
+
+   | Host | Read-only commands |
+   |---|---|
+   | GitHub | `gh pr view`, `gh pr list`, `gh pr diff`, `gh pr checks`, `gh issue view`, `gh issue list`, `gh run view`, `gh run list`, `gh repo view`, `gh auth status` |
+   | GitLab | `glab mr view`, `glab mr list`, `glab mr diff`, `glab issue view`, `glab issue list`, `glab ci list`, `glab ci status`, `glab repo view`, `glab auth status` |
+   | Gitea | `tea pulls list`, `tea issues list`, `tea repos list`, `tea login list` |
+   | Forgejo | `fj pr view`, `fj issue view`, `fj repo view`, `fj whoami` |
+   | Azure DevOps | `az repos pr list`, `az repos pr show`, `az pipelines runs list`, `az pipelines runs show`, `az account show` |
+
+   For `tea` and `fj`, check each subcommand against the CLI's `--help` before you offer it. Their
+   commands change between releases. Never offer a bare `az *`, because `az` controls the whole Azure
+   account.
+
+3. **Show the tiers.** List every candidate as entry, tier, and a one-line reason. Leave out entries
+   the user already has. If an existing entry is broader or riskier than the tiers allow, point to
+   `review-permissions`. Do not change it here.
+
+4. **Ask what to write and where.** Let the user pick entries, or a whole tier. Then ask for the scope:
+   - **user**: applies to every repo the user opens. Only safe entries that are not tied to this repo
+     belong here.
+   - **project, shared**: committed with the repo, so it applies to every contributor
+   - **project, local**: this repo, this machine only (Claude Code's `settings.local.json`)
+
+   Without an answer, write safe entries at user scope and the rest at project local.
+
+5. **Write only what was approved.** Show the diff for each file and ask before you write.
+   - Add entries. Never remove or reorder the ones already there.
+   - Never remove a deny entry, and never add an entry from the ask-every-time tier, unless the user
+     said yes to that exact entry.
+   - Keep the file valid: read it back and parse it after writing. For Codex, run
+     `codex execpolicy check --pretty --rules <file> -- <command>` on one entry if the command exists.
+   - Report the files you changed and what each one now allows.
+
 ## Out of scope
 
-- Installing, enabling, or editing MCP servers or harness config
+- Installing, enabling, or editing MCP servers
+- Editing harness config beyond the allow-list entries the user approved
+- Auditing or tightening an existing allow list (that is `review-permissions`)
 - Storing, printing, or moving tokens
 - Changing git remotes or repository settings
 
@@ -88,3 +165,6 @@ Login commands are interactive. The agent cannot complete them.
 - Forgejo CLI `fj`: https://codeberg.org/forgejo-contrib/forgejo-cli
 - Azure CLI install: https://learn.microsoft.com/cli/azure/install-azure-cli
 - Atlassian remote MCP server: https://github.com/atlassian/atlassian-mcp-server
+- Claude Code permissions: https://code.claude.com/docs/en/permissions
+- Cursor CLI permissions: https://cursor.com/docs/cli/reference/permissions
+- Codex rules: https://developers.openai.com/codex/rules
