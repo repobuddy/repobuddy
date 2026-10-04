@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs'
-import { defineConfig } from 'tsdown'
+import { defineConfig, type Rolldown } from 'tsdown'
 
 // A skill bundle starts with a shebang, a generated-file notice, and the entry's own leading
 // `/* … */` usage comment, which agents read when a skill script misbehaves. Bundling keeps JSDoc
@@ -9,6 +9,20 @@ function skillBanner(entry: string) {
 	const usage = /^\/\*[\s\S]*?\*\//.exec(readFileSync(entry, 'utf8'))?.[0]
 	if (!usage) throw new Error(`${entry} must start with a /* usage */ comment`)
 	return `#!/usr/bin/env node\n// Generated from packages/buddy/${entry} by \`pnpm build\` — do not edit.\n${usage}\n`
+}
+
+// The minifier writes string escapes such as `'\u{FEFF}'` (the `yaml` package's CST `BOM`
+// constant, which `detect-env` inlines) as the raw character. A raw U+FEFF in a shipped script is
+// flagged as hidden content by skill auditors, so put the escape back. Minified output carries
+// U+FEFF only inside string, template, or regex literals, where the escape means the same thing.
+const escapeBom: Rolldown.Plugin = {
+	name: 'escape-bom',
+	// `generateBundle`, not `renderChunk`: rolldown minifies after `renderChunk`, which would undo it.
+	generateBundle(_options, bundle) {
+		for (const file of Object.values(bundle)) {
+			if (file.type === 'chunk') file.code = file.code.replaceAll('\uFEFF', '\\uFEFF')
+		}
+	},
 }
 
 // Two build targets share this file:
@@ -90,6 +104,7 @@ export default defineConfig([
 		clean: false,
 		dts: false,
 		minify: true,
+		plugins: [escapeBom],
 		banner: { js: skillBanner('src/skills/min-release-age.ts') },
 	},
 	{
@@ -102,6 +117,7 @@ export default defineConfig([
 		clean: false,
 		dts: false,
 		minify: true,
+		plugins: [escapeBom],
 		banner: { js: skillBanner('src/skills/detect-env.ts') },
 		// See the matching comment on the `bin.ts` target above: this bundle reaches
 		// `buddy-agent-harness`'s CLI-version fallback through `./mcp.js`, and ships with no
@@ -121,6 +137,7 @@ export default defineConfig([
 		clean: false,
 		dts: false,
 		minify: true,
+		plugins: [escapeBom],
 		banner: { js: skillBanner('src/skills/gh-api-guard.ts') },
 	},
 	{
@@ -133,6 +150,7 @@ export default defineConfig([
 		clean: false,
 		dts: false,
 		minify: true,
+		plugins: [escapeBom],
 		banner: { js: skillBanner('src/skills/detect-state.ts') },
 	},
 	{
@@ -145,6 +163,7 @@ export default defineConfig([
 		clean: false,
 		dts: false,
 		minify: true,
+		plugins: [escapeBom],
 		banner: { js: skillBanner('src/skills/scaffold-workflows.ts') },
 	},
 	{
@@ -157,6 +176,7 @@ export default defineConfig([
 		clean: false,
 		dts: false,
 		minify: true,
+		plugins: [escapeBom],
 		banner: { js: skillBanner('src/skills/npm-trust.ts') },
 	},
 	{
@@ -169,6 +189,7 @@ export default defineConfig([
 		clean: false,
 		dts: false,
 		minify: true,
+		plugins: [escapeBom],
 		banner: { js: skillBanner('src/skills/agent-readiness.ts') },
 	},
 ])
