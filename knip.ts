@@ -117,6 +117,9 @@ const config: KnipConfig = {
 		// Skill scaffold templates: an agent copies them into a consumer's repo,
 		// so nothing here imports them.
 		'packages/buddy/skills/*/assets/**',
+		// Recorded bench pilots: another repo's task-set checks, kept as a record and
+		// run only in that repo.
+		'.agents/readiness/pilots/**',
 		// Fixtures that exist precisely because nothing imports them — they prove
 		// the coverage reporters still count a non-spec source file.
 		'**/not_a_spec.*',

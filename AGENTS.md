@@ -58,7 +58,7 @@ pnpm --filter @repobuddy/biome check:preset
 pnpm format       # biome format --write
 pnpm check:fix    # biome check --fix
 
-# Full verify (check + check:preset + lint + coverage + depcheck + size)
+# Full verify (check + check:preset + check-plugin-version + knip + lint + coverage + e2e + size + pack:check)
 # There is no separate `typecheck` task: every package builds with `tsc`, and
 # `coverage`/`size` depend on `build`, so a type error fails `verify`.
 pnpm verify
@@ -92,15 +92,18 @@ This is a **pnpm monorepo** managed with [Turborepo](https://turbo.build/). It i
 - `repobuddy` — CLI for managing the repository itself
 
 **Public agent skills** (`packages/buddy/skills/`) — shipped as a universal plugin inside the `repobuddy` npm package, and installed by consumers via `npx skills add repobuddy/repobuddy`:
-- `agent-readiness` — score how ready a repo is for coding agents: gated level 1-4, per-area score, top three fixes, tokens loaded per session; a bundled script runs the static checks, the model settles judgment calls; `improve` applies approved fixes one area per commit and hands owned fixes to their skills
+- `add-badges` — add, fix, or audit readme badges (npm, CI, docs, coverage, license)
+- `agent-readiness` — score how ready a repo is for coding agents: gated level 1-5, per-area score, top three fixes, tokens loaded per session; `score --package` scores the consuming side of a library; a bundled script runs the static checks, the model settles judgment calls; `score --check` holds a level in CI; `improve` applies approved fixes one area per commit and hands owned fixes to their skills; `bench` runs a fixed agent task set against a stored baseline (tokens, turns, pass rate, cost per success), spending only after a yes; `bench compare` re-reads two stored results with spread and permutation p-values, free
+- `code-review` — review code through the Linus, Uncle Bob, and Fowler lenses; reports split verdicts
 - `create-issue` — create GitHub/GitLab issues, dedup check first
-- `init-buddy` — set up the machine for the repo's git host: detect OS, package managers, and existing MCP servers; install and log in `gh`, `glab`, `tea`, `fj`, or `az`
+- `init-buddy` — set up the machine for the repo's git host: detect OS, package managers, and existing MCP servers; install and log in `gh`, `glab`, `tea`, `fj`, or `az`; propose a tiered harness allow list and write only the approved entries
 - `llms-txt` — publish an `llms.txt` generated from the project's public surface; decides whether one is warranted, wires the drift check, reports the documentation gap
 - `merge-dep-prs` — merge Dependabot/Renovate PRs; gates each merge on whether CI reached the change's blast radius, handles CI failures
 - `min-release-age` — lift the minimum-release-age gate for one package version, restore it once the version ages past the window, and install a scheduled CI job that expires lifts automatically (pnpm, Yarn, npm, bun; GitHub, GitLab, Bitbucket, Azure, Forgejo/Gitea)
 - `review-api` — review a library's public API against its own conventions: shape conformance, sibling-justified gaps, docs vs exports; read-only, verified, priority-ordered report
 - `review-permissions` — audit harness permissions (Claude Code, Cursor, Codex, Copilot, Gemini): risk, tightening, consolidation
-- `setup-github-repo` — branch protection, Dependabot, CI setup
+- `session` — router for `session pause` / `session resume`: sort an agent session's work into topics, skip the finished ones, and pause the live ones into checkpoints at `.agents/repobuddy/checkpoints/<slug>.md` (one per topic or one for all, asked; next action first, settled decisions, open questions, working method, state not in git, `depends-on` between topics), writing a topic about another repo into that repo; then resume one in a fresh session, any harness or repo; SDD missions hand off to cyber-sdd's `pause-mission`/`resume-mission`
+- `setup-github-repo` — branch protection, merge backstop (merge queue or require-up-to-date), Dependabot, CI setup
 - `setup-npm-trusted-publishing` — register npm trusted publishers (OIDC) to retire `NPM_TOKEN`; one package, an org, or every org owned
 - `website` — router for docs-website work; `init` adds an Astro/Starlight site to a monorepo as a private workspace package, wires turbo, knip, biome, and pnpm build approvals; `deploy` publishes a static site from CI to GitHub Pages, GitLab Pages, Codeberg Pages, Bitbucket, or Azure Static Web Apps, setting the base path the host serves at
 - `to-question` — word a question for a platform (Slack, Jira, Linear, Asana, GitHub, GitLab, Bugzilla, Redmine, Trac, email); composes, never posts
@@ -124,8 +127,7 @@ editing in place, or the lock hash goes stale.
 (`.claude-plugin/marketplace.json`, `.github/plugin/marketplace.json`), are **generated** by
 `npx universal-plugin plugin build` — never hand-edit them, except the Claude catalog's `source` (see below). Copilot
 CLI reads the canonical `plugin.json` directly, so nothing is derived for it. `packages/buddy/.agents/universal-plugin.json`
-declares `packagePath: "."`, which is what this repo's release wiring reads — not the field of the same name that used
-to live under `plugin.json`'s `extensions` block, which this CLI version no longer reads there.
+declares `packagePath: "."`, which is what this repo's release wiring reads; do not set `packagePath` in `plugin.json`.
 
 The `version` script (`changeset version && node scripts/sync-plugin-manifests.mjs`) carries a released version into
 the plugin automatically: `scripts/sync-plugin-manifests.mjs` runs `universal-plugin publish sync-version` (never
@@ -153,7 +155,7 @@ file this repo intentionally keeps out of sync with the tool's own output.
 - Repo-private skills live in `.agents/skills/<name>/SKILL.md` and **must** include `metadata: internal: true` in frontmatter.
 - Never duplicate a skill between `packages/buddy/skills/` and `.agents/skills/` without a documented reason.
 - After adding or editing any `.agents/skills/` entry, run `npx cyber-skills@0.4.3 skill repair-private` to ensure metadata is correct.
-- CI validates public skills on PRs touching `packages/buddy/skills/` via `npx cyber-skills@0.4.3 audit validate`.
+- No CI job validates public skills; run `npx cyber-skills@0.4.3 audit validate` yourself before opening a PR that touches `packages/buddy/skills/`.
 
 ## Dependencies
 

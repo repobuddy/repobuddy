@@ -167,10 +167,48 @@ describe('collectFacts', () => {
 		expect(facts.nameCollisions).toEqual([{ name: 'run', declaredIn: 1, matchingFiles: 11 }])
 	})
 
+	it('lists environment variables that no setup document names', () => {
+		const facts = collectFacts(
+			repo({
+				'src/a.ts': 'process.env.API_URL; process.env.NODE_ENV; import.meta.env.MODE',
+				'src/b.ts': "process.env['DB_URL']; process.env.TOKEN; import.meta.env.VITE_KEY; process.env.PORT",
+				'src/b.spec.ts': 'process.env.TEST_ONLY',
+				'README.md': 'Set `PORT`.',
+				'AGENTS.md': 'TOKEN is required.',
+				'.env.example': 'VITE_KEY=\n',
+			}),
+		)
+		expect(facts.undocumentedEnv).toEqual([
+			{ name: 'API_URL', readIn: 'src/a.ts' },
+			{ name: 'DB_URL', readIn: 'src/b.ts' },
+		])
+	})
+
+	it('lists tracked fixture and vendored folders that no ignore file excludes from search', () => {
+		const facts = collectFacts(
+			repo({
+				'.gitignore': 'third_party/\n',
+				'.ignore': 'testcases/\nsrc/__fixtures__/*\n',
+				'.rgignore': '!src/__fixtures__/e.json\n',
+				'packages/a/.rgignore': 'vendor/\n',
+				'testcases/x/a.ts': '',
+				'packages/a/vendor/b.js': '',
+				'packages/b/vendor/c.js': '',
+				'src/__fixtures__/d.json': '',
+				'src/__fixtures__/e.json': '',
+			}),
+		)
+		expect(facts.searchedFixtureDirs).toEqual([
+			{ path: 'packages/b/vendor/', searchedFiles: 1 },
+			{ path: 'src/__fixtures__/', searchedFiles: 1 },
+		])
+	})
+
 	it('has no source measures without source', () => {
 		const facts = collectFacts(repo({ 'README.md': '' }))
 		expect(facts.comments).toBeUndefined()
 		expect(facts.nameCollisions).toBeUndefined()
+		expect(facts.undocumentedEnv).toBeUndefined()
 	})
 
 	it('finds the command that runs knip', () => {
@@ -192,6 +230,14 @@ describe('collectFacts', () => {
 		).toBeUndefined()
 	})
 
+	it('reads when the bench baseline was recorded', () => {
+		expect(collectFacts(repo({})).benchBaselineAt).toBeUndefined()
+		const baseline = JSON.stringify({ createdAt: '2026-09-01T00:00:00.000Z' })
+		expect(collectFacts(repo({ '.agents/readiness/bench/baseline.json': baseline })).benchBaselineAt).toBe(
+			'2026-09-01T00:00:00.000Z',
+		)
+	})
+
 	it('walks the tree outside a git repo, skipping node_modules', () => {
 		const facts = collectFacts(
 			repo({ 'README.md': '', 'node_modules/x/dist/a.js': '', 'dist/b.js': '' }, { git: false }),
@@ -200,5 +246,6 @@ describe('collectFacts', () => {
 		expect(facts.hasReadme).toBe(true)
 		expect(facts.trackedBuildOutput).toEqual(['dist/b.js'])
 		expect(facts.envIgnored).toBeUndefined()
+		expect(facts.searchedFixtureDirs).toBeUndefined()
 	})
 })

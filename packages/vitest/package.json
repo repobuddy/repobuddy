@@ -1,6 +1,6 @@
 {
 	"name": "@repobuddy/vitest",
-	"version": "2.4.0",
+	"version": "2.4.1",
 	"description": "Your repository buddy for Vitest",
 	"keywords": [
 		"repobuddy",
@@ -85,8 +85,8 @@
 	"devDependencies": {
 		"@repobuddy/typescript": "workspace:*",
 		"@size-limit/preset-small-lib": "~14.1.0",
-		"@storybook/addon-vitest": "10.6.0",
-		"@storybook/react-vite": "10.6.0",
+		"@storybook/addon-vitest": "10.6.1",
+		"@storybook/react-vite": "10.6.1",
 		"@vitest/browser": "^5.0.0",
 		"@vitest/coverage-v8": "^5.0.0",
 		"npm-run-all2": "^9.0.0",
@@ -94,7 +94,7 @@
 		"react-dom": "^19.1.0",
 		"rimraf": "~6.1.0",
 		"size-limit": "~14.1.0",
-		"storybook": "10.6.0",
+		"storybook": "10.6.1",
 		"storybook-addon-vis": "^4.2.9",
 		"typescript": "^7.0.0",
 		"vitest": "^5.0.0"

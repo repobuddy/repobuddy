@@ -1,12 +1,21 @@
 /**
  * Reads the static facts `score` grades from a repository on disk. Everything here is a file read or
- * a `git` query: nothing is built, installed, or run, so a scan takes seconds and costs no tokens.
+ * a `git` query: nothing is built, installed, or run, so a scan takes seconds and costs no tokens. Two
+ * exceptions: `runKnip` opts in to running the repo's knip command (see `knip.ts`), and an installed
+ * buddy-agent-harness has its read-only `doctor` run (see `harness-doctor.ts`).
  */
 
 import { spawnSync } from 'node:child_process'
 import { existsSync, readdirSync, readFileSync, realpathSync, statSync } from 'node:fs'
 import { basename, join } from 'node:path'
+import { readBaseline } from './bench.js'
+import { findUndocumentedEnv, isSetupDoc, type UndocumentedEnv } from './env.js'
+import { findSearchedFixtureDirs, type SearchedFixtureDir } from './fixtures.js'
+import { findHarnessDoctor, type HarnessDoctorRun, runHarnessDoctor } from './harness-doctor.js'
+import { type InjectionSurface, readInjectionSurface } from './injection-surface.js'
+import { type DeadCodeRun, runKnip } from './knip.js'
 import { type CommentFacts, findNameCollisions, measureComments, type NameCollision } from './source.js'
+import { type ReleaseAgeGate, readReleaseAgeGate, readWorkflows, type WorkflowFacts } from './supply-chain.js'
 
 interface InstructionFile {
 	path: string
@@ -45,17 +54,39 @@ export interface Facts {
 	tsStrict: boolean | undefined
 	largeFiles: LargeFile[]
 	trackedBuildOutput: string[]
+	/**
+	 * Tracked fixture and vendored folders whose files no ignore file excludes from search; `undefined`
+	 * outside a git repo, where ignore rules cannot be asked.
+	 */
+	searchedFixtureDirs: SearchedFixtureDir[] | undefined
 	/** `undefined` outside a git repo, where ignore rules cannot be asked. */
 	envIgnored: boolean | undefined
 	committedSecretFiles: string[]
 	/** `<file>: <key>` for each MCP env entry holding a literal value under a credential-like name. */
 	mcpLiteralCredentials: string[]
+	/** `undefined` when the repo has no `.github/workflows`. */
+	workflows: WorkflowFacts | undefined
+	/** `undefined` when the repo has no JavaScript package manager. */
+	releaseAgeGate: ReleaseAgeGate | undefined
+	/** Session-start and per-prompt hooks, and MCP servers: reported, never scored. */
+	injectionSurface: InjectionSurface
 	/** `undefined` when the repo has no non-test source in a language with `//` comments. */
 	comments: CommentFacts | undefined
 	/** `undefined` when the repo has no non-test JS or TS source. */
 	nameCollisions: NameCollision[] | undefined
+	/**
+	 * Variables the source reads that no instructions file, README, CONTRIBUTING, or `.env.example`
+	 * names; `undefined` when the repo has no non-test JS or TS source.
+	 */
+	undocumentedEnv: UndocumentedEnv[] | undefined
 	/** The command that runs knip, when the repo has it configured; `undefined` otherwise. */
 	deadCodeCommand: string | undefined
+	/** knip's result, when `score --run-knip` ran it; `undefined` otherwise. */
+	deadCodeRun?: DeadCodeRun | undefined
+	/** buddy-agent-harness `doctor`'s result; `undefined` when the repo does not have it installed. */
+	harnessDoctor?: HarnessDoctorRun | undefined
+	/** When the stored `bench` baseline was recorded; `undefined` when there is none. */
+	benchBaselineAt: string | undefined
 }
 
 /** A rough, model-agnostic estimate. Real tokenizers land within about 20% of it for English and code. */
@@ -348,11 +379,18 @@ function readDeadCodeCommand(dir: string, pkg: PackageJson): string | undefined 
 	return pm === 'npm' || pm === 'bun' ? `${pm} run ${script}` : `${pm} ${script}`
 }
 
-export function collectFacts(dir: string): Facts {
+export interface CollectOptions {
+	/** Run the repo's knip command to settle `dead-code`. Needs dependencies installed. */
+	runKnip?: boolean | undefined
+}
+
+export function collectFacts(dir: string, options: CollectOptions = {}): Facts {
 	const isGitRepo = git(dir, ['rev-parse', '--is-inside-work-tree']).stdout.trim() === 'true'
 	const files = listFiles(dir, isGitRepo)
 	const scripts = readScripts(dir)
 	const pkg = readPackageJson(dir)
+	const deadCodeCommand = readDeadCodeCommand(dir, pkg)
+	const harnessDoctor = findHarnessDoctor(dir)
 
 	const instructionFiles: InstructionFile[] = []
 	const missingInstructionCommands = new Set<string>()
@@ -410,11 +448,23 @@ export function collectFacts(dir: string): Facts {
 		tsStrict: readTsStrict(dir),
 		largeFiles,
 		trackedBuildOutput: files.filter((f) => BUILD_OUTPUT.test(f)),
+		searchedFixtureDirs: isGitRepo ? findSearchedFixtureDirs(dir, files) : undefined,
 		envIgnored,
 		committedSecretFiles: files.filter((f) => SECRET_FILE.test(f) && !SECRET_FILE_ALLOWED.test(basename(f))),
 		mcpLiteralCredentials: readMcpLiteralCredentials(dir),
+		workflows: readWorkflows(dir),
+		releaseAgeGate: readReleaseAgeGate(dir),
+		injectionSurface: readInjectionSurface(dir),
 		comments: measureComments(searched, readText),
 		nameCollisions: findNameCollisions(searched, readText),
-		deadCodeCommand: readDeadCodeCommand(dir, pkg),
+		undocumentedEnv: findUndocumentedEnv(
+			searched,
+			[...INSTRUCTION_FILES.filter((f) => exists(dir, f)), ...files.filter(isSetupDoc)],
+			readText,
+		),
+		deadCodeCommand,
+		...(options.runKnip && deadCodeCommand ? { deadCodeRun: runKnip(dir, deadCodeCommand) } : {}),
+		...(harnessDoctor ? { harnessDoctor: runHarnessDoctor(dir, harnessDoctor) } : {}),
+		benchBaselineAt: readBaseline(dir)?.createdAt,
 	}
 }

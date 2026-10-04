@@ -6,8 +6,12 @@
  * findings never subtract points; they cap the level.
  */
 
+import { BASELINE_FILE, BASELINE_MAX_AGE_DAYS, baselineAgeDays } from './bench.js'
 import type { Facts } from './facts.js'
+import type { HarnessFinding } from './harness-doctor.js'
+import type { InjectionSurface } from './injection-surface.js'
 import type { CommentFacts } from './source.js'
+import type { ReleaseAgeGate } from './supply-chain.js'
 
 type Area =
 	| 'verification'
@@ -19,8 +23,17 @@ type Area =
 	| 'task-discovery'
 	| 'security'
 
-/** Starting weights. They are hypotheses until behavioral measurement revises them, and the report prints them. */
-const AREA_WEIGHTS: Record<Exclude<Area, 'security'>, number> = {
+/** Areas that carry a weight. Security has none: its findings cap the level instead. */
+export type WeightedArea = Exclude<Area, 'security'>
+
+export type Weights = Record<WeightedArea, number>
+
+/**
+ * Starting weights. They are hypotheses until behavioral measurement revises them, and the report prints them.
+ * `skills/agent-readiness/references/weights.md` records the bench runs behind each one.
+ * A repo can override them (see `config.ts`); weights never touch gates or the level.
+ */
+export const AREA_WEIGHTS: Weights = {
 	verification: 25,
 	instructions: 15,
 	navigability: 15,
@@ -36,10 +49,11 @@ const LEVELS: Record<number, string> = {
 	2: 'An agent can check its own work',
 	3: 'An agent can work without supervision',
 	4: 'An agent works cheaply',
+	5: 'The cost is measured',
 }
 
-/** The highest level `score` can award. Level 5 needs a behavioral baseline, which this command does not measure. */
-export const MAX_LEVEL = 4
+/** Level 5 is the only behavioral gate: it needs a `bench` baseline, which `score` reads but never runs. */
+export const MAX_LEVEL = 5
 
 /**
  * `pass` and `fail` are decided by the script. `judge` means the script cannot decide it: the agent
@@ -47,9 +61,9 @@ export const MAX_LEVEL = 4
  */
 type Status = 'pass' | 'fail' | 'judge' | 'n/a'
 
-export interface Check {
+export interface Check<A extends string = Area> {
 	id: string
-	area: Area
+	area: A
 	level: number
 	gate: boolean
 	/** 1 is minutes, 2 is an hour or so, 3 is a project. */
@@ -62,8 +76,8 @@ export interface Check {
 	handoff?: string
 }
 
-interface AreaScore {
-	area: Exclude<Area, 'security'>
+export interface AreaScore<A extends string = Exclude<Area, 'security'>> {
+	area: A
 	weight: number
 	passed: number
 	total: number
@@ -83,13 +97,24 @@ export interface ScoreResult {
 	/** Pending `judge` gates at or below the awarded level; each one, if it fails, lowers the level. */
 	pendingJudgments: Check[]
 	tokensPerSession: { instructions: number; skills: number; total: number }
-	weights: typeof AREA_WEIGHTS
+	/** Reported, not scored: the agent judges which of these pull untrusted content into context. */
+	injectionSurface: InjectionSurface
+	weights: Weights
+	/** Areas whose weight came from the repo's override instead of the defaults. */
+	overriddenWeights: WeightedArea[]
+}
+
+export interface ScoreOptions {
+	/** Per-repo weight overrides, merged over `AREA_WEIGHTS`. */
+	weights?: Partial<Weights> | undefined
+	/** The clock the bench-baseline freshness gate reads; tests pin it. */
+	now?: Date | undefined
 }
 
 /** Instruction files load on every turn; past this many tokens, each line should be earning its place. */
 export const INSTRUCTION_TOKEN_BUDGET = 3000
 
-function list(items: string[], limit = 10): string[] {
+export function list(items: string[], limit = 10): string[] {
 	return items.length > limit ? [...items.slice(0, limit), `… and ${items.length - limit} more`] : items
 }
 
@@ -111,11 +136,70 @@ function commentDetail(comments: CommentFacts): string[] {
 	]
 }
 
-export function buildChecks(facts: Facts): Check[] {
+/** Settled when `--run-knip` ran knip; otherwise a judgment that names the command to run. */
+function deadCode(facts: Facts): Pick<Check, 'status' | 'detail'> {
+	const run = facts.deadCodeRun
+	if (run?.outcome === 'clean') return { status: 'pass', detail: [`ran: ${run.command}`] }
+	if (run?.outcome === 'found') return { status: 'fail', detail: [`ran: ${run.command}`, ...run.groups] }
+	if (!facts.deadCodeCommand) return { status: 'n/a' }
+	return {
+		status: 'judge',
+		detail: [
+			`run: ${facts.deadCodeCommand}`,
+			...(run?.error ? [`--run-knip could not complete it: ${run.error}`] : []),
+		],
+	}
+}
+
+const HARNESS_DOCTOR = 'buddy-agent-harness'
+
+/**
+ * buddy-agent-harness `doctor`'s findings, one check per problem it names. They inform the instructions
+ * area score but never gate: the plugin owns what they mean and how to repair them.
+ */
+function harnessChecks(facts: Facts): Check[] {
+	const base = { area: 'instructions', level: 3, gate: false, effort: 1, handoff: HARNESS_DOCTOR } as const
+	const run = facts.harnessDoctor
+	const doctor = {
+		...base,
+		id: 'harness-doctor',
+		summary: 'buddy-agent-harness doctor finds no problem with bridges, skill layout, or MCP files',
+		fix: 'Run the doctor-buddy-agent-harness skill and apply the repairs it gives.',
+	}
+	if (!run) {
+		return [
+			{
+				...doctor,
+				status: 'n/a',
+				detail: ['buddy-agent-harness is neither installed in this repo nor one of its packages'],
+			},
+		]
+	}
+	if (run.outcome === 'error') {
+		return [
+			{ ...doctor, status: 'judge', detail: [`run: ${HARNESS_DOCTOR} doctor`, `it could not complete: ${run.error}`] },
+		]
+	}
+	if (run.findings.length === 0) return [{ ...doctor, status: 'pass' }]
+	const byProblem = new Map<string, HarnessFinding[]>()
+	for (const f of run.findings) byProblem.set(f.problem, [...(byProblem.get(f.problem) ?? []), f])
+	return [...byProblem].map(([problem, findings]) => ({
+		...base,
+		id: `harness-${problem}`,
+		status: 'fail',
+		summary: `buddy-agent-harness doctor reports ${problem}`,
+		detail: list(findings.map((f) => `${f.path}: ${f.detail}`)),
+		fix: `Run the doctor-buddy-agent-harness skill and apply its repair for ${problem}.`,
+	}))
+}
+
+export function buildChecks(facts: Facts, now: Date = new Date()): Check[] {
 	const { comments } = facts
 	const verifyScript = VERIFY_SCRIPTS.find((s) => facts.scripts.includes(s))
 	const instructionTokens = facts.instructionFiles.reduce((sum, f) => sum + f.tokens, 0)
 	const hasInstructions = facts.instructionFiles.length > 0
+	const baselineAge =
+		facts.benchBaselineAt === undefined ? undefined : baselineAgeDays({ createdAt: facts.benchBaselineAt }, now)
 
 	return [
 		// Level 1: an agent can read it.
@@ -219,6 +303,7 @@ export function buildChecks(facts: Facts): Check[] {
 			fix: 'Cut history, restated code, and stale sections; keep commands, layout, and rules an agent cannot infer.',
 			handoff: 'buddy-agent-harness',
 		},
+		...harnessChecks(facts),
 		{
 			id: 'toolchain-pinned',
 			area: 'environment',
@@ -249,6 +334,19 @@ export function buildChecks(facts: Facts): Check[] {
 			status: 'judge',
 			summary: 'Setup is documented and runs in one non-interactive step',
 			fix: 'Document one setup command (install, then build if tests need it) that never prompts.',
+		},
+		{
+			id: 'env-documented',
+			area: 'environment',
+			level: 3,
+			gate: false,
+			effort: 1,
+			status: !facts.undocumentedEnv ? 'n/a' : facts.undocumentedEnv.length === 0 ? 'pass' : 'fail',
+			summary: 'Every environment variable the source reads is documented',
+			...(facts.undocumentedEnv && facts.undocumentedEnv.length > 0
+				? { detail: list(facts.undocumentedEnv.map((e) => `${e.name}: read in ${e.readIn}`)) }
+				: {}),
+			fix: 'Name each variable, what it is for, and whether it is required in `.env.example` or the setup docs.',
 		},
 		{
 			id: 'fast-feedback',
@@ -329,6 +427,19 @@ export function buildChecks(facts: Facts): Check[] {
 			fix: 'Untrack them and add the folders to `.gitignore`; if they must stay, add them to `.ignore` so search skips them.',
 		},
 		{
+			id: 'fixtures-excluded',
+			area: 'noise',
+			level: 4,
+			gate: false,
+			effort: 1,
+			status: !facts.searchedFixtureDirs ? 'n/a' : facts.searchedFixtureDirs.length === 0 ? 'pass' : 'judge',
+			summary: 'Tracked fixture and vendored folders are excluded from search, or are worth searching',
+			...(facts.searchedFixtureDirs && facts.searchedFixtureDirs.length > 0
+				? { detail: list(facts.searchedFixtureDirs.map((d) => `${d.path}: ${d.searchedFiles} file(s) in search`)) }
+				: {}),
+			fix: 'Add the folders search should skip to a root `.ignore` file; git still tracks them.',
+		},
+		{
 			id: 'monorepo-map',
 			area: 'navigability',
 			level: 4,
@@ -385,10 +496,21 @@ export function buildChecks(facts: Facts): Check[] {
 			level: 4,
 			gate: false,
 			effort: 2,
-			status: facts.deadCodeCommand ? 'judge' : 'n/a',
+			...deadCode(facts),
 			summary: 'No unused files, exports, or dependencies (reported by knip)',
-			...(facts.deadCodeCommand ? { detail: [`run: ${facts.deadCodeCommand}`] } : {}),
 			fix: 'Delete what knip reports as unused, or tell knip why it is used.',
+		},
+		// Level 5: the cost is measured.
+		{
+			id: 'bench-baseline',
+			area: 'verification',
+			level: 5,
+			gate: true,
+			effort: 3,
+			status: baselineAge !== undefined && baselineAge <= BASELINE_MAX_AGE_DAYS ? 'pass' : 'fail',
+			summary: `A \`bench\` baseline exists and is at most ${BASELINE_MAX_AGE_DAYS} days old`,
+			detail: [baselineAge === undefined ? `no ${BASELINE_FILE}` : `${BASELINE_FILE}: ${baselineAge} days old`],
+			fix: 'Write a 3-5 task set and record a baseline with `agent-readiness bench --baseline`; refresh it as the repo changes.',
 		},
 		// Security: these cap the level instead of subtracting points.
 		{
@@ -425,19 +547,74 @@ export function buildChecks(facts: Facts): Check[] {
 			summary: '`.env` is ignored by git',
 			fix: 'Add `.env` and `.env.*` (with `!.env.example`) to `.gitignore`.',
 		},
+		// Security, report only: CI supply-chain settings. Not gates, so they never cap the level.
+		{
+			id: 'pinned-actions',
+			area: 'security',
+			level: 3,
+			gate: false,
+			effort: 2,
+			status: !facts.workflows ? 'n/a' : facts.workflows.unpinnedActions.length === 0 ? 'pass' : 'fail',
+			summary: 'Third-party actions in `.github/workflows` are pinned to a commit SHA',
+			...(facts.workflows && facts.workflows.unpinnedActions.length > 0
+				? { detail: list(facts.workflows.unpinnedActions) }
+				: {}),
+			fix: 'Pin each third-party `uses:` to a full commit SHA, with the tag in a trailing comment, and let the dependency bot bump it.',
+			handoff: 'setup-github-repo',
+		},
+		{
+			id: 'workflow-permissions',
+			area: 'security',
+			level: 3,
+			gate: false,
+			effort: 1,
+			status: !facts.workflows ? 'n/a' : facts.workflows.missingPermissions.length === 0 ? 'pass' : 'fail',
+			summary: 'Each workflow, or each of its jobs, declares `permissions:` for its token',
+			...(facts.workflows && facts.workflows.missingPermissions.length > 0
+				? { detail: list(facts.workflows.missingPermissions) }
+				: {}),
+			fix: 'Add `permissions: contents: read` at the top of each workflow and widen it only in the job that needs more.',
+			handoff: 'setup-github-repo',
+		},
+		{
+			id: 'release-age-gate',
+			area: 'security',
+			level: 3,
+			gate: false,
+			effort: 1,
+			status: releaseAgeStatus(facts.releaseAgeGate),
+			summary: 'The package manager holds back releases younger than a minimum age',
+			...(facts.releaseAgeGate ? { detail: [releaseAgeDetail(facts.releaseAgeGate)] } : {}),
+			fix: 'Set the minimum release age explicitly (a day or more), so a freshly hijacked version never installs.',
+			handoff: 'min-release-age',
+		},
 	]
 }
 
-/** Security failures cap the level: a committed credential at 1, an unignored `.env` at 2. */
-function securityCap(checks: Check[]): number | undefined {
-	const failed = checks.filter((c) => c.area === 'security' && c.status === 'fail')
+function releaseAgeStatus(gate: ReleaseAgeGate | undefined): Status {
+	if (!gate) return 'n/a'
+	return gate.minutes !== undefined && gate.minutes > 0 ? 'pass' : 'fail'
+}
+
+function releaseAgeDetail(gate: ReleaseAgeGate): string {
+	return gate.value === undefined
+		? `${gate.file}: no ${gate.setting} (${gate.defaultNote})`
+		: `${gate.file}: ${gate.setting} ${gate.value}`
+}
+
+/**
+ * Failed security gates cap the level: a committed credential at 1, an unignored `.env` at 2. Security
+ * checks that are not gates only report.
+ */
+function securityCap(checks: Check<string>[]): number | undefined {
+	const failed = checks.filter((c) => c.area === 'security' && c.gate && c.status === 'fail')
 	if (failed.length === 0) return undefined
 	return Math.min(...failed.map((c) => c.level))
 }
 
-function gatedLevel(checks: Check[]): number {
+export function gatedLevel(checks: Check<string>[], maxLevel: number): number {
 	let level = 0
-	for (let n = 1; n <= MAX_LEVEL; n++) {
+	for (let n = 1; n <= maxLevel; n++) {
 		const blocked = checks.some((c) => c.area !== 'security' && c.gate && c.level === n && c.status === 'fail')
 		if (blocked) break
 		level = n
@@ -445,13 +622,13 @@ function gatedLevel(checks: Check[]): number {
 	return level
 }
 
-function areaScores(checks: Check[]): AreaScore[] {
-	return (Object.keys(AREA_WEIGHTS) as Array<keyof typeof AREA_WEIGHTS>).map((area) => {
+export function areaScores<A extends string>(checks: Check<string>[], weights: Record<A, number>): AreaScore<A>[] {
+	return (Object.keys(weights) as A[]).map((area) => {
 		const decided = checks.filter((c) => c.area === area && (c.status === 'pass' || c.status === 'fail'))
 		const passed = decided.filter((c) => c.status === 'pass').length
 		return {
 			area,
-			weight: AREA_WEIGHTS[area],
+			weight: weights[area],
 			passed,
 			total: decided.length,
 			score: decided.length === 0 ? undefined : Math.round((passed / decided.length) * 100),
@@ -460,15 +637,16 @@ function areaScores(checks: Check[]): AreaScore[] {
 }
 
 /**
- * Security failures come first, then gates that block the next level, then everything else by area
- * weight per unit of effort.
+ * Security gate failures come first, then gates that block the next level, then everything else by area
+ * weight per unit of effort. Report-only security checks carry no weight, so they rank last.
  */
-function rankFixes(checks: Check[], level: number): Check[] {
-	const rank = (c: Check) => {
-		if (c.area === 'security') return [0, c.level, 0]
-		if (c.gate && c.level === level + 1) return [1, 0, -AREA_WEIGHTS[c.area] / c.effort]
-		if (c.gate) return [2, c.level, -AREA_WEIGHTS[c.area] / c.effort]
-		return [3, 0, -AREA_WEIGHTS[c.area] / c.effort]
+export function rankFixes<C extends Check<string>>(checks: C[], level: number, weights: Record<string, number>): C[] {
+	const rank = (c: C) => {
+		const weight = weights[c.area] ?? 0
+		if (c.area === 'security' && c.gate) return [0, c.level, 0]
+		if (c.gate && c.level === level + 1) return [1, 0, -weight / c.effort]
+		if (c.gate) return [2, c.level, -weight / c.effort]
+		return [3, 0, -weight / c.effort]
 	}
 	return checks
 		.filter((c) => c.status === 'fail')
@@ -482,9 +660,10 @@ function rankFixes(checks: Check[], level: number): Check[] {
 		})
 }
 
-export function score(facts: Facts): ScoreResult {
-	const checks = buildChecks(facts)
-	const gated = gatedLevel(checks)
+export function score(facts: Facts, options: ScoreOptions = {}): ScoreResult {
+	const weights: Weights = { ...AREA_WEIGHTS, ...options.weights }
+	const checks = buildChecks(facts, options.now ?? new Date())
+	const gated = gatedLevel(checks, MAX_LEVEL)
 	const cap = securityCap(checks)
 	const level = cap === undefined ? gated : Math.min(gated, cap)
 	const instructions = facts.instructionFiles.reduce((sum, f) => sum + f.tokens, 0)
@@ -495,12 +674,47 @@ export function score(facts: Facts): ScoreResult {
 		gatedLevel: gated,
 		securityCap: cap,
 		checks,
-		areas: areaScores(checks),
-		topFixes: rankFixes(checks, level).slice(0, 3),
+		areas: areaScores(checks, weights),
+		topFixes: rankFixes(checks, level, weights).slice(0, 3),
 		pendingJudgments: checks.filter((c) => c.status === 'judge' && c.gate && c.level <= level),
 		tokensPerSession: { instructions, skills, total: instructions + skills },
-		weights: AREA_WEIGHTS,
+		injectionSurface: facts.injectionSurface,
+		weights,
+		overriddenWeights: (Object.keys(options.weights ?? {}) as WeightedArea[]).filter(
+			(area) => options.weights?.[area] !== AREA_WEIGHTS[area],
+		),
 	}
+}
+
+export interface LevelCheck {
+	minLevel: number
+	passed: boolean
+	/**
+	 * Unsettled `judge` gates at or below `minLevel` when the check passes. CI cannot settle them, so they
+	 * never change the exit code; a failed one would lower the level.
+	 */
+	provisional: string[]
+}
+
+/** CI mode: holds a repo or package at `minLevel` using only the gates the script decides. */
+export function checkLevel(
+	result: { level: number; pendingJudgments: Array<Pick<Check<string>, 'id' | 'level'>> },
+	minLevel: number,
+): LevelCheck {
+	const passed = result.level >= minLevel
+	return {
+		minLevel,
+		passed,
+		provisional: passed ? result.pendingJudgments.filter((c) => c.level <= minLevel).map((c) => c.id) : [],
+	}
+}
+
+export function formatCheck(level: number, check: LevelCheck): string {
+	if (!check.passed) return `check: FAIL, level ${level} is below --min-level ${check.minLevel}\n`
+	const line = `check: ok, level ${level} meets --min-level ${check.minLevel}`
+	return check.provisional.length === 0
+		? `${line}\n`
+		: `${line} (provisional: unsettled judgment gates ${check.provisional.join(', ')})\n`
 }
 
 export function formatReport(result: ScoreResult): string {
@@ -527,10 +741,17 @@ export function formatReport(result: ScoreResult): string {
 		`Tokens loaded per session: ~${t.total} (instructions ~${t.instructions}, skill descriptions ~${t.skills})`,
 	)
 	lines.push('')
+	const { hooks, mcpServers } = result.injectionSurface
+	lines.push('Prompt-injection surface (reported, not scored):')
+	if (hooks.length === 0 && mcpServers.length === 0) lines.push('  none configured')
+	for (const h of hooks) lines.push(`  hook ${h.event} (${h.file}): ${h.command}`)
+	for (const m of mcpServers) lines.push(`  mcp ${m.name} (${m.file}): ${m.target || 'no command or url'}`)
+	lines.push('')
 	lines.push('Areas (weight: score):')
 	for (const a of result.areas) {
 		const s = a.score === undefined ? 'n/a' : `${a.score}% (${a.passed}/${a.total})`
-		lines.push(`  ${a.area.padEnd(16)} ${String(a.weight).padStart(2)}: ${s}`)
+		const mark = result.overriddenWeights.includes(a.area) ? ' (repo override)' : ''
+		lines.push(`  ${a.area.padEnd(16)} ${String(a.weight).padStart(2)}: ${s}${mark}`)
 	}
 	lines.push('')
 	lines.push('Checks:')
@@ -540,6 +761,6 @@ export function formatReport(result: ScoreResult): string {
 		for (const d of c.detail ?? []) lines.push(`             ${d}`)
 	}
 	lines.push('')
-	lines.push('* gate. Weights are starting estimates, not measured values.')
+	lines.push('* gate. Weights are starting estimates; bench results have not yet revised any.')
 	return `${lines.join('\n')}\n`
 }

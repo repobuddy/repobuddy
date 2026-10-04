@@ -57,6 +57,7 @@ describe('scaffoldWorkflows', () => {
 		const pr = readFileSync(join(dir, '.github', 'workflows', 'pull-request.yml'), 'utf8')
 		expect(pr).toContain('pnpm install --frozen-lockfile')
 		expect(pr).toContain('pnpm test')
+		expect(pr).toMatch(/^ {2}merge_group:$/m)
 		const release = readFileSync(join(dir, '.github', 'workflows', 'release.yml'), 'utf8')
 		expect(release).toContain('branches: [main]')
 		const codeql = readFileSync(join(dir, '.github', 'workflows', 'codeql.yml'), 'utf8')

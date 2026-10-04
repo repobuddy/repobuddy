@@ -4,7 +4,8 @@ The instructions file (`AGENTS.md`, or a harness-specific file like `CLAUDE.md`)
 of every session. A wasted line costs more here than anywhere else in the repo.
 
 **buddy-agent-harness owns this area's configuration**: multi-harness bridges, skill layout, MCP
-files. Hand fixes to it. This area only reads and reports.
+files. Hand fixes to it. This area only reads and reports, and it reads what buddy-agent-harness
+`doctor` finds rather than checking those files itself.
 
 ## Checks
 
@@ -15,10 +16,32 @@ files. Hand fixes to it. This area only reads and reports.
 | `instructions-commands` | 3 | yes | script: each `pnpm <x>`, `npm run <x>`, `yarn <x>`, `bun run <x>`, `make <x>` it names exists in the root `package.json` or `Makefile` |
 | `instructions-accurate` | 3 | yes | **judgment** |
 | `instructions-lean` | 4 | yes | script: all instruction files together under ~3000 tokens (four characters per token) |
+| `harness-doctor` | 3 | no | script: buddy-agent-harness `doctor` reports no findings |
+| `harness-<problem>` | 3 | no | script: one per problem `doctor` reports, such as `harness-missing` |
 
 `instructions-commands` checks the root manifest only. A command scoped to a workspace package
 (`pnpm --filter x test`) is not checked, and a script defined in a workspace package can show up as
 missing. Confirm each reported one before calling it wrong.
+
+## buddy-agent-harness doctor
+
+When the repo has buddy-agent-harness, the script runs its `doctor --format json`, which is
+read-only. It looks in this order:
+
+1. the repo root, when its `package.json` is named `buddy-agent-harness`
+2. a workspace package of that name, from `pnpm-workspace.yaml` or `package.json` `workspaces`
+3. an installed copy in `node_modules/buddy-agent-harness`
+
+The repo's own package runs from `src/cli.ts` with node's `--experimental-transform-types`, so it
+needs no build. Otherwise, and always for an installed copy, it runs the package's `bin`.
+
+With no findings, `harness-doctor` passes. Each problem `doctor` names becomes a failing `harness-<problem>` check that lists the affected paths, and
+`harness-doctor` is left out. These checks count toward the area score but never gate the level.
+Their fixes belong to the `doctor-buddy-agent-harness` skill, which knows each repair.
+
+When none of these exists, `harness-doctor` is `n/a` and names the plugin. When
+`doctor` fails or its output cannot be read, `harness-doctor` is `judge`: run the
+`doctor-buddy-agent-harness` skill and settle it from its report.
 
 ## Judging `instructions-accurate`
 

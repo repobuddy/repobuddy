@@ -1,6 +1,24 @@
 import { describe, expect, it } from '@jest/globals'
 import type { Facts } from './facts.js'
-import { buildChecks, COMMENT_SHARE_BUDGET, formatReport, INSTRUCTION_TOKEN_BUDGET, MAX_LEVEL, score } from './score.js'
+import {
+	AREA_WEIGHTS,
+	buildChecks,
+	COMMENT_SHARE_BUDGET,
+	checkLevel,
+	formatCheck,
+	formatReport,
+	INSTRUCTION_TOKEN_BUDGET,
+	MAX_LEVEL,
+	score,
+} from './score.js'
+
+const PNPM_GATE = {
+	file: 'pnpm-workspace.yaml',
+	setting: 'minimumReleaseAge',
+	value: '1440',
+	minutes: 1440,
+	defaultNote: 'pnpm 11+ defaults to 1440 minutes',
+}
 
 /** A repo that passes every check the script can decide. */
 function readyFacts(overrides: Partial<Facts> = {}): Facts {
@@ -25,9 +43,15 @@ function readyFacts(overrides: Partial<Facts> = {}): Facts {
 		envIgnored: true,
 		committedSecretFiles: [],
 		mcpLiteralCredentials: [],
+		workflows: { files: ['.github/workflows/ci.yml'], unpinnedActions: [], missingPermissions: [] },
+		releaseAgeGate: PNPM_GATE,
+		injectionSurface: { hooks: [], mcpServers: [] },
 		comments: { files: 10, codeLines: 900, commentLines: 100, heaviest: [], orphanedJsdoc: [] },
 		nameCollisions: [],
+		undocumentedEnv: [],
+		searchedFixtureDirs: [],
 		deadCodeCommand: undefined,
+		benchBaselineAt: new Date().toISOString(),
 		...overrides,
 	}
 }
@@ -68,12 +92,67 @@ describe('score', () => {
 		expect(result.topFixes[0]?.id).toBe('committed-secrets')
 	})
 
+	it('awards level 5 only for a bench baseline at most 90 days old', () => {
+		const now = new Date('2026-09-28T00:00:00Z')
+		const daysAgo = (n: number) => new Date(now.getTime() - n * 86_400_000).toISOString()
+		expect(score(readyFacts({ benchBaselineAt: daysAgo(90) }), { now }).level).toBe(5)
+		expect(score(readyFacts({ benchBaselineAt: daysAgo(91) }), { now }).level).toBe(4)
+		const missing = score(readyFacts({ benchBaselineAt: undefined }), { now })
+		expect(missing.level).toBe(4)
+		expect(missing.topFixes[0]?.id).toBe('bench-baseline')
+	})
+
 	it('caps the level at 2 when .env is not ignored', () => {
 		expect(score(readyFacts({ envIgnored: false })).level).toBe(2)
 	})
 
 	it('caps the level at 1 for a literal MCP credential', () => {
 		expect(score(readyFacts({ mcpLiteralCredentials: ['.mcp.json: API_KEY'] })).level).toBe(1)
+	})
+
+	it('reports CI supply-chain findings without capping the level, ranked behind the gates', () => {
+		const result = score(
+			readyFacts({
+				scripts: ['build', 'test'],
+				workflows: {
+					files: ['.github/workflows/ci.yml'],
+					unpinnedActions: ['.github/workflows/ci.yml: pnpm/action-setup@v6'],
+					missingPermissions: ['.github/workflows/ci.yml'],
+				},
+				releaseAgeGate: {
+					file: '.npmrc',
+					setting: 'min-release-age',
+					value: undefined,
+					minutes: undefined,
+					defaultNote: 'npm has no default gate',
+				},
+			}),
+		)
+		expect(result.securityCap).toBeUndefined()
+		expect(result.level).toBe(1)
+		expect(result.topFixes[0]?.id).toBe('verify-command')
+		const ids = ['pinned-actions', 'workflow-permissions', 'release-age-gate']
+		expect(result.checks.filter((c) => ids.includes(c.id)).map((c) => [c.id, c.status, c.handoff])).toEqual([
+			['pinned-actions', 'fail', 'setup-github-repo'],
+			['workflow-permissions', 'fail', 'setup-github-repo'],
+			['release-age-gate', 'fail', 'min-release-age'],
+		])
+		const unset = { ...PNPM_GATE, value: undefined, minutes: undefined }
+		expect(check(readyFacts({ releaseAgeGate: unset }), 'release-age-gate')?.detail).toEqual([
+			'pnpm-workspace.yaml: no minimumReleaseAge (pnpm 11+ defaults to 1440 minutes)',
+		])
+	})
+
+	it('fails the release-age gate when it is set to zero', () => {
+		const gate = { ...PNPM_GATE, value: '0', minutes: 0 }
+		expect(check(readyFacts({ releaseAgeGate: gate }), 'release-age-gate')?.status).toBe('fail')
+	})
+
+	it('skips the CI supply-chain checks without workflows or a package manager', () => {
+		const facts = readyFacts({ workflows: undefined, releaseAgeGate: undefined })
+		expect(check(facts, 'pinned-actions')?.status).toBe('n/a')
+		expect(check(facts, 'workflow-permissions')?.status).toBe('n/a')
+		expect(check(facts, 'release-age-gate')?.status).toBe('n/a')
 	})
 
 	it('ranks the gate that blocks the next level ahead of heavier non-gates', () => {
@@ -93,7 +172,7 @@ describe('score', () => {
 
 	it('scores each area over its decided checks only', () => {
 		const areas = score(readyFacts({ scripts: ['test'], tsStrict: undefined })).areas
-		expect(areas.find((a) => a.area === 'verification')).toMatchObject({ passed: 3, total: 4, score: 75 })
+		expect(areas.find((a) => a.area === 'verification')).toMatchObject({ passed: 4, total: 5, score: 80 })
 		expect(areas.find((a) => a.area === 'self-describing')).toMatchObject({ total: 0, score: undefined })
 	})
 })
@@ -168,12 +247,114 @@ describe('buildChecks', () => {
 		expect(check(readyFacts({ nameCollisions: undefined }), 'generic-names')?.status).toBe('n/a')
 	})
 
+	it('lists fixture and vendored folders search still reads, for the agent to judge', () => {
+		const searchedFixtureDirs = [{ path: 'testcases/', searchedFiles: 12 }]
+		expect(check(readyFacts({ searchedFixtureDirs }), 'fixtures-excluded')).toMatchObject({
+			status: 'judge',
+			detail: ['testcases/: 12 file(s) in search'],
+		})
+		expect(check(readyFacts(), 'fixtures-excluded')?.status).toBe('pass')
+		expect(check(readyFacts({ searchedFixtureDirs: undefined }), 'fixtures-excluded')?.status).toBe('n/a')
+	})
+
+	it('fails on environment variables no setup document names', () => {
+		const undocumentedEnv = [{ name: 'API_URL', readIn: 'src/client.ts' }]
+		expect(check(readyFacts({ undocumentedEnv }), 'env-documented')).toMatchObject({
+			status: 'fail',
+			detail: ['API_URL: read in src/client.ts'],
+		})
+		expect(check(readyFacts(), 'env-documented')?.status).toBe('pass')
+		expect(check(readyFacts({ undocumentedEnv: undefined }), 'env-documented')?.status).toBe('n/a')
+	})
+
 	it('names the knip command to run for dead code, and skips it without knip', () => {
 		expect(check(readyFacts({ deadCodeCommand: 'pnpm knip' }), 'dead-code')).toMatchObject({
 			status: 'judge',
 			detail: ['run: pnpm knip'],
 		})
 		expect(check(readyFacts(), 'dead-code')?.status).toBe('n/a')
+	})
+
+	it('settles dead code from a --run-knip run', () => {
+		const command = 'pnpm knip'
+		expect(
+			check(
+				readyFacts({ deadCodeCommand: command, deadCodeRun: { command, outcome: 'clean', groups: [] } }),
+				'dead-code',
+			),
+		).toMatchObject({ status: 'pass', detail: ['ran: pnpm knip'] })
+		expect(
+			check(
+				readyFacts({
+					deadCodeCommand: command,
+					deadCodeRun: { command, outcome: 'found', groups: ['Unused exports (4)'] },
+				}),
+				'dead-code',
+			),
+		).toMatchObject({ status: 'fail', detail: ['ran: pnpm knip', 'Unused exports (4)'] })
+		expect(
+			check(
+				readyFacts({
+					deadCodeCommand: command,
+					deadCodeRun: { command, outcome: 'error', groups: [], error: 'exit 2: config error' },
+				}),
+				'dead-code',
+			),
+		).toMatchObject({
+			status: 'judge',
+			detail: ['run: pnpm knip', '--run-knip could not complete it: exit 2: config error'],
+		})
+	})
+
+	it('names buddy-agent-harness when it is not installed', () => {
+		expect(check(readyFacts(), 'harness-doctor')).toMatchObject({
+			area: 'instructions',
+			gate: false,
+			status: 'n/a',
+			detail: ['buddy-agent-harness is neither installed in this repo nor one of its packages'],
+			handoff: 'buddy-agent-harness',
+		})
+	})
+
+	it('passes when buddy-agent-harness doctor finds nothing', () => {
+		const facts = readyFacts({ harnessDoctor: { outcome: 'ok', findings: [] } })
+		expect(check(facts, 'harness-doctor')?.status).toBe('pass')
+		expect(score(facts).areas.find((a) => a.area === 'instructions')).toMatchObject({ passed: 5, total: 5 })
+	})
+
+	it('folds doctor findings into the instructions area, one non-gate check per problem', () => {
+		const facts = readyFacts({
+			harnessDoctor: {
+				outcome: 'ok',
+				findings: [
+					{ path: '.claude/skills', problem: 'missing', detail: 'The bridge does not exist.' },
+					{ path: 'GEMINI.md', problem: 'missing', detail: 'No instruction bridge.' },
+					{ path: 'CLAUDE.md', problem: 'shadowing', detail: 'Read instead of AGENTS.md.' },
+				],
+			},
+		})
+		const checks = buildChecks(facts).filter((c) => c.id.startsWith('harness-'))
+		expect(checks.map((c) => c.id)).toEqual(['harness-missing', 'harness-shadowing'])
+		expect(checks[0]).toMatchObject({
+			area: 'instructions',
+			gate: false,
+			status: 'fail',
+			detail: ['.claude/skills: The bridge does not exist.', 'GEMINI.md: No instruction bridge.'],
+			handoff: 'buddy-agent-harness',
+		})
+		const result = score(facts)
+		expect(result.level).toBe(MAX_LEVEL)
+		expect(result.areas.find((a) => a.area === 'instructions')).toMatchObject({ passed: 4, total: 6 })
+		expect(result.topFixes.map((c) => c.id)).toContain('harness-missing')
+	})
+
+	it('leaves the doctor check to judgment when doctor could not complete', () => {
+		const facts = readyFacts({ harnessDoctor: { outcome: 'error', findings: [], error: 'exit 2' } })
+		expect(check(facts, 'harness-doctor')).toMatchObject({
+			status: 'judge',
+			detail: ['run: buddy-agent-harness doctor', 'it could not complete: exit 2'],
+		})
+		expect(score(facts).pendingJudgments.map((c) => c.id)).not.toContain('harness-doctor')
 	})
 
 	it('skips CI-parity judgment when there is no verify command or CI', () => {
@@ -186,7 +367,7 @@ describe('buildChecks', () => {
 describe('formatReport', () => {
 	it('leads with the level and the fixes', () => {
 		const text = formatReport(score(readyFacts({ committedSecretFiles: ['.env'], hasContributing: false })))
-		expect(text.split('\n')[0]).toBe('Level 1 of 4: An agent can read it')
+		expect(text.split('\n')[0]).toBe('Level 1 of 5: An agent can read it')
 		expect(text).toMatch(/caps it at 1/)
 		expect(text).toMatch(/1\. \[security\]/)
 		expect(text).toMatch(/Tokens loaded per session: ~830/)
@@ -199,5 +380,81 @@ describe('formatReport', () => {
 
 	it('says when the script sees nothing to fix', () => {
 		expect(formatReport(score(readyFacts()))).toMatch(/nothing the script can see/)
+	})
+
+	it('lists the prompt-injection surface without scoring it', () => {
+		const injectionSurface = {
+			hooks: [{ file: '.claude/settings.json', event: 'SessionStart', command: 'gh issue view' }],
+			mcpServers: [
+				{ file: '.mcp.json', name: 'fetch', target: 'npx fetch-mcp' },
+				{ file: '.mcp.json', name: 'bare', target: '' },
+			],
+		}
+		const result = score(readyFacts({ injectionSurface }))
+		expect(result.level).toBe(MAX_LEVEL)
+		expect(result.injectionSurface).toEqual(injectionSurface)
+		const text = formatReport(result)
+		expect(text).toMatch(/hook SessionStart \(\.claude\/settings\.json\): gh issue view/)
+		expect(text).toMatch(/mcp fetch \(\.mcp\.json\): npx fetch-mcp/)
+		expect(text).toMatch(/mcp bare \(\.mcp\.json\): no command or url/)
+		expect(formatReport(score(readyFacts()))).toMatch(/not scored\):\n {2}none configured/)
+	})
+})
+
+describe('weight overrides', () => {
+	it('uses the default weights when there is no override', () => {
+		const result = score(readyFacts())
+		expect(result.weights).toEqual(AREA_WEIGHTS)
+		expect(result.overriddenWeights).toEqual([])
+	})
+
+	it('merges an override over the defaults and reorders the fixes by it', () => {
+		const facts = readyFacts({ hasContributing: false, hasLockfile: false, preCommitHooks: [] })
+		expect(score(facts).topFixes.map((c) => c.id)).toEqual(['fast-feedback', 'lockfile', 'contributing'])
+		const result = score(facts, { weights: { 'task-discovery': 100, verification: 25 } })
+		expect(result.weights['task-discovery']).toBe(100)
+		expect(result.overriddenWeights).toEqual(['task-discovery'])
+		expect(result.areas.find((a) => a.area === 'task-discovery')?.weight).toBe(100)
+		expect(result.topFixes.map((c) => c.id)).toEqual(['contributing', 'fast-feedback', 'lockfile'])
+	})
+
+	it('never changes the level', () => {
+		const facts = readyFacts({ toolchainPins: [] })
+		const zeroed = Object.fromEntries(Object.keys(AREA_WEIGHTS).map((a) => [a, 0]))
+		expect(score(facts, { weights: zeroed }).level).toBe(score(facts).level)
+	})
+
+	it('marks overridden weights in the report', () => {
+		const text = formatReport(score(readyFacts(), { weights: { noise: 40 } }))
+		expect(text).toMatch(/noise +40: .*\(repo override\)/)
+		expect(text).not.toMatch(/verification.*repo override/)
+	})
+})
+
+describe('checkLevel', () => {
+	it('passes at the threshold and lists the unsettled judgment gates at or below it', () => {
+		const result = score(readyFacts())
+		expect(checkLevel(result, 2)).toEqual({ minLevel: 2, passed: true, provisional: ['ci-runs-verify'] })
+		expect(checkLevel(result, 3).provisional).toEqual(['ci-runs-verify', 'instructions-accurate', 'setup-documented'])
+	})
+
+	it('fails below the threshold on script-decided gates, with nothing provisional', () => {
+		const result = score(readyFacts({ toolchainPins: [] }))
+		expect(checkLevel(result, 3)).toEqual({ minLevel: 3, passed: false, provisional: [] })
+	})
+
+	it('fails when a security finding caps the level below the threshold', () => {
+		expect(checkLevel(score(readyFacts({ envIgnored: false })), 3).passed).toBe(false)
+	})
+
+	it('formats a pass, a provisional pass, and a fail', () => {
+		const ready = score(readyFacts())
+		expect(formatCheck(ready.level, checkLevel(ready, 3))).toBe(
+			'check: ok, level 5 meets --min-level 3 (provisional: unsettled judgment gates ci-runs-verify, instructions-accurate, setup-documented)\n',
+		)
+		const clean = score(readyFacts({ ciConfigs: [], instructionFiles: [] }))
+		expect(formatCheck(clean.level, checkLevel(clean, 1))).toBe('check: ok, level 2 meets --min-level 1\n')
+		const low = score(readyFacts({ scripts: ['test'] }))
+		expect(formatCheck(low.level, checkLevel(low, 3))).toBe('check: FAIL, level 1 is below --min-level 3\n')
 	})
 })

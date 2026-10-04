@@ -17,6 +17,10 @@ describe(`${browserTestPreset.name}()`, () => {
 		expect(r.name).toBe('@repobuddy/vitest/browser-preset')
 	})
 
+	it('runs in the pre phase so Vitest sees browser mode enabled', () => {
+		expect(browserTestPreset().enforce).toBe('pre')
+	})
+
 	it('uses playwright', () => {
 		const r = browserTestPreset()
 		expect(callConfig(r).test?.browser?.provider).toSatisfy((v: { name: string }) => v.name === 'playwright')
@@ -47,14 +51,6 @@ describe(`${browserTestPreset.name}()`, () => {
 	it('supports config without name', () => {
 		const r = browserTestPreset()
 		expect(callConfig(r, { test: {} }).test?.browser?.instances?.[0]?.name).toBeUndefined()
-	})
-
-	// vitest 5 builds the browser server in its own `enforce: 'pre'` config hook,
-	// which only fires when `test.browser.enabled` is already set.
-	// A normal-order hook would enable browser mode too late.
-	it('runs its config hook before vitest sets up the browser server', () => {
-		const hook = browserTestPreset().config
-		expect(typeof hook === 'object' ? hook.order : undefined).toBe('pre')
 	})
 
 	it('supports config with name', () => {
