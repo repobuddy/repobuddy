@@ -65,11 +65,16 @@ from its `## NEXT` without going back over what it records as settled.
    `## Working method` instead of working out the conventions again. Load the skills that
    `## Suggested skills` names when you reach the step that needs them.
 
+   Read `## Dead ends` before acting. Don't retry an approach listed there unless you have the
+   evidence or the condition it names, and say so when you do. A settled decision whose reason is
+   "user said" is the user's own call: reopen it only by asking the user.
+
 5. **Surface the open questions that block the next action.** If an item in `## Open questions` has
    to be answered before `## NEXT` can run, raise it before going further. Don't guess past it.
 
-6. **Do the `## NEXT` action, then keep going.** Read only the context that action needs: the files
-   and references in `## Touched` that it uses, not all of them. Work in the checkpoint's rhythm,
+6. **Do the `## NEXT` action, then keep going** through `## Remaining steps`, in order, toward the
+   instruction quoted under `## Goal`. Read only the context each action needs: the files and
+   references in `## Touched` that it uses, not all of them. Work in the checkpoint's rhythm,
    committing each coherent unit as the repo's conventions require.
 
 7. **Keep the checkpoint current while it exists.** When a decision is settled or a question

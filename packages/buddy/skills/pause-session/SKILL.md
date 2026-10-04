@@ -16,8 +16,11 @@ opens the file has to be able to continue.
 
 ## Procedure
 
-1. **Sort the session's work into topics.** A topic is one independent thread of work: a bug fix, a
-   side refactor, a research question. Two threads are **one topic** when they share a goal (finishing
+1. **List the user's requests, then sort them into topics.** Read the session from the start and list
+   every request the user made, in order, including the ones not started yet. A request with no trace
+   in files, commits or the harness's todo list is the easiest to lose, and it is still live work.
+   Then sort the requests and the work done on them into topics. A topic is one independent thread of
+   work: a bug fix, a side refactor, a research question. Two threads are **one topic** when they share a goal (finishing
    one is part of finishing the other) or have to change the same files, so they can't be resumed in
    separate sessions without colliding. They are **two topics** when each has its own goal, its own
    `## NEXT`, and its own files. A thread that can't start until another finishes is still its own
@@ -80,6 +83,18 @@ opens the file has to be able to continue.
      the field out when the topics are independent. The dependency is met once the slug's checkpoint
      is gone, because a checkpoint is deleted when its work is done.
 
+   Fill each checkpoint from what the session holds, so the cold reader gets it without rediscovery:
+   - **Keep the user's words.** Under `## Goal`, quote the user's latest instruction for the topic
+     word for word. Record each correction the user made ("don't touch X", "use Y instead") as a
+     settled decision whose reason is "user said". `## NEXT` must follow from what the user asked
+     for, not from an idea of the agent's own the user never agreed to.
+   - **Record the dead ends.** An approach that was tried and failed goes under `## Dead ends`, with
+     the evidence that sank it, so the next session doesn't try the obvious fix again.
+   - **Describe a half-finished edit.** If the pause cuts a unit of work midway, `## NEXT` says what
+     the partial change already does and what it still lacks, not only which files are dirty.
+   - **Carry the todo list over.** Turn the harness's pending and in-progress todo items for the
+     topic into `## Remaining steps`, in order, after the one in `## NEXT`.
+
 7. **Apply the redaction floor.** Never write secrets, tokens, keys, passwords or personal data, even
    when the file stays local. Describe the class of thing ("the staging API key in 1Password"), not its
    value. With `--commit`, the file becomes public to anyone with the repo, so also leave out absolute
@@ -94,6 +109,15 @@ opens the file has to be able to continue.
    `--commit`, stage only the checkpoint files with `git add -f <path>...` (the folder is excluded, so
    a plain `git add` skips them) and commit them together as `docs: checkpoint <slug>[, <slug>...]`,
    so they follow the branch to another machine or another person.
+
+   Before committing, check the redaction mechanically, since prose alone misses a path:
+
+   ```sh
+   grep -nE -e '/(home|Users)/' -e '[A-Za-z]:\\' -e "$HOME" -e "$(whoami)" -e "$(hostname)" <checkpoint>...
+   ```
+
+   Rewrite every real hit as a repo-relative path or a description, and don't commit until the check
+   comes back clean. A match on a common word that happens to equal the username is not a leak.
 
 10. **Report.** List every checkpoint written, each with its path, its `## NEXT` line and its
     `depends-on`, and say whether they were committed. Then list the topics skipped as done, one line
@@ -119,11 +143,17 @@ updated: <ISO date>
 ## NEXT — resume here
 
 <One concrete, runnable action: the file or unit to touch and the command or skill to run.
-Never "continue the work".>
+Never "continue the work". If an edit is half done: what the partial change does, and what it lacks.>
 
 ## Goal
 
 <What done looks like, in one or two lines.>
+
+> <The user's latest instruction for this topic, quoted word for word.>
+
+## Remaining steps
+
+- <the step after ## NEXT, from the harness's todo list or the plan>
 
 ## Remaining topics
 
@@ -131,7 +161,11 @@ Never "continue the work".>
 
 ## Settled decisions
 
-- <decision> — <why, in one line>. Do not reopen without new evidence.
+- <decision> — <why, in one line, or "user said">. Do not reopen without new evidence.
+
+## Dead ends
+
+- <approach> — failed because <evidence>. Don't retry unless <condition>.
 
 ## Open questions
 
@@ -157,12 +191,15 @@ such as a deployed preview or an open browser session. Write "nothing" if there 
 ```
 
 Leave out any section that would be empty, except `## NEXT` and `## Not in git`. A cold reader needs
-both, and "nothing" in `## Not in git` is itself information. `## Remaining topics` appears only in a
-checkpoint kept as one over several topics.
+both, and "nothing" in `## Not in git` is itself information. So a checkpoint with no dead ends, no
+remaining steps or no quotable instruction simply has no such section or line. `## Remaining topics`
+appears only in a checkpoint kept as one over several topics.
 
 ## What a good checkpoint is not
 
-- **Not a transcript.** Record decisions and the next action, not a play-by-play of the session.
+- **Not a transcript.** Record decisions and the next action, not a play-by-play of the session. Quote
+  the user's latest instruction, not the conversation; list a dead end as one line, not the story of
+  the attempt.
 - **Not a record of finished work.** A topic that is done is a commit or a PR, cited in one line where
   live work builds on it. It is not a section of its own.
 - **Not a copy.** If something already lives in a commit, an ADR, a spec, an issue or a diff, reference
