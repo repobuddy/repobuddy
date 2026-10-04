@@ -122,6 +122,9 @@ already has, use the `review-permissions` skill instead. This step only adds a s
      [references/advanced-tier.md](references/advanced-tier.md) before you offer one.
      - `Bash(gh pr merge --auto *)`: GitHub waits for the branch's required checks before it merges.
        Offer it only when the default branch requires a status check. With none, `--auto` merges at once.
+     - Merges in auto mode: an `autoMode.allow` rule in `~/.claude/settings.json`, because auto
+       mode's classifier blocks `gh pr merge` on an unreviewed PR even when `permissions.allow`
+       lists it. User scope only; the rule names the owners and conditions, with the `--admin` deny entries.
      - `gh api` reads: through a read-only token for the session, or the `gh-api-guard` hook this skill
        ships, which allows GET and GraphQL queries and asks for everything else
      - **Never write an entry without its guard.** If the user declines the guard, do not write the entry.
@@ -156,7 +159,7 @@ already has, use the `review-permissions` skill instead. This step only adds a s
    - Never remove a deny entry, and never add an entry from the ask-every-time tier, unless the user
      said yes to that exact entry.
    - Write an advanced entry in the same change as its guard: the `--admin` deny entries for
-     `gh pr merge --auto`, and the hook for `gh api`.
+     `gh pr merge --auto` and for the auto-mode merge rule, and the hook for `gh api`.
    - Keep the file valid: read it back and parse it after writing. For Codex, run
      `codex execpolicy check --pretty --rules <file> -- <command>` on one entry if the command exists.
    - Report the files you changed and what each one now allows.

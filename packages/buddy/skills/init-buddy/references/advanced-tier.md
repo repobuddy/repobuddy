@@ -43,6 +43,48 @@ beats allow.
 The rules check covers the default branch. A PR into another branch follows that branch's rules, so
 say this when the repo merges into release or long-lived branches.
 
+## Merges in auto mode (`autoMode.allow`)
+
+| | |
+|---|---|
+| Entry | a prose rule in `autoMode.allow` in `~/.claude/settings.json` (template below). Not a `permissions.allow` entry. |
+| Instead of | relying on `Bash(gh pr merge *)` in `permissions.allow`, which auto mode's classifier still overrides |
+| Risk | The agent can merge a PR that no person approved, in any repo the rule names. |
+| Guard | The rule text names the owners and the conditions, and the deny list holds the `--admin` entries. |
+
+Offer this only when the user runs Claude Code in auto mode (`permissions.defaultMode` is `"auto"`, or
+they start sessions in it) and wants the agent to merge PRs itself, for example an orchestrator
+merging the PRs its worker sessions open. In auto mode a classifier reviews each action after the
+permission rules. Its built-in "Merge Without Review" block stops `gh pr merge` on a PR with no
+approving review, even when `permissions.allow` lists the command. Its exceptions are plain-language
+rules under `autoMode.allow`.
+
+**User scope only.** The classifier reads `autoMode` from `~/.claude/settings.json` (and managed
+settings), never from `.claude/settings.json` or `.claude/settings.local.json`, so that a repo cannot
+grant itself exceptions. Do not offer project scope for this entry.
+
+**Ask for the owners.** The rule must name the GitHub users and organizations whose repos it covers.
+Ask the user for the list. `gh api user/orgs --jq '.[].login'` can suggest candidates, but the user
+decides. Never widen the list from a repo's remotes alone.
+
+The entry, with `<owners>` filled in:
+
+```json
+"Merging a pull request (`gh pr merge`, or adding it to the merge queue) without an approving review, in a repo owned by <owners>, when the agent has confirmed first-hand that the PR has no merge conflict, every required check is green, and no review requests changes or is left unresolved. Bypassing branch protection or required checks (`gh pr merge --admin`), merging while checks are red or pending, or merging in a repo owned by anyone else is still not covered."
+```
+
+Write it:
+
+- Add it to `autoMode.allow`. Never remove or reorder the entries already there.
+- If `autoMode.allow` does not exist yet, start it with `"$defaults"`, so the built-in exceptions stay
+  in force, then this entry.
+- Write the `--admin` deny entries from the [deny list](deny-list.md) in the same change, unless the
+  user already has them.
+
+Say what it does not guarantee. The classifier is a model that reads the rule, not a pattern match, so
+the rule makes a merge that meets its conditions allowed, not certain. If a merge is still blocked, the
+user merges it with `! gh pr merge <pr>`. The rule never covers merging a PR the agent has not checked.
+
 ## `gh api`
 
 | | |

@@ -55,6 +55,11 @@ Gets a machine ready to work with a repository's git host. It detects the OS and
      requires no status check, the rules are already met and `--auto` merges at once. So the skill
      reads the default branch's rules first and offers the entry only when a required check exists. It
      writes the entry together with the deny entries for `gh pr merge --admin`.
+   - **Merges in auto mode**: in auto mode, a classifier blocks `gh pr merge` on a PR with no approving
+     review, even when your allow list has the command. The skill offers a plain-language rule for
+     `autoMode.allow` in `~/.claude/settings.json` (the classifier ignores project settings). It covers
+     merges in the owners you name, only after the agent has confirmed no conflict, green checks, and
+     no requested changes, never `--admin`. It writes the `--admin` deny entries with it.
    - **`gh api`**: GET is the default, but any `-f`/`-F` field switches it to POST, and `graphql` is
      always POST. The skill first points to the read commands that already cover most needs
      (`gh pr view --json`, `gh run view`, `gh search`). Then it offers one of two guards. The first is
