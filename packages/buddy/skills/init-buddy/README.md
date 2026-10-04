@@ -1,6 +1,6 @@
 # init-buddy
 
-Gets a machine ready to work with a repository's git host. It detects the OS and package managers, checks the host's CLI, and finds any MCP server already configured for the host. Then it installs and logs in the CLI you want.
+Gets a machine ready to work with a repository's git host. It detects the OS and package managers, checks the host's CLI, and finds any MCP server already configured for the host. Then it installs and logs in the CLI you want, and offers a starting allow list so your agent harness stops prompting for the read-only commands it runs most.
 
 ## When to use
 
@@ -8,6 +8,7 @@ Gets a machine ready to work with a repository's git host. It detects the OS and
 - "install gh" / "I need glab for our GitLab"
 - another skill stopped because `gh` or `glab` is missing or logged out
 - "is my machine ready to work with Azure DevOps?"
+- "stop asking me before every `gh pr view`"
 
 ## What it does
 
@@ -34,12 +35,23 @@ Gets a machine ready to work with a repository's git host. It detects the OS and
    If one is active, it shows you and asks whether you still want the CLI.
 5. **Installs the CLI** with the option that fits your machine. It prefers the vendor's official package, shows the commands first, and asks you to run `sudo` commands yourself when they need a password.
 6. **Walks you through login.** Logins are interactive, so it gives you the command to run (`! gh auth login`), then checks the result.
+7. **Proposes an allow list** for Claude Code, Cursor CLI, or Codex CLI, in three tiers:
+
+   | Tier | What goes in it | Examples |
+   |---|---|---|
+   | Safe | read-only commands | `git status`, `gh pr view`, `glab mr list`, the repo's `test` and `lint` scripts |
+   | Good to have | local writes that git can undo | `git add`, `git commit`, `git mv`, format scripts |
+   | Ask every time | remote, destructive, or open-ended commands, never proposed | `git push`, `gh pr merge`, `gh api`, `npx`, `git stash drop` |
+
+   You pick the entries and the scope: user (every repo), project shared (committed), or project local
+   (this repo on this machine). It shows the diff and writes only what you approved.
 
 ## Safety
 
 - MCP servers are reported by name, command, and URL origin only. Environment values, headers, and URL query strings in those config files are never shown.
 - It never asks you to paste a token into the chat.
 - It does not install, enable, or edit MCP servers, and does not change repository settings.
+- It only adds allow-list entries you approved. It never removes an entry or a deny rule, and never adds a remote or destructive command unless you name it and confirm it. To audit the allow list you already have, use [`review-permissions`](../review-permissions/README.md).
 - It does not run `curl | sh` installers beyond the ones it lists by name. The one listed, Microsoft's Azure CLI script for Debian/Ubuntu, is shown to you before it runs.
 
 ## How to invoke
@@ -48,7 +60,7 @@ Ask for it directly, or run `/init-buddy [github|gitlab|bitbucket|azure|gitea|fo
 
 ## What it produces
 
-An installed, logged-in CLI for each host you chose, and a summary of the environment and of the MCP servers already available.
+An installed, logged-in CLI for each host you chose, a summary of the environment and of the MCP servers already available, and, if you accepted, the allow-list entries you approved, written to the scope you picked.
 
 ## Install
 
