@@ -103,7 +103,7 @@ This is a **pnpm monorepo** managed with [Turborepo](https://turbo.build/). It i
 - `pause-session` / `resume-session` — sort an agent session's work into topics, skip the finished ones, and pause the live ones into checkpoints at `.agents/repobuddy/checkpoints/<slug>.md` (one per topic or one for all, asked; next action first, settled decisions, open questions, working method, state not in git, `depends-on` between topics), then resume one in a fresh session, any harness; SDD missions hand off to cyber-sdd's `pause-mission`/`resume-mission`
 - `review-api` — review a library's public API against its own conventions: shape conformance, sibling-justified gaps, docs vs exports; read-only, verified, priority-ordered report
 - `review-permissions` — audit harness permissions (Claude Code, Cursor, Codex, Copilot, Gemini): risk, tightening, consolidation
-- `setup-github-repo` — branch protection, Dependabot, CI setup
+- `setup-github-repo` — branch protection, merge backstop (merge queue or require-up-to-date), Dependabot, CI setup
 - `setup-npm-trusted-publishing` — register npm trusted publishers (OIDC) to retire `NPM_TOKEN`; one package, an org, or every org owned
 - `website` — router for docs-website work; `init` adds an Astro/Starlight site to a monorepo as a private workspace package, wires turbo, knip, biome, and pnpm build approvals; `deploy` publishes a static site from CI to GitHub Pages, GitLab Pages, Codeberg Pages, Bitbucket, or Azure Static Web Apps, setting the base path the host serves at
 - `to-question` — word a question for a platform (Slack, Jira, Linear, Asana, GitHub, GitLab, Bugzilla, Redmine, Trac, email); composes, never posts
