@@ -1,9 +1,9 @@
 /*
- * Claude Code PreToolUse hook: let read-only `gh api` calls through, ask for everything else.
+ * Claude Code PreToolUse hook: let read-only `gh api` and `glab api` calls through, ask for everything else.
  *
  *   node scripts/gh-api-guard.mjs        # reads the hook's JSON from stdin
  *
- * Register it on the Bash tool (see the init-buddy skill for the settings entry). For a `gh api`
+ * Register it on the Bash tool (see the init-buddy skill for the settings entry). For a `gh api` or `glab api`
  * command it prints a PreToolUse decision:
  *   allow  a GET request, or a GraphQL query whose body has no `mutation`
  *   ask    anything else: another method, fields that switch it to POST, `--input`, `@file` fields,

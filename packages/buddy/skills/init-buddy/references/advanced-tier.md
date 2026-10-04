@@ -8,18 +8,60 @@ command in ask-every-time.
 These entries are for Claude Code only. Cursor and Codex cannot express the guards (see
 [Other harnesses](#other-harnesses)).
 
-## `gh pr merge --auto`
+## Which hosts get which entry
+
+Offer an entry only for a host the detection found, and only where this table says yes. Where it says
+no, tell the user the host has no safe equivalent and leave its commands in ask-every-time.
+
+| Host | Queued merge | Merges in auto mode | Raw API reads |
+|---|---|---|---|
+| GitHub | `gh pr merge --auto` | yes | `gh api`: read-only token, or the `gh-api-guard` hook |
+| GitLab | `glab mr merge --auto-merge` | yes | `glab api`: read-only token, or the `gh-api-guard` hook |
+| Azure DevOps | `az repos pr update --auto-complete true` | yes | no |
+| Gitea | no: `tea pulls merge` has no auto-merge flag | yes | no |
+| Forgejo / Codeberg | no: `fj pr merge` has no auto-merge flag | yes | no: `fj` has no raw API command |
+| Bitbucket Cloud | no: no official CLI | no: no CLI to name | no |
+
+Why the no's:
+
+- **Gitea and Forgejo queued merge.** The server can merge when checks pass (`merge_when_checks_succeed`
+  in the merge API), but neither CLI sends it. The only way is a raw `tea api` POST, which is
+  ask-every-time. And with no required status check the server merges at once, the same trap as GitHub.
+- **Raw API on Gitea, Azure.** `tea api` has the same GET-to-POST switch as `gh api`, but the
+  `gh-api-guard` hook does not parse it (it reads `gh api` and `glab api` only), and `tea` has no documented way to swap in a read-only token
+  for one session. `az devops invoke` and `az rest` run with the `az login` credential, which can reach
+  the whole Azure account. Leave them in ask-every-time.
+- **Bitbucket Cloud.** There is no official CLI to write an entry for. Its "Allow automatic merge when
+  builds pass" merge check is a web setting.
+
+## Queued merge
+
+The entry lets the agent queue a merge that the host performs only once the target branch's own rules
+are met. That check happens on the host, not in the harness. **If the branch requires nothing, the rules
+are already met and the host merges at once.** So every host's guard is the same shape: read the
+host's own branch or project settings first, offer the entry only when a required check or pipeline
+blocks the merge, and write the host's bypass deny entries from the [deny list](deny-list.md) with it.
+
+For every host:
+
+- **A required review alone is not enough.** A PR or MR that already has an approval merges at once.
+- **Cannot tell** (403, 404 for lack of access, no rights to read the settings): treat it as no
+  required check, and do not offer the entry.
+- **Project local scope only.** The guard is this repo's settings. At user scope the entry would also
+  apply in a repo that requires nothing, where it merges at once.
+- **Deny beats allow.** The allow pattern also matches a command that adds the bypass flag, so the deny
+  entry is what stops it. Never write the allow entry without it.
+
+### GitHub: `gh pr merge --auto`
 
 | | |
 |---|---|
 | Entry | `Bash(gh pr merge --auto *)` |
 | Instead of | `Bash(gh pr merge *)`, which also allows an immediate merge and `--admin` |
 | Risk | The agent can queue a merge of any PR it can see. |
-| Guard | The base branch requires at least one status check, and the deny list holds the `--admin` entries. |
+| Guard | The base branch requires at least one status check, and the deny list holds the GitHub bypass (`--admin`) entries. |
 
-With `--auto`, GitHub merges only after the branch's rules are met. That check happens on GitHub's
-side, not in the harness. If the branch requires nothing, the rules are already met, so `--auto`
-**merges immediately**. Check the default branch's rules before you offer the entry:
+Check the default branch's rules before you offer the entry:
 
 ```bash
 branch=$(gh repo view --json defaultBranchRef --jq .defaultBranchRef.name)
@@ -32,101 +74,181 @@ gh api "repos/{owner}/{repo}/branches/$branch/protection" --jq '.required_status
 - **A required status check is in place** (a `required_status_checks` rule, or classic protection
   with checks or contexts): offer the entry. Say which checks GitHub will wait for.
 - **No required check:** do not offer the entry. Say that `--auto` would merge at once here, and that
-  adding a required check (through `setup-github-repo`, or the repository's rules settings) comes
-  first. A required review alone is not enough, because a PR that already has an approval merges at once.
-- **Cannot tell** (403, no access to rules): treat it as no required check.
-
-Write the entry only together with the `--admin` deny entries from the [deny list](deny-list.md). The
-allow pattern also matches `gh pr merge --auto --admin 12`, and a deny rule is what stops that. Deny
-beats allow.
-
-Write the entry at project local scope only. Its guard is this repo's branch rules, so at user scope it
-would also apply in a repo that requires no check, where `--auto` merges at once.
+  adding a required check (through `setup-github-repo`, or the repository's rules settings) comes first.
 
 The rules check covers the default branch. A PR into another branch follows that branch's rules, so
 say this when the repo merges into release or long-lived branches.
+
+### GitLab: `glab mr merge --auto-merge`
+
+| | |
+|---|---|
+| Entry | `Bash(glab mr merge --auto-merge *)` |
+| Instead of | `Bash(glab mr merge *)`, which also allows `--auto-merge=false`, an immediate merge |
+| Risk | The agent can queue a merge of any MR it can see. |
+| Guard | The project requires a successful pipeline and does not count a skipped one, and the deny list holds the GitLab immediate-merge entries. |
+
+`glab mr merge` turns auto-merge on by default when a pipeline is running, and `--auto-merge=false`
+merges at once. GitLab's merge has no flag or API parameter that bypasses a failing pipeline, so the
+guard is the project setting that makes the pipeline required:
+
+```bash
+glab api projects/:id
+```
+
+Read these fields from the JSON it prints:
+
+- `only_allow_merge_if_pipeline_succeeds` is `true`, **and** `allow_merge_on_skipped_pipeline` is
+  `false`: offer the entry. With that setting, an MR with no pipeline cannot merge at all. Say that
+  every MR in the project now waits for its pipeline, whatever its target branch.
+- Anything else: do not offer the entry. Say that GitLab merges at once when no pipeline is required,
+  and that turning on "Pipelines must succeed" (Settings > Merge requests) comes first.
+
+`glab api` with no fields sends a GET, so this read is safe to run.
+
+### Azure DevOps: `az repos pr update --auto-complete true`
+
+| | |
+|---|---|
+| Entry | `Bash(az repos pr update * --auto-complete true*)` |
+| Instead of | `Bash(az repos pr update *)`, which also allows `--bypass-policy` and any other PR change |
+| Risk | The agent can set any PR it can see to complete once its policies pass. |
+| Guard | The target branch has an enabled, blocking build validation policy, and the deny list holds the Azure bypass (`--bypass-policy`) entries. |
+
+Auto-complete waits for the branch's required policies. Read them for the default branch:
+
+```bash
+repo=$(az repos show --repository <repo name> --query id -o tsv)
+az repos policy list --repository-id "$repo" --branch <default branch> \
+  --query "[?isEnabled && isBlocking].{type: type.displayName, settings: settings}"
+```
+
+`--branch` needs `--repository-id`, and matches the branch name exactly. `--detect` (on by default)
+reads the organization and project from the remote; pass `--org` and `--project` if it cannot.
+
+- **An enabled, blocking build validation policy** (its settings name a `buildDefinitionId`): offer
+  the entry. Say which pipeline Azure will wait for.
+- **Only reviewer policies, or nothing blocking:** do not offer the entry. A required reviewer who has
+  already approved lets the PR complete at once. Say that a build validation policy on the branch comes
+  first.
+
+`--bypass-policy` completes the PR over its policies for anyone with "Exempt from policy enforcement".
+The allow pattern matches `--auto-complete true --bypass-policy true`, so write the deny entries with it.
 
 ## Merges in auto mode (`autoMode.allow`)
 
 | | |
 |---|---|
 | Entry | a prose rule in `autoMode.allow` in `~/.claude/settings.json` (template below). Not a `permissions.allow` entry. |
-| Instead of | relying on `Bash(gh pr merge *)` in `permissions.allow`, which auto mode's classifier still overrides |
-| Risk | The agent can merge a PR that no person approved, in any repo the rule names. |
-| Guard | The rule text names the owners and the conditions, and the deny list holds the `--admin` entries. |
+| Instead of | relying on the merge command in `permissions.allow`, which auto mode's classifier still overrides |
+| Risk | The agent can merge a PR or MR that no person approved, in any repo the rule names. |
+| Guard | The rule text names the hosts, the owners, and the conditions, and the deny list holds each host's bypass entries. |
 
 Offer this only when the user runs Claude Code in auto mode (`permissions.defaultMode` is `"auto"`, or
-they start sessions in it) and wants the agent to merge PRs itself, for example an orchestrator
-merging the PRs its worker sessions open. In auto mode a classifier reviews each action after the
-permission rules. Its built-in "Merge Without Review" block stops `gh pr merge` on a PR with no
-approving review, even when `permissions.allow` lists the command. Its exceptions are plain-language
-rules under `autoMode.allow`.
+they start sessions in it) and wants the agent to merge itself, for example an orchestrator merging the
+PRs its worker sessions open. In auto mode a classifier reviews each action after the permission rules.
+Its built-in "Merge Without Review" block stops a merge of a PR with no approving review, even when
+`permissions.allow` lists the command. Its exceptions are plain-language rules under `autoMode.allow`.
 
 **User scope only.** The classifier reads `autoMode` from `~/.claude/settings.json` (and managed
 settings), never from `.claude/settings.json` or `.claude/settings.local.json`, so that a repo cannot
 grant itself exceptions. Do not offer project scope for this entry.
 
-**Ask for the owners.** The rule must name the GitHub users and organizations whose repos it covers.
-Ask the user for the list. `gh api user/orgs --jq '.[].login'` can suggest candidates, but the user
-decides. Never widen the list from a repo's remotes alone.
+### Fill it in per host
 
-The entry, with `<owners>` filled in:
+Cover every host the detection found, except Bitbucket Cloud, which has no CLI to name. Take each
+host's row:
+
+| Host | Merge commands | Bypass forms to exclude | Owners are | Suggest candidates with |
+|---|---|---|---|---|
+| GitHub | `gh pr merge`, or adding it to the merge queue | `gh pr merge --admin` | GitHub users and organizations | `gh api user/orgs --jq '.[].login'` |
+| GitLab | `glab mr merge` | `glab mr merge --auto-merge=false` before the pipeline has passed | GitLab groups and user namespaces, by full path | `glab api "groups?min_access_level=30"` (read `full_path`) |
+| Azure DevOps | `az repos pr update --auto-complete true`, `az repos pr update --status completed` | `--bypass-policy` on `az repos pr update` or `az repos pr create` | Azure DevOps organizations, or projects within one | `az devops project list` (for the default organization) |
+| Gitea | `tea pulls merge` | a `force_merge` merge sent through `tea api` | Gitea organizations and users, on the named instance | the user's own list; `tea --help` shows the org commands of the installed version |
+| Forgejo / Codeberg | `fj pr merge` | none in `fj`; the rule's "red or pending" clause covers it | Forgejo organizations and users, on the named instance | the user's own list |
+
+**Ask for the owners, per host.** The rule must name, for each host, the owners whose repos it covers,
+and for a self-hosted instance its hostname (`the GitLab group acme/platform on git.corp.example`). The
+suggestion commands can propose candidates, but the user decides. Never widen the list from a repo's
+remotes alone, and never let an owner on one host stand for the same name on another.
+
+The entry, with the placeholders filled in from the rows:
+
+```text
+Merging a pull or merge request (<merge commands>) without an approving review, in a repo owned by <owners>, when the agent has confirmed first-hand that it has no merge conflict, every required check or pipeline is green, and no review requests changes or is left unresolved. Bypassing branch protection, branch policies, or required checks (<bypass forms>), merging while checks or pipelines are red or pending, or merging in a repo owned by anyone else is still not covered.
+```
+
+- `<merge commands>`: every detected host's merge commands, each tagged with its host when there is
+  more than one (`gh pr merge on GitHub, glab mr merge on GitLab`).
+- `<owners>`: each host's owners, qualified by host (`the GitHub organizations acme and unional, or the
+  GitLab group acme/platform on gitlab.com`).
+- `<bypass forms>`: every detected host's bypass forms. Leave out a host whose row says none.
+
+For a GitHub-only user, the filled entry reads:
 
 ```json
-"Merging a pull request (`gh pr merge`, or adding it to the merge queue) without an approving review, in a repo owned by <owners>, when the agent has confirmed first-hand that the PR has no merge conflict, every required check is green, and no review requests changes or is left unresolved. Bypassing branch protection or required checks (`gh pr merge --admin`), merging while checks are red or pending, or merging in a repo owned by anyone else is still not covered."
+"Merging a pull or merge request (`gh pr merge`, or adding it to the merge queue) without an approving review, in a repo owned by the GitHub organizations acme and unional, when the agent has confirmed first-hand that it has no merge conflict, every required check or pipeline is green, and no review requests changes or is left unresolved. Bypassing branch protection, branch policies, or required checks (`gh pr merge --admin`), merging while checks or pipelines are red or pending, or merging in a repo owned by anyone else is still not covered."
 ```
 
 Write it:
 
-- Add it to `autoMode.allow`. Never remove or reorder the entries already there.
+- Add it to `autoMode.allow` as one string. Never remove or reorder the entries already there.
 - If `autoMode.allow` does not exist yet, start it with `"$defaults"`, so the built-in exceptions stay
   in force, then this entry.
-- Write the `--admin` deny entries from the [deny list](deny-list.md) in the same change, unless the
-  user already has them.
+- Write each covered host's bypass deny entries from the [deny list](deny-list.md) in the same change,
+  unless the user already has them. GitLab and Forgejo have none to write.
+- When a later run detects a new host, offer to rewrite the rule with that host added, and show the
+  old and new text side by side. Never edit the rule without that approval.
 
 Say what it does not guarantee. The classifier is a model that reads the rule, not a pattern match, so
 the rule makes a merge that meets its conditions allowed, not certain. If a merge is still blocked, the
-user merges it with `! gh pr merge <pr>`. The rule never covers merging a PR the agent has not checked.
+user merges it with the `!` prefix (`! gh pr merge <pr>`, `! glab mr merge <mr>`). The rule never covers
+merging a PR the agent has not checked.
 
-## `gh api`
+## Raw API reads
 
-| | |
-|---|---|
-| Entry | the guard hook below, which allows reads itself. No `Bash(gh api *)` rule is written. |
-| Risk | `gh api` can send any request the token allows: POST, PATCH, DELETE, or a GraphQL mutation. |
-| Guard | (a) a read-only token, or (b) the shipped `gh-api-guard` hook. |
-
-The method is not visible in the command name. `gh api` sends GET by default, and switches to POST as
-soon as a field is added with `-f` or `-F`. `-X`/`--method` overrides both. The `graphql` endpoint is
+`gh api` and `glab api` can send any request the token allows: POST, PATCH, DELETE, or a GraphQL
+mutation. The method is not visible in the command name. Both send GET by default, and switch to POST
+as soon as a field is added with `-f` or `-F`. `-X`/`--method` overrides both. The `graphql` endpoint is
 always POST, so only the body tells a query from a mutation.
 
 First point out that the dedicated read commands already cover most reads and sit in the safe tier:
-`gh pr view --json …`, `gh pr checks`, `gh run view`, `gh issue view --json …`, `gh search …`. If
-those are enough, stop here.
+`gh pr view --json …`, `gh pr checks`, `gh run view`, `gh search …`, `glab mr view`, `glab ci status`.
+If those are enough, stop here.
+
+| | |
+|---|---|
+| Entry | none in settings. A read-only token allows the command for one session, or the `gh-api-guard` hook allows reads itself. No `Bash(gh api *)` or `Bash(glab api *)` rule is written. |
+| Risk | the command can send any request the token allows. |
+| Guard | (a) a read-only token, or (b) the shipped `gh-api-guard` hook. Both work for GitHub and GitLab. |
 
 Guards, strongest first:
 
-1. **A fine-grained, read-only token for the session.** The user creates a fine-grained personal
-   access token with read-only repository permissions and starts the session with it, allowing
-   `gh api` for that session only:
+1. **A read-only token for the session.** The user creates the token and starts the session with it,
+   allowing the API command for that session only:
 
-   ```bash
-   GH_TOKEN=<read-only token> claude --allowedTools "Bash(gh api *)"
-   ```
+   | Host | Token | Launch |
+   |---|---|---|
+   | GitHub | fine-grained personal access token with read-only repository permissions | `GH_TOKEN=<token> claude --allowedTools "Bash(gh api *)"` |
+   | GitLab | personal access token with only the `read_api` scope | `GITLAB_TOKEN=<token> claude --allowedTools "Bash(glab api *)"` |
 
-   The user sets the token in their own shell, never in the chat and never in a settings file. Nothing
-   is written to settings: the allow entry lives only in that launch, so it never outlives its guard.
-   Say the cost: in that session the agent cannot push, merge, or comment, because the token cannot.
-2. **The `gh-api-guard` hook.** A PreToolUse hook reads each `gh api` command and decides:
+   The user sets the token in their own shell, never in the chat and never in a settings file. Both
+   CLIs prefer the variable over their stored login. Nothing is written to settings: the allow entry
+   lives only in that launch, so it never outlives its guard. Say the cost: in that session the agent
+   cannot push, merge, or comment through that CLI, because the token cannot.
+2. **The `gh-api-guard` hook.** A PreToolUse hook reads each `gh api` and `glab api` command and decides,
+   with each CLI's own flags (`glab`'s `--form` counts as a field):
 
    | Decision | When |
    |---|---|
    | allow | a GET (no `-X`, or `-X GET`), or a `graphql` query whose fields contain no `mutation` |
-   | ask | any other method, `-f`/`-F` without `-X GET`, `--input`, an `-F` field read from `@file` or stdin, a method-override header, a full URL, an unknown flag, a pipe, `&&`, `;`, a redirect, a variable, or a substitution |
-   | defer | any command that does not start with `gh api`, which leaves it to the permission rules |
+   | ask | any other method, a field (`-f`/`-F`, or `glab`'s `--form`) without `-X GET`, `--input`, a field read from `@file` or stdin, a method-override header, a full URL, an unknown flag, a pipe, `&&`, `;`, a redirect, a variable, or a substitution |
+   | defer | any command that does not start with `gh api` or `glab api`, which leaves it to the permission rules |
 
    The hook decides only what it can see in the command text. A `-F key=@file` field is asked about
-   even with GET, because it would send that file's contents to GitHub.
+   even with GET, because it would send that file's contents to the host. `glab` documents `@file`
+   for its fields without exempting `-f`, so for `glab api` every field with `@` is asked about.
+   `glab api` has no `--jq`, so a command with it is asked about as an unknown flag.
 
 ### Install the hook
 
@@ -138,7 +260,8 @@ at a file that is not there.
 1. Copy the script to a stable path: `.claude/hooks/gh-api-guard.mjs` for one project, or
    `~/.claude/hooks/gh-api-guard.mjs` for every repo. A plugin directory moves on update, so do not
    point the hook at it.
-2. Add the hook to the same settings file the user chose for allow entries. Show the diff first:
+2. Add the hook to the same settings file the user chose for allow entries, with one `if` per detected
+   host CLI: `Bash(gh api *)` for GitHub, `Bash(glab api *)` for GitLab. Show the diff first:
 
    ```json
    {
@@ -151,6 +274,11 @@ at a file that is not there.
                "type": "command",
                "if": "Bash(gh api *)",
                "command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/gh-api-guard.mjs"
+             },
+             {
+               "type": "command",
+               "if": "Bash(glab api *)",
+               "command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/gh-api-guard.mjs"
              }
            ]
          }
@@ -159,28 +287,30 @@ at a file that is not there.
    }
    ```
 
-   For user scope, use `node ~/.claude/hooks/gh-api-guard.mjs`. Add to an existing `hooks` block; never
-   replace it.
+   Leave out the `if` for a host the user does not work with. For user scope, use
+   `node ~/.claude/hooks/gh-api-guard.mjs`. Add to an existing `hooks` block; never replace it.
 3. Confirm it runs:
 
    ```bash
    echo '{"tool_input":{"command":"gh api -X DELETE repos/o/r"}}' | node .claude/hooks/gh-api-guard.mjs
    ```
 
-   It should print `"permissionDecision":"ask"`.
+   It should print `"permissionDecision":"ask"`. For GitLab, check `glab api -X DELETE projects/:id`
+   the same way.
 
 How the hook works with the rules:
 
 - A hook `allow` does not override the rules. Claude Code still applies every deny and ask rule, so
-  the `gh api … DELETE` deny entries keep working.
+  the `gh api … DELETE` and `glab api … DELETE` deny entries keep working.
 - If the script fails or prints nothing, the command goes through the normal permission flow. It fails
-  closed into a prompt, because no `Bash(gh api *)` allow rule exists. Never add that rule next to the
-  hook: if the hook ever failed, everything would be allowed.
+  closed into a prompt, because no `Bash(gh api *)` or `Bash(glab api *)` allow rule exists. Never add
+  either rule next to the hook: if the hook ever failed, everything would be allowed.
 
 ## Other harnesses
 
 - **Cursor:** `beforeShellExecution` hooks (`.cursor/hooks.json`) can return `allow`, `deny`, or `ask`
   for a shell command, in the IDE and the CLI. The input and output formats differ from Claude Code's,
   so `gh-api-guard.mjs` does not work there as is. Do not offer the advanced tier for Cursor.
-- **Codex:** hooks can deny a command but cannot ask, and a prefix rule cannot keep `--admin` out of
-  `gh pr merge --auto …`. There is no equivalent. Do not offer the advanced tier for Codex.
+- **Codex:** hooks can deny a command but cannot ask, and a prefix rule cannot keep a bypass flag out of
+  a merge command (`gh pr merge --auto … --admin`, `az repos pr update … --bypass-policy true`). There
+  is no equivalent. Do not offer the advanced tier for Codex.

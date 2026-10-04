@@ -26,12 +26,17 @@ describe('splitWords', () => {
 })
 
 describe('decide', () => {
-	it.each(['git status', 'echo gh api', 'ghx api x', 'gh pr view 1', 'GH_TOKEN=x gh api -X DELETE repos/o/r'])(
-		'defers %s to the permission rules',
-		(command) => {
-			expect(decide(command).decision).toBe('defer')
-		},
-	)
+	it.each([
+		'git status',
+		'echo gh api',
+		'ghx api x',
+		'gh pr view 1',
+		'GH_TOKEN=x gh api -X DELETE repos/o/r',
+		'glab mr view 1',
+		'glabx api x',
+	])('defers %s to the permission rules', (command) => {
+		expect(decide(command).decision).toBe('defer')
+	})
 
 	it.each([
 		'gh api repos/{owner}/{repo}/pulls',
@@ -83,5 +88,38 @@ describe('decide', () => {
 	it('reads flags after -- as positional', () => {
 		expect(decide('gh api -- -X')).toMatchObject({ decision: 'allow' })
 		expect(decide('gh api x -- y').decision).toBe('ask')
+	})
+
+	describe('glab api', () => {
+		it.each([
+			'glab api projects/:id',
+			'glab api projects/:fullpath/merge_requests --paginate --output ndjson',
+			'/opt/homebrew/bin/glab api user',
+			'glab api -X GET projects/:id/issues -f state=opened',
+			'glab api --hostname git.corp.example projects/:id -i',
+			'glab api projects/:id --silent',
+			`glab api graphql -f query='query { currentUser { username } }'`,
+		])('allows %s', (command) => {
+			expect(decide(command)).toMatchObject({ decision: 'allow', reason: expect.stringMatching(/^glab api guard/) })
+		})
+
+		it.each([
+			['glab api -X DELETE projects/:id', /-X DELETE/],
+			['glab api --method PUT projects/:id/merge_requests/1/merge', /-X PUT/],
+			['glab api projects/:id/issues -f title=x', /switch glab api to POST/],
+			['glab api projects/:id/uploads --form file=x', /switch glab api to POST/],
+			['glab api -X GET projects/:id -f q=@/home/me/.ssh/id_rsa', /contents to GitLab/],
+			['glab api -X GET projects/:id --form file=@-', /reads a file/],
+			['glab api projects/:id --input body.json', /--input/],
+			['glab api projects/:id --jq .id', /unrecognized flag --jq/],
+			['glab api -q .id projects/:id', /unrecognized flag -q/],
+			[`glab api graphql -f query='mutation { x }'`, /mutation/],
+			['glab api projects/:id | sh', /chains, pipes/],
+		])('asks for %s', (command, why) => {
+			const verdict = decide(command)
+			expect(verdict.decision).toBe('ask')
+			expect(verdict.reason).toMatch(/^glab api guard/)
+			expect(verdict.reason).toMatch(why)
+		})
 	})
 })
