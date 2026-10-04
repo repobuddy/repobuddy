@@ -178,6 +178,29 @@ if the user declines. The candidates and what each one misses are in
 4. **Append only.** Show the diff and ask before you write. Never remove, reorder, or loosen an existing
    deny entry, and never turn a deny into an ask or an allow. Read the file back and parse it after writing.
 
+## List the next setup skills
+
+End by listing the other installed skills that set up a repo, so the user knows what to run next.
+List them only. Never run them.
+
+**Setup skill rule** (the one place to change it):
+
+- name prefixes: `init`, `init-*` → group **Wire a tool into this repo**; `setup-*` → group
+  **Configure a hosted service**
+- frontmatter field: `metadata: { setup: true }` → group **Wire a tool into this repo**
+
+1. **Read your own list of available skills.** The harness already shows you their names. Do not open
+   skill files to build this list. Match each name against the prefixes above. Ignore a plugin prefix
+   when matching: `sdd:init` and `buddy-changesets:init-changesets` both match.
+2. **Check the field only where it is cheap.** For skills whose files sit in the repo, such as
+   `.agents/skills/*/SKILL.md`, read the frontmatter and add those that carry the field. Do not search
+   other install locations for it. Never classify a skill by its description.
+3. **Leave out** `init-buddy` itself, and any skill whose own documented check shows it is already done
+   in this repo (for example `init-changesets` when `.changeset/config.json` exists). If you cannot
+   tell without running the skill, list it; the skill's own checks decide when it runs.
+4. **Show one line per skill**, under its group: the name as the user would invoke it, and a few words
+   on what it sets up. If nothing matches, say there are no other setup skills installed.
+
 ## Out of scope
 
 - Installing, enabling, or editing MCP servers

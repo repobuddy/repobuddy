@@ -90,6 +90,31 @@ Gets a machine ready to work with a repository's git host. It detects the OS and
    command (`git push origin --force`) cannot be expressed. Codex has no read-deny rule; its sandbox
    decides what a command can read.
 
+9. **Lists the next setup skills.** It ends with the other installed skills that set up a repo, one line
+   each, grouped by what they touch. It lists them; it never runs them. It leaves out itself and any
+   skill already set up here.
+
+## For skill authors: naming a setup skill
+
+`init-buddy` finds setup skills by name, because every harness already shows the agent the names of the
+installed skills. Name yours so it is found:
+
+| Prefix | Means | Examples |
+|---|---|---|
+| `init` / `init-<tool>` | wires a tool or plugin into this repo | `init-changesets`, `init-aced`, `init-quill`, `init-cyberlegion` |
+| `setup-<service>` | configures a hosted service outside the repo | `setup-github-repo`, `setup-npm-trusted-publishing` |
+
+A plugin prefix is fine (`sdd:init`). If the name cannot follow the convention, for example a router whose
+`init` is a subcommand, add the field to its frontmatter:
+
+```yaml
+metadata:
+  setup: true
+```
+
+`init-buddy` reads that field only where the frontmatter is cheap to read, such as repo-local
+`.agents/skills/`, so the name is the more reliable signal. It never sorts skills by their descriptions.
+
 ## Safety
 
 - MCP servers are reported by name, command, and URL origin only. Environment values, headers, and URL query strings in those config files are never shown.
