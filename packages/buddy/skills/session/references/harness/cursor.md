@@ -8,20 +8,20 @@ have no `/cd`. In the editor, each folder opens with its own agent chats. Hand b
 Cursor CLI: give the user this command to run in a terminal, then stop:
 
 ```sh
-cd <repo-root> && agent "/resume-session <slug>"
+cd <repo-root> && agent "/session resume <slug>"
 ```
 
 `agent "prompt"` starts the CLI with an initial prompt. `agent --workspace <repo-root> "..."` does the
 same without the `cd`.
 
 Cursor editor: tell the user to open `<repo-root>` as a folder (File > Open Folder) and type
-`/resume-session <slug>` in that window's Agent chat. Typing `/` in Agent chat and picking the skill by
+`/session resume <slug>` in that window's Agent chat. Typing `/` in Agent chat and picking the skill by
 name is how the docs say to invoke a skill.
 
 ## Fallback
 
-If `/resume-session` isn't recognized, use plain text instead:
-`agent "Use the resume-session skill to resume <slug>"`. Cursor loads skills from `.agents/skills/`,
+If `/session resume` isn't recognized, use plain text instead:
+`agent "Use the session skill to resume <slug>"`. Cursor loads skills from `.agents/skills/`,
 `.cursor/skills/`, `~/.agents/skills/` and `~/.cursor/skills/`, and picks one when the request matches
 its description.
 

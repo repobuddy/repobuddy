@@ -10,7 +10,7 @@ Give the user these two lines to type in this session once the current turn has 
 
 ```
 /cd <repo-root>
-$resume-session <slug>
+$session resume <slug>
 ```
 
 `/cd` keeps the conversation history. It reloads the destination's project configuration,
@@ -22,12 +22,12 @@ instructions, permissions, keybindings, file search and hooks before the session
 When `/cd` is missing (older Codex) or refuses the move, start a fresh session in the repo:
 
 ```sh
-codex -C <repo-root> '$resume-session <slug>'
+codex -C <repo-root> '$session resume <slug>'
 ```
 
 `--cd`/`-C` sets the working directory before the agent starts. The optional prompt starts the session
-with that text. Keep the single quotes so the shell doesn't expand `$resume-session`. If the mention
-isn't picked up, use plain text instead: `"Use the resume-session skill to resume <slug>"`.
+with that text. Keep the single quotes so the shell doesn't expand `$session`. If the mention
+isn't picked up, use plain text instead: `"Use the session skill to resume <slug>"`.
 
 ## Caveats
 

@@ -8,7 +8,7 @@ no `/cd`. Hand back a fresh session.
 Give the user this command to run in a terminal, then stop:
 
 ```sh
-cd <repo-root> && gemini -i "Use the resume-session skill to resume <slug>"
+cd <repo-root> && gemini -i "Use the session skill to resume <slug>"
 ```
 
 `-i`/`--prompt-interactive` runs the prompt and continues in interactive mode. There is no documented
@@ -18,7 +18,7 @@ directly. The model activates a skill when the request matches it, so the prompt
 ## Fallback
 
 None needed: the fresh session is the only hand-off. If the skill doesn't activate, run `/skills list`
-in the new session to check that `resume-session` is installed and enabled.
+in the new session to check that `session` is installed and enabled.
 
 ## Caveats
 
