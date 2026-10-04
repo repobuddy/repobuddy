@@ -658,16 +658,22 @@ function analyzeDenyBaseline() {
 		)
 	if (!covers(/rm\s+-rf|rm -rf/)) missing.push('`Bash(rm -rf *)` — recursive deletion')
 	// `Bash(git push --force*)` — no space before the `*` — also matches `--force-with-lease`,
-	// the safe push after a rebase, so an agent can no longer update a rebased branch.
+	// the safe push after a rebase, so an agent can no longer update a rebased branch. The
+	// trailing-flag form `Bash(git push * --force*)` has the same flaw.
+	const trailing =
+		'For a flag after the arguments (`git push origin main --force`), add `Bash(git push * --force)` and `Bash(git push * --force *)`, and the same two for `-f`: a trailing ` *` matches the bare flag only when it is the rule\u2019s only wildcard, so the flag at the very end needs its own entry.'
 	for (const d of denies) {
-		if (!/\bgit\s+push\s+--force\*/.test(d.arg)) continue
+		const leading = /\bgit\s+push\s+--force\*/.test(d.arg)
+		if (!leading && !/\bgit\s+push\s+\*\s+--force\*/.test(d.arg)) continue
 		addFinding(
 			'low',
 			'deny-overmatch',
 			`\`${d.raw}\` also blocks \`git push --force-with-lease\``,
-			'With no space before the `*`, the rule matches any command that starts with `git push --force`, including `--force-with-lease` — the push that refuses to overwrite commits it has not seen, and the routine way to update a rebased branch. It also misses `-f`.',
+			`With no space before the \`*\`, the rule matches any \`--force\` flag that starts ${leading ? 'the command' : 'a later word'}, including \`--force-with-lease\` — the push that refuses to overwrite commits it has not seen, and the routine way to update a rebased branch. It also misses \`-f\`.`,
 			`${d.harness} ${d.scope} (${d.file})`,
-			'Replace it with `Bash(git push --force *)` and `Bash(git push -f *)`; a trailing ` *` also matches the bare flag. A prefix rule cannot tell `main` from a feature branch (that is branch protection\u2019s job), and a flag after the arguments (`git push origin main --force`) escapes all of these rules.',
+			leading
+				? `Replace it with \`Bash(git push --force *)\` and \`Bash(git push -f *)\`; a trailing \` *\` also matches the bare flag. A prefix rule cannot tell \`main\` from a feature branch (that is branch protection\u2019s job). ${trailing}`
+				: `Replace it with \`Bash(git push * --force)\`, \`Bash(git push * --force *)\`, \`Bash(git push * -f)\`, and \`Bash(git push * -f *)\`. ${trailing}`,
 		)
 	}
 	if (missing.length)

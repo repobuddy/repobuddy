@@ -73,8 +73,27 @@ describe('scan-permissions.mjs force-push handling', () => {
 		expect(overmatch[0]?.fix).toContain('`Bash(git push --force *)`')
 	})
 
+	it('flags a trailing --force* deny rule and suggests the word-bounded pair', () => {
+		const report = scan({ deny: ['Bash(git push * --force*)'] })
+		const overmatch = report.findings.filter((f) => f.code === 'deny-overmatch')
+		expect(overmatch).toHaveLength(1)
+		expect(overmatch[0]?.title).toContain('--force-with-lease')
+		expect(overmatch[0]?.fix).toContain('`Bash(git push * --force)`')
+		expect(overmatch[0]?.fix).toContain('`Bash(git push * --force *)`')
+		expect(overmatch[0]?.fix).not.toContain('--force*')
+	})
+
 	it('does not flag the word-bounded deny rules', () => {
-		const report = scan({ deny: ['Bash(git push --force *)', 'Bash(git push -f *)'] })
+		const report = scan({
+			deny: [
+				'Bash(git push --force *)',
+				'Bash(git push -f *)',
+				'Bash(git push * --force)',
+				'Bash(git push * --force *)',
+				'Bash(git push * -f)',
+				'Bash(git push * -f *)',
+			],
+		})
 		expect(report.findings.some((f) => f.code === 'deny-overmatch')).toBe(false)
 	})
 })

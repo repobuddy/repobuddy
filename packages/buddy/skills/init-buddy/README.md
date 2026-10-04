@@ -98,7 +98,8 @@ Gets a machine ready to work with a repository's git host. It detects the OS and
    plugin update does not move it. Cursor has a similar hook (`beforeShellExecution`) with a different
    format, which this script does not speak. Codex hooks can deny a command but not ask, so there is no
    equivalent there.
-8. **Proposes a deny list**, in the same files and scopes. It covers force push in every common form,
+8. **Proposes a deny list**, in the same files and scopes. It covers a plain force push in every common form
+   (`--force-with-lease` stays allowed, so the agent can update a rebased branch),
    each detected host's merge bypass (`gh pr merge --admin`, `az repos pr … --bypass-policy`, a Gitea
    `force_merge`), repo delete (`gh`, `glab`, `az`, `tea`, `fj`), API DELETE requests (`gh api`,
    `glab api`, `tea api`), `rm -rf` and its variants, package publish, and reading secrets (`.env*`,
