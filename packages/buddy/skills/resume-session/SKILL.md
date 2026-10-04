@@ -23,14 +23,19 @@ from its `## NEXT` without going back over what it records as settled.
 
    **1a. Another repo.** List that repo's paused checkpoints (root from
    `git -C <repo-path> rev-parse --show-toplevel`) the same way and let the user pick, even if only
-   one is paused. Then stop and hand back the command that starts a fresh session there:
-   - Claude Code: `cd <repo-root> && claude "/resume-session <slug>"`
-   - Codex: `cd <repo-root> && codex "resume-session <slug>"`
-   - Gemini CLI: `cd <repo-root> && gemini -i "resume-session <slug>"`
-   - Copilot CLI: `cd <repo-root> && copilot -i "resume-session <slug>"`
+   one is paused. Then hand back what the user types to resume there, and stop. Never `cd` there
+   yourself and continue: a shell `cd` leaves the harness on this repo's working directory,
+   AGENTS.md, skills and permissions.
 
-   Give the one for the current harness first. Don't `cd` there and continue in this session: the
-   harness would still run with this repo's working directory, AGENTS.md, skills and permissions.
+   Where the harness has a command that moves the session itself (only the user can run it), give
+   those in-session lines first, and say the previous repo's conversation stays in context. Otherwise,
+   or as the fallback, give the command that starts a fresh session in that repo. A command that only
+   adds a readable directory doesn't count as a move. The exact lines are in the reference for the
+   current harness. Load only that one:
+   [Claude Code](references/claude-code.md), [Codex](references/codex.md),
+   [Gemini CLI](references/gemini.md), [Copilot CLI](references/copilot.md),
+   [Cursor](references/cursor.md). For any other harness, give the fresh-session form: `cd <repo-root>`,
+   then start the harness with a prompt that runs `resume-session <slug>`.
 
    **If none is paused** but one has `status: resumed`, the session that resumed it may have ended
    without pausing again. Name it and ask before opening it.
