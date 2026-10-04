@@ -19,7 +19,8 @@ from its `## NEXT` without going back over what it records as settled.
    3. Exactly one checkpoint has `status: paused`: open it.
    4. More than one has `status: paused`: list only those, newest `updated` first, each with its
       title, branch and `## NEXT` line, and ask which one to resume. Ask even when one of them
-      matches the current branch; a branch match is a hint to mention, not a choice to make.
+      matches the current branch; a branch match is a hint to mention, not a choice to make. Mark
+      a checkpoint whose `depends-on` names a checkpoint that still exists as `waits on <slug>`.
 
    **1a. Another repo.** List that repo's paused checkpoints (root from
    `git -C <repo-path> rev-parse --show-toplevel`) the same way and let the user pick, even if only
@@ -50,6 +51,8 @@ from its `## NEXT` without going back over what it records as settled.
      the user's work.
    - The branch has moved past `commit`: read `git log <commit>..HEAD --oneline` and check whether
      the new commits already did the `## NEXT` step or changed a settled decision.
+   - Its `depends-on` names a checkpoint that still exists: that topic isn't done yet. Say so, and
+     ask whether to resume that one first.
    - Any `## Not in git` item that is missing here, such as uncommitted changes from another machine
      or a process that is no longer running: name it before going on.
 
