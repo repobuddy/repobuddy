@@ -206,7 +206,7 @@ CI steps are templated based on detected stack (pnpm/npm/yarn/bun install + test
 
 **`dependabot-automerge.yml`** — Triggers on `pull_request` where actor is `dependabot[bot]`. Auto-approves and enables auto-merge for patch and minor updates only (not major). Uses `dependabot/fetch-metadata` to check update type.
 
-**`codeql-analysis.yml`** — Uses `github/codeql-action`. Language populated from detected `codeqlLanguage` in state JSON. Runs on push to default branch, PRs, and a weekly schedule.
+**`codeql.yml`** — Uses `github/codeql-action`. Language populated from detected `codeqlLanguage` in state JSON. Runs on push to default branch, PRs, and a weekly schedule.
 
 After generating files: "Review the generated workflows before committing — CI steps are placeholders that need your actual commands."
 
@@ -238,7 +238,7 @@ Print a final table:
 ### Applied
 - [x] delete_branch_on_merge → true
 - [x] Branch ruleset: default-branch-protection (created)
-- [x] Workflows: pull-request.yml, dependabot-automerge.yml, codeql-analysis.yml
+- [x] Workflows: pull-request.yml, dependabot-automerge.yml, codeql.yml
 
 ### Already configured (skipped)
 - [~] allow_squash_merge → true
