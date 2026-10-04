@@ -26,9 +26,10 @@ doesn't collide with it. Typing `/resume` lists both.
    marked `waits on <slug>`.
 2. Checks the checkpoint against the repo. It flags a different branch, commits that landed since the
    pause, and state from `## Not in git` that isn't here.
-3. Reloads the working method and the settled decisions, and raises any open question that blocks the
-   next step.
-4. Runs the next step and keeps the checkpoint current as decisions are made.
+3. Reloads the working method and the settled decisions, reads the dead ends so it doesn't retry a
+   failed approach without new evidence, and raises any open question that blocks the next step.
+4. Runs the next step, then the remaining steps, toward your quoted instruction, and keeps the
+   checkpoint current as decisions are made.
 5. Deletes the checkpoint once the work is done, not when it resumes. On resume it only marks the file
    `status: resumed`, so if the resumed session dies before pausing again, the state is still there.
    Anything worth keeping goes into a commit, an ADR or an issue.
