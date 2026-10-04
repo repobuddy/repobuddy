@@ -131,9 +131,9 @@ already has, use the `review-permissions` skill instead. This step only adds a s
        mode's classifier blocks a merge of an unreviewed PR even when `permissions.allow` lists the
        command. User scope only; the rule names each detected host's merge commands, its owners, the
        conditions, and the bypass forms it excludes, with that host's bypass deny entries.
-     - Raw API reads: `gh api` through a read-only token for the session or the `gh-api-guard` hook this
-       skill ships, which allows GET and GraphQL queries and asks for everything else; `glab api`
-       through a read-only token only
+     - Raw API reads: `gh api` and `glab api` through a read-only token for the session, or the
+       `gh-api-guard` hook this skill ships, which allows GET and GraphQL queries and asks for
+       everything else
      - **Never write an entry without its guard.** If the user declines the guard, do not write the entry.
 
    | Host | Read-only commands |
@@ -176,7 +176,7 @@ already has, use the `review-permissions` skill instead. This step only adds a s
    - Never remove a deny entry, and never add an entry from the ask-every-time tier, unless the user
      said yes to that exact entry.
    - Write an advanced entry in the same change as its guard: the host's bypass deny entries for
-     the queued merge and for the auto-mode merge rule, and the hook for `gh api`.
+     the queued merge and for the auto-mode merge rule, and the hook for `gh api` or `glab api`.
    - Keep the file valid: read it back and parse it after writing. For Codex, run
      `codex execpolicy check --pretty --rules <file> -- <command>` on one entry if the command exists.
    - Report the files you changed and what each one now allows.

@@ -43,7 +43,7 @@ Gets a machine ready to work with a repository's git host. It detects the OS and
    | Safe | read-only commands | `git status`, `gh pr view`, `glab mr list`, the repo's `test` and `lint` scripts |
    | Good to have | local writes that git can undo | `git add`, `git commit`, `git mv`, format scripts |
    | Ask every time | remote, destructive, or open-ended commands, never proposed | `git push`, `gh pr merge`, `gh api`, `npx`, `git stash drop` |
-   | Advanced (opt-in, Claude Code only) | a riskier entry, offered only when you ask, and written only together with its guard | `gh pr merge --auto`, `glab mr merge --auto-merge`, or `az repos pr update --auto-complete true` when the host requires a check or pipeline; `gh api` reads through a read-only token or the `gh-api-guard` hook |
+   | Advanced (opt-in, Claude Code only) | a riskier entry, offered only when you ask, and written only together with its guard | `gh pr merge --auto`, `glab mr merge --auto-merge`, or `az repos pr update --auto-complete true` when the host requires a check or pipeline; `gh api` and `glab api` reads through a read-only token or the `gh-api-guard` hook |
 
    You pick the entries. Each one goes where its safety comes from. Entries that are safe in any repo
    go to user scope (every repo): read commands, the deny list, and the auto-mode merge rule. Your
@@ -60,7 +60,7 @@ Gets a machine ready to work with a repository's git host. It detects the OS and
    | Host | Queued merge | Merges in auto mode | Raw API reads |
    |---|---|---|---|
    | GitHub | `gh pr merge --auto` | yes | `gh api`: read-only token or `gh-api-guard` hook |
-   | GitLab | `glab mr merge --auto-merge` | yes | `glab api`: read-only token |
+   | GitLab | `glab mr merge --auto-merge` | yes | `glab api`: read-only token or `gh-api-guard` hook |
    | Azure DevOps | `az repos pr update --auto-complete true` | yes | no |
    | Gitea | no (`tea` cannot queue a merge) | yes | no |
    | Forgejo / Codeberg | no (`fj` cannot queue a merge) | yes | no |
@@ -88,7 +88,8 @@ Gets a machine ready to work with a repository's git host. It detects the OS and
      already cover most needs (`gh pr view --json`, `gh run view`, `glab mr view`). Then it offers a
      guard. The first, on GitHub or GitLab, is a read-only token for one session (a fine-grained GitHub
      token, or a GitLab token with only `read_api`); the agent then cannot push or merge through that
-     CLI in that session. The second, on GitHub only, is the `gh-api-guard` PreToolUse hook. It allows
+     CLI in that session. The second is the `gh-api-guard` PreToolUse hook, which reads both `gh api`
+     and `glab api`. It allows
      GET requests and GraphQL queries with no `mutation`, and asks for everything else, including
      `@file` fields, pipes, and variables it cannot see through.
 
@@ -183,4 +184,4 @@ npx skills add repobuddy/repobuddy --skill init-buddy
 A skill installed with `skills add` comes from git and has no built `scripts/` folder. It runs its
 script through `npx -y repobuddy@^1.8.0` instead, which needs network access. The plugin install
 ships the script with the skill. The `gh-api-guard` hook has no `npx` fallback, because a hook runs on every
-`gh api` call; install the plugin, or copy the script out of the npm package, to use it.
+`gh api` or `glab api` call; install the plugin, or copy the script out of the npm package, to use it.

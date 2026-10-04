@@ -44,6 +44,8 @@ describe('built skill bundles', () => {
 		}
 		expect(decisionFor('gh api user')).toBe('allow')
 		expect(decisionFor('gh api -X DELETE repos/o/r')).toBe('ask')
+		expect(decisionFor('glab api projects/:id')).toBe('allow')
+		expect(decisionFor('glab api -X DELETE projects/:id')).toBe('ask')
 		expect(decisionFor('git status')).toBe('defer')
 	})
 })

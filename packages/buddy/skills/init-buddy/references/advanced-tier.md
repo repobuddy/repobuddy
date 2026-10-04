@@ -16,7 +16,7 @@ no, tell the user the host has no safe equivalent and leave its commands in ask-
 | Host | Queued merge | Merges in auto mode | Raw API reads |
 |---|---|---|---|
 | GitHub | `gh pr merge --auto` | yes | `gh api`: read-only token, or the `gh-api-guard` hook |
-| GitLab | `glab mr merge --auto-merge` | yes | `glab api`: read-only token only |
+| GitLab | `glab mr merge --auto-merge` | yes | `glab api`: read-only token, or the `gh-api-guard` hook |
 | Azure DevOps | `az repos pr update --auto-complete true` | yes | no |
 | Gitea | no: `tea pulls merge` has no auto-merge flag | yes | no |
 | Forgejo / Codeberg | no: `fj pr merge` has no auto-merge flag | yes | no: `fj` has no raw API command |
@@ -28,7 +28,7 @@ Why the no's:
   in the merge API), but neither CLI sends it. The only way is a raw `tea api` POST, which is
   ask-every-time. And with no required status check the server merges at once, the same trap as GitHub.
 - **Raw API on Gitea, Azure.** `tea api` has the same GET-to-POST switch as `gh api`, but the
-  `gh-api-guard` hook does not parse it, and `tea` has no documented way to swap in a read-only token
+  `gh-api-guard` hook does not parse it (it reads `gh api` and `glab api` only), and `tea` has no documented way to swap in a read-only token
   for one session. `az devops invoke` and `az rest` run with the `az login` credential, which can reach
   the whole Azure account. Leave them in ask-every-time.
 - **Bitbucket Cloud.** There is no official CLI to write an entry for. Its "Allow automatic merge when
@@ -220,7 +220,7 @@ If those are enough, stop here.
 |---|---|
 | Entry | none in settings. A read-only token allows the command for one session, or the `gh-api-guard` hook allows reads itself. No `Bash(gh api *)` or `Bash(glab api *)` rule is written. |
 | Risk | the command can send any request the token allows. |
-| Guard | (a) a read-only token, on GitHub or GitLab, or (b) the shipped `gh-api-guard` hook, on GitHub only. |
+| Guard | (a) a read-only token, or (b) the shipped `gh-api-guard` hook. Both work for GitHub and GitLab. |
 
 Guards, strongest first:
 
@@ -236,18 +236,19 @@ Guards, strongest first:
    CLIs prefer the variable over their stored login. Nothing is written to settings: the allow entry
    lives only in that launch, so it never outlives its guard. Say the cost: in that session the agent
    cannot push, merge, or comment through that CLI, because the token cannot.
-2. **The `gh-api-guard` hook (GitHub only).** A PreToolUse hook reads each `gh api` command and decides:
+2. **The `gh-api-guard` hook.** A PreToolUse hook reads each `gh api` and `glab api` command and decides,
+   with each CLI's own flags (`glab`'s `--form` counts as a field):
 
    | Decision | When |
    |---|---|
    | allow | a GET (no `-X`, or `-X GET`), or a `graphql` query whose fields contain no `mutation` |
-   | ask | any other method, `-f`/`-F` without `-X GET`, `--input`, an `-F` field read from `@file` or stdin, a method-override header, a full URL, an unknown flag, a pipe, `&&`, `;`, a redirect, a variable, or a substitution |
-   | defer | any command that does not start with `gh api`, which leaves it to the permission rules |
+   | ask | any other method, a field (`-f`/`-F`, or `glab`'s `--form`) without `-X GET`, `--input`, a field read from `@file` or stdin, a method-override header, a full URL, an unknown flag, a pipe, `&&`, `;`, a redirect, a variable, or a substitution |
+   | defer | any command that does not start with `gh api` or `glab api`, which leaves it to the permission rules |
 
    The hook decides only what it can see in the command text. A `-F key=@file` field is asked about
-   even with GET, because it would send that file's contents to GitHub.
-
-   It does not read `glab api` commands; they get `defer`. For GitLab, offer the read-only token only.
+   even with GET, because it would send that file's contents to the host. `glab` documents `@file`
+   for its fields without exempting `-f`, so for `glab api` every field with `@` is asked about.
+   `glab api` has no `--jq`, so a command with it is asked about as an unknown flag.
 
 ### Install the hook
 
@@ -259,7 +260,8 @@ at a file that is not there.
 1. Copy the script to a stable path: `.claude/hooks/gh-api-guard.mjs` for one project, or
    `~/.claude/hooks/gh-api-guard.mjs` for every repo. A plugin directory moves on update, so do not
    point the hook at it.
-2. Add the hook to the same settings file the user chose for allow entries. Show the diff first:
+2. Add the hook to the same settings file the user chose for allow entries, with one `if` per detected
+   host CLI: `Bash(gh api *)` for GitHub, `Bash(glab api *)` for GitLab. Show the diff first:
 
    ```json
    {
@@ -272,6 +274,11 @@ at a file that is not there.
                "type": "command",
                "if": "Bash(gh api *)",
                "command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/gh-api-guard.mjs"
+             },
+             {
+               "type": "command",
+               "if": "Bash(glab api *)",
+               "command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/gh-api-guard.mjs"
              }
            ]
          }
@@ -280,23 +287,24 @@ at a file that is not there.
    }
    ```
 
-   For user scope, use `node ~/.claude/hooks/gh-api-guard.mjs`. Add to an existing `hooks` block; never
-   replace it.
+   Leave out the `if` for a host the user does not work with. For user scope, use
+   `node ~/.claude/hooks/gh-api-guard.mjs`. Add to an existing `hooks` block; never replace it.
 3. Confirm it runs:
 
    ```bash
    echo '{"tool_input":{"command":"gh api -X DELETE repos/o/r"}}' | node .claude/hooks/gh-api-guard.mjs
    ```
 
-   It should print `"permissionDecision":"ask"`.
+   It should print `"permissionDecision":"ask"`. For GitLab, check `glab api -X DELETE projects/:id`
+   the same way.
 
 How the hook works with the rules:
 
 - A hook `allow` does not override the rules. Claude Code still applies every deny and ask rule, so
-  the `gh api … DELETE` deny entries keep working.
+  the `gh api … DELETE` and `glab api … DELETE` deny entries keep working.
 - If the script fails or prints nothing, the command goes through the normal permission flow. It fails
-  closed into a prompt, because no `Bash(gh api *)` allow rule exists. Never add that rule next to the
-  hook: if the hook ever failed, everything would be allowed.
+  closed into a prompt, because no `Bash(gh api *)` or `Bash(glab api *)` allow rule exists. Never add
+  either rule next to the hook: if the hook ever failed, everything would be allowed.
 
 ## Other harnesses
 
