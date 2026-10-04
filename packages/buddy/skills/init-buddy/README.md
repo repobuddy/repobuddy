@@ -45,8 +45,12 @@ Gets a machine ready to work with a repository's git host. It detects the OS and
    | Ask every time | remote, destructive, or open-ended commands, never proposed | `git push`, `gh pr merge`, `gh api`, `npx`, `git stash drop` |
    | Advanced (opt-in, Claude Code only) | a riskier entry, offered only when you ask, and written only together with its guard | `gh pr merge --auto` when the default branch requires a status check; `gh api` reads through a read-only token or the `gh-api-guard` hook |
 
-   You pick the entries and the scope: user (every repo), project shared (committed), or project local
-   (this repo on this machine). It shows the diff and writes only what you approved.
+   You pick the entries. Each one goes where its safety comes from. Entries that are safe in any repo
+   go to user scope (every repo): read commands, the deny list, and the auto-mode merge rule. Your
+   repo's scripts go to project shared (committed), because only this repo's scripts were read.
+   `gh pr merge --auto` goes to project local (this repo on this machine), because its guard is this
+   repo's branch rules. You can move an entry down to a project scope, never up to user scope. It shows
+   the diff and writes only what you approved.
 
    In the advanced tier, an entry is never written without its guard. If you decline the guard, the
    entry is not written either:
@@ -55,6 +59,11 @@ Gets a machine ready to work with a repository's git host. It detects the OS and
      requires no status check, the rules are already met and `--auto` merges at once. So the skill
      reads the default branch's rules first and offers the entry only when a required check exists. It
      writes the entry together with the deny entries for `gh pr merge --admin`.
+   - **Merges in auto mode**: in auto mode, a classifier blocks `gh pr merge` on a PR with no approving
+     review, even when your allow list has the command. The skill offers a plain-language rule for
+     `autoMode.allow` in `~/.claude/settings.json` (the classifier ignores project settings). It covers
+     merges in the owners you name, only after the agent has confirmed no conflict, green checks, and
+     no requested changes, never `--admin`. It writes the `--admin` deny entries with it.
    - **`gh api`**: GET is the default, but any `-f`/`-F` field switches it to POST, and `graphql` is
      always POST. The skill first points to the read commands that already cover most needs
      (`gh pr view --json`, `gh run view`, `gh search`). Then it offers one of two guards. The first is
@@ -90,7 +99,15 @@ Gets a machine ready to work with a repository's git host. It detects the OS and
    command (`git push origin --force`) cannot be expressed. Codex has no read-deny rule; its sandbox
    decides what a command can read.
 
-9. **Lists the next setup skills.** It ends with the other installed skills that set up a repo, one line
+9. **Records the setup.** In a repo, it writes `.agents/repobuddy/init-buddy.json` with the date, the
+   hosts it set up, and whether you declined. The file is kept out of git through `.git/info/exclude`,
+   because setup differs per clone and machine. If your global instructions have no reminder yet, it
+   gives you one line for `~/.agents/AGENTS.md`, limited to the owners you name, for you to add
+   yourself. With it, in a repo with no marker the agent mentions `init-buddy` once per session and
+   never runs it unasked. A repo where you declined stays quiet. Your harness reads that file only if
+   its own user-level file loads it (on Claude Code, `~/.claude/CLAUDE.md`).
+
+10. **Lists the next setup skills.** It ends with the other installed skills that set up a repo, one line
    each, grouped by what they touch. It lists them; it never runs them. It leaves out itself and any
    skill already set up here.
 
@@ -120,6 +137,7 @@ metadata:
 - MCP servers are reported by name, command, and URL origin only. Environment values, headers, and URL query strings in those config files are never shown.
 - It never asks you to paste a token into the chat.
 - It does not install, enable, or edit MCP servers, and does not change repository settings.
+- It never writes to your global instruction file. The reminder line is handed to you to add.
 - It only adds allow and deny entries you approved. It never removes an entry or a deny rule, and never adds a remote or destructive command unless you name it and confirm it. An advanced entry is written only with its guard. To audit the allow list you already have, use [`review-permissions`](../review-permissions/README.md).
 - It does not run `curl | sh` installers beyond the ones it lists by name. The one listed, Microsoft's Azure CLI script for Debian/Ubuntu, is shown to you before it runs.
 
@@ -129,7 +147,7 @@ Ask for it directly, or run `/init-buddy [github|gitlab|bitbucket|azure|gitea|fo
 
 ## What it produces
 
-An installed, logged-in CLI for each host you chose, a summary of the environment and of the MCP servers already available, and, if you accepted, the allow and deny entries (and the `gh-api-guard` hook) you approved, written to the scope you picked.
+An installed, logged-in CLI for each host you chose, a summary of the environment and of the MCP servers already available, and, if you accepted, the allow and deny entries (and the `gh-api-guard` hook) you approved, written to the scope you picked, a local setup marker for the repo, and a reminder line for you to add to `~/.agents/AGENTS.md`.
 
 ## Install
 

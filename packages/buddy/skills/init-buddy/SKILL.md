@@ -18,6 +18,7 @@ for the read-only commands the agent runs most, and a deny list for the commands
 - The user asks whether their machine is ready to work with a git host
 - "Stop asking me before every `gh pr view`": set up a starting allow list
 - "Never let the agent force push or publish": set up a deny list
+- The global reminder says this repo has no `.agents/repobuddy/init-buddy.json` marker
 
 ## Detect
 
@@ -122,6 +123,9 @@ already has, use the `review-permissions` skill instead. This step only adds a s
      [references/advanced-tier.md](references/advanced-tier.md) before you offer one.
      - `Bash(gh pr merge --auto *)`: GitHub waits for the branch's required checks before it merges.
        Offer it only when the default branch requires a status check. With none, `--auto` merges at once.
+     - Merges in auto mode: an `autoMode.allow` rule in `~/.claude/settings.json`, because auto
+       mode's classifier blocks `gh pr merge` on an unreviewed PR even when `permissions.allow`
+       lists it. User scope only; the rule names the owners and conditions, with the `--admin` deny entries.
      - `gh api` reads: through a read-only token for the session, or the `gh-api-guard` hook this skill
        ships, which allows GET and GraphQL queries and asks for everything else
      - **Never write an entry without its guard.** If the user declines the guard, do not write the entry.
@@ -143,20 +147,30 @@ already has, use the `review-permissions` skill instead. This step only adds a s
    the user already has. If an existing entry is broader or riskier than the tiers allow, point to
    `review-permissions`. Do not change it here.
 
-4. **Ask what to write and where.** Let the user pick entries, or a whole tier. Then ask for the scope:
-   - **user**: applies to every repo the user opens. Only safe entries that are not tied to this repo
-     belong here.
-   - **project, shared**: committed with the repo, so it applies to every contributor
-   - **project, local**: this repo, this machine only (Claude Code's `settings.local.json`)
+4. **Ask what to write and where.** Let the user pick entries, or a whole tier. Then place each entry
+   by what its safety depends on: the machine, or this repo.
 
-   Without an answer, write safe entries at user scope and the rest at project local.
+   | Scope | Where | What belongs here |
+   |---|---|---|
+   | **user** | every repo the user opens | entries that are safe in any repo: safe-tier `git` and host CLI reads, the deny list's secrets, admin merge, repo delete and API delete groups, and the auto-mode merge rule, which works only here |
+   | **project, shared** | committed, every contributor | entries that depend on this repo's own files: its package scripts, such as `pnpm test *` or `pnpm check:fix *` |
+   | **project, local** | this repo on this machine (Claude Code's `settings.local.json`) | entries whose guard is this repo's settings: `gh pr merge --auto`, and the `gh-api-guard` hook when the user wants it in one repo only |
+
+   - **Never write a repo-guarded entry at user scope.** `gh pr merge --auto` is safe only where the
+     default branch requires a status check. At user scope it would also apply in a repo with no
+     required check, where it merges at once.
+   - **Never write a script entry at user scope.** `pnpm test *` runs whatever each repo's `test`
+     script says, and you read only this repo's.
+   - The user may move an entry from user scope down to a project scope, never the other way.
+
+   Without an answer, use the placement in the table.
 
 5. **Write only what was approved.** Show the diff for each file and ask before you write.
    - Add entries. Never remove or reorder the ones already there.
    - Never remove a deny entry, and never add an entry from the ask-every-time tier, unless the user
      said yes to that exact entry.
    - Write an advanced entry in the same change as its guard: the `--admin` deny entries for
-     `gh pr merge --auto`, and the hook for `gh api`.
+     `gh pr merge --auto` and for the auto-mode merge rule, and the hook for `gh api`.
    - Keep the file valid: read it back and parse it after writing. For Codex, run
      `codex execpolicy check --pretty --rules <file> -- <command>` on one entry if the command exists.
    - Report the files you changed and what each one now allows.
@@ -177,6 +191,45 @@ if the user declines. The candidates and what each one misses are in
    group.
 4. **Append only.** Show the diff and ask before you write. Never remove, reorder, or loosen an existing
    deny entry, and never turn a deny into an ask or an allow. Read the file back and parse it after writing.
+
+## Record the setup
+
+Inside a git repo, leave a marker so a later session can tell this repo was set up, and offer a
+reminder for repos that were not.
+
+1. **Write the marker** at `<repo root>/.agents/repobuddy/init-buddy.json`, where the repo root is
+   `git rev-parse --show-toplevel`. Write it at the end of every run, including one where the user
+   declined everything:
+
+   ```json
+   { "version": 1, "updated": "<ISO date>", "hosts": ["github"], "declined": false }
+   ```
+
+   - `hosts`: the hosts whose CLI is now installed and logged in.
+   - `declined`: `true` when the user said no to the setup itself, so the reminder stops for this repo.
+     It is not about single entries the user turned down.
+
+   Update the file if it exists. Never commit it. Setup differs per clone and per machine, so the
+   marker stays local: make sure `.agents/repobuddy/init-buddy.json` is listed in
+   `<git common dir>/info/exclude` (from `git rev-parse --git-common-dir`), appended only if no line
+   names it yet. Never add it to the tracked `.gitignore`.
+
+2. **Hand over the reminder.** If the instructions you loaded from outside the repository carry no
+   such reminder yet, offer the user a line for their global instruction file. You can tell without
+   opening a file: those instructions are already in front of you. Ask which owners it covers, so it
+   stays quiet in third-party clones and forks:
+
+   ```markdown
+   - In a git repo owned by <owners> with no `.agents/repobuddy/init-buddy.json`, mention once per
+     session that `init-buddy` can set this repo up. Don't run it unless the user asks.
+   ```
+
+   The global file is `~/.agents/AGENTS.md`, the user-scope counterpart of the root `AGENTS.md`, and
+   the line goes at its end. Say that a harness reads it only where a user-scope instruction file of
+   its own loads it. On Claude Code that file is `~/.claude/CLAUDE.md`.
+
+   **Write nothing outside the repo.** Give the line and the path, and stop. The user places it. A
+   hand-off is an outcome, not a decline, so report it as handed over.
 
 ## List the next setup skills
 
@@ -205,6 +258,7 @@ List them only. Never run them.
 
 - Installing, enabling, or editing MCP servers
 - Editing harness config beyond the allow entries, deny entries, and `gh-api-guard` hook the user approved
+- Writing to a global instruction file. The reminder line is handed over, never written
 - Auditing or tightening an existing allow list (that is `review-permissions`)
 - Storing, printing, or moving tokens
 - Changing git remotes or repository settings
