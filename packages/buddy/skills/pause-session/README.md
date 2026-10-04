@@ -9,7 +9,9 @@ checkpoint per topic that a fresh session can pick up without going back over se
 - "pause here, I'll pick this up tomorrow"
 - "wrap up for now"
 - "hand this off to another session"
-- when the context window is filling up and you want a clean restart
+- when the context window is filling up and you want a clean restart. Run it before the harness
+  compacts on its own (Claude Code's auto-compact, for one): the skill can't trigger itself, and a
+  compacted session has already lost detail the checkpoint would have kept
 
 ## Usage
 
@@ -19,8 +21,9 @@ checkpoint per topic that a fresh session can pick up without going back over se
 
 ## What it does
 
-1. Sorts the session's work into topics: independent threads such as a bug fix, a side refactor or a
-   research question. Threads that share a goal or the same files stay one topic.
+1. Lists every request you made in the session, in order, including the ones it hasn't started, then
+   sorts them into topics: independent threads such as a bug fix, a side refactor or a research
+   question. Threads that share a goal or the same files stay one topic.
 2. Skips work that is done. A committed fix or an answered question gets no checkpoint, only a
    one-line commit or PR reference where live work builds on it. Tangents with nothing left to do are
    dropped.
@@ -30,15 +33,19 @@ checkpoint per topic that a fresh session can pick up without going back over se
    left out. In a run with no one to ask, it takes the recommendation and says why.
 4. Writes each checkpoint to `.agents/repobuddy/checkpoints/<slug>.md` at the repo root
    (`~/.agents/repobuddy/checkpoints/` outside a repo). The next action comes first, followed by the
-   goal, settled decisions, open questions, working method, the files, commits and issues touched,
-   the state that isn't in git, and the skills the next session should use. Split checkpoints each
+   goal with your latest instruction quoted word for word, the remaining steps (carried over from the
+   harness's todo list), settled decisions (your corrections among them, as "user said"), dead ends
+   that shouldn't be retried, open questions, working method, the files, commits and issues touched,
+   the state that isn't in git, and the skills the next session should use. If the pause cuts an edit
+   midway, the next action says what the partial change does and what it lacks. A section with
+   nothing to say is left out, so the checkpoint stays short. Split checkpoints each
    stand alone: shared context is copied into each, and a topic that has to wait for another names it
    in `depends-on`, which `resume-session` shows as `waits on <slug>`.
 5. On first use in a repo, adds the checkpoint folder to `.git/info/exclude` (shared by every
    worktree), not to your tracked `.gitignore`, so checkpoints never show up as untracked files.
 6. Gives commits, files, issues and ADRs as references and doesn't paste their contents.
 7. Redacts secrets and personal data. With `--commit`, it also drops absolute paths, usernames and
-   hostnames.
+   hostnames, and greps the checkpoints for them before committing.
 8. Leaves your uncommitted work alone and lists it in the checkpoint, so you know it won't travel on
    its own.
 9. Commits only the checkpoints, and only with `--commit`, staging them with `git add -f` past the
