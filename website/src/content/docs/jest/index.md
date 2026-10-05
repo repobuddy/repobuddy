@@ -84,7 +84,7 @@ has every name.
 | TypeScript transforms | `@swc/jest` for ESM, `ts-jest` with `isolatedModules: true` for CommonJS. `ts-jest` for ESM through [`fields.knownTransforms.tsJestEsm()`](/repobuddy/jest/api/fields/#knowntransformstsjestesm). | `packages/jest/src/configs/typescript.ts`, `src/fields/transform.ts` |
 | ESM dependencies in CommonJS | `jest-esm-transformer-2` with `transformIgnorePatterns: []` transforms ESM packages in `node_modules`. | `packages/jest/src/configs/typescript.ts`, `javascript.ts` |
 | Source folder | First of `src`, `source`, `ts`, `js` that exists in the working directory; `src` otherwise. | `packages/jest/src/configs/source.ts` |
-| Monorepo | `projects` with one preset per project and [`watch`](/repobuddy/jest/presets/watch/) at the root. Detection runs in the working directory: see the [monorepo guide](/repobuddy/jest/guides/monorepo/). | `packages/jest/src/presets/watch/jest-preset.ts` |
+| Monorepo | Run Jest in each package, or use `projects` with one preset per project and [`watch`](/repobuddy/jest/presets/watch/) at the root. Detection runs in the working directory: see the [monorepo guide](/repobuddy/jest/guides/monorepo/). | `packages/jest/src/presets/watch/jest-preset.ts` |
 
 ## Not supported
 

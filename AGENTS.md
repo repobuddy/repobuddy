@@ -148,7 +148,7 @@ unreachable. Internal Markdown links carry the base path (`/repobuddy/jest/prese
 slugs. Each package has its own section under `website/src/content/docs/<section>/` (`jest`, `vitest`, `biome`,
 `typescript`, `test`, `cli`), with an overview, task guides, and one reference page per preset, export, or command;
 each public skill has a page under `skills/`. When a package's presets, exports, options, or commands change, update
-the matching reference page from the source, not from the readme, and the site-wide `compatibility.md` when a peer
+the matching reference page from the source, not from the readme, and the overview's Support section when a peer
 range or supported environment changes.
 
 **Build pipeline**: Turborepo tasks are declared in `turbo.json`. `coverage` and `test` depend on `@repobuddy/jest#build` and `@repobuddy/vitest#build` first, because the repo dogfoods its own jest/vitest configs.

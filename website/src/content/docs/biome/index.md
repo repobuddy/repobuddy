@@ -66,4 +66,3 @@ decision; see the [Biome documentation](https://biomejs.dev).
 - [Adopt Biome with @repobuddy/biome](/repobuddy/biome/guides/adopt/)
 - [Override a rule or formatter setting](/repobuddy/biome/guides/override-rules/)
 - [Config reference](/repobuddy/biome/configs/)
-- [Compatibility matrix](/repobuddy/compatibility/)
