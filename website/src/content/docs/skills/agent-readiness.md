@@ -30,6 +30,7 @@ Run `/agent-readiness <subcommand>`, or ask in plain words.
 | `bench --yes [--baseline]` | Runs the tasks. `--baseline` records `baseline.json`; otherwise it compares against it. |
 | `bench --runs <n>`, `--task <id>`, `--ref <commit>`, `--runner print\|interactive` | Run count, one task, a past commit, or interactive Claude Code sessions in tmux or herdr. |
 | `bench compare <before.json> <after.json>` | Compares two stored results with spread and permutation p-values. Free. |
+| `suggest [--area <id>]` | Suggests a weight override from ACED bench comparisons tagged `area=<id>`: a step of 5 on a replicated effect, else "keep the weight". Writes nothing. |
 
 ## The scope check
 

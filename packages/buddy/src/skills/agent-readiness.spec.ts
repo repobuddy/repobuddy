@@ -63,6 +63,9 @@ test.each([
 	[['bench', 'compare', 'a.json']],
 	[['bench', 'compare', 'a.json', 'b.json', 'c.json']],
 	[['bench', 'compare', 'a.json', 'b.json', '--yes']],
+	[['suggest', '--area', 'security']],
+	[['suggest', '--area']],
+	[['suggest', '--yes']],
 ])('rejects bad usage %j with exit 2', async (argv) => {
 	await expect(main(argv)).rejects.toThrow('exit:2')
 	expect(stderr.join('')).toMatch(/usage: agent-readiness\.mjs score/)
@@ -220,6 +223,59 @@ test('exits 2 on a malformed config', async () => {
 test('--check holds a package at --min-level too', async () => {
 	await expect(main(['score', '--package', dir, '--check', '--min-level', '1'])).rejects.toThrow('exit:1')
 	expect(stdout.join('')).toMatch(/check: FAIL, level 0 is below --min-level 1\n$/)
+})
+
+describe('suggest', () => {
+	const comparison = (change: number) => ({
+		schemaVersion: 3,
+		kind: 'comparison',
+		suite: 'repobuddy.readiness',
+		createdAt: '2026-10-05T00:00:00.000Z',
+		tags: { area: 'noise' },
+		verdict: 'improved',
+		incomparable: [],
+		rows: [{ scope: 'pooled', metric: 'outputTokens', change, p: 0.01, tooFew: false }],
+	})
+	const store = (name: string, change: number) => {
+		const folder = join(dir, '.agents/aced/results/bench/repobuddy.readiness')
+		mkdirSync(folder, { recursive: true })
+		writeFileSync(join(folder, name), JSON.stringify(comparison(change)))
+		return join(folder, name)
+	}
+
+	test('suggests from the stored comparisons against the repo override, and writes nothing', async () => {
+		store('compare-1.json', -0.1)
+		store('compare-2.json', -0.08)
+		mkdirSync(join(dir, '.agents/references'), { recursive: true })
+		writeFileSync(
+			join(dir, '.agents/references/repobuddy.readiness.md'),
+			'---\nmerge: merge-sections\n---\n\n## Weights\n\n- noise: 40\n',
+		)
+		await main(['suggest', '--dir', dir])
+		expect(stdout.join('')).toMatch(/^noise \(weight 40\): keep the weight: already at the maximum/)
+		stdout = []
+		await main(['suggest', '--dir', dir, '--area', 'noise', '--json', store('compare-3.json', -0.1)])
+		expect(JSON.parse(stdout.join('')).suggestions[0]).toMatchObject({ area: 'noise', current: 40 })
+	})
+
+	test('prints the override line', async () => {
+		store('compare-1.json', -0.1)
+		store('compare-2.json', -0.08)
+		await main(['suggest', '--dir', dir])
+		expect(stdout.join('')).toMatch(/raise by 5[\s\S]*\n- noise: 20\n/)
+	})
+
+	test('exits 1 on a record it cannot read', async () => {
+		writeFileSync(join(dir, 'x.json'), '{}')
+		await expect(main(['suggest', '--dir', dir, join(dir, 'x.json')])).rejects.toThrow('exit:1')
+		expect(stderr.join('')).toMatch(/not an ACED comparison record/)
+	})
+
+	test('exits 2 on a malformed weights override', async () => {
+		mkdirSync(join(dir, '.agents/readiness'), { recursive: true })
+		writeFileSync(join(dir, '.agents/readiness/weights.json'), '{ "bogus": 1 }')
+		await expect(main(['suggest', '--dir', dir])).rejects.toThrow('exit:2')
+	})
 })
 
 test('--min-level accepts 5 for a repo, the level a fresh bench baseline unlocks', async () => {

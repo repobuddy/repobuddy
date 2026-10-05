@@ -28,6 +28,7 @@ writes only its task set, results, and baseline, and spends money only after a y
 | `improve [area]` | Fixes the findings `score` reports as a reviewable series: one area per commit, each fix approved first, owned fixes handed off. Re-scores after each area | the repo, on approval |
 | `bench [--baseline]` | Runs the repo's fixed agent task set and records tokens, turns, tool calls, wall time, pass rate, and cost per successful task; compares against the stored baseline | results file; `baseline.json` with `--baseline` |
 | `bench compare <before> <after>` | Compares two stored results files (or a baseline) per task and pooled, with the spread and a permutation p-value. Runs no agent and costs nothing (see [Reading a comparison](#reading-a-comparison)) | nothing |
+| `suggest [--area <id>]` | Reads ACED bench comparisons tagged with an area and suggests a weight override, or "keep the weight" (see [Suggesting a weight](#suggesting-a-weight)). Runs no agent | nothing |
 
 ## Script
 
@@ -36,6 +37,7 @@ node <this-skill-dir>/scripts/agent-readiness.mjs score [--dir <repo>] [--json] 
 node <this-skill-dir>/scripts/agent-readiness.mjs score --package <path> [--json] [--check [--min-level <1-4>]]
 node <this-skill-dir>/scripts/agent-readiness.mjs bench [--dir <repo>] [--init | --baseline] [--runs <n>] [--task <id>] [--ref <commit>] [--runner print|interactive] [--yes] [--json]
 node <this-skill-dir>/scripts/agent-readiness.mjs bench compare <before.json> <after.json> [--json]
+node <this-skill-dir>/scripts/agent-readiness.mjs suggest [--dir <repo>] [--area <id>] [<comparison.json>...] [--json]
 ```
 
 `<this-skill-dir>` is the directory holding this SKILL.md, not the current working directory.
@@ -102,6 +104,27 @@ lower the bar CI holds. The report marks each overridden weight. A malformed ite
 (exit 2) rather than scoring with a guess. The old `.agents/readiness/weights.json` is still read, for
 one release, when no project override exists; the script then prints the override file to create.
 Offer to create it, and to delete the JSON file, on the user's yes.
+
+### Suggesting a weight
+
+`suggest` turns a repo's own bench evidence into a weight suggestion. It reads ACED's comparison
+records of the suite `repobuddy.readiness` that carry an `area` tag, by default every one under
+`.agents/aced/results/bench/repobuddy.readiness/`. To produce one, bench before and after one area's
+change and compare with `--tag area=<id>` (ACED's `bench` skill passes the tag through as given).
+
+- An area's **effects** are a pass-rate change on a task, or a pooled change in input tokens, output
+  tokens, turns, or tool calls, at p < 0.05 with enough runs to reach it. Dollars never decide; the
+  pooled cost row is shown as evidence only.
+- An effect counts only when **two or more comparisons** show it the same way and none the other way.
+- A counted effect moves the weight **one step of 5**, clamped to 0-40; pass rate and effort count
+  the same, and if they disagree the weight stays. Anything else prints **"keep the weight"**, which
+  is a finding too: report it.
+
+The script prints the `- <area>: <weight>` line for the `## Weights` section of
+`.agents/references/repobuddy.readiness.md` and never writes the file. Offer to add it on the user's
+yes, and put the evidence it prints in the pull request that adds the override. A suggestion changes
+this repo's override only; the defaults change only on results across repositories
+([references/weights.md](references/weights.md)).
 
 ## CI mode
 
@@ -268,7 +291,8 @@ fix or its owning skill as `score` does.
 
 `bench` answers whether `score` means anything: it runs real agents on fixed tasks and measures what
 they cost. Compare runs one area's changes at a time, or the effect of each cannot be told apart:
-to measure an `improve` area, bench before it and again after its commit.
+to measure an `improve` area, bench before it and again after its commit, and tag the comparison
+with the area for [`suggest`](#suggesting-a-weight).
 
 1. **Find the task set** at `.agents/readiness/bench/tasks.json`. If there is none, run `bench --init`
    for a template, then help the user replace its examples with 3-5 tasks of this repo's own: fix a

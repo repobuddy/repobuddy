@@ -61,3 +61,7 @@ Change a default only with a run behind it, and add that run here.
 - Tasks hard enough that some runs fail, and 10 or more runs a side.
 - More than one repository for the same lever. One repo's result belongs in its own
   override, `.agents/references/repobuddy.readiness.md`, not in the defaults.
+
+`agent-readiness suggest` applies the per-repo half of this bar to ACED comparisons tagged with an
+area: it suggests a step of 5 only on an effect two comparisons replicate, and "keep the weight"
+otherwise. Record its evidence in the pull request that adds the override.
