@@ -16,6 +16,7 @@ import { type InjectionSurface, readInjectionSurface } from './injection-surface
 import { type DeadCodeRun, runKnip } from './knip.js'
 import { type CommentFacts, findNameCollisions, measureComments, type NameCollision } from './source.js'
 import { type ReleaseAgeGate, readReleaseAgeGate, readWorkflows, type WorkflowFacts } from './supply-chain.js'
+import { readWorkspacePackages } from './workspaces.js'
 
 interface InstructionFile {
 	path: string
@@ -29,6 +30,24 @@ interface ScopeFacts {
 	/** Well-known scope files (`GOALS.md`, `SCOPE.md`, …) at the root or under `docs/` that no instructions file names. */
 	unlinked: string[]
 	/** `<file>:<line>: <text>` for each scope, purpose, or non-goals heading or line in an instruction file. */
+	sections: string[]
+	/**
+	 * In a monorepo, the same facts for each workspace package that is not `private`; the root's own
+	 * then hold only files outside those packages. `undefined` in a single-package repo.
+	 */
+	packages?: PackageScope[] | undefined
+	/** In a monorepo, the `private` workspace packages the check skips: apps, fixtures, the docs site. */
+	privatePackages?: string[] | undefined
+}
+
+interface PackageScope {
+	dir: string
+	name: string
+	/** Files the package's own `AGENTS.md`/`CLAUDE.md`, or a root instructions file, names inside the package. */
+	linked: string[]
+	/** Well-known scope files at the package root or its `docs/` that nothing names. */
+	unlinked: string[]
+	/** Scope lines in the package's own `AGENTS.md`/`CLAUDE.md`. */
 	sections: string[]
 }
 
@@ -327,13 +346,36 @@ function findMissingCommands(text: string, scripts: string[]): string[] {
 	return [...missing]
 }
 
-const SCOPE_HEADING = /^#{1,6}\s+.*\b(scope|purpose|non-?goals?|boundar(y|ies)|is not|isn't)\b/i
+const SCOPE_HEADING = /^#{1,6}\s+.*\b(scope|purpose|non-?goals?|boundar(y|ies)|is not|isn't|belongs?)\b/i
 const SCOPE_LINE = /\b(non-?goals?|out of scope|not in scope)\b/i
 
 /** The names the check knows without a link to follow; `GOALS.md` is the one `improve` proposes. */
 const SCOPE_FILE = /^(docs\/)?(goals|non-?goals|scope|vision|purpose)\.md$/i
 /** A markdown link, an `@` import, or a bare mention of a local `.md` file. */
 const MD_REFERENCE = /(?:^|[\s`(@[])((?:\.{1,2}\/)?[\w./-]*[\w-]\.md)\b/gim
+
+/** The instruction files a workspace package can carry; harnesses load them when the agent works there. */
+const PACKAGE_INSTRUCTION_FILES = ['AGENTS.md', 'CLAUDE.md']
+const ANY_INSTRUCTION_FILE = /(^|\/)(AGENTS|CLAUDE|GEMINI)\.md$/
+
+/** `path` is a well-known scope file of the package at `base` (`''` for the repo root). */
+function isScopeFileOf(path: string, base: string): boolean {
+	if (base === '') return SCOPE_FILE.test(path)
+	return path.startsWith(`${base}/`) && SCOPE_FILE.test(path.slice(base.length + 1))
+}
+
+/** The local files `text`, read from `file`, names. */
+function findNamedFiles(file: string, text: string, fileSet: Set<string>): string[] {
+	const named: string[] = []
+	for (const m of text.matchAll(MD_REFERENCE)) {
+		const target = m[1] as string
+		// A link resolves from the file that holds it; a bare `GOALS.md` usually means the root.
+		for (const path of [posix.join(posix.dirname(file), target), posix.normalize(target)]) {
+			if (fileSet.has(path) && !INSTRUCTION_FILES.includes(path) && !ANY_INSTRUCTION_FILE.test(path)) named.push(path)
+		}
+	}
+	return named
+}
 
 function findScopeLines(path: string, text: string): string[] {
 	return text
@@ -406,6 +448,65 @@ function readDeadCodeCommand(dir: string, pkg: PackageJson): string | undefined 
 	return pm === 'npm' || pm === 'bun' ? `${pm} run ${script}` : `${pm} ${script}`
 }
 
+/**
+ * Sorts what the instruction files name into the root's scope and, in a monorepo,
+ * each non-private workspace package's: a package passes on its own `AGENTS.md`/`CLAUDE.md` or on a
+ * scope file a root instructions file names inside it.
+ */
+function collectScope(
+	dir: string,
+	files: string[],
+	fileSet: Set<string>,
+	named: Set<string>,
+	sections: string[],
+	monorepo: { workspaces: unknown } | undefined,
+): ScopeFacts {
+	const isScopeDetail = (f: string, base: string) =>
+		isScopeFileOf(f, base) || (read(dir, f) ?? '').split('\n').some((line) => SCOPE_HEADING.test(line))
+	if (!monorepo) {
+		return {
+			linked: [...named].filter((f) => isScopeDetail(f, '')),
+			unlinked: files.filter((f) => isScopeFileOf(f, '') && !named.has(f)),
+			sections,
+		}
+	}
+	const all = readWorkspacePackages(dir, monorepo.workspaces)
+	const owner = (f: string) =>
+		all.filter((p) => f.startsWith(`${p.dir}/`)).sort((a, b) => b.dir.length - a.dir.length)[0]
+	const packages = all
+		.filter((p) => !p.private)
+		.map((p): PackageScope => {
+			const ownNamed = new Set<string>()
+			const ownSections: string[] = []
+			const seen = new Set<string>()
+			for (const base of PACKAGE_INSTRUCTION_FILES) {
+				const file = `${p.dir}/${base}`
+				const text = read(dir, file)
+				if (text === undefined) continue
+				const real = realpathSync(join(dir, file))
+				if (seen.has(real)) continue
+				seen.add(real)
+				ownSections.push(...findScopeLines(file, text))
+				for (const path of findNamedFiles(file, text, fileSet)) ownNamed.add(path)
+			}
+			const reached = [...named, ...ownNamed].filter((f) => owner(f) === p)
+			return {
+				dir: p.dir,
+				name: p.name,
+				linked: [...new Set(reached)].filter((f) => isScopeDetail(f, p.dir)),
+				unlinked: files.filter((f) => isScopeFileOf(f, p.dir) && owner(f) === p && !reached.includes(f)),
+				sections: ownSections,
+			}
+		})
+	return {
+		linked: [...named].filter((f) => owner(f) === undefined && isScopeDetail(f, '')),
+		unlinked: files.filter((f) => isScopeFileOf(f, '') && !named.has(f)),
+		sections,
+		packages,
+		privatePackages: all.filter((p) => p.private).map((p) => p.dir),
+	}
+}
+
 export interface CollectOptions {
 	/** Run the repo's knip command to settle `dead-code`. Needs dependencies installed. */
 	runKnip?: boolean | undefined
@@ -435,21 +536,17 @@ export function collectFacts(dir: string, options: CollectOptions = {}): Facts {
 		instructionFiles.push({ path: file, tokens: estimateTokens(text) })
 		for (const command of findMissingCommands(text, scripts)) missingInstructionCommands.add(command)
 		scopeSections.push(...findScopeLines(file, text))
-		for (const m of text.matchAll(MD_REFERENCE)) {
-			const target = m[1] as string
-			// A link resolves from the file that holds it; a bare `GOALS.md` usually means the root.
-			for (const path of [posix.join(posix.dirname(file), target), posix.normalize(target)]) {
-				if (fileSet.has(path) && !INSTRUCTION_FILES.includes(path)) named.add(path)
-			}
-		}
+		for (const path of findNamedFiles(file, text, fileSet)) named.add(path)
 	}
-	const scope: ScopeFacts = {
-		linked: [...named].filter(
-			(f) => SCOPE_FILE.test(f) || (read(dir, f) ?? '').split('\n').some((line) => SCOPE_HEADING.test(line)),
-		),
-		unlinked: files.filter((f) => SCOPE_FILE.test(f) && !named.has(f)),
-		sections: scopeSections,
-	}
+	const isMonorepo = exists(dir, 'pnpm-workspace.yaml') || Array.isArray(pkg.workspaces) || exists(dir, 'lerna.json')
+	const scope = collectScope(
+		dir,
+		files,
+		fileSet,
+		named,
+		scopeSections,
+		isMonorepo ? { workspaces: pkg.workspaces } : undefined,
+	)
 
 	const toolchainPins = TOOLCHAIN_FILES.filter((f) => exists(dir, f))
 	if (typeof pkg.packageManager === 'string') toolchainPins.unshift('package.json#packageManager')
@@ -490,7 +587,7 @@ export function collectFacts(dir: string, options: CollectOptions = {}): Facts {
 		preCommitHooks,
 		hasContributing: files.some((f) => /^(\.github\/|docs\/)?contributing(\.[a-z]+)?$/i.test(f)),
 		hasIssueTemplates: exists(dir, '.github/ISSUE_TEMPLATE') || exists(dir, '.gitlab/issue_templates'),
-		isMonorepo: exists(dir, 'pnpm-workspace.yaml') || Array.isArray(pkg.workspaces) || exists(dir, 'lerna.json'),
+		isMonorepo,
 		tsStrict: readTsStrict(dir),
 		largeFiles,
 		trackedBuildOutput: files.filter((f) => BUILD_OUTPUT.test(f)),

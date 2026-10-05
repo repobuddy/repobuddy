@@ -155,15 +155,48 @@ function deadCode(facts: Facts): Pick<Check, 'status' | 'detail'> {
  * Fails when nothing states the boundary, or when a well-known scope file exists but no instructions
  * file names it: an agent cannot lazily load the file that says a change does not belong. Whether a
  * statement found is specific enough to reject a real change is a judgment.
+ *
+ * In a monorepo the root and every non-private workspace package are scored on their own, and the
+ * check fails when any of them fails: the root on its repo-level statement, each package on its own
+ * `AGENTS.md`/`CLAUDE.md` or a scope file an instructions file names inside it.
  */
 function scopeStatement(facts: Facts): Pick<Check, 'status' | 'detail'> {
 	if (facts.instructionFiles.length === 0) return { status: 'n/a' }
-	const { linked, unlinked, sections } = facts.scope
-	if (unlinked.length > 0) {
-		return { status: 'fail', detail: list(unlinked.map((f) => `${f} exists, but no instructions file names it`)) }
+	const { packages, privatePackages = [] } = facts.scope
+	const root = scopeOf(facts.scope, packages ? 'the root instructions file' : 'the instructions file')
+	if (!packages) {
+		if (root.found) return { status: 'judge', detail: list(root.found) }
+		return root.failed.length > 0 ? { status: 'fail', detail: list(root.failed) } : { status: 'fail' }
 	}
-	if (linked.length === 0 && sections.length === 0) return { status: 'fail' }
-	return { status: 'judge', detail: list([...linked.map((f) => `${f}, named in the instructions file`), ...sections]) }
+	const results = [
+		{ label: 'root', ...root },
+		...packages.map((p) => ({ label: `${p.dir} (${p.name})`, ...scopeOf(p, 'an instructions file') })),
+	]
+	const failed = results.filter((r) => !r.found)
+	const skipped = privatePackages.length > 0 ? [`skipped, private: ${list(privatePackages, 5).join(', ')}`] : []
+	if (failed.length > 0) {
+		const passed = results.filter((r) => r.found).map((r) => r.label)
+		return {
+			status: 'fail',
+			detail: [
+				...list(failed.map((r) => `${r.label}: ${r.failed.length > 0 ? r.failed.join('; ') : 'no scope statement'}`)),
+				...(passed.length > 0 ? [`found: ${passed.join(', ')}`] : []),
+				...skipped,
+			],
+		}
+	}
+	return { status: 'judge', detail: [...list(results.map((r) => `${r.label}: ${r.found?.join('; ')}`)), ...skipped] }
+}
+
+/** What one scope (the root or a package) states, or why it fails; `found` is unset on a failure. */
+function scopeOf(
+	scope: { linked: string[]; unlinked: string[]; sections: string[] },
+	namer: string,
+): { found?: string[]; failed: string[] } {
+	const { linked, unlinked, sections } = scope
+	if (unlinked.length > 0) return { failed: unlinked.map((f) => `${f} exists, but no instructions file names it`) }
+	if (linked.length === 0 && sections.length === 0) return { failed: [] }
+	return { found: [...linked.map((f) => `${f}, named in ${namer}`), ...sections], failed: [] }
 }
 
 const HARNESS_DOCTOR = 'buddy-agent-harness'
@@ -325,8 +358,9 @@ export function buildChecks(facts: Facts, now: Date = new Date()): Check[] {
 			gate: false,
 			effort: 1,
 			...scopeStatement(facts),
-			summary: 'The instructions file says what the project is for and what it is not',
-			fix: 'Draft 2-4 lines of purpose and boundary for AGENTS.md, and a GOALS.md it names, from the README and package descriptions; the owner decides the boundary.',
+			summary:
+				'The instructions say what the project, and each published package in a monorepo, is for and what it is not',
+			fix: 'Draft 2-4 lines of purpose and boundary for AGENTS.md, and a GOALS.md it names (in a monorepo, one per failing package, no root GOALS.md), from the READMEs and package descriptions; the owner decides the boundary.',
 		},
 		...harnessChecks(facts),
 		{

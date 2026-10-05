@@ -122,6 +122,67 @@ describe('collectFacts', () => {
 		expect(collectFacts(dir).scope).toEqual({ linked: ['GOALS.md'], unlinked: [], sections: [] })
 	})
 
+	it('leaves package scope out of a single-package repo', () => {
+		const dir = repo({ 'AGENTS.md': '## Non-goals', 'package.json': '{}' })
+		expect(collectFacts(dir).scope.packages).toBeUndefined()
+	})
+
+	it('scores scope per non-private workspace package in a monorepo', () => {
+		const dir = repo({
+			'package.json': JSON.stringify({ private: true }),
+			'pnpm-workspace.yaml': 'packages:\n  - packages/*\n  - website\n',
+			'AGENTS.md': [
+				'## What belongs in this repo',
+				'Before changing jest, read [its goals](packages/jest/GOALS.md).',
+			].join('\n'),
+			'GOALS.md': '# Goals',
+			'packages/jest/package.json': JSON.stringify({ name: '@x/jest' }),
+			'packages/jest/GOALS.md': '# Goals',
+			'packages/vitest/package.json': JSON.stringify({ name: '@x/vitest' }),
+			'packages/vitest/AGENTS.md': 'Read GOALS.md before adding a preset.',
+			'packages/vitest/GOALS.md': '# Goals',
+			'packages/biome/package.json': JSON.stringify({ name: '@x/biome' }),
+			'packages/biome/AGENTS.md': '## Non-goals\nNo lint rules of our own.',
+			'packages/test/package.json': JSON.stringify({ name: '@x/test' }),
+			'packages/test/docs/scope.md': '# Scope',
+			'website/package.json': JSON.stringify({ name: 'website', private: true }),
+		})
+		const { scope } = collectFacts(dir)
+		expect(scope).toMatchObject({
+			linked: [],
+			unlinked: ['GOALS.md'],
+			sections: ['AGENTS.md:1: ## What belongs in this repo'],
+			privatePackages: ['website'],
+		})
+		expect(scope.packages).toEqual(
+			expect.arrayContaining([
+				{ dir: 'packages/jest', name: '@x/jest', linked: ['packages/jest/GOALS.md'], unlinked: [], sections: [] },
+				{
+					dir: 'packages/vitest',
+					name: '@x/vitest',
+					linked: ['packages/vitest/GOALS.md'],
+					unlinked: [],
+					sections: [],
+				},
+				{
+					dir: 'packages/biome',
+					name: '@x/biome',
+					linked: [],
+					unlinked: [],
+					sections: ['packages/biome/AGENTS.md:1: ## Non-goals'],
+				},
+				{
+					dir: 'packages/test',
+					name: '@x/test',
+					linked: [],
+					unlinked: ['packages/test/docs/scope.md'],
+					sections: [],
+				},
+			]),
+		)
+		expect(scope.packages).toHaveLength(4)
+	})
+
 	it('counts an instructions file once when another name links to it', () => {
 		const dir = repo({ 'AGENTS.md': 'x'.repeat(40) })
 		symlinkSync(join(dir, 'AGENTS.md'), join(dir, 'CLAUDE.md'))

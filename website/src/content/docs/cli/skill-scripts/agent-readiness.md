@@ -53,7 +53,10 @@ A `score` flag passed to `bench`, or a `bench` flag passed to `score`, is a usag
 - Token counts are estimated at four characters per token.
 - `instructions-scope` (instructions area, level 3, not a gate) is `fail` when no instructions file states a purpose
   or boundary, or when a well-known scope file such as `GOALS.md` exists but no instructions file names it. When a
-  statement is found, it is `JUDGE`. It is `n/a` when the repository has no instructions file.
+  statement is found, it is `JUDGE`. It is `n/a` when the repository has no instructions file. In a monorepo it also
+  scores each workspace package that is not `private`, on a scope file inside the package that its own `AGENTS.md` or
+  the root instructions file names, or a scope line in its own `AGENTS.md`; a root `GOALS.md` is not expected. It is
+  `fail` when the root or any of those packages fails, and the detail lists each, plus the private packages skipped.
 - `.agents/readiness/weights.json` can override the area weights. A malformed file exits `2`.
 - `bench --baseline` writes `.agents/readiness/bench/baseline.json`. Every other run is compared against it.
 

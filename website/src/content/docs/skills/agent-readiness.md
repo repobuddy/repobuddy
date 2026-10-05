@@ -39,11 +39,18 @@ it names. It fails when nothing states the boundary, or when a well-known scope 
 or `VISION.md` exists but no instructions file names it. When it finds a statement, the agent judges whether the
 boundary is specific enough to turn down a real change.
 
+In a monorepo the check scores the root and each workspace package that is not `private`. The root passes on a
+statement of what belongs in the repo, with no root `GOALS.md` expected. Each package passes on a `GOALS.md` (or
+another scope file) inside it that its own `AGENTS.md` or the root instructions file names, or on a scope line in its
+own `AGENTS.md`. Private packages, such as apps, the docs site, and test fixtures, are skipped. The check fails when the
+root or any counted package fails, and lists which.
+
 ## What it produces or changes
 
 - `score` changes nothing.
 - `improve` makes one commit per area. For a missing scope statement it drafts 2 to 4 lines of purpose and boundary
-  for `AGENTS.md` and a `GOALS.md` (goals, non-goals, rejected directions) from the README. You decide every boundary. Optional `.agents/readiness/weights.json` reorders fixes but never changes the level.
+  for `AGENTS.md` and a `GOALS.md` (goals, non-goals, rejected directions) from the README; in a monorepo, the root
+  lines and one `GOALS.md` per failing package. You decide every boundary. Optional `.agents/readiness/weights.json` reorders fixes but never changes the level.
 - `bench` writes results under `.agents/readiness/bench/` (transcripts gzipped, git-ignored).
 
 ## Asks before acting
