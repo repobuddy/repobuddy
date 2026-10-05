@@ -67,7 +67,7 @@ The shape this check rewards:
 - **The instructions file carries the purpose and the boundary in 2-4 lines**: what the project is,
   and what it is not.
 - **A file it names carries the detail**, read on demand: goals, non-goals, and directions
-  considered and rejected, each with its reason. The instructions file names it with a trigger line,
+  considered and rejected, the rejected ones with their reason. The instructions file names it with a trigger line,
   such as "Before adding a feature, package, dependency, or public API, read GOALS.md."
 - A small repo can keep everything in the instructions file, with no second file.
 
@@ -80,9 +80,10 @@ way.
 
 The script fails the check when it finds no statement, and when a file with a well-known name exists
 but no instructions file names it. Otherwise it lists what it found. Read those lines and files. Pass
-when the statement names the purpose and at least one concrete boundary, something the project will
-not do, specific enough to reject a real change. Fail on boilerplate: "a library for X" with no
-boundary, or non-goals so broad no change would ever hit them. Fail, too, when the statement sits in
+when the statement names the purpose and at least one concrete boundary: a plausible request someone
+could actually make, with a clear no, such as "Biome 1.x" for a package of Biome configs. Fail on
+boilerplate: "a library for X" with no boundary, non-goals so broad no change would ever hit them, or
+non-goals that restate what the project obviously is not. Fail, too, when the statement sits in
 the named file alone and the instructions file only links to it, with no purpose line of its own.
 
 Do not count `CONTRIBUTING.md` as the home. It teaches people how to build, test, and open a pull
@@ -96,13 +97,18 @@ instead:
 ```markdown
 # Goals
 
-What this project is for and what it deliberately is not. Not a roadmap.
-
 ## Goals
+<!-- only lines that help decide whether a change belongs -->
 ## Non-goals
+<!-- each: a request someone could make, answered no -->
 ## Rejected directions
 <!-- each: what was proposed, and why not -->
 ```
+
+Every line is read by an agent deciding whether a change belongs, so every line must help it decide.
+Write no preamble or framing sentence. Keep a non-goal or rejected direction only when it would make
+the agent turn down a plausible change, and a goal only when it tells the agent whether a change fits.
+Leave out a section with nothing in it.
 
 When the repo keeps decision records (`docs/adr`, `docs/decisions`), rejected directions can stay
 there, and the instructions file names both. Show both drafts and ask the owner to confirm or rewrite
