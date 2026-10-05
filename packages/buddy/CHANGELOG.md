@@ -1,5 +1,28 @@
 # repobuddy
 
+## 2.0.0
+
+### Major Changes
+
+- c70d6d7: Replace the `pause-session` and `resume-session` skills with one `session` skill: `session pause`, `session resume`, and `session help`. The old names are removed with no aliases; invoke `/session pause` and `/session resume` instead (natural phrasing such as "let's stop here" or "pick up X" still routes). `session pause` now writes a topic that belongs to another repo into that repo's `.agents/repobuddy/checkpoints/`, with its branch, commit, and paths taken from that repo and a new `repo:` field, and gives the line to type to resume it from a session there. `--commit` commits only the checkpoints in the current repo. `session resume` warns when a checkpoint's `repo:` names another repo before checking its branch and commit.
+
+### Minor Changes
+
+- e66edf9: `agent-readiness`: `instructions-scope` scores a monorepo per package. The root passes on a statement in its instructions file of what belongs in the repo, with no root `GOALS.md` expected. Each workspace package that is not `private` passes on a `GOALS.md` (or another scope file) inside it that its own `AGENTS.md`/`CLAUDE.md` or the root instructions file names, or on a scope line in its own `AGENTS.md`. Private packages (apps, docs sites, fixtures) are skipped. The check fails when the root or any counted package fails and lists each; it stays level 3 and not a gate. `improve` drafts the root lines and one `GOALS.md` per failing package. Single-package repos are scored as before.
+- 251b20e: `agent-readiness` adds `instructions-scope`, a level-3 check (not a gate) for whether the always-loaded instructions file says what the project is for and what it deliberately is not. The script finds a scope, purpose, or non-goals statement in the instructions file or in a local file it names, and fails when a well-known scope file (`GOALS.md`, `SCOPE.md`, `VISION.md`, …) exists but nothing points to it. The agent judges whether the boundary is specific enough to reject a real change. `improve` drafts 2-4 lines for `AGENTS.md` and a `GOALS.md` (goals, non-goals, rejected directions), and the owner decides every boundary.
+- 01e7c70: `init-buddy` now points to `setup-github-repo`'s merge backstop when it lists the next setup skills on a GitHub repo.
+- 01e7c70: `setup-github-repo` now reports whether the default branch has a merge backstop (a GitHub merge queue, a rule requiring the branch to be up to date, or a third-party queue such as Mergify) and, when it has none, offers a `merge-backstop` ruleset with no bypass actors, so every merge, including one an agent runs, is tested against the latest default branch. `detect-state` records the backstop and the workflows that trigger on `merge_group`, and the scaffolded `pull-request.yml` now triggers on `merge_group`.
+
+### Patch Changes
+
+- dda1c8f: `agent-readiness`: the `GOALS.md` that `improve` drafts for `instructions-scope` is bare section headings: no preamble ("What this project is for… Not a roadmap."), no guidance comments, and no duplicate title. The judgment bar now counts a boundary only when it would make an agent turn down a plausible request, such as "Biome 1.x" for a package of Biome configs. The draft keeps only goals that help decide whether a change belongs, and leaves out empty sections.
+- 200c075: `agent-readiness` records which `bench` runs each default area weight rests on, in `references/weights.md`. The first pilot benched comment density and found no change in pass rate and at most a few percent in cost, so `noise` keeps its starting weight of 15; every other weight is still an unmeasured estimate. The report footer now says bench results have not yet revised any weight.
+- 1620562: The `buddy` readme lists the commands that exist (adding `plugins list` and `plugins search`, dropping the never-implemented `buddy init` and `buddy add`), says global options go after the command name, shows a real `check-deps` run, and fixes the broken `@repobuddy/typescript` plugin link.
+- 58fb6d9: Ship the bundled skill scripts without a raw U+FEFF character. The minifier wrote the `yaml` package's `BOM` constant into `init-buddy`'s `detect-env.mjs` as the literal character, which skill auditors flag as hidden content; the build now writes it as the `\uFEFF` escape.
+- 2c038c1: `init-buddy`'s force-push deny entries no longer block `git push --force-with-lease` or `--force-if-includes`. They are word-bounded now (`Bash(git push --force *)`, `Bash(git push * --force)`, and the `-f` forms), so the agent can still update a rebased PR branch, matching `review-permissions`.
+- ce15110: `review-permissions` no longer recommends a deny rule that blocks `git push --force-with-lease`. It now suggests `Bash(git push --force *)` and `Bash(git push -f *)`, flags an existing `Bash(git push --force*)` rule for that swap, and scores `--force-with-lease` and `--force-if-includes` below a plain force-push.
+- 2c038c1: `review-permissions` now covers a force flag after the arguments (`git push origin main --force`) with word-bounded rules: `Bash(git push * --force)`, `Bash(git push * --force *)`, and the same two for `-f`. These leave `--force-with-lease` allowed. It no longer suggests `Bash(git push * --force*)`, and flags an existing one the same way it flags `Bash(git push --force*)`.
+
 ## 1.14.0
 
 ### Minor Changes

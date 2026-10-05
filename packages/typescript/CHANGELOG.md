@@ -1,5 +1,12 @@
 # @repobuddy/typescript
 
+## 2.2.2
+
+### Patch Changes
+
+- 1620562: `buddy ts copy-cjs-package-json <dir> [cwd]` (`cpj`) now defaults `cwd` to the current directory, as its help text says. It rejected a call without `cwd` with `missing required argument <cwd>`.
+- 1620562: The readme lists the `buddy ts` commands that exist (`build cjs|esm|tslib` and `copy-cjs-package-json`) and how to enable the plugin. It listed `buddy ts init` and `buddy ts up`, which were never implemented.
+
 ## 2.2.1
 
 ### Patch Changes

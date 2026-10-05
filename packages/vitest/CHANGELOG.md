@@ -1,5 +1,20 @@
 # @repobuddy/vitest
 
+## 3.0.0
+
+### Major Changes
+
+- 280e4b5: Support `vitest` 5 only.
+  
+  The `vitest` and `@vitest/browser-playwright` peer ranges move from `^4.0.15` to `^5.0.0`.
+  Stay on 2.x to keep using `vitest` 4.
+
+### Patch Changes
+
+- 1620562: The readme no longer says every preset restores mocks (only `browserTestPreset` does), its load-test config no longer also runs the other tests, and its npm badges point at `@repobuddy/vitest`. The `includeGeneralTests` doc comment shows the right glob and no longer lists a `.tsx` file, which is a browser test, as a general test.
+- Updated dependencies [1620562]
+  - @repobuddy/test@1.1.1
+
 ## 2.4.1
 
 ### Patch Changes

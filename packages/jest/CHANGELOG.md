@@ -1,5 +1,12 @@
 # @unional/jest-presets
 
+## 7.1.1
+
+### Patch Changes
+
+- 1620562: The Node.js-version test patterns (`feature.spec.node18.jsx`) now match `.jsx` files. They spelled the extension `jtx`, so a version-specific `.jsx` test never ran.
+- 1620562: The readme now matches the code: the `ts-esm` presets use `@swc/jest`, `jest` and `@swc/jest` are required peers, the resolver has no `@repobuddy/jest/resolver` entry, importing `@repobuddy/jest/matchers` does not register `toSatisfies`, the fields live under `fields` (no `knownRunners` or `knownTestEnvironmentOptions`), and the coverage badge points at this repo.
+
 ## 7.1.0
 
 ### Minor Changes
