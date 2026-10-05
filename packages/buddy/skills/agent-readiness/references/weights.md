@@ -53,7 +53,9 @@ Change a default only with a run behind it, and add that run here.
 - **Reading:** pass rate cannot move on tasks this easy. The cost effect is 0–6% per success, and the
   two benches differ by as much as the effect. That is a null result for the weight: not enough to
   raise or lower it.
-- **Data:** `.agents/readiness/pilots/buddy-agent-harness/` in the repobuddy repository.
+- **Data:** `.agents/aced/bench/repobuddy.readiness/pilots/buddy-agent-harness/` in the repobuddy
+  repository; its two records are converted to ACED's schema version 3, so `aced-bench compare`
+  re-reads them.
 
 ## What would revise a weight
 

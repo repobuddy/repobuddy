@@ -5,22 +5,30 @@ down to what a name cannot say ([buddy-agent-harness#139](https://github.com/rep
 landed as [#140](https://github.com/repobuddy/buddy-agent-harness/pull/140)) changes what an agent
 spends, or how often it succeeds.
 
-This folder mirrors the skill's own layout (`.agents/readiness/bench/` in the benched repo):
+This folder keeps the pilot's task set and results under readiness's ACED bench suite
+(`.agents/aced/bench/repobuddy.readiness/`). ACED reads the suite's own `tasks.json` and `checks/`
+only, not this subfolder, so nothing here is ever run from repobuddy:
 
 - `tasks.json` and `checks/`: the task set, as committed to buddy-agent-harness in
-  [7655f22](https://github.com/repobuddy/buddy-agent-harness/commit/7655f222586d9edf3bb8f632da4893cf29f84838).
-  Repobuddy does not run them; they target buddy-agent-harness's source.
-- `results/`: the two results files `bench` wrote, unchanged. Their `transcript` paths point into the
-  buddy-agent-harness checkout they ran in. The transcripts themselves are not committed: they hold
-  machine-local paths, and the skill git-ignores `results/` for that reason.
+  [7655f22](https://github.com/repobuddy/buddy-agent-harness/commit/7655f222586d9edf3bb8f632da4893cf29f84838),
+  when the old `bench` read it from `.agents/readiness/bench/`. They target buddy-agent-harness's
+  source.
+- `results/`: the two results files `bench` wrote, converted from schema version 2 to ACED's version 3
+  with `agent-readiness.mjs bench convert` (the version-2 originals are in this folder's git history).
+  Their `transcript` paths point into the buddy-agent-harness checkout they ran in. The transcripts
+  themselves are not committed: they hold machine-local paths.
 
-Re-read the comparison for free with:
+Re-read the comparison for free with ACED's engine, from the repository root:
 
 ```sh
-node packages/buddy/skills/agent-readiness/scripts/agent-readiness.mjs bench compare \
-  .agents/readiness/pilots/buddy-agent-harness/results/before-6fbed36.json \
-  .agents/readiness/pilots/buddy-agent-harness/results/after-ebb1a8f.json
+npx -y -p cyber-aced@^0.3.0 aced-bench compare --suite repobuddy.readiness \
+  --before .agents/aced/bench/repobuddy.readiness/pilots/buddy-agent-harness/results/before-6fbed36.json \
+  --after .agents/aced/bench/repobuddy.readiness/pilots/buddy-agent-harness/results/after-ebb1a8f.json
 ```
+
+It reports the same numbers as the table below, under the verdict `inconclusive`: one gated row,
+`pat-credential-segment`'s uncached input tokens, moved the wrong way without significance, and cost
+never decides ACED's verdict.
 
 ## Protocol
 
@@ -56,7 +64,8 @@ Change in the mean, after over before, with the exact permutation p (5 runs vs 5
 | skills-projection-answer | −4% (0.25) | −2% (0.008 *) | 0% (1.00) | 0% (1.00) | −9% (0.54) | −9% (0.008 *) |
 | **pooled** (geometric mean of the task ratios) | −8% (0.02 *) | −2% (0.65) | −3% (0.49) | −3% (0.50) | −10% (0.03 *) | **−6% (0.008 *)** |
 
-Uncached input tokens are flat (8–20 per run), so the table leaves them out; the comparison holds 35 tests.
+Uncached input tokens are flat (8–20 per run), so the table leaves them out. The old `bench compare`
+held 35 tests; ACED's adds a pass-rate test per task, for 39.
 
 ## An earlier run of the same pair
 
