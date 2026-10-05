@@ -21,7 +21,7 @@ const LEGACY_BENCH_DIR = '.agents/readiness/bench'
 export const BASELINE_MAX_AGE_DAYS = 90
 
 /** The ACED engine, run without installing it: readiness takes no dependency on `cyber-aced`. */
-export const ACED_BENCH = 'npx -y -p cyber-aced@^0.3.0 aced-bench'
+export const ACED_BENCH = 'npx -y -p cyber-aced@^0.4.0 aced-bench'
 
 /** When the suite's committed baseline was recorded; `undefined` when there is none or it is unreadable. */
 export function readBaselineAt(dir: string): string | undefined {

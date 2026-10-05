@@ -15,7 +15,7 @@
  * buddy-agent-harness installed also has its read-only `doctor` run, for the instructions area.
  * Level 5 reads the committed baseline of the ACED bench suite `repobuddy.readiness`.
  *
- * `bench` has moved to ACED's measured layer (`npx -y -p cyber-aced@^0.3.0 aced-bench`, suite
+ * `bench` has moved to ACED's measured layer (`npx -y -p cyber-aced@^0.4.0 aced-bench`, suite
  * `repobuddy.readiness`): it prints where it went and exits 1. `bench convert` turns a results file
  * the old bench wrote (schema version 1 or 2) into an ACED version-3 run record, so `aced-bench
  * compare` can re-read it. `--task-set` is the task set the runs used (default the suite's folder);

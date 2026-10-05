@@ -34,7 +34,7 @@ it('counts whole days', () => {
 
 describe('handover', () => {
 	it('names the suite and the engine', () => {
-		expect(handover(dir)).toMatch(/npx -y -p cyber-aced@\^0\.3\.0 aced-bench plan --suite repobuddy\.readiness/)
+		expect(handover(dir)).toMatch(/npx -y -p cyber-aced@\^0\.4\.0 aced-bench plan --suite repobuddy\.readiness/)
 		expect(handover(dir)).not.toMatch(/git mv/)
 	})
 

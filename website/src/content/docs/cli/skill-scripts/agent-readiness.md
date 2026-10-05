@@ -22,7 +22,7 @@ buddy agent-readiness suggest [--dir <repo>] [--area <id>] [<comparison.json>...
 | --- | --- |
 | `score` | Reports the gated level (1 to 5), a score per area, the top three fixes, and the tokens every agent session loads. Writes nothing. |
 | `score --package` | Scores the consuming side of a package: what ships (declarations, exports map, README, changelog, `llms.txt`). The level tops out at 4. |
-| `bench` | Prints where the benchmark moved: ACED's measured layer (`npx -y -p cyber-aced@^0.3.0 aced-bench`), suite `repobuddy.readiness`. Runs nothing. |
+| `bench` | Prints where the benchmark moved: ACED's measured layer (`npx -y -p cyber-aced@^0.4.0 aced-bench`), suite `repobuddy.readiness`. Runs nothing. |
 | `bench convert` | Converts a results file the old `bench` wrote (schema version 1 or 2) into an ACED version-3 run record that `aced-bench compare` reads. |
 | `suggest` | Reads ACED comparison records of suite `repobuddy.readiness` tagged with an `area` (by default every `compare-*.json` under `.agents/aced/results/bench/repobuddy.readiness/`) and prints a suggested `## Weights` line for `.agents/references/repobuddy.readiness.md`, with its evidence. Writes nothing. |
 

@@ -100,7 +100,7 @@ at an installed copy under `node_modules`.
 `bench` runs a fixed set of 3-5 agent tasks stored in the repo, each with a shell check that decides
 pass or fail, and measures tokens, turns, tool calls, wall time, pass rate, and cost per successful
 task. It now runs in ACED's measured layer: the skill hands over to ACED's `bench` skill, or its engine
-`npx -y -p cyber-aced@^0.3.0 aced-bench`, with the suite `repobuddy.readiness`. ACED shows the plan and
+`npx -y -p cyber-aced@^0.4.0 aced-bench`, with the suite `repobuddy.readiness`. ACED shows the plan and
 its spend ceiling, runs only on your yes, and compares two arms with permutation tests.
 
 - The suite lives at `.agents/aced/bench/repobuddy.readiness/`: `tasks.json`, `checks/`, and a

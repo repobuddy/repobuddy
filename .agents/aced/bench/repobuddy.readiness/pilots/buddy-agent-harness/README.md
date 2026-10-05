@@ -21,7 +21,7 @@ only, not this subfolder, so nothing here is ever run from repobuddy:
 Re-read the comparison for free with ACED's engine, from the repository root:
 
 ```sh
-npx -y -p cyber-aced@^0.3.0 aced-bench compare --suite repobuddy.readiness \
+npx -y -p cyber-aced@^0.4.0 aced-bench compare --suite repobuddy.readiness \
   --before .agents/aced/bench/repobuddy.readiness/pilots/buddy-agent-harness/results/before-6fbed36.json \
   --after .agents/aced/bench/repobuddy.readiness/pilots/buddy-agent-harness/results/after-ebb1a8f.json
 ```

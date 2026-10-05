@@ -25,7 +25,7 @@ Run `/agent-readiness <subcommand>`, or ask in plain words.
 | `score --check [--min-level <n>]` | Exits 1 when the level is below `n` (default 3; 1 to 4 with `--package`). For CI. Judgment gates count as unknown, so the result is provisional. |
 | `score --json`, `--run-knip` | Machine-readable output; run knip from the script. |
 | `improve [area]` | Proposes each fix, applies it only on your yes, runs the verify command, and commits one area per commit. Needs a clean working tree. |
-| `bench` | Hands over to ACED's `bench` (or its engine, `npx -y -p cyber-aced@^0.3.0 aced-bench`) with the suite `repobuddy.readiness`: real agent runs, compared with permutation tests. |
+| `bench` | Hands over to ACED's `bench` (or its engine, `npx -y -p cyber-aced@^0.4.0 aced-bench`) with the suite `repobuddy.readiness`: real agent runs, compared with permutation tests. |
 | `bench convert <results.json> --arm <label>` | Converts an old `bench` results file into an ACED record, so ACED can re-read an old comparison. |
 | `suggest [--area <id>]` | Suggests a weight override from ACED bench comparisons tagged `area=<id>`: a step of 5 on a replicated effect, else "keep the weight". Writes nothing. |
 

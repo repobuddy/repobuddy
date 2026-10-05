@@ -297,7 +297,7 @@ Compare one area's changes at a time, or the effect of each cannot be told apart
 1. **Hand over.** With the ACED plugin installed, load its `bench` skill by name and give it the suite
    `repobuddy.readiness`, and the arms when the user named them. It checks fit, shows the plan, asks
    for an explicit yes, runs, and reports the verdict. Follow it; add nothing to its numbers.
-2. **Without the plugin,** run ACED's engine with `npx -y -p cyber-aced@^0.3.0 aced-bench`, under the
+2. **Without the plugin,** run ACED's engine with `npx -y -p cyber-aced@^0.4.0 aced-bench`, under the
    same rule: `plan --suite repobuddy.readiness --arm <label>=<subject> … --out <plan.json>` spends
    nothing; show the user every line of the plan, including its ceiling, the permission mode, and its
    warnings; run `run --plan <plan.json> --consent` only after their explicit yes to that plan; then
