@@ -7,7 +7,8 @@ description: The buddy command-line tool from the repobuddy package, its command
 a Jest config's packages are declared, and loads plugins that add more commands.
 
 The same package is also an agent plugin that ships the repobuddy skills. See
-[Install the skills](/repobuddy/skills/install/) for that half.
+[the `repobuddy` package](/repobuddy/repobuddy/) for both halves, and
+[Install the skills](/repobuddy/skills/install/) for the plugin.
 
 ## Install
 

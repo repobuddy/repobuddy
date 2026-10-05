@@ -15,7 +15,7 @@ support section with its sources.
 | [`@repobuddy/biome`](/repobuddy/biome/) | `@biomejs/biome >= 2` | none |
 | [`@repobuddy/typescript`](/repobuddy/typescript/) | none declared; install the TypeScript your project needs | `repobuddy`, for the `buddy ts` commands |
 | [`@repobuddy/test`](/repobuddy/test/) | none; works with any runner | none |
-| [`repobuddy`](/repobuddy/cli/) | none | none |
+| [`repobuddy`](/repobuddy/repobuddy/) | none | none |
 
 No package declares an `engines` field, so none states a minimum Node.js version.
 
@@ -28,7 +28,7 @@ No package declares an `engines` field, so none states a minimum Node.js version
 | `@repobuddy/biome` | JSONC configs | any project Biome 2 runs on |
 | `@repobuddy/typescript` | ESM only for the plugin; tsconfig files are JSON | Node.js, inside the `buddy` CLI |
 | `@repobuddy/test` | ESM only | any runner that loads ESM; tested with Vitest (Node.js and Chromium) and Jest in ESM mode |
-| `repobuddy` | ESM CLI, no importable API | Node.js |
+| `repobuddy` | ESM CLI, no importable API; agent plugin | Node.js for the CLI; Claude Code, Cursor, Codex, and GitHub Copilot CLI for the plugin |
 
 ## TypeScript
 
@@ -47,9 +47,10 @@ No package declares an `engines` field, so none states a minimum Node.js version
 | `@repobuddy/typescript` | `tsconfig/monorepo` sets `composite` for project references and `tsc --build`. |
 | `repobuddy` | Each command acts on one package. Use `--cwd` for another package. |
 
-## Agent skills
+## Agent plugin
 
-The skills install into Claude Code, Cursor, Codex, and GitHub Copilot CLI. Some skills need a git host CLI such as
+The `repobuddy` package's agent plugin, and the skills it ships, install into Claude Code, Cursor, Codex, and GitHub
+Copilot CLI. Some skills need a git host CLI such as
 `gh` or `glab`. See [Install the skills](/repobuddy/skills/install/) and each skill's page.
 
 ## Not supported

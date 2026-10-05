@@ -188,86 +188,92 @@ export default defineConfig({
 					],
 				},
 				{
-					label: 'repobuddy CLI',
+					label: 'repobuddy',
 					collapsed: true,
 					items: [
-						{ label: 'Overview', slug: 'cli' },
+						{ label: 'Overview', slug: 'repobuddy' },
 						{
-							label: 'Guides',
+							label: 'CLI',
 							items: [
-								{ label: 'Set up test scripts', slug: 'cli/guides/test-scripts' },
-								{ label: 'Check Jest dependencies in CI', slug: 'cli/guides/check-deps-in-ci' },
-								{ label: 'Add a plugin', slug: 'cli/guides/plugins' },
+								{ label: 'Overview', slug: 'cli' },
+								{
+									label: 'Guides',
+									items: [
+										{ label: 'Set up test scripts', slug: 'cli/guides/test-scripts' },
+										{ label: 'Check Jest dependencies in CI', slug: 'cli/guides/check-deps-in-ci' },
+										{ label: 'Add a plugin', slug: 'cli/guides/plugins' },
+									],
+								},
+								{
+									label: 'Commands',
+									items: [
+										{ label: 'buddy test-scripts', slug: 'cli/test-scripts' },
+										{ label: 'buddy check-deps', slug: 'cli/check-deps' },
+										{ label: 'buddy plugins list', slug: 'cli/plugins-list' },
+										{ label: 'buddy plugins search', slug: 'cli/plugins-search' },
+										{ label: 'Global options', slug: 'cli/global-options' },
+									],
+								},
+								{
+									label: 'Skill script commands',
+									collapsed: true,
+									items: [
+										{ label: 'Overview', slug: 'cli/skill-scripts' },
+										{ label: 'buddy env', slug: 'cli/skill-scripts/env' },
+										{ label: 'buddy detect-state', slug: 'cli/skill-scripts/detect-state' },
+										{ label: 'buddy scaffold-workflows', slug: 'cli/skill-scripts/scaffold-workflows' },
+										{ label: 'buddy npm-trust', slug: 'cli/skill-scripts/npm-trust' },
+										{ label: 'buddy release-age', slug: 'cli/skill-scripts/release-age' },
+										{ label: 'buddy agent-readiness', slug: 'cli/skill-scripts/agent-readiness' },
+									],
+								},
 							],
 						},
 						{
-							label: 'Commands',
+							label: 'Agent plugin',
 							items: [
-								{ label: 'buddy test-scripts', slug: 'cli/test-scripts' },
-								{ label: 'buddy check-deps', slug: 'cli/check-deps' },
-								{ label: 'buddy plugins list', slug: 'cli/plugins-list' },
-								{ label: 'buddy plugins search', slug: 'cli/plugins-search' },
-								{ label: 'Global options', slug: 'cli/global-options' },
-							],
-						},
-						{
-							label: 'Skill script commands',
-							collapsed: true,
-							items: [
-								{ label: 'Overview', slug: 'cli/skill-scripts' },
-								{ label: 'buddy env', slug: 'cli/skill-scripts/env' },
-								{ label: 'buddy detect-state', slug: 'cli/skill-scripts/detect-state' },
-								{ label: 'buddy scaffold-workflows', slug: 'cli/skill-scripts/scaffold-workflows' },
-								{ label: 'buddy npm-trust', slug: 'cli/skill-scripts/npm-trust' },
-								{ label: 'buddy release-age', slug: 'cli/skill-scripts/release-age' },
-								{ label: 'buddy agent-readiness', slug: 'cli/skill-scripts/agent-readiness' },
-							],
-						},
-					],
-				},
-				{
-					label: 'Agent skills',
-					items: [
-						{ label: 'Overview', slug: 'skills' },
-						{ label: 'Install', slug: 'skills/install' },
-						{
-							label: 'Repo setup',
-							items: [
-								{ label: 'setup-github-repo', slug: 'skills/setup-github-repo' },
-								{ label: 'add-badges', slug: 'skills/add-badges' },
-								{ label: 'llms-txt', slug: 'skills/llms-txt' },
-							],
-						},
-						{
-							label: 'Dependencies and releases',
-							items: [
-								{ label: 'merge-dep-prs', slug: 'skills/merge-dep-prs' },
-								{ label: 'min-release-age', slug: 'skills/min-release-age' },
-								{ label: 'setup-npm-trusted-publishing', slug: 'skills/setup-npm-trusted-publishing' },
-							],
-						},
-						{
-							label: 'Review',
-							items: [
-								{ label: 'code-review', slug: 'skills/code-review' },
-								{ label: 'review-api', slug: 'skills/review-api' },
-								{ label: 'review-permissions', slug: 'skills/review-permissions' },
-								{ label: 'agent-readiness', slug: 'skills/agent-readiness' },
-							],
-						},
-						{ label: 'Docs', items: [{ label: 'website', slug: 'skills/website' }] },
-						{
-							label: 'Issues and questions',
-							items: [
-								{ label: 'create-issue', slug: 'skills/create-issue' },
-								{ label: 'to-question', slug: 'skills/to-question' },
-							],
-						},
-						{
-							label: 'Agent setup and sessions',
-							items: [
-								{ label: 'init-buddy', slug: 'skills/init-buddy' },
-								{ label: 'session', slug: 'skills/session' },
+								{ label: 'Overview', slug: 'skills' },
+								{ label: 'Install', slug: 'skills/install' },
+								{
+									label: 'Repo setup',
+									items: [
+										{ label: 'setup-github-repo', slug: 'skills/setup-github-repo' },
+										{ label: 'add-badges', slug: 'skills/add-badges' },
+										{ label: 'llms-txt', slug: 'skills/llms-txt' },
+									],
+								},
+								{
+									label: 'Dependencies and releases',
+									items: [
+										{ label: 'merge-dep-prs', slug: 'skills/merge-dep-prs' },
+										{ label: 'min-release-age', slug: 'skills/min-release-age' },
+										{ label: 'setup-npm-trusted-publishing', slug: 'skills/setup-npm-trusted-publishing' },
+									],
+								},
+								{
+									label: 'Review',
+									items: [
+										{ label: 'code-review', slug: 'skills/code-review' },
+										{ label: 'review-api', slug: 'skills/review-api' },
+										{ label: 'review-permissions', slug: 'skills/review-permissions' },
+										{ label: 'agent-readiness', slug: 'skills/agent-readiness' },
+									],
+								},
+								{ label: 'Docs', items: [{ label: 'website', slug: 'skills/website' }] },
+								{
+									label: 'Issues and questions',
+									items: [
+										{ label: 'create-issue', slug: 'skills/create-issue' },
+										{ label: 'to-question', slug: 'skills/to-question' },
+									],
+								},
+								{
+									label: 'Agent setup and sessions',
+									items: [
+										{ label: 'init-buddy', slug: 'skills/init-buddy' },
+										{ label: 'session', slug: 'skills/session' },
+									],
+								},
 							],
 						},
 					],
@@ -286,7 +292,7 @@ export default defineConfig({
 		'/reference/vitest': '/repobuddy/vitest/',
 		'/reference/typescript': '/repobuddy/typescript/',
 		'/reference/test': '/repobuddy/test/',
-		'/reference/repobuddy': '/repobuddy/cli/',
+		'/reference/repobuddy': '/repobuddy/repobuddy/',
 	},
 	site: 'https://repobuddy.github.io',
 	base: '/repobuddy',
