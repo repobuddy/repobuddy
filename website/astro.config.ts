@@ -90,6 +90,44 @@ export default defineConfig({
 					],
 				},
 				{
+					label: 'repobuddy CLI',
+					collapsed: true,
+					items: [
+						{ label: 'Overview', slug: 'cli' },
+						{
+							label: 'Guides',
+							items: [
+								{ label: 'Set up test scripts', slug: 'cli/guides/test-scripts' },
+								{ label: 'Check Jest dependencies in CI', slug: 'cli/guides/check-deps-in-ci' },
+								{ label: 'Add a plugin', slug: 'cli/guides/plugins' },
+							],
+						},
+						{
+							label: 'Commands',
+							items: [
+								{ label: 'buddy test-scripts', slug: 'cli/test-scripts' },
+								{ label: 'buddy check-deps', slug: 'cli/check-deps' },
+								{ label: 'buddy plugins list', slug: 'cli/plugins-list' },
+								{ label: 'buddy plugins search', slug: 'cli/plugins-search' },
+								{ label: 'Global options', slug: 'cli/global-options' },
+							],
+						},
+						{
+							label: 'Skill script commands',
+							collapsed: true,
+							items: [
+								{ label: 'Overview', slug: 'cli/skill-scripts' },
+								{ label: 'buddy env', slug: 'cli/skill-scripts/env' },
+								{ label: 'buddy detect-state', slug: 'cli/skill-scripts/detect-state' },
+								{ label: 'buddy scaffold-workflows', slug: 'cli/skill-scripts/scaffold-workflows' },
+								{ label: 'buddy npm-trust', slug: 'cli/skill-scripts/npm-trust' },
+								{ label: 'buddy release-age', slug: 'cli/skill-scripts/release-age' },
+								{ label: 'buddy agent-readiness', slug: 'cli/skill-scripts/agent-readiness' },
+							],
+						},
+					],
+				},
+				{
 					label: 'Agent skills',
 					items: [
 						{ label: 'Overview', slug: 'skills' },
