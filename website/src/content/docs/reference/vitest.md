@@ -24,10 +24,10 @@ rush add -p --dev @repobuddy/vitest
 
 | Peer | Range | Needed by |
 | --- | --- | --- |
-| `vitest` | `^4.0.15` | everything |
-| `@vitest/browser-playwright` | `^4.0.15` | `browserTestPreset` and the `@repobuddy/vitest/config` entry (optional peer) |
+| `vitest` | `^5.0.0` | everything |
+| `@vitest/browser-playwright` | `^5.0.0` | `browserTestPreset` and the `@repobuddy/vitest/config` entry (optional peer) |
 
-The package is ESM only.
+The package supports Vitest 5 only. Stay on `@repobuddy/vitest` 2.x to keep using Vitest 4. The package is ESM only.
 
 ## Usage
 
@@ -112,7 +112,8 @@ The preset sets `process.env.TZ` to `GMT` when `TZ` is not already set, so date 
 
 ## `browserTestPreset(options?)`
 
-Returns a Vite plugin named `@repobuddy/vitest/browser-preset`. It takes `includeGeneralTests` and
+Returns a Vite plugin named `@repobuddy/vitest/browser-preset`. It runs in Vite's `pre` phase, because Vitest 5 reads
+`test.browser.enabled` in its own `pre` plugin. It takes `includeGeneralTests` and
 `includeLoadTests`, with the same meaning as above.
 
 It enables browser mode, headless, with the Playwright provider. Unless your config sets `test.browser.instances`, it

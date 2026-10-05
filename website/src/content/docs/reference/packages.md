@@ -20,7 +20,7 @@ Repobuddy publishes each tool as its own package, so you only install what your 
 | --- | --- | --- | --- |
 | `@repobuddy/biome` | JSONC configs | Biome | `@biomejs/biome >= 2` |
 | `@repobuddy/jest` | ESM and CommonJS | Node.js, jsdom | `jest >= 29.5.0`, `@swc/jest`, and optional transformers and watch plugins |
-| `@repobuddy/vitest` | ESM | Node.js, jsdom, happy-dom, edge-runtime, Playwright browsers | `vitest ^4.0.15`, optional `@vitest/browser-playwright` |
+| `@repobuddy/vitest` | ESM | Node.js, jsdom, happy-dom, edge-runtime, Playwright browsers | `vitest ^5.0.0`, optional `@vitest/browser-playwright ^5.0.0` |
 | `@repobuddy/typescript` | ESM, plus JSON tsconfigs | TypeScript, Node.js | none |
 | `@repobuddy/test` | ESM | any test runner | none |
 | `repobuddy` | ESM CLI | Node.js | none |
