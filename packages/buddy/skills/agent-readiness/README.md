@@ -42,7 +42,7 @@ before and after a change.
    | 2 | An agent can check its own work |
    | 3 | An agent can work without supervision (the target) |
    | 4 | An agent works cheaply |
-   | 5 | The cost is measured (a `bench` baseline at most 90 days old) |
+   | 5 | The cost is measured (a committed `bench` baseline at most 90 days old) |
 
    Security findings cap the level instead of subtracting points. A committed secret holds a repo at
    level 1 however good everything else is. The CI supply-chain checks (third-party actions pinned to
@@ -97,37 +97,17 @@ at an installed copy under `node_modules`.
 
 ## Bench
 
-`bench` runs a fixed set of 3-5 agent tasks stored in the repo (`.agents/readiness/bench/tasks.json`),
-each with a shell check that decides pass or fail. Every run gets a clean checkout of HEAD and a
-headless Claude Code session that loads only the repo's own settings, instructions, skills, and MCP
-servers. It records input, output, and cached tokens, turns, tool calls, wall time, and pass rate,
-and from those the cost per successful task.
+`bench` runs a fixed set of 3-5 agent tasks stored in the repo, each with a shell check that decides
+pass or fail, and measures tokens, turns, tool calls, wall time, pass rate, and cost per successful
+task. It now runs in ACED's measured layer: the skill hands over to ACED's `bench` skill, or its engine
+`npx -y -p cyber-aced@^0.4.0 aced-bench`, with the suite `repobuddy.readiness`. ACED shows the plan and
+its spend ceiling, runs only on your yes, and compares two arms with permutation tests.
 
-- `bench --init` writes a task-set template to edit.
-- `bench` prints the plan, its estimated spend, and its spend ceiling, and runs nothing.
-- `bench --yes --baseline` records the baseline (`baseline.json`, committed). It is indented like
-  `tasks.json` beside it, so it fits the repo's formatter; run the formatter on it before committing anyway.
-- `bench --yes` runs again and compares against the baseline, task by task and pooled.
-- `bench compare <before.json> <after.json>` compares two stored results without running anything, so
-  it is free.
-- Each run's transcript is kept, gzipped, beside the results file in the git-ignored `results/`, so a
-  cost change can be traced to what the agent read and ran.
-- `bench --ref <commit>` benches a past commit on today's task set: each run checks that commit out
-  and overlays HEAD's `.agents/readiness/bench/` on it. The results record both commits.
-- `bench --runner interactive` drives interactive Claude Code sessions in tmux or herdr panes instead
-  of `claude -p`. Each session gets a fresh config directory, so none of your own instructions,
-  plugins, or skills load. It needs `CLAUDE_CODE_OAUTH_TOKEN` (from `claude setup-token`) or
-  `ANTHROPIC_API_KEY` set, and its runs are compared only with other interactive runs.
-
-A comparison shows, for each metric, the change in the mean and median, the min-max of each side,
-and an exact permutation-test p-value; a pooled row combines the tasks. With 3-5 runs a side, run-to-run
-noise is large, so it flags a result too small to call and counts its tests: among many, a p below
-0.05 or two is expected by chance.
-
-It spends money, so the skill always shows the plan and waits for a yes. The defaults are Sonnet, 3
-runs per task, and a $0.50 cap per run; a pilot measured about $0.07 per run, so a 4-task bench costs
-about $1. The plan estimates the spend from your stored results when there are any. Change one area
-at a time between runs, so each delta has one cause.
+- The suite lives at `.agents/aced/bench/repobuddy.readiness/`: `tasks.json`, `checks/`, and a
+  committed `baseline.json`, which level 5 reads.
+- A repo with the old `.agents/readiness/bench/` moves it there with `git mv` and records a new
+  baseline with ACED. `bench convert` turns an old results file into a record ACED can compare.
+- Change one area at a time between runs, so each delta has one cause.
 
 ## CI mode and weight overrides
 
@@ -163,17 +143,15 @@ at a time between runs, so each delta has one cause.
 ## How to invoke
 
 Ask for it directly, or run `/agent-readiness score`, `/agent-readiness improve [area]`, or
-`/agent-readiness bench [--baseline]` where slash commands are supported. The script also runs on its
+`/agent-readiness bench` where slash commands are supported. The script also runs on its
 own:
 
 ```sh
 node <skill-dir>/scripts/agent-readiness.mjs score [--dir <repo>] [--json] [--check [--min-level <1-5>]]
 node <skill-dir>/scripts/agent-readiness.mjs score --package <path> [--json] [--check [--min-level <1-4>]]
-node <skill-dir>/scripts/agent-readiness.mjs bench [--init | --baseline] [--runs <n>] [--task <id>] [--ref <commit>] [--runner print|interactive] [--yes]
-node <skill-dir>/scripts/agent-readiness.mjs bench compare <before.json> <after.json> [--json]
+node <skill-dir>/scripts/agent-readiness.mjs bench convert <results.json> --arm <label> [--task-set <dir>] [--out <file>]
 node <skill-dir>/scripts/agent-readiness.mjs suggest [--area <id>] [--json]
 npx -y repobuddy@^1.12.0 agent-readiness score
-npx -y repobuddy@^1.12.0 agent-readiness bench
 ```
 
 ## Install

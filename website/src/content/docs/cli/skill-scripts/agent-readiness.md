@@ -11,8 +11,8 @@ in it. The `agent-readiness` skill runs it.
 ```sh
 buddy agent-readiness score [--dir <repo>] [--json] [--run-knip] [--check [--min-level <1-5>]]
 buddy agent-readiness score --package <path> [--json] [--check [--min-level <1-4>]]
-buddy agent-readiness bench [--dir <repo>] [--init | --baseline] [--runs <n>] [--task <id>] [--ref <commit>] [--runner print|interactive] [--yes] [--json]
-buddy agent-readiness bench compare <before.json> <after.json> [--json]
+buddy agent-readiness bench [--dir <repo>]
+buddy agent-readiness bench convert <results.json> --arm <label> [--suite <s>] [--task-set <dir>] [--out <file>]
 buddy agent-readiness suggest [--dir <repo>] [--area <id>] [<comparison.json>...] [--json]
 ```
 
@@ -22,8 +22,8 @@ buddy agent-readiness suggest [--dir <repo>] [--area <id>] [<comparison.json>...
 | --- | --- |
 | `score` | Reports the gated level (1 to 5), a score per area, the top three fixes, and the tokens every agent session loads. Writes nothing. |
 | `score --package` | Scores the consuming side of a package: what ships (declarations, exports map, README, changelog, `llms.txt`). The level tops out at 4. |
-| `bench` | Runs the task set in `.agents/readiness/bench/tasks.json` with Claude Code and records tokens, turns, tool calls, wall time, pass rate, and cost per successful task. |
-| `bench compare` | Compares two stored results files. Runs nothing and costs nothing. |
+| `bench` | Prints where the benchmark moved: ACED's measured layer (`npx -y -p cyber-aced@^0.4.0 aced-bench`), suite `repobuddy.readiness`. Runs nothing. |
+| `bench convert` | Converts a results file the old `bench` wrote (schema version 1 or 2) into an ACED version-3 run record that `aced-bench compare` reads. |
 | `suggest` | Reads ACED comparison records of suite `repobuddy.readiness` tagged with an `area` (by default every `compare-*.json` under `.agents/aced/results/bench/repobuddy.readiness/`) and prints a suggested `## Weights` line for `.agents/references/repobuddy.readiness.md`, with its evidence. Writes nothing. |
 
 ## Arguments
@@ -36,16 +36,13 @@ buddy agent-readiness suggest [--dir <repo>] [--area <id>] [<comparison.json>...
 | `--run-knip` | `score` | boolean | off | Runs the repository's knip command to settle the `dead-code` check. Dependencies must be installed. Not with `--package`. |
 | `--check` | `score` | boolean | off | CI mode: exits `1` when the level is below `--min-level`. |
 | `--min-level` | `score` | whole number | `3` | The level `--check` requires. 1 to 5 for a repository, 1 to 4 for a package. Needs `--check`. |
-| `--init` | `bench` | boolean | off | Writes a task-set template and runs nothing. Not with `--baseline` or `--yes`. |
-| `--baseline` | `bench` | boolean | off | Stores the run's summary as the baseline. Not with `--task`. |
-| `--runs` | `bench` | positive whole number | the task set's `runs`, else `3` | Runs per task. |
-| `--task` | `bench` | string | every task | Runs one task. |
-| `--ref` | `bench` | commit | `HEAD` | Runs in a clean checkout of that commit, with `HEAD`'s task set. |
-| `--runner` | `bench` | `print` \| `interactive` | `print` | `print` runs `claude -p`. `interactive` runs each task in a tmux or herdr pane and needs `CLAUDE_CODE_OAUTH_TOKEN` or `ANTHROPIC_API_KEY`. |
-| `--yes` | `bench` | boolean | off | Runs the benchmark and spends money. Without it, `bench` prints only the plan and its spend ceiling. |
+| `--arm` | `bench convert` | label | none, required | The record's arm, such as `before` or `after`. |
+| `--suite` | `bench convert` | suite name | `repobuddy.readiness` | The record's suite. |
+| `--task-set` | `bench convert` | path | `.agents/aced/bench/<suite>` | The task set the runs used; its `tasks.json` and `checks/` are hashed into the record. |
+| `--out` | `bench convert` | path | stdout | Where to write the record. |
 | `--area` | `suggest` | weighted area id | every tagged area | Suggests for one area; an area with no comparison prints "keep the weight". |
 
-A `score` flag passed to `bench`, or a `bench` flag passed to `score`, is a usage error.
+An unknown flag is a usage error.
 
 ## Behavior
 
@@ -66,7 +63,7 @@ A `score` flag passed to `bench`, or a `bench` flag passed to `score`, is a usag
   exits `2`.
 - `.agents/readiness/weights.json` is deprecated. It is still read when no project override exists, and stderr
   prints the override file to create instead.
-- `bench --baseline` writes `.agents/readiness/bench/baseline.json`. Every other run is compared against it.
+- Level 5 reads `.agents/aced/bench/repobuddy.readiness/baseline.json`, the baseline ACED's `bench` records.
 
 ## Output
 
@@ -91,18 +88,18 @@ Tokens loaded per session: ~3624 (instructions ~3469, skill descriptions ~155)
 check: FAIL, level 1 is below --min-level 3
 ```
 
-`bench` with no task set:
+`bench` (first line, on stderr):
 
 ```
-No task set: .agents/readiness/bench/tasks.json does not exist (create one with `bench --init`)
+agent-readiness bench has moved to ACED's measured layer. Run it with suite repobuddy.readiness:
 ```
 
 ## Exit codes
 
 | Code | When |
 | --- | --- |
-| `0` | Success, including a `bench` run without `--yes` that only prints the plan. |
-| `1` | `bench` cannot run, `bench compare` or `suggest` cannot read a file, or `score --check` finds the level below `--min-level`. |
+| `0` | Success. |
+| `1` | `bench`, which only prints where it moved; `bench convert` or `suggest` cannot read a file; or `score --check` finds the level below `--min-level`. |
 | `2` | A usage error, or malformed weights in the reference override or the deprecated `.agents/readiness/weights.json`. |
 
 ## Related

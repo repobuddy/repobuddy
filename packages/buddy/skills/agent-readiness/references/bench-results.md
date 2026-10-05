@@ -1,10 +1,41 @@
-# Bench results format
+# Old bench results, and converting them
 
-`bench --yes` writes one results file per bench to
-`.agents/readiness/bench/results/<createdAt>.json`, with `:` and `.` in the timestamp replaced by `-`.
-Each run's transcript is kept beside it, gzipped, at `results/<createdAt>/<task>-<run>.jsonl.gz`.
-`results/` is git-ignored, so neither is committed. `bench --yes --baseline` also writes `baseline.json` beside `tasks.json`:
-the same record without `results`, committed.
+`bench` has moved to ACED's measured layer, whose run and comparison records are schema version 3
+and documented with ACED's `bench` skill. This file describes what the old `bench` wrote, for a repo
+that still has it, and how `bench convert` turns it into a version-3 record.
+
+The old `bench --yes` wrote one results file per bench to
+`.agents/readiness/bench/results/<createdAt>.json`, with `:` and `.` in the timestamp replaced by `-`,
+and each run's gzipped transcript beside it. `bench --yes --baseline` also wrote `baseline.json` beside
+`tasks.json`: the same record without `results`, committed.
+
+## Converting
+
+```bash
+node <this-skill-dir>/scripts/agent-readiness.mjs bench convert <results.json> --arm <label> [--task-set <dir>] [--out <file>]
+```
+
+It reads a version 1 or 2 results file and writes a version-3 run record, to `--out` or stdout. ACED
+reads version 3 only, so convert both sides of a pair, then re-read them with
+`aced-bench compare --suite repobuddy.readiness --before <before> --after <after>`.
+
+| Version-3 field | Filled from |
+| --- | --- |
+| `suite` | `--suite`, default `repobuddy.readiness` |
+| `arm` | `--arm`, such as `before` or `after` |
+| `subject` | `{ kind: "git-ref", ref, commit }`, both the old `commit` |
+| `adapter` | `repobuddy.bench`: the runs came from the old runner, not an ACED adapter |
+| `runner`, `harness`, `model`, `createdAt` | the old record's (`runner` defaults to `print`) |
+| `scoring_model` | the old `model` |
+| `taskSetCommit` | the old `taskSetCommit`, or `commit` on version 1 |
+| `taskSetHash`, `evaluated` | hashed from `tasks.json` and `checks/` in `--task-set` (default the suite folder), as ACED hashes a suite |
+| `runs` | the old `results`, with `error` and `transcript` set to `null` when absent |
+| `summary` | recomputed from `runs` the way ACED summarizes |
+
+Point `--task-set` at the task set the runs used. ACED compares only records with the same task-set
+hash and adapter, so converted records compare with each other, never with a run ACED made. A baseline
+converts only while its results file is still in `results/` beside it; otherwise record a new baseline
+with ACED.
 
 ## Versions
 
@@ -15,7 +46,7 @@ the same record without `results`, committed.
 | 1 | The first shape. No `schemaVersion` and no `taskSetCommit`; `commit` is HEAD. `runner` may be absent: read it as `print`. |
 | 2 | Adds `schemaVersion`, `taskSetCommit`, and `results[].transcript`. With `--ref`, `commit` is the ref's commit, not HEAD. |
 
-A reader should accept every version it knows and refuse a higher one, rather than guess at it.
+`bench convert` reads both.
 
 ## Record
 

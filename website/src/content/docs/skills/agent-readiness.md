@@ -25,11 +25,8 @@ Run `/agent-readiness <subcommand>`, or ask in plain words.
 | `score --check [--min-level <n>]` | Exits 1 when the level is below `n` (default 3; 1 to 4 with `--package`). For CI. Judgment gates count as unknown, so the result is provisional. |
 | `score --json`, `--run-knip` | Machine-readable output; run knip from the script. |
 | `improve [area]` | Proposes each fix, applies it only on your yes, runs the verify command, and commits one area per commit. Needs a clean working tree. |
-| `bench` | Prints the plan, estimated spend, and spend ceiling. Runs nothing. |
-| `bench --init` | Writes a task-set template to `.agents/readiness/bench/tasks.json`. |
-| `bench --yes [--baseline]` | Runs the tasks. `--baseline` records `baseline.json`; otherwise it compares against it. |
-| `bench --runs <n>`, `--task <id>`, `--ref <commit>`, `--runner print\|interactive` | Run count, one task, a past commit, or interactive Claude Code sessions in tmux or herdr. |
-| `bench compare <before.json> <after.json>` | Compares two stored results with spread and permutation p-values. Free. |
+| `bench` | Hands over to ACED's `bench` (or its engine, `npx -y -p cyber-aced@^0.4.0 aced-bench`) with the suite `repobuddy.readiness`: real agent runs, compared with permutation tests. |
+| `bench convert <results.json> --arm <label>` | Converts an old `bench` results file into an ACED record, so ACED can re-read an old comparison. |
 | `suggest [--area <id>]` | Suggests a weight override from ACED bench comparisons tagged `area=<id>`: a step of 5 on a replicated effect, else "keep the weight". Writes nothing. |
 
 ## The scope check
@@ -52,12 +49,13 @@ root or any counted package fails, and lists which.
 - `improve` makes one commit per area. For a missing scope statement it drafts 2 to 4 lines of purpose and boundary
   for `AGENTS.md` and a `GOALS.md` (goals, non-goals, rejected directions) from the README; in a monorepo, the root
   lines and one `GOALS.md` per failing package. You decide every boundary. An optional `## Weights` override in `.agents/references/repobuddy.readiness.md` reorders fixes but never changes the level.
-- `bench` writes results under `.agents/readiness/bench/` (transcripts gzipped, git-ignored).
+- `bench` goes through ACED, which keeps the suite in `.agents/aced/bench/repobuddy.readiness/` (with the committed
+  `baseline.json` level 5 reads) and its records in the git-ignored `.agents/aced/results/`.
 
 ## Asks before acting
 
 - `improve`: each fix, individually.
-- `bench`: shows the plan and spend, and runs only after a yes. Defaults: Sonnet, 3 runs per task, $0.50 cap per run.
+- `bench`: ACED shows the plan and its spend ceiling, and runs only after a yes.
 - A committed secret: asks you to rotate it before it untracks the file.
 
 ## Hands off to
@@ -71,7 +69,7 @@ and [`setup-npm-trusted-publishing`](/repobuddy/skills/setup-npm-trusted-publish
 
 - Node.js to run the script. Falls back to `npx -y repobuddy@^1.12.0 agent-readiness` (needs network). See
   [Skill scripts](/repobuddy/cli/skill-scripts/).
-- `bench` needs the `claude` CLI. `--runner interactive` also needs `CLAUDE_CODE_OAUTH_TOKEN` or `ANTHROPIC_API_KEY`.
+- `bench` needs ACED (the plugin, or `npx` with network) and the `claude` CLI.
 
 ## Example
 

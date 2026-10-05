@@ -119,7 +119,7 @@ const config: KnipConfig = {
 		'packages/buddy/skills/*/assets/**',
 		// Recorded bench pilots: another repo's task-set checks, kept as a record and
 		// run only in that repo.
-		'.agents/readiness/pilots/**',
+		'.agents/aced/bench/*/pilots/**',
 		// Fixtures that exist precisely because nothing imports them — they prove
 		// the coverage reporters still count a non-spec source file.
 		'**/not_a_spec.*',

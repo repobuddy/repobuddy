@@ -321,12 +321,13 @@ describe('collectFacts', () => {
 		).toBeUndefined()
 	})
 
-	it('reads when the bench baseline was recorded', () => {
+	it("reads when the ACED suite's bench baseline was recorded", () => {
 		expect(collectFacts(repo({})).benchBaselineAt).toBeUndefined()
 		const baseline = JSON.stringify({ createdAt: '2026-09-01T00:00:00.000Z' })
-		expect(collectFacts(repo({ '.agents/readiness/bench/baseline.json': baseline })).benchBaselineAt).toBe(
-			'2026-09-01T00:00:00.000Z',
-		)
+		expect(
+			collectFacts(repo({ '.agents/aced/bench/repobuddy.readiness/baseline.json': baseline })).benchBaselineAt,
+		).toBe('2026-09-01T00:00:00.000Z')
+		expect(collectFacts(repo({ '.agents/readiness/bench/baseline.json': baseline })).benchBaselineAt).toBeUndefined()
 	})
 
 	it('walks the tree outside a git repo, skipping node_modules', () => {

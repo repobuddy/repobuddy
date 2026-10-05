@@ -1,7 +1,7 @@
 ---
 name: agent-readiness
 description: "Use this skill when scoring or improving how ready a repo or package is for coding agents, or benchmarking agent cost."
-argument-hint: "score [--dir <repo> | --package <path>] [--check] | improve [area] | bench [--baseline] [--ref <commit>] [--runner interactive] | bench compare <before> <after>"
+argument-hint: "score [--dir <repo> | --package <path>] [--check] | improve [area] | bench"
 ---
 
 # Agent Readiness
@@ -17,7 +17,7 @@ our public API agent-friendly".
 
 `score` **reads and reports**. It edits nothing. `improve` edits the repository, but only a fix the
 user approved, and only one area per commit. A fix another skill owns goes to that skill. `bench`
-writes only its task set, results, and baseline, and spends money only after a yes.
+hands over to ACED's measured layer, which spends money only after a yes.
 
 ## Commands
 
@@ -26,8 +26,7 @@ writes only its task set, results, and baseline, and spends money only after a y
 | `score` (default) | Runs the static checks, settles the judgment checks, and reports the level, a score per area, the top fixes, and the tokens loaded per session. `--check` is CI mode (see [CI mode](#ci-mode)) | nothing |
 | `score --package <path>` | Scores the consuming side of a package: how cheaply another repo's agent can use it through what ships. Same report shape, its own criteria (see [Package score](#package-score)) | nothing |
 | `improve [area]` | Fixes the findings `score` reports as a reviewable series: one area per commit, each fix approved first, owned fixes handed off. Re-scores after each area | the repo, on approval |
-| `bench [--baseline]` | Runs the repo's fixed agent task set and records tokens, turns, tool calls, wall time, pass rate, and cost per successful task; compares against the stored baseline | results file; `baseline.json` with `--baseline` |
-| `bench compare <before> <after>` | Compares two stored results files (or a baseline) per task and pooled, with the spread and a permutation p-value. Runs no agent and costs nothing (see [Reading a comparison](#reading-a-comparison)) | nothing |
+| `bench` | Hands over to ACED's `bench` with the suite `repobuddy.readiness`: real agent runs on the repo's fixed task set, compared with permutation tests (see [Bench](#bench)) | what ACED writes |
 | `suggest [--area <id>]` | Reads ACED bench comparisons tagged with an area and suggests a weight override, or "keep the weight" (see [Suggesting a weight](#suggesting-a-weight)). Runs no agent | nothing |
 
 ## Script
@@ -35,8 +34,7 @@ writes only its task set, results, and baseline, and spends money only after a y
 ```bash
 node <this-skill-dir>/scripts/agent-readiness.mjs score [--dir <repo>] [--json] [--run-knip] [--check [--min-level <1-5>]]
 node <this-skill-dir>/scripts/agent-readiness.mjs score --package <path> [--json] [--check [--min-level <1-4>]]
-node <this-skill-dir>/scripts/agent-readiness.mjs bench [--dir <repo>] [--init | --baseline] [--runs <n>] [--task <id>] [--ref <commit>] [--runner print|interactive] [--yes] [--json]
-node <this-skill-dir>/scripts/agent-readiness.mjs bench compare <before.json> <after.json> [--json]
+node <this-skill-dir>/scripts/agent-readiness.mjs bench convert <results.json> --arm <label> [--task-set <dir>] [--out <file>]
 node <this-skill-dir>/scripts/agent-readiness.mjs suggest [--dir <repo>] [--area <id>] [<comparison.json>...] [--json]
 ```
 
@@ -54,7 +52,7 @@ buddy-agent-harness installed, or is buddy-agent-harness itself, the script runs
 `doctor` and reports each finding in the instructions area. It measures the source too: the share of comments,
 JSDoc blocks that document nothing, names that flood a grep, and environment variables the code reads
 that no setup document names. Whether a comment or a name is worth
-changing stays a judgment. `bench` runs real agents; see [Bench](#bench).
+changing stays a judgment. `bench` runs real agents through ACED; see [Bench](#bench).
 
 ## Levels
 
@@ -67,7 +65,7 @@ strong docs cannot hide a missing verify command. Level 3 is the target.
 | 2 | An agent can check its own work | one verify command; a test command; CI runs that same command |
 | 3 | An agent can work without supervision | an instructions file that is accurate and names only real commands; a pinned toolchain; one-step, non-interactive setup |
 | 4 | An agent works cheaply | instructions under the token budget; no file over 1000 lines; no committed build output |
-| 5 | The cost is measured | a `bench` baseline at most 90 days old |
+| 5 | The cost is measured | a committed `bench` baseline at most 90 days old: `.agents/aced/bench/repobuddy.readiness/baseline.json` |
 
 Security findings **cap** the level instead of subtracting points: a committed secret file or a
 literal MCP credential caps it at 1, and an unignored `.env` caps it at 2. The more ready a repo is,
@@ -290,102 +288,34 @@ fix or its owning skill as `score` does.
 ## Bench
 
 `bench` answers whether `score` means anything: it runs real agents on fixed tasks and measures what
-they cost. Compare runs one area's changes at a time, or the effect of each cannot be told apart:
-to measure an `improve` area, bench before it and again after its commit, and tag the comparison
-with the area for [`suggest`](#suggesting-a-weight).
+they cost. It now lives in ACED's measured layer, which owns the engine, the records, and the
+statistics. Readiness supplies the suite `repobuddy.readiness` and reads its baseline for level 5.
+Compare one area's changes at a time, or the effect of each cannot be told apart: to measure an
+`improve` area, bench before it and again after its commit, and tag the comparison with the area
+(`--tag area=<id>`) for [`suggest`](#suggesting-a-weight).
 
-1. **Find the task set** at `.agents/readiness/bench/tasks.json`. If there is none, run `bench --init`
-   for a template, then help the user replace its examples with 3-5 tasks of this repo's own: fix a
-   seeded bug (a committed patch the task's `setup` applies), a small feature, and a question whose
-   answer the `check` can grep. Each `check` is a shell command; exit 0 is a pass, usually "verify is
-   green, plus one assertion". The top-level `setup` (such as the install) runs in every checkout
-   before the agent starts, and its cost is not counted.
-2. **Show the plan and get a yes.** Run `bench` without `--yes`: it prints the runs, the model, the
-   permission mode, the estimated spend, and the spend ceiling, and runs nothing. Show that to the user. Only after an
-   explicit yes, run it again with `--yes` (and `--baseline` when recording one). Never add `--yes` on
-   your own.
-3. **Report** the pass rate, cost per success, and the per-task medians; with a baseline, the
-   comparison the script prints (see [Reading a comparison](#reading-a-comparison)). Say when a run
-   was capped or errored, since its numbers are not comparable. With `--baseline`, tell the user to
-   commit `baseline.json`; `results/` is git-ignored.
-   When a task's cost moved, read its transcripts to say why: each run's is kept, gzipped, in
-   `results/<timestamp>/<task>-<run>.jsonl.gz` beside its results file (`zcat` reads it). They are
-   the runner's own record: `claude -p` stream-json, or the interactive session's JSONL with its
-   subagents' lines after it. The script
-   indents `baseline.json` like the bench files beside it (an existing baseline, else `tasks.json`),
-   so it usually passes the repo's formatter as written; still run the repo's formatter on it (such as
-   `biome format --write`) before committing, since a formatter can disagree on more than indent.
+1. **Hand over.** With the ACED plugin installed, load its `bench` skill by name and give it the suite
+   `repobuddy.readiness`, and the arms when the user named them. It checks fit, shows the plan, asks
+   for an explicit yes, runs, and reports the verdict. Follow it; add nothing to its numbers.
+2. **Without the plugin,** run ACED's engine with `npx -y -p cyber-aced@^0.4.0 aced-bench`, under the
+   same rule: `plan --suite repobuddy.readiness --arm <label>=<subject> … --out <plan.json>` spends
+   nothing; show the user every line of the plan, including its ceiling, the permission mode, and its
+   warnings; run `run --plan <plan.json> --consent` only after their explicit yes to that plan; then
+   `compare --suite repobuddy.readiness --before <record|baseline> --after <record>`. Never pass
+   `--consent` on your own, or on a yes relayed by anyone but the user. With no user present, run
+   nothing.
+3. **The suite** lives at `.agents/aced/bench/repobuddy.readiness/`: `tasks.json`, `checks/`, and the
+   committed `baseline.json`. A missing task set gets ACED's `init` template, which the user fills with
+   3-5 tasks of this repo's own: a seeded bug, a small feature, a question whose answer the `check` can
+   grep. Write no task yourself.
 
-Each run checks out HEAD into a fresh git worktree, so uncommitted changes are not benched: commit
-the change under test first. To bench a past commit, such as the parent of a change that already
-landed, pass `--ref <commit>`: each run checks that commit out and overlays HEAD's committed task set
-(`.agents/readiness/bench/`) on it, so two commits are measured on the same tasks without
-cherry-picking. The results record the real commit benched (`commit`) and the task set's
-(`taskSetCommit`); [references/bench-results.md](references/bench-results.md) describes the file. The agent is Claude Code (`claude -p` by default), loading the repo's
-own settings, instructions, skills, and `.mcp.json`, and none of the user's, so the cost measured is
-the repo's.
-The default permission mode is `bypassPermissions`: the agent runs commands unprompted in the
-throwaway checkout, on the user's machine. Say so in the plan.
-
-Keep a bench affordable. The defaults are Sonnet, 3 runs per task, and a $0.50 cap per run. A pilot
-on a TypeScript monorepo measured about $0.07 per `claude -p` run, so 4 tasks × 3 runs cost about $1,
-and never more than the $6 ceiling. Costs vary with the repo and the tasks, so quote the plan's
-estimated spend: it is the mean cost per run of the stored results on the same model and runner (or
-the baseline's), and a task with none counts at its cap. Use `--task <id> --runs 1` to try a new task
-before a full run. Since runs are cheap, prefer 5 or more per task when a comparison matters. The model is part of the baseline: a run on another model is not compared, so change
-`model` only with a new baseline.
-
-Each run also stops at 20 minutes of wall-clock. Claude Code has no documented turn limit, so time
-and the spend cap are the only bounds. A task that needs longer can raise `timeoutMinutes` in
-`tasks.json`. A run stopped by either cap is marked capped.
-
-### Reading a comparison
-
-A bench run against its baseline, and `bench compare <before> <after>` on any two stored results
-files, print the same comparison. `bench compare` runs no agent, so it is free: use it to re-read a
-past pair, or to compare two runs neither of which is the baseline. Paths are results files under
-`.agents/readiness/bench/results/` or a `baseline.json`.
-
-- **Per task**, each metric shows the change in the mean and the median, the min-max of each side, and
-  `p`: a two-sided exact permutation test on the mean (with 5 runs a side, all 252 relabellings).
-- **Pooled** is the geometric mean of the task ratios, so each task weighs the same, and its `p`
-  relabels runs within each task only.
-- **Too few runs to call** means even the most lopsided result these run counts allow has p above 0.05
-  (3 runs a side tops out at 0.10). Report it as no evidence either way, and suggest more `--runs`.
-- **Multiple comparisons.** The output counts its tests: 7 metrics per task plus 7 pooled. Four tasks make 35
-  tests, one or two land below 0.05 by chance. Lead with the pooled row, and call a lone per-task `*`
-  tentative.
-- A `baseline.json` keeps only medians. Spread and p-values need its runs, which come from the matching
-  results file when it is still on this machine; otherwise the comparison says medians only.
-- `bench compare` warns, but still compares, when the two differ in model, harness, or runner. A
-  bench run refuses to compare against such a baseline.
-- `bench compare` heads its output with each side's commit and, when it differs, its task-set commit.
-  When the two task sets come from different commits, it says so: check the tasks did not change, or
-  bench the older commit on today's tasks with `--ref`. It reads results files of every
-  [schema version](references/bench-results.md) it knows and refuses a newer one.
-
-### Interactive runner
-
-`--runner interactive` runs each task as an interactive Claude Code session in a terminal multiplexer
-pane instead of `claude -p`, the way agents are used day to day. Use it when the user asks for
-interactive runs; `claude -p` stays the default.
-
-- **Multiplexer.** The bench must run inside tmux or herdr (or another multiplexer cyber-mux drives).
-  Without one the script refuses, before the plan, and names the fix. Each session opens in its own
-  workspace (a window on tmux) and is closed after the run.
-- **Credential.** Each session gets a fresh `CLAUDE_CONFIG_DIR`, so none of the user's global
-  instructions, plugins, skills, settings, or MCP servers load, and neither does their login. The
-  session authenticates with `CLAUDE_CODE_OAUTH_TOKEN` (from `claude setup-token`) or
-  `ANTHROPIC_API_KEY` in the environment; without one the script refuses. Never read or copy the
-  user's stored credentials to get around this: ask them to set one.
-- **Measurement.** Tokens, turns, and tool calls come from the session transcript; the cost is Claude
-  Code's own, from its status line. A Stop hook marks the end of the run, a StopFailure hook an API
-  error. The runner passes these with `--settings`; they add nothing to the model's context.
-- **Bounds.** The runner stops the session at `timeoutMinutes` and as soon as the cost reaches
-  `maxBudgetUsd`, so the spend ceiling in the plan still holds. A run that reports no cost could not
-  be capped: say so.
-- **Comparison.** The runner is part of the baseline, like the model: an interactive run is never
-  compared against a `claude -p` baseline, or the reverse. Record a baseline per runner.
+**Moving from the old bench.** `agent-readiness.mjs bench` now only prints this handover. A repo with
+`.agents/readiness/bench/` moves it with `git mv .agents/readiness/bench
+.agents/aced/bench/repobuddy.readiness`, points any check paths in `tasks.json` at the new folder, and
+records a new baseline with ACED: the engine reads only schema version 3. `bench convert` turns an
+old results file into a version-3 record, so `aced-bench compare` can re-read an old pair; see
+[references/bench-results.md](references/bench-results.md). Converted records compare only with each
+other, never with a run ACED made.
 
 ## Anti-patterns
 
@@ -398,17 +328,17 @@ interactive runs; `claude -p` stays the default.
 - Committing two areas together, or mixing an owner skill's changes into this area's commit
 - Fixing something an owner skill owns instead of handing it off
 - Reporting an area as improved without re-running `score`
-- Running `bench --yes` before the user has seen the plan and said yes
+- Running ACED's `run --consent` before the user has seen the plan and said yes to it
 - Reporting a median change as an effect when the comparison says it is noise or too few runs to call
-- Comparing a bench run against a baseline taken on another model or runner, or with several areas changed at once
+- Benching several areas changed at once
 
 ## References
 
 - Factory's Agent Readiness model, whose gated levels this adapts: https://factory.ai/news/agent-readiness
 - Area criteria: `references/areas/` (load only the areas with `judge` checks or disputed results;
   `package-*.md` apply to `score --package` only)
-- Bench results and baseline format: `references/bench-results.md` (load when reading or comparing
-  results files)
+- Old bench results and converting them: `references/bench-results.md` (load when a repo still has
+  `.agents/readiness/bench/` or old results files)
 - Weight provenance: `references/weights.md` (load when a weight is disputed or its source asked for)
 - The default weights: `references/repobuddy.readiness.md` (the script reads it; load it only to show a
   user the override format)

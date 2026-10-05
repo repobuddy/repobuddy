@@ -6,7 +6,7 @@
  * findings never subtract points; they cap the level.
  */
 
-import { BASELINE_FILE, BASELINE_MAX_AGE_DAYS, baselineAgeDays } from './bench.js'
+import { ACED_BENCH, BASELINE_FILE, BASELINE_MAX_AGE_DAYS, baselineAgeDays, SUITE_DIR } from './aced-bench.js'
 import type { Facts } from './facts.js'
 import type { HarnessFinding } from './harness-doctor.js'
 import type { InjectionSurface } from './injection-surface.js'
@@ -248,8 +248,7 @@ export function buildChecks(facts: Facts, now: Date = new Date()): Check[] {
 	const verifyScript = VERIFY_SCRIPTS.find((s) => facts.scripts.includes(s))
 	const instructionTokens = facts.instructionFiles.reduce((sum, f) => sum + f.tokens, 0)
 	const hasInstructions = facts.instructionFiles.length > 0
-	const baselineAge =
-		facts.benchBaselineAt === undefined ? undefined : baselineAgeDays({ createdAt: facts.benchBaselineAt }, now)
+	const baselineAge = facts.benchBaselineAt === undefined ? undefined : baselineAgeDays(facts.benchBaselineAt, now)
 
 	return [
 		// Level 1: an agent can read it.
@@ -571,7 +570,7 @@ export function buildChecks(facts: Facts, now: Date = new Date()): Check[] {
 			status: baselineAge !== undefined && baselineAge <= BASELINE_MAX_AGE_DAYS ? 'pass' : 'fail',
 			summary: `A \`bench\` baseline exists and is at most ${BASELINE_MAX_AGE_DAYS} days old`,
 			detail: [baselineAge === undefined ? `no ${BASELINE_FILE}` : `${BASELINE_FILE}: ${baselineAge} days old`],
-			fix: 'Write a 3-5 task set and record a baseline with `agent-readiness bench --baseline`; refresh it as the repo changes.',
+			fix: `Write a 3-5 task set in ${SUITE_DIR}/ and record a baseline with ACED's \`bench\` skill (engine: \`${ACED_BENCH}\`); refresh it as the repo changes.`,
 		},
 		// Security: these cap the level instead of subtracting points.
 		{
