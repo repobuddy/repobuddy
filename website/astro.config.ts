@@ -35,6 +35,38 @@ export default defineConfig({
 					],
 				},
 				{
+					label: '@repobuddy/vitest',
+					collapsed: true,
+					items: [
+						{ label: 'Overview', slug: 'vitest' },
+						{
+							label: 'Guides',
+							items: [
+								{ label: 'Run Node.js tests', slug: 'vitest/guides/node-tests' },
+								{ label: 'Run browser tests', slug: 'vitest/guides/browser-tests' },
+								{ label: 'Node.js and browser together', slug: 'vitest/guides/node-and-browser' },
+								{ label: 'Run load tests', slug: 'vitest/guides/load-tests' },
+								{ label: 'Assert call order', slug: 'vitest/guides/expect-order' },
+								{ label: 'Migrate from Vitest 4', slug: 'vitest/guides/migrate-from-vitest-4' },
+							],
+						},
+						{
+							label: 'Reference',
+							items: [
+								{ label: 'All reference', slug: 'vitest/reference' },
+								{ label: 'nodeTestPreset()', slug: 'vitest/reference/node-test-preset' },
+								{ label: 'browserTestPreset()', slug: 'vitest/reference/browser-test-preset' },
+								{ label: 'buddyConfigDefaults', slug: 'vitest/reference/buddy-config-defaults' },
+								{ label: 'mergeConfig()', slug: 'vitest/reference/merge-config' },
+								{ label: 'Test file names', slug: 'vitest/reference/test-file-names' },
+								{ label: 'setup/order', slug: 'vitest/reference/setup-order' },
+								{ label: 'setup/browser', slug: 'vitest/reference/setup-browser' },
+								{ label: 'Entry points', slug: 'vitest/reference/entry-points' },
+							],
+						},
+					],
+				},
+				{
 					label: '@repobuddy/biome',
 					collapsed: true,
 					items: [
