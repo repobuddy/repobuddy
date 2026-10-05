@@ -40,7 +40,7 @@ Checked against the built `configs.node.testRegex`:
 | `a.spec.node.ts` | yes |
 | `a.spec.node18.ts` | yes (on Node.js 18 or later) |
 | `a.spec.node18.js` | yes (on Node.js 18 or later) |
-| `a.spec.node18.jsx` | no: the version patterns spell the extension `jtx` |
+| `a.spec.node18.jsx` | yes (on Node.js 18 or later) |
 | `a.spec.node99.ts` | no |
 | `a.spec.jsdom.ts` | no |
 | `a.load.ts` | no |
