@@ -21,6 +21,9 @@ pnpm install -D @repobuddy/vitest
 rush add -p --dev @repobuddy/vitest
 ```
 
+Requires `vitest` 5. `browserTestPreset` also needs `@vitest/browser-playwright` 5.
+Stay on `@repobuddy/vitest` 2.x for `vitest` 4.
+
 ## Features
 
 - Provides test presets for Node.js and browser environments
