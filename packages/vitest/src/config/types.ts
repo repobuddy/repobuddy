@@ -2,8 +2,9 @@ export interface PresetOptions {
 	/**
 	 * Tell the preset to include general test files (platform agnostic tests).
 	 *
-	 * General test files are `*.spec,test,unit,accept,integrate,system,perf,stress,study}.extension`.
-	 * e.g. `a.spec.ts`, `b.test.js`, `c.unit.tsx`.
+	 * General test files are `*.{spec,test,unit,accept,integrate,system,perf,stress,study}.extension`,
+	 * where the extension is not `.jsx` or `.tsx` (those are browser tests).
+	 * e.g. `a.spec.ts`, `b.test.js`, `c.unit.mts`.
 	 */
 	includeGeneralTests?: boolean | undefined
 	/**

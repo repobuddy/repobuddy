@@ -30,7 +30,8 @@ Stay on `@repobuddy/vitest` 2.x for `vitest` 4.
   - `nodeTestPreset`: Configures Vitest for Node.js testing
   - `browserTestPreset`: Configures Vitest for browser testing using Playwright
 - Includes common test configurations and defaults
-- Sets timezone to GMT and automatically restores mocks after tests
+- Sets timezone to GMT
+- `browserTestPreset` restores mocks after the tests in each file (`vi.restoreAllMocks()` in `afterAll`)
 - Provides better config defaults such as test file patterns and coverage configurations
 - Disables screenshot on failure in browser tests to avoid Storybook loading issues
 - Adds `expect.order` for asserting execution order via `@repobuddy/vitest/setup/order`
@@ -61,18 +62,25 @@ export default defineConfig({
 Load tests (`*.load.ts`, `*.load.js`) are recognized as test files,
 but are excluded from a normal run because they are slow.
 
-Opt into them with `includeLoadTests`, or give them their own config:
+Opt into them with `includeLoadTests`, or give them their own config.
+Use `buddyConfigDefaults` without a preset there: a preset always adds its own test globs,
+and vitest concatenates `include` arrays, so the config would also run the other tests.
 
 ```ts
-// vitest.config.load.ts
+// vitest.load.config.ts
 import { defineConfig } from 'vitest/config'
-import { buddyConfigDefaults, nodeTestPreset } from '@repobuddy/vitest/config/node'
+import { buddyConfigDefaults } from '@repobuddy/vitest/config/node'
 
 export default defineConfig({
-  plugins: [nodeTestPreset()],
-  test: { include: buddyConfigDefaults.include.testLoad },
+  test: {
+    ...buddyConfigDefaults.test,
+    include: buddyConfigDefaults.include.testLoad,
+  },
 })
 ```
+
+Do not name it `vitest.config.load.ts` when your root config uses `projects: ['vitest.config.*.ts']`,
+or it joins every run.
 
 ### `expect.order`
 
@@ -104,7 +112,9 @@ it('calls the callbacks in order', () => {
 
 The setup file augments `vitest`'s `ExpectStatic`, so `expect.order` is typed with no extra wiring.
 
-[downloads-image]: https://img.shields.io/npm/dm/@repobuddy/typescript.svg?style=flat
-[downloads-url]: https://npmjs.org/package/@repobuddy/typescript
-[npm-image]: https://img.shields.io/npm/v/@repobuddy/typescript.svg?style=flat
-[npm-url]: https://npmjs.org/package/@repobuddy/typescript
+[@repobuddy/vitest]: https://www.npmjs.com/package/@repobuddy/vitest
+[downloads-image]: https://img.shields.io/npm/dm/@repobuddy/vitest.svg?style=flat
+[downloads-url]: https://npmjs.org/package/@repobuddy/vitest
+[npm-image]: https://img.shields.io/npm/v/@repobuddy/vitest.svg?style=flat
+[npm-url]: https://npmjs.org/package/@repobuddy/vitest
+[Vitest]: https://vitest.dev
