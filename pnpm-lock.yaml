@@ -249,8 +249,8 @@ importers:
         specifier: workspace:*
         version: link:../jest
       buddy-agent-harness:
-        specifier: ^0.17.0
-        version: 0.17.0(typescript@7.0.2)
+        specifier: ^0.18.0
+        version: 0.18.0(typescript@7.0.2)
       clibuilder:
         specifier: ^11.3.2
         version: 11.3.2(typescript@7.0.2)
@@ -4524,8 +4524,8 @@ packages:
   bser@2.1.1:
     resolution: {integrity: sha512-gQxTNE/GAfIIrmHLUE3oJyp5FO6HRBfhjnw4/wMmA63ZGDJnWBmgY/lyQBpnDUkGmAhbSe39tx2d/iTOAfglwQ==}
 
-  buddy-agent-harness@0.17.0:
-    resolution: {integrity: sha512-bAqqOjU7Y+hFVQ9Mo69Z1mZTwVOJlPycKyursYM/0R/4xk5r+m9mndDtBaRCNToXDWWtR91BRykdKjEO8OXtbg==}
+  buddy-agent-harness@0.18.0:
+    resolution: {integrity: sha512-BavPv4SOrz4567OEViIMSxQB+Rl60pKYOdwFYS0PVyDWBroJORKJw3OAdElEXjugRfBHgM7TZfVFxgsKeiokpA==}
     engines: {node: '>=22'}
     hasBin: true
 
@@ -11336,7 +11336,7 @@ snapshots:
     dependencies:
       node-int64: 0.4.0
 
-  buddy-agent-harness@0.17.0(typescript@7.0.2):
+  buddy-agent-harness@0.18.0(typescript@7.0.2):
     dependencies:
       '@cyberuni/agent-harness': 0.3.0
       '@toon-format/toon': 4.1.1
