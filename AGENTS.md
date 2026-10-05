@@ -1,82 +1,37 @@
 # AGENTS.md
 
-This file provides guidance to AI coding assistants when working with code in this repository.
-
-## Skill Augmentations
-
-When reading any `SKILL.md` file, always check whether a `SKILL.local.md` exists in the same directory. If it does, treat its contents as additional instructions that extend the base skill. Local augmentations take precedence over the base skill where they conflict.
+When reading a `SKILL.md`, also read a `SKILL.local.md` in the same directory if one exists; it extends the skill and wins where they conflict.
 
 ## Commit Discipline
 
 **Auto-commit rule:** When a unit of work is complete and verified, commit it immediately — do not wait for the user to ask. Batching multiple units into one commit, or finishing all work before committing, are both violations of this rule.
 
-**Unit of work:** one coherent, independently revertable change — one domain's refactor, one feature, one bugfix, one test suite expansion for one concern, one config change. Never two unrelated concerns in the same commit. A TDD red-green-refactor cycle alone is not a commit boundary; commit when the full intended change is complete and tests pass. If the working tree has unrelated changes, leave them unstaged — commit the current unit first, then continue.
+**Unit of work:** one coherent, independently revertable change — one refactor, feature, bugfix, test expansion for one concern, or config change. A TDD red-green-refactor cycle alone is not a commit boundary. If the working tree has unrelated changes, leave them unstaged.
 
-- Conventional Commits: `feat:`, `fix:`, `refactor:`, `test:`, `docs:`, `chore:` — enforced by commitlint
-  through the `.husky/commit-msg` hook, so a non-conforming message is rejected at commit time
-- One concern per commit; never batch unrelated changes
-- Stage only files for this unit: `git add <files>`, then verify with `git diff --cached`
-- Never use `git add .`, `git add -A`, or `git add -p` (interactive commands agents cannot run)
-- Never commit with red tests; run validation commands first
-
-### References
-
-- **`commit-work` skill** — staging, splitting, and message writing when committing
+- Conventional Commits (`feat:`, `fix:`, `refactor:`, `test:`, `docs:`, `chore:`); commitlint rejects others at commit time
+- Stage only this unit's files with `git add <files>`, then check `git diff --cached`
+- Never `git add .`, `git add -A`, or `git add -p`
+- Never commit with red tests
 
 ## Commands
 
 ```sh
-# Install dependencies
 pnpm install
-
-# Build all packages
-# (also required before the first test run — the repo dogfoods its own jest/vitest configs)
-pnpm build
-
-# Run all tests
+pnpm build        # required before the first test run: the repo dogfoods its own jest/vitest configs
 pnpm test
-
-# Run tests for a single package
-pnpm --filter @repobuddy/jest test
-pnpm --filter @repobuddy/typescript test
-pnpm --filter @repobuddy/vitest test
-
-# Run coverage
+pnpm --filter @repobuddy/jest test   # one package (also @repobuddy/typescript, @repobuddy/vitest)
 pnpm coverage
-
-# Lint and format check
-pnpm check        # biome check (formatting + lint, whole repo)
-pnpm lint         # eslint — YAML only; biome has no YAML linter
-
-# Assert the published biome presets still behave as documented.
-# Each fixture under packages/biome/tests carries a `biome-ignore` for the rule
-# it exercises, so a rule that stops firing leaves an unused suppression. That
-# is only a *warning*, hence `--error-on-warnings` in the script.
-pnpm --filter @repobuddy/biome check:preset
-
-# Fix formatting
-pnpm format       # biome format --write
-pnpm check:fix    # biome check --fix
-
-# Full verify (check + check:preset + check-plugin-version + knip + lint + coverage + e2e + size + pack:check)
-# There is no separate `typecheck` task: every package builds with `tsc`, and
-# `coverage`/`size` depend on `build`, so a type error fails `verify`.
-pnpm verify
-
-# CI verify (same tasks, concurrency=1)
-pnpm verify:ci
-
-# Add a changeset
-pnpm cs           # alias for changeset
-
-# Validate private skills without writing
+pnpm check        # biome: format + lint, whole repo
+pnpm check:fix
+pnpm format
+pnpm lint         # eslint, YAML only
+pnpm --filter @repobuddy/biome check:preset   # each fixture's biome-ignore must still be used
+pnpm verify       # everything CI runs; no separate typecheck — build runs tsc
+pnpm verify:ci    # same, concurrency=1
+pnpm cs           # add a changeset
 npx cyber-skills@0.4.3 skill validate-private
-
-# Repair private skills (sets metadata: internal: true, removes erroneous symlinks)
-npx cyber-skills@0.4.3 skill repair-private
-
-# Validate public skills
-npx cyber-skills@0.4.3 audit validate
+npx cyber-skills@0.4.3 skill repair-private   # after editing .agents/skills/
+npx cyber-skills@0.4.3 audit validate         # before a PR touching packages/buddy/skills/; no CI runs it
 ```
 
 ## Scope
@@ -84,112 +39,27 @@ npx cyber-skills@0.4.3 audit validate
 A new package must be a repository tool a consumer installs on its own: test, lint, or TypeScript config, a `buddy` CLI plugin, or agent skills. Application code does not belong here.
 Before changing what a package does, read its GOALS.md: [repobuddy](packages/buddy/GOALS.md), [jest](packages/jest/GOALS.md), [vitest](packages/vitest/GOALS.md), [biome](packages/biome/GOALS.md), [typescript](packages/typescript/GOALS.md), [test](packages/test/GOALS.md).
 
-## Architecture
+## Layout
 
-This is a **pnpm monorepo** managed with [Turborepo](https://turbo.build/). It is a **tooling library** skill repo — it ships npm packages and agent skills from the same repo.
+pnpm + Turborepo monorepo. Published packages in `packages/`; public skills in `packages/buddy/skills/`, shipped in the `repobuddy` npm package; integration fixtures in `testcases/`.
 
-**Published packages** (`packages/`):
-- `@repobuddy/jest` — Jest presets and config helpers
-- `@repobuddy/vitest` — Vitest presets and config helpers
-- `@repobuddy/biome` — Predefined Biome configs
-- `@repobuddy/typescript` — TypeScript tools and utilities
-- `@repobuddy/test` — Shared test utilities
-- `repobuddy` — CLI for managing the repository itself
+- Before touching `packages/buddy/plugin.json`, any `*-plugin/` manifest or marketplace catalog, or the `version` script, read [.agents/docs/plugin-manifests.md](.agents/docs/plugin-manifests.md) — most of those files are generated.
+- Before editing `website/`, or after changing a package's presets, exports, options, or commands, read [.agents/docs/website.md](.agents/docs/website.md).
 
-**Public agent skills** (`packages/buddy/skills/`) — shipped as a universal plugin inside the `repobuddy` npm package, and installed by consumers via `npx skills add repobuddy/repobuddy`:
-- `add-badges` — add, fix, or audit readme badges (npm, CI, docs, coverage, license)
-- `agent-readiness` — score how ready a repo is for coding agents: gated level 1-5, per-area score, top three fixes, tokens loaded per session; `score --package` scores the consuming side of a library; a bundled script runs the static checks, the model settles judgment calls; `score --check` holds a level in CI; `improve` applies approved fixes one area per commit and hands owned fixes to their skills; `bench` runs a fixed agent task set against a stored baseline (tokens, turns, pass rate, cost per success), spending only after a yes; `bench compare` re-reads two stored results with spread and permutation p-values, free
-- `code-review` — review code through the Linus, Uncle Bob, and Fowler lenses; reports split verdicts
-- `create-issue` — create GitHub/GitLab issues, dedup check first
-- `init-buddy` — set up the machine for the repo's git host: detect OS, package managers, and existing MCP servers; install and log in `gh`, `glab`, `tea`, `fj`, or `az`; propose a tiered harness allow list and write only the approved entries
-- `llms-txt` — publish an `llms.txt` generated from the project's public surface; decides whether one is warranted, wires the drift check, reports the documentation gap
-- `merge-dep-prs` — merge Dependabot/Renovate PRs; gates each merge on whether CI reached the change's blast radius, handles CI failures
-- `min-release-age` — lift the minimum-release-age gate for one package version, restore it once the version ages past the window, and install a scheduled CI job that expires lifts automatically (pnpm, Yarn, npm, bun; GitHub, GitLab, Bitbucket, Azure, Forgejo/Gitea)
-- `review-api` — review a library's public API against its own conventions: shape conformance, sibling-justified gaps, docs vs exports; read-only, verified, priority-ordered report
-- `review-permissions` — audit harness permissions (Claude Code, Cursor, Codex, Copilot, Gemini): risk, tightening, consolidation
-- `session` — router for `session pause` / `session resume`: sort an agent session's work into topics, skip the finished ones, and pause the live ones into checkpoints at `.agents/repobuddy/checkpoints/<slug>.md` (one per topic or one for all, asked; next action first, settled decisions, open questions, working method, state not in git, `depends-on` between topics), writing a topic about another repo into that repo; then resume one in a fresh session, any harness or repo; SDD missions hand off to cyber-sdd's `pause-mission`/`resume-mission`
-- `setup-github-repo` — branch protection, merge backstop (merge queue or require-up-to-date), Dependabot, CI setup
-- `setup-npm-trusted-publishing` — register npm trusted publishers (OIDC) to retire `NPM_TOKEN`; one package, an org, or every org owned
-- `website` — router for docs-website work; `init` adds an Astro/Starlight site to a monorepo as a private workspace package, wires turbo, knip, biome, and pnpm build approvals; `deploy` publishes a static site from CI to GitHub Pages, GitLab Pages, Codeberg Pages, Bitbucket, or Azure Static Web Apps, setting the base path the host serves at
-- `to-question` — word a question for a platform (Slack, Jira, Linear, Asana, GitHub, GitLab, Bugzilla, Redmine, Trac, email); composes, never posts
+## Skills
 
-**Related skill collections** (separate repos, same install flow):
-- [`repobuddy/agent-changesets`](https://github.com/repobuddy/agent-changesets) — changeset authoring and release setup
-- [`repobuddy/agent-security`](https://github.com/repobuddy/agent-security) — security PR remediation
-
-**Repo-private contributor skills** (`.agents/skills/`) — `metadata: internal: true`, not shipped to consumers:
-- `add-changeset`, `audit-skill`, `create-skill`, `find-awesome-skill`, `fix-security-pr`
-
-These are *installed* from the related collections above and from
-[`cyberuni/cyber-skills`](https://github.com/cyberuni/cyber-skills), not authored here. `skills-lock.json`
-records each one's source repo, path, and content hash — update them through the Skills CLI rather than
-editing in place, or the lock hash goes stale.
-
-**Test cases** live under `testcases/` — fixture packages exercised by integration tests.
-
-**Universal plugin**: `packages/buddy/plugin.json` is the canonical manifest (Agent Plugins Specification v1.0.0). The
-`.claude-plugin/`, `.cursor-plugin/`, and `.codex-plugin/` manifests beside it, and the two local marketplace catalogs
-(`.claude-plugin/marketplace.json`, `.github/plugin/marketplace.json`), are **generated** by
-`npx universal-plugin plugin build` — never hand-edit them, except the Claude catalog's `source` (see below). Copilot
-CLI reads the canonical `plugin.json` directly, so nothing is derived for it. `packages/buddy/.agents/universal-plugin.json`
-declares `packagePath: "."`, which is what this repo's release wiring reads; do not set `packagePath` in `plugin.json`.
-
-The `version` script (`changeset version && node scripts/sync-plugin-manifests.mjs`) carries a released version into
-the plugin automatically: `scripts/sync-plugin-manifests.mjs` runs `universal-plugin publish sync-version` (never
-`plugin version` — this is a changesets repo, so changesets decides the number) followed by `plugin build`, pinned to
-an exact `universal-plugin` version. `scripts/check-plugin-version.mjs` (wired into `verify` as `check-plugin-version`)
-fails when `packages/buddy/package.json`'s version disagrees with the manifest, any vendor manifest, or either
-catalog's `repobuddy` entry.
-
-`plugin build`'s catalog generation only ever writes a local-path `source`; it has no npm-package source concept. This
-repo ships its Claude Code/Codex catalog entry from the published `repobuddy` npm package instead (so the catalog
-carries the built, gitignored skill script bundles that only the npm tarball has) — `sync-plugin-manifests.mjs`
-restores that `source` in `.claude-plugin/marketplace.json` after every rebuild. That is the one field in a generated
-file this repo intentionally keeps out of sync with the tool's own output.
-
-**Documentation site** lives under `website/` (Astro + Starlight), served at `https://repobuddy.github.io/repobuddy/`.
-The sidebar is declared explicitly in `website/astro.config.ts`, so a new page needs an entry there or it ships
-unreachable. Internal Markdown links carry the base path (`/repobuddy/jest/presets/ts-esm/`); sidebar entries take bare
-slugs. Each package has its own section under `website/src/content/docs/<section>/` (`jest`, `vitest`, `biome`,
-`typescript`, `test`, `cli`), with an overview, task guides, and one reference page per preset, export, or command;
-each public skill has a page under `skills/`. When a package's presets, exports, options, or commands change, update
-the matching reference page from the source, not from the readme, and the overview's Support section when a peer
-range or supported environment changes.
-
-**Build pipeline**: Turborepo tasks are declared in `turbo.json`. `coverage` and `test` depend on `@repobuddy/jest#build` and `@repobuddy/vitest#build` first, because the repo dogfoods its own jest/vitest configs.
-
-**Note on initial setup**: Always run `pnpm build` before `pnpm test` on a fresh clone — the jest/vitest packages must be built before they can be used by test runners.
-
-## Skill Repo Conventions
-
-- Public skills live in `packages/buddy/skills/<name>/SKILL.md`. The `name` in frontmatter must match the directory name.
-- Every skill ships a `README.md` beside its `SKILL.md`. `SKILL.md` instructs the agent; the `README.md` explains to a person what the skill does, how to invoke it, and what it produces.
-- Repo-private skills live in `.agents/skills/<name>/SKILL.md` and **must** include `metadata: internal: true` in frontmatter.
+- A skill's frontmatter `name` matches its directory. Every skill ships a `README.md` for people beside its `SKILL.md`.
+- Repo-private skills in `.agents/skills/` need `metadata: internal: true`. They are installed from other repos and pinned in `skills-lock.json`: update them through the Skills CLI, never in place, or the lock hash goes stale.
 - Never duplicate a skill between `packages/buddy/skills/` and `.agents/skills/` without a documented reason.
-- After adding or editing any `.agents/skills/` entry, run `npx cyber-skills@0.4.3 skill repair-private` to ensure metadata is correct.
-- No CI job validates public skills; run `npx cyber-skills@0.4.3 audit validate` yourself before opening a PR that touches `packages/buddy/skills/`.
 
 ## Dependencies
 
-Renovate manages this repo's dependencies (`.github/renovate.json` extends `github>unional/renovate-preset`).
+Renovate owns dependency updates.
 
-- **Let Renovate own semver range bumps.** Do not bulk-rewrite ranges in `package.json` — plain `pnpm update -r`
-  rewrites every range to the exact latest and conflicts with the open Renovate PRs. To refresh resolved
-  versions only, use `pnpm update -r --no-save`, which touches the lockfile alone.
-- **`pnpm-workspace.yaml` sets `minimumReleaseAge: 1440` and `minimumReleaseAgeStrict: true`.** Any lockfile
-  entry published within the last 24h fails the supply-chain check in CI. A freshly opened dep PR often fails
-  for this reason alone — re-run the job once the version has aged out rather than debugging it as a real break.
-  This belongs in `pnpm-workspace.yaml`, **not** `.npmrc`: pnpm 11 does not read `minimumReleaseAge` from
-  `.npmrc` at all, and a repo that puts it there silently runs pnpm's built-in default instead. Confirm with
-  `pnpm config get minimumReleaseAge` — it must print `1440`, not `undefined`.
-- There is no Dependabot automerge workflow; every dependency update comes through Renovate, which merges the
-  automergeable ones itself (see the `packageRules` in `.github/renovate.json`).
+- Never bulk-rewrite ranges: `pnpm update -r` conflicts with open Renovate PRs. Use `pnpm update -r --no-save` to refresh the lockfile only.
+- `minimumReleaseAge: 1440` (strict) lives in `pnpm-workspace.yaml`, never `.npmrc` (pnpm 11 ignores it there). A dep PR failing the supply-chain check within 24h of publish needs a re-run later, not a fix.
 
 ## Changesets
 
-This repo uses [Changesets](https://github.com/changesets/changesets) for versioning and release.
-
-- Every PR that modifies a published package needs a changeset: `pnpm cs`
-- Release PRs are opened automatically by the Changesets GitHub Action. An agent merges one only when the owner asks, and only after every check passes, through GitHub — never by pushing to the release branch or merging locally.
-- The bot's release PR runs can wait on workflow approval (`action_required`); the owner, or an agent asked to release, approves those runs before the checks can complete.
-- `pnpm version` bumps versions; `pnpm release` builds and publishes
+- Every PR that modifies a published package needs a changeset (`pnpm cs`).
+- Merge a Changesets release PR only when the owner asks, after every check passes, through GitHub — never by pushing to the release branch or merging locally. Its runs may wait on workflow approval (`action_required`); approve them when asked to release.
