@@ -79,6 +79,11 @@ npx cyber-skills@0.4.3 skill repair-private
 npx cyber-skills@0.4.3 audit validate
 ```
 
+## Scope
+
+A new package must be a repository tool a consumer installs on its own: test, lint, or TypeScript config, a `buddy` CLI plugin, or agent skills. Application code does not belong here.
+Before changing what a package does, read its GOALS.md: [repobuddy](packages/buddy/GOALS.md), [jest](packages/jest/GOALS.md), [vitest](packages/vitest/GOALS.md), [biome](packages/biome/GOALS.md), [typescript](packages/typescript/GOALS.md), [test](packages/test/GOALS.md).
+
 ## Architecture
 
 This is a **pnpm monorepo** managed with [Turborepo](https://turbo.build/). It is a **tooling library** skill repo — it ships npm packages and agent skills from the same repo.
