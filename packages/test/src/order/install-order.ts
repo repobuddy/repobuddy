@@ -15,13 +15,15 @@ export interface ExpectWithOrder {
  * Call it from a setup file. `@repobuddy/vitest` ships `@repobuddy/vitest/setup/order`,
  * which does this and augments `vitest`'s types.
  *
- * For other runners, augment the runner's `expect` type yourself:
+ * For other runners, augment the runner's `expect` type yourself.
+ * For Jest, with `expect` imported from `@jest/globals`:
  *
  * ```ts
- * import { installOrder } from '@repobuddy/test'
+ * import { expect } from '@jest/globals'
+ * import { type ExpectWithOrder, installOrder } from '@repobuddy/test'
  *
- * declare module '@jest/expect' {
- *   interface Expect extends ExpectWithOrder {}
+ * declare module 'expect' {
+ *   interface BaseExpect extends ExpectWithOrder {}
  * }
  *
  * installOrder(expect)
