@@ -50,7 +50,8 @@ See [Entry points](/repobuddy/vitest/reference/entry-points/) for every import p
 | Node.js | No `engines` field is declared |
 | Module format | ESM only (`"type": "module"`, every export has an `import` condition only) |
 | Environments (`nodeTestPreset`) | `node` (default), `jsdom`, `happy-dom`, `edge-runtime`, or any other `test.environment` string |
-| Browsers (`browserTestPreset`) | Chromium by default. Set `test.browser.instances` to choose others the Playwright provider accepts (`chromium`, `firefox`, `webkit`). |
+| Browsers (`browserTestPreset`) | One headless Chromium instance by default. Set `test.browser.instances` to choose others the Playwright provider accepts (`chromium`, `firefox`, `webkit`). |
+| TypeScript | The presets add no transform. Vitest's own transform applies. |
 | Repository layout | Single package, or one Vitest project per preset in a root config with `test.projects` |
 | Test file location | `src`, `source`, `code`, or `tests` ([Test file names](/repobuddy/vitest/reference/test-file-names/)) |
 

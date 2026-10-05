@@ -270,8 +270,6 @@ export default defineConfig({
 						},
 					],
 				},
-				{ label: 'Packages', slug: 'packages' },
-				{ label: 'Compatibility', slug: 'compatibility' },
 			],
 			editLink: {
 				baseUrl: 'https://github.com/repobuddy/repobuddy/edit/main/website/',
@@ -280,7 +278,7 @@ export default defineConfig({
 	],
 	// The per-package pages from #763 moved into one section per package.
 	redirects: {
-		'/reference/packages': '/repobuddy/packages/',
+		'/reference/packages': '/repobuddy/',
 		'/reference/biome': '/repobuddy/biome/',
 		'/reference/jest': '/repobuddy/jest/',
 		'/reference/vitest': '/repobuddy/vitest/',
@@ -289,6 +287,9 @@ export default defineConfig({
 		'/reference/repobuddy': '/repobuddy/repobuddy/',
 		// The Getting started section was removed; each package's overview carries its own install steps.
 		'/guides/getting-started': '/repobuddy/',
+		// The Packages and Compatibility pages were folded into the home page and each package's overview.
+		'/packages': '/repobuddy/',
+		'/compatibility': '/repobuddy/',
 	},
 	site: 'https://repobuddy.github.io',
 	base: '/repobuddy',
