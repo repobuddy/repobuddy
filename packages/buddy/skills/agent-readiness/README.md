@@ -135,8 +135,12 @@ at a time between runs, so each delta has one cause.
   default 3). With `--package` it holds the package at its own level instead (1-4). The judgment calls
   cannot run in CI, so they count as unknown: the level comes from the checks the script decides, and
   the output marks it provisional while judgment gates are still unsettled.
-- To change the area weights for your repo, add `.agents/readiness/weights.json` with
-  `{ "<area>": <number> }`, beside the `bench` task set whose results justify it. Weights only reorder fixes and area scores. They never
+- To change the area weights for your repo, add `.agents/references/repobuddy.readiness.md` with
+  `merge: merge-sections` in its frontmatter and a `## Weights` section of `- <area>: <number>` items,
+  naming only the areas to change. The skill's own copy,
+  [`references/repobuddy.readiness.md`](references/repobuddy.readiness.md), holds the defaults. An old
+  `.agents/readiness/weights.json` is still read for one release, with a warning that prints the file
+  to create instead. Weights only reorder fixes and area scores. They never
   change the level, so an override cannot weaken the CI check.
 - [`references/weights.md`](references/weights.md) records which bench runs each default weight rests
   on. So far one pilot benched comment density on one repo. It found no change in pass rate and at most a

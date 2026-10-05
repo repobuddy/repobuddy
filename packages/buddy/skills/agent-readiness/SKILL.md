@@ -80,16 +80,28 @@ rest are unmeasured. Say so in the report. [references/weights.md](references/we
 which bench runs each weight rests on: load it when a user disputes a weight or asks where one comes
 from.
 
-A repository can override them in `.agents/readiness/weights.json`, beside the `bench` task set whose
-results justify the change. Name only the areas to change:
+The weights live in the reference `repobuddy.readiness`, whose default copy ships in
+[references/repobuddy.readiness.md](references/repobuddy.readiness.md). A repository overrides them in
+`.agents/references/repobuddy.readiness.md`, naming only the areas to change, and cites in the pull
+request the `bench` comparison that justifies the change:
 
-```json
-{ "verification": 40, "task-discovery": 0 }
+```markdown
+---
+merge: merge-sections
+---
+
+## Weights
+
+- verification: 40
+- task-discovery: 0
 ```
 
-The file holds the repository area weights and nothing else; `--package` does not read it. Weights
-never touch gates or the level, so an override cannot lower the bar CI holds. The report marks each
-overridden weight. A malformed file stops the script (exit 2) rather than scoring with a guess.
+`merge: merge-sections` replaces only the `## Weights` section; an area it leaves out keeps its
+default. `--package` does not read it. Weights never touch gates or the level, so an override cannot
+lower the bar CI holds. The report marks each overridden weight. A malformed item stops the script
+(exit 2) rather than scoring with a guess. The old `.agents/readiness/weights.json` is still read, for
+one release, when no project override exists; the script then prints the override file to create.
+Offer to create it, and to delete the JSON file, on the user's yes.
 
 ## CI mode
 
@@ -374,3 +386,5 @@ interactive runs; `claude -p` stays the default.
 - Bench results and baseline format: `references/bench-results.md` (load when reading or comparing
   results files)
 - Weight provenance: `references/weights.md` (load when a weight is disputed or its source asked for)
+- The default weights: `references/repobuddy.readiness.md` (the script reads it; load it only to show a
+  user the override format)

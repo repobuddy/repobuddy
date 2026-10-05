@@ -187,13 +187,27 @@ test('--run-knip leaves dead-code n/a in a repo without knip', async () => {
 	expect(result.checks.find((c: { id: string }) => c.id === 'dead-code').status).toBe('n/a')
 })
 
-test('applies the repo weight override', async () => {
+test('applies the repo weight override from the reference', async () => {
+	mkdirSync(join(dir, '.agents/references'), { recursive: true })
+	writeFileSync(
+		join(dir, '.agents/references/repobuddy.readiness.md'),
+		'---\nmerge: merge-sections\n---\n\n## Weights\n\n- noise: 30\n',
+	)
+	await main(['score', '--dir', dir, '--json'])
+	const result = JSON.parse(stdout.join(''))
+	expect(result.weights).toMatchObject({ noise: 30, verification: 25 })
+	expect(result.overriddenWeights).toEqual(['noise'])
+	expect(stderr.join('')).toBe('')
+})
+
+test('reads the deprecated weights.json with a warning on stderr', async () => {
 	mkdirSync(join(dir, '.agents/readiness'), { recursive: true })
 	writeFileSync(join(dir, '.agents/readiness/weights.json'), '{ "noise": 30 }')
 	await main(['score', '--dir', dir, '--json'])
-	const result = JSON.parse(stdout.join(''))
-	expect(result.weights.noise).toBe(30)
-	expect(result.overriddenWeights).toEqual(['noise'])
+	expect(JSON.parse(stdout.join('')).overriddenWeights).toEqual(['noise'])
+	expect(stderr.join('')).toMatch(
+		/weights\.json is deprecated[\s\S]*\.agents\/references\/repobuddy\.readiness\.md[\s\S]*- noise: 30/,
+	)
 })
 
 test('exits 2 on a malformed config', async () => {

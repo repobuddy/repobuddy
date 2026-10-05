@@ -31,7 +31,9 @@ export type Weights = Record<WeightedArea, number>
 /**
  * Starting weights. They are hypotheses until behavioral measurement revises them, and the report prints them.
  * `skills/agent-readiness/references/weights.md` records the bench runs behind each one.
- * A repo can override them (see `config.ts`); weights never touch gates or the level.
+ * They ship as the `## Weights` section of `skills/agent-readiness/references/repobuddy.readiness.md`,
+ * which a spec keeps equal to these; a repo overrides that section (see `config.ts`). Weights never
+ * touch gates or the level.
  */
 export const AREA_WEIGHTS: Weights = {
 	verification: 25,

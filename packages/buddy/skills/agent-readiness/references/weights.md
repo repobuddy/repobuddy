@@ -2,8 +2,9 @@
 
 The weights only order the fixes and the per-area scores. They never touch gates or the level. They
 started as estimates, and `bench` results are meant to revise them. This file records, for every
-weight, the bench runs it rests on, or that it has none yet. Change a default only with a run behind
-it, and add that run here.
+weight, the bench runs it rests on, or that it has none yet. The repository defaults themselves are
+the `## Weights` section of [repobuddy.readiness.md](repobuddy.readiness.md), which the script reads.
+Change a default only with a run behind it, and add that run here.
 
 ## Repository weights
 
@@ -59,4 +60,4 @@ it, and add that run here.
 - An effect on pass rate, or a pooled cost change that a second bench reproduces.
 - Tasks hard enough that some runs fail, and 10 or more runs a side.
 - More than one repository for the same lever. One repo's result belongs in its own
-  `.agents/readiness/weights.json`, not in the defaults.
+  override, `.agents/references/repobuddy.readiness.md`, not in the defaults.

@@ -33,14 +33,17 @@
  *
  * `score --check` is CI mode: exit 1 when the level is below --min-level (default 3, the target). Only the
  * gates the script decides count; unsettled `judge` gates are reported as provisional and never fail the
- * run. Repo area weights default to the skill's; `.agents/readiness/weights.json` can override them.
+ * run. Repo area weights come from the reference `repobuddy.readiness` (the skill ships the default in
+ * `references/`); a repo overrides its `## Weights` section in `.agents/references/repobuddy.readiness.md`.
  *
  * stdout: a human report, or JSON with --json. stderr: errors and per-run progress.
  * Exit 0 on success, 1 when bench cannot run or `score --check` finds the level below --min-level,
  * 2 on bad usage or a malformed weights config.
  */
 
-import { relative, resolve } from 'node:path'
+import { existsSync } from 'node:fs'
+import { dirname, join, relative, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import {
 	BenchError,
 	bench,
@@ -54,7 +57,7 @@ import {
 } from '../agent-readiness/bench.js'
 import { compareRecords, formatRecordComparison, loadRecord, RecordError } from '../agent-readiness/bench-compare.js'
 import { interactiveRunner } from '../agent-readiness/bench-interactive.js'
-import { ConfigError, readConfig } from '../agent-readiness/config.js'
+import { ConfigError, REFERENCE, readConfig } from '../agent-readiness/config.js'
 import { collectFacts } from '../agent-readiness/facts.js'
 import { collectPackageFacts } from '../agent-readiness/package-facts.js'
 import { formatPackageReport, PACKAGE_MAX_LEVEL, scorePackage } from '../agent-readiness/package-score.js'
@@ -254,6 +257,17 @@ function runCompare(opts: Opts): void {
 	)
 }
 
+/**
+ * The skill folder, whose `references/` holds the default reference: beside the bundled script
+ * (`skills/agent-readiness/scripts/`), or from the package's `esm/` or `src/skills/`.
+ */
+function skillDir(): string | undefined {
+	const here = dirname(fileURLToPath(import.meta.url))
+	return [join(here, '..'), join(here, '../skills/agent-readiness'), join(here, '../../skills/agent-readiness')].find(
+		(dir) => existsSync(join(dir, 'references', `${REFERENCE}.md`)),
+	)
+}
+
 export async function main(argv: string[] = process.argv.slice(2)): Promise<void> {
 	const opts = parseArgs(argv)
 	if (opts.command === 'compare') {
@@ -274,14 +288,15 @@ export async function main(argv: string[] = process.argv.slice(2)): Promise<void
 		report(opts, scorePackage(collectPackageFacts(opts.package)), formatPackageReport)
 		return
 	}
-	let config: ReturnType<typeof readConfig>
+	let config: Awaited<ReturnType<typeof readConfig>>
 	try {
-		config = readConfig(opts.dir)
+		config = await readConfig(opts.dir, { skillDir: skillDir() })
 	} catch (e) {
 		if (!(e instanceof ConfigError)) throw e
 		process.stderr.write(`${e.message}\n`)
 		process.exit(2)
 	}
+	for (const warning of config.warnings) process.stderr.write(`${warning}\n`)
 	report(opts, score(collectFacts(opts.dir, { runKnip: opts.runKnip }), { weights: config.weights }), formatReport)
 }
 
