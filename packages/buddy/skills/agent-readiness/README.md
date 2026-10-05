@@ -19,7 +19,8 @@ before and after a change.
 ## What it does
 
 1. **Runs a static scan** with a bundled script: no build, no install, no tokens. It checks for a
-   verify command, an instructions file and the commands it names, a pinned toolchain, file sizes,
+   verify command, an instructions file and the commands it names, a statement of what the project
+   is for and what it is not, a pinned toolchain, file sizes,
    committed build output, fixture and vendored folders search still reads, committed secrets, literal MCP credentials, and more. It also measures the
    source: the share of comments, JSDoc blocks that document nothing, names that flood a grep, and
    environment variables the code reads that no setup document names.
@@ -27,7 +28,8 @@ before and after a change.
    installed, or is that plugin's own repo, it also runs the plugin's read-only `doctor` and reports
    each finding under agent instructions.
 2. **Settles the judgment calls** the script cannot make, such as whether CI runs the same command an
-   agent runs locally, whether the instructions file is accurate, or whether heavy comments state
+   agent runs locally, whether the instructions file is accurate, whether its scope statement names a
+   boundary specific enough to turn down a real change, or whether heavy comments state
    constraints or tell history. When the repo has knip configured, it runs knip and reports what is
    unused; in CI, `score --run-knip` has the script run knip itself. It loads only the criteria for
    the areas that need it.
@@ -61,7 +63,9 @@ before and after a change.
 order the fix list ranks them.
 
 1. It proposes each fix on its own, with the files and the change, and applies it only when you say
-   yes. A fix you decline is skipped and listed.
+   yes. A fix you decline is skipped and listed. For a missing scope statement it drafts 2-4 lines
+   for `AGENTS.md` and a `GOALS.md` (goals, non-goals, rejected directions) from the README, and you
+   decide every boundary.
 2. It runs the verify command, then commits the area's approved fixes as one commit. Two areas never
    share a commit.
 3. It hands the fixes other skills own to those skills instead of making them itself:

@@ -30,6 +30,7 @@ function readyFacts(overrides: Partial<Facts> = {}): Facts {
 		ciConfigs: ['.github/workflows'],
 		instructionFiles: [{ path: 'AGENTS.md', tokens: 800 }],
 		skillDescriptions: [{ path: '.agents/skills/a/SKILL.md', name: 'a', tokens: 30 }],
+		scope: { linked: ['GOALS.md'], unlinked: [], sections: [] },
 		missingInstructionCommands: [],
 		toolchainPins: ['package.json#packageManager'],
 		hasLockfile: true,
@@ -189,6 +190,36 @@ describe('buildChecks', () => {
 		expect(check(facts, 'instructions-file')?.status).toBe('fail')
 		expect(check(facts, 'instructions-commands')?.status).toBe('n/a')
 		expect(check(facts, 'instructions-lean')?.status).toBe('n/a')
+		expect(check(facts, 'instructions-scope')?.status).toBe('n/a')
+	})
+
+	it('asks for judgment on a scope statement, naming where it is', () => {
+		expect(check(readyFacts(), 'instructions-scope')).toMatchObject({
+			level: 3,
+			gate: false,
+			status: 'judge',
+			detail: ['GOALS.md, named in the instructions file'],
+		})
+		const inline = { linked: [], unlinked: [], sections: ['AGENTS.md:3: ## Non-goals'] }
+		expect(check(readyFacts({ scope: inline }), 'instructions-scope')).toMatchObject({
+			status: 'judge',
+			detail: ['AGENTS.md:3: ## Non-goals'],
+		})
+	})
+
+	it('fails without a scope statement, or with a GOALS.md no instructions file names', () => {
+		const none = { linked: [], unlinked: [], sections: [] }
+		expect(check(readyFacts({ scope: none }), 'instructions-scope')?.status).toBe('fail')
+		const orphan = { linked: [], unlinked: ['GOALS.md'], sections: ['AGENTS.md:3: ## Non-goals'] }
+		expect(check(readyFacts({ scope: orphan }), 'instructions-scope')).toMatchObject({
+			status: 'fail',
+			detail: ['GOALS.md exists, but no instructions file names it'],
+		})
+	})
+
+	it('does not let a missing scope statement lower the level', () => {
+		const none = { linked: [], unlinked: [], sections: [] }
+		expect(score(readyFacts({ scope: none })).level).toBe(MAX_LEVEL)
 	})
 
 	it('fails when the instructions name a script that does not exist', () => {

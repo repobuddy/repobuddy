@@ -7,7 +7,7 @@
 
 import { spawnSync } from 'node:child_process'
 import { existsSync, readdirSync, readFileSync, realpathSync, statSync } from 'node:fs'
-import { basename, join } from 'node:path'
+import { basename, join, posix } from 'node:path'
 import { readBaseline } from './bench.js'
 import { findUndocumentedEnv, isSetupDoc, type UndocumentedEnv } from './env.js'
 import { findSearchedFixtureDirs, type SearchedFixtureDir } from './fixtures.js'
@@ -20,6 +20,16 @@ import { type ReleaseAgeGate, readReleaseAgeGate, readWorkflows, type WorkflowFa
 interface InstructionFile {
 	path: string
 	tokens: number
+}
+
+/** Where the instruction files state what the project is for and what it deliberately is not. */
+interface ScopeFacts {
+	/** Files an instructions file names that carry the detail: a well-known name, or one with a scope or non-goals heading. */
+	linked: string[]
+	/** Well-known scope files (`GOALS.md`, `SCOPE.md`, …) at the root or under `docs/` that no instructions file names. */
+	unlinked: string[]
+	/** `<file>:<line>: <text>` for each scope, purpose, or non-goals heading or line in an instruction file. */
+	sections: string[]
 }
 
 interface SkillDescription {
@@ -42,6 +52,7 @@ export interface Facts {
 	ciConfigs: string[]
 	instructionFiles: InstructionFile[]
 	skillDescriptions: SkillDescription[]
+	scope: ScopeFacts
 	/** Package-manager commands named in the instruction files whose script does not exist. */
 	missingInstructionCommands: string[]
 	toolchainPins: string[]
@@ -316,6 +327,22 @@ function findMissingCommands(text: string, scripts: string[]): string[] {
 	return [...missing]
 }
 
+const SCOPE_HEADING = /^#{1,6}\s+.*\b(scope|purpose|non-?goals?|boundar(y|ies)|is not|isn't)\b/i
+const SCOPE_LINE = /\b(non-?goals?|out of scope|not in scope)\b/i
+
+/** The names the check knows without a link to follow; `GOALS.md` is the one `improve` proposes. */
+const SCOPE_FILE = /^(docs\/)?(goals|non-?goals|scope|vision|purpose)\.md$/i
+/** A markdown link, an `@` import, or a bare mention of a local `.md` file. */
+const MD_REFERENCE = /(?:^|[\s`(@[])((?:\.{1,2}\/)?[\w./-]*[\w-]\.md)\b/gim
+
+function findScopeLines(path: string, text: string): string[] {
+	return text
+		.split('\n')
+		.flatMap((line, i) =>
+			SCOPE_HEADING.test(line) || SCOPE_LINE.test(line) ? [`${path}:${i + 1}: ${line.trim().slice(0, 80)}`] : [],
+		)
+}
+
 function readTsStrict(dir: string): boolean | undefined {
 	const text = read(dir, 'tsconfig.json')
 	if (text === undefined) return undefined
@@ -394,6 +421,9 @@ export function collectFacts(dir: string, options: CollectOptions = {}): Facts {
 
 	const instructionFiles: InstructionFile[] = []
 	const missingInstructionCommands = new Set<string>()
+	const fileSet = new Set(files)
+	const named = new Set<string>()
+	const scopeSections: string[] = []
 	const seenInstructions = new Set<string>()
 	for (const file of INSTRUCTION_FILES) {
 		const text = read(dir, file)
@@ -404,6 +434,21 @@ export function collectFacts(dir: string, options: CollectOptions = {}): Facts {
 		seenInstructions.add(real)
 		instructionFiles.push({ path: file, tokens: estimateTokens(text) })
 		for (const command of findMissingCommands(text, scripts)) missingInstructionCommands.add(command)
+		scopeSections.push(...findScopeLines(file, text))
+		for (const m of text.matchAll(MD_REFERENCE)) {
+			const target = m[1] as string
+			// A link resolves from the file that holds it; a bare `GOALS.md` usually means the root.
+			for (const path of [posix.join(posix.dirname(file), target), posix.normalize(target)]) {
+				if (fileSet.has(path) && !INSTRUCTION_FILES.includes(path)) named.add(path)
+			}
+		}
+	}
+	const scope: ScopeFacts = {
+		linked: [...named].filter(
+			(f) => SCOPE_FILE.test(f) || (read(dir, f) ?? '').split('\n').some((line) => SCOPE_HEADING.test(line)),
+		),
+		unlinked: files.filter((f) => SCOPE_FILE.test(f) && !named.has(f)),
+		sections: scopeSections,
 	}
 
 	const toolchainPins = TOOLCHAIN_FILES.filter((f) => exists(dir, f))
@@ -438,6 +483,7 @@ export function collectFacts(dir: string, options: CollectOptions = {}): Facts {
 		ciConfigs: CI_CONFIGS.filter((f) => exists(dir, f)),
 		instructionFiles,
 		skillDescriptions: readSkillDescriptions(dir),
+		scope,
 		missingInstructionCommands: [...missingInstructionCommands],
 		toolchainPins,
 		hasLockfile: LOCKFILES.some((f) => exists(dir, f)),

@@ -151,6 +151,21 @@ function deadCode(facts: Facts): Pick<Check, 'status' | 'detail'> {
 	}
 }
 
+/**
+ * Fails when nothing states the boundary, or when a well-known scope file exists but no instructions
+ * file names it: an agent cannot lazily load the file that says a change does not belong. Whether a
+ * statement found is specific enough to reject a real change is a judgment.
+ */
+function scopeStatement(facts: Facts): Pick<Check, 'status' | 'detail'> {
+	if (facts.instructionFiles.length === 0) return { status: 'n/a' }
+	const { linked, unlinked, sections } = facts.scope
+	if (unlinked.length > 0) {
+		return { status: 'fail', detail: list(unlinked.map((f) => `${f} exists, but no instructions file names it`)) }
+	}
+	if (linked.length === 0 && sections.length === 0) return { status: 'fail' }
+	return { status: 'judge', detail: list([...linked.map((f) => `${f}, named in the instructions file`), ...sections]) }
+}
+
 const HARNESS_DOCTOR = 'buddy-agent-harness'
 
 /**
@@ -302,6 +317,16 @@ export function buildChecks(facts: Facts, now: Date = new Date()): Check[] {
 			summary: 'The instructions file matches the repo, and every line earns its place',
 			fix: 'Cut history, restated code, and stale sections; keep commands, layout, and rules an agent cannot infer.',
 			handoff: 'buddy-agent-harness',
+		},
+		{
+			id: 'instructions-scope',
+			area: 'instructions',
+			level: 3,
+			gate: false,
+			effort: 1,
+			...scopeStatement(facts),
+			summary: 'The instructions file says what the project is for and what it is not',
+			fix: 'Draft 2-4 lines of purpose and boundary for AGENTS.md, and a GOALS.md it names, from the README and package descriptions; the owner decides the boundary.',
 		},
 		...harnessChecks(facts),
 		{

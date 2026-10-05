@@ -92,6 +92,36 @@ describe('collectFacts', () => {
 		expect(facts.missingInstructionCommands).toEqual(['pnpm lint', 'npm run gone', 'make deploy'])
 	})
 
+	it('finds the scope statement in the instructions file and the files it names', () => {
+		const agents = [
+			'# Agents',
+			'## What this project is not',
+			'Before adding a package, read GOALS.md.',
+			'Plugins are out of scope; see [the FAQ](docs/faq.md) and [setup](docs/setup.md).',
+			'## Commands',
+		].join('\n')
+		const dir = repo({
+			'AGENTS.md': agents,
+			'GOALS.md': '# Goals',
+			'docs/faq.md': '## Non-goals',
+			'docs/setup.md': '## Install',
+			'docs/vision.md': '# Vision',
+		})
+		expect(collectFacts(dir).scope).toEqual({
+			linked: ['GOALS.md', 'docs/faq.md'],
+			unlinked: ['docs/vision.md'],
+			sections: [
+				'AGENTS.md:2: ## What this project is not',
+				'AGENTS.md:4: Plugins are out of scope; see [the FAQ](docs/faq.md) and [setup](docs/setup.md).',
+			],
+		})
+	})
+
+	it('resolves a link from the instructions file that holds it', () => {
+		const dir = repo({ '.github/copilot-instructions.md': 'Read [goals](../GOALS.md).', 'GOALS.md': '' })
+		expect(collectFacts(dir).scope).toEqual({ linked: ['GOALS.md'], unlinked: [], sections: [] })
+	})
+
 	it('counts an instructions file once when another name links to it', () => {
 		const dir = repo({ 'AGENTS.md': 'x'.repeat(40) })
 		symlinkSync(join(dir, 'AGENTS.md'), join(dir, 'CLAUDE.md'))
