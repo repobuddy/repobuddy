@@ -35,6 +35,52 @@ export default defineConfig({
 					],
 				},
 				{
+					label: '@repobuddy/jest',
+					collapsed: true,
+					items: [
+						{ label: 'Overview', slug: 'jest' },
+						{
+							label: 'Guides',
+							items: [
+								{ label: 'TypeScript with ESM', slug: 'jest/guides/typescript-esm' },
+								{ label: 'TypeScript with CommonJS', slug: 'jest/guides/typescript-cjs' },
+								{ label: 'DOM tests with jsdom', slug: 'jest/guides/jsdom' },
+								{ label: 'Monorepo', slug: 'jest/guides/monorepo' },
+								{ label: 'Load tests', slug: 'jest/guides/load-tests' },
+								{ label: 'Customize a preset', slug: 'jest/guides/customize' },
+							],
+						},
+						{
+							label: 'Presets',
+							items: [
+								{ label: 'All presets', slug: 'jest/presets' },
+								{ label: 'ts', slug: 'jest/presets/ts' },
+								{ label: 'ts-esm', slug: 'jest/presets/ts-esm' },
+								{ label: 'ts-cjs', slug: 'jest/presets/ts-cjs' },
+								{ label: 'js-esm', slug: 'jest/presets/js-esm' },
+								{ label: 'js-cjs', slug: 'jest/presets/js-cjs' },
+								{ label: 'jsdom-ts', slug: 'jest/presets/jsdom-ts' },
+								{ label: 'jsdom-ts-esm', slug: 'jest/presets/jsdom-ts-esm' },
+								{ label: 'jsdom-ts-cjs', slug: 'jest/presets/jsdom-ts-cjs' },
+								{ label: 'watch', slug: 'jest/presets/watch' },
+							],
+						},
+						{
+							label: 'API',
+							items: [
+								{ label: 'All exports', slug: 'jest/api' },
+								{ label: 'configs', slug: 'jest/api/configs' },
+								{ label: 'fields', slug: 'jest/api/fields' },
+								{ label: 'extract', slug: 'jest/api/extract' },
+								{ label: 'matchers', slug: 'jest/api/matchers' },
+								{ label: 'presets', slug: 'jest/api/presets' },
+								{ label: 'resolver', slug: 'jest/api/resolver' },
+								{ label: 'Test file names', slug: 'jest/reference/test-file-names' },
+							],
+						},
+					],
+				},
+				{
 					label: '@repobuddy/vitest',
 					collapsed: true,
 					items: [
