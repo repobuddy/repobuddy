@@ -57,6 +57,7 @@
 		"verify": "npm-run-all -p build typecheck -p test"
 	},
 	"devDependencies": {
+		"@cyberuni/agent-harness": "^0.5.0",
 		"@jest/globals": "^30.0.0",
 		"@repobuddy/jest": "workspace:*",
 		"buddy-agent-harness": "^0.19.0",

@@ -242,6 +242,9 @@ importers:
 
   packages/buddy:
     devDependencies:
+      '@cyberuni/agent-harness':
+        specifier: ^0.5.0
+        version: 0.5.0(typescript@7.0.2)
       '@jest/globals':
         specifier: ^30.0.0
         version: 30.4.1(supports-color@8.1.1)
@@ -1589,6 +1592,11 @@ packages:
   '@cyberuni/agent-harness@0.3.0':
     resolution: {integrity: sha512-o1q19ZWll8IMpIdUwOZy0ETxryOQvCI3R56lAPOxrBKx/iabxrmZkhRdooDAlnYcny243GR/mkfrqm5e4DrpRg==}
     engines: {node: '>=22'}
+
+  '@cyberuni/agent-harness@0.5.0':
+    resolution: {integrity: sha512-TyfqEHYfHiU9Uw8CE1J393+H/CyBv9Vv7+w3YrAKHmTgMqoH+cFPujFpgkU3uT5sr7xUg1RiEHICXuVao14Wbg==}
+    engines: {node: '>=22'}
+    hasBin: true
 
   '@emmetio/abbreviation@2.3.3':
     resolution: {integrity: sha512-mgv58UrU3rh4YgbE/TzgLQwJ3pFsHHhCLqY20aJq+9comytTXUDNGG/SMtSeMJdkpxgXSXunBGLD8Boka3JyVA==}
@@ -8781,6 +8789,14 @@ snapshots:
   '@ctrl/tinycolor@4.2.0': {}
 
   '@cyberuni/agent-harness@0.3.0': {}
+
+  '@cyberuni/agent-harness@0.5.0(typescript@7.0.2)':
+    dependencies:
+      '@toon-format/toon': 4.1.1
+      clibuilder: 11.3.2(typescript@7.0.2)
+      yaml: 2.9.0
+    transitivePeerDependencies:
+      - typescript
 
   '@emmetio/abbreviation@2.3.3':
     dependencies:

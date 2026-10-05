@@ -57,7 +57,12 @@ A `score` flag passed to `bench`, or a `bench` flag passed to `score`, is a usag
   scores each workspace package that is not `private`, on a scope file inside the package that its own `AGENTS.md` or
   the root instructions file names, or a scope line in its own `AGENTS.md`; a root `GOALS.md` is not expected. It is
   `fail` when the root or any of those packages fails, and the detail lists each, plus the private packages skipped.
-- `.agents/readiness/weights.json` can override the area weights. A malformed file exits `2`.
+- The area weights come from the reference `repobuddy.readiness`: the skill's default, under any
+  `.agents/references/repobuddy.readiness.md` (project) or `~/.agents/references/repobuddy.readiness.md` (user)
+  override with `merge: merge-sections` and a `## Weights` section of `- <area>: <number>` items. A malformed item
+  exits `2`.
+- `.agents/readiness/weights.json` is deprecated. It is still read when no project override exists, and stderr
+  prints the override file to create instead.
 - `bench --baseline` writes `.agents/readiness/bench/baseline.json`. Every other run is compared against it.
 
 ## Output
@@ -95,7 +100,7 @@ No task set: .agents/readiness/bench/tasks.json does not exist (create one with 
 | --- | --- |
 | `0` | Success, including a `bench` run without `--yes` that only prints the plan. |
 | `1` | `bench` cannot run, `bench compare` cannot read a file, or `score --check` finds the level below `--min-level`. |
-| `2` | A usage error, or a malformed `.agents/readiness/weights.json`. |
+| `2` | A usage error, or malformed weights in the reference override or the deprecated `.agents/readiness/weights.json`. |
 
 ## Related
 

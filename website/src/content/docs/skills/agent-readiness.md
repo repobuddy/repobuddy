@@ -50,7 +50,7 @@ root or any counted package fails, and lists which.
 - `score` changes nothing.
 - `improve` makes one commit per area. For a missing scope statement it drafts 2 to 4 lines of purpose and boundary
   for `AGENTS.md` and a `GOALS.md` (goals, non-goals, rejected directions) from the README; in a monorepo, the root
-  lines and one `GOALS.md` per failing package. You decide every boundary. Optional `.agents/readiness/weights.json` reorders fixes but never changes the level.
+  lines and one `GOALS.md` per failing package. You decide every boundary. An optional `## Weights` override in `.agents/references/repobuddy.readiness.md` reorders fixes but never changes the level.
 - `bench` writes results under `.agents/readiness/bench/` (transcripts gzipped, git-ignored).
 
 ## Asks before acting
