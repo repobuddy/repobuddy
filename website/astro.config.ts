@@ -20,11 +20,19 @@ export default defineConfig({
 			sidebar: [
 				{
 					label: 'Guides',
-					items: [{ autogenerate: { directory: 'guides' } }],
+					items: [{ label: 'Getting Started', slug: 'guides/getting-started' }],
 				},
 				{
-					label: 'Reference',
-					items: [{ autogenerate: { directory: 'reference' } }],
+					label: 'Packages',
+					items: [
+						{ label: 'Overview', slug: 'reference/packages' },
+						{ label: '@repobuddy/biome', slug: 'reference/biome' },
+						{ label: '@repobuddy/jest', slug: 'reference/jest' },
+						{ label: '@repobuddy/vitest', slug: 'reference/vitest' },
+						{ label: '@repobuddy/typescript', slug: 'reference/typescript' },
+						{ label: '@repobuddy/test', slug: 'reference/test' },
+						{ label: 'repobuddy', slug: 'reference/repobuddy' },
+					],
 				},
 			],
 			editLink: {

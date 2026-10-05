@@ -142,7 +142,11 @@ carries the built, gitignored skill script bundles that only the npm tarball has
 restores that `source` in `.claude-plugin/marketplace.json` after every rebuild. That is the one field in a generated
 file this repo intentionally keeps out of sync with the tool's own output.
 
-**Documentation site** lives under `website/` (Astro).
+**Documentation site** lives under `website/` (Astro + Starlight), served at `https://repobuddy.github.io/repobuddy/`.
+The sidebar is declared explicitly in `website/astro.config.ts`, so a new page needs an entry there or it ships
+unreachable. Internal Markdown links carry the base path (`/repobuddy/reference/jest/`); sidebar entries take bare
+slugs. Each published package has a page under `website/src/content/docs/reference/` — when a package's presets,
+exports, options, or commands change, update its page from the source, not from the readme.
 
 **Build pipeline**: Turborepo tasks are declared in `turbo.json`. `coverage` and `test` depend on `@repobuddy/jest#build` and `@repobuddy/vitest#build` first, because the repo dogfoods its own jest/vitest configs.
 

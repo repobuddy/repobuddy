@@ -5,14 +5,25 @@ description: The npm packages published from the repobuddy repository.
 
 Repobuddy publishes each tool as its own package, so you only install what your repository actually uses.
 
-| Package | Description |
-| --- | --- |
-| [`@repobuddy/biome`](https://npmjs.org/package/@repobuddy/biome) | Predefined [Biome](https://biomejs.dev) configs — `recommended` and `performant` |
-| [`@repobuddy/jest`](https://npmjs.org/package/@repobuddy/jest) | [Jest](https://jestjs.io/) presets for JavaScript, TypeScript, CJS, ESM, Node.js, and JSDOM |
-| [`@repobuddy/vitest`](https://npmjs.org/package/@repobuddy/vitest) | [Vitest](https://vitest.dev/) presets for Node.js and browser testing |
-| [`@repobuddy/typescript`](https://npmjs.org/package/@repobuddy/typescript) | TypeScript configs and utilities for single-package and monorepo setups |
-| [`@repobuddy/test`](https://npmjs.org/package/@repobuddy/test) | Shared test utilities used across the repobuddy packages |
-| [`repobuddy`](https://npmjs.org/package/repobuddy) | CLI for managing your repository |
+| Package | What it provides | Reference |
+| --- | --- | --- |
+| [`@repobuddy/biome`](https://npmjs.org/package/@repobuddy/biome) | Two [Biome](https://biomejs.dev) configs, `recommended` and `performant` | [biome](/repobuddy/reference/biome/) |
+| [`@repobuddy/jest`](https://npmjs.org/package/@repobuddy/jest) | [Jest](https://jestjs.io/) presets for TypeScript and JavaScript, ESM and CommonJS, Node.js and jsdom | [jest](/repobuddy/reference/jest/) |
+| [`@repobuddy/vitest`](https://npmjs.org/package/@repobuddy/vitest) | [Vitest](https://vitest.dev/) presets for Node.js and Playwright browser tests | [vitest](/repobuddy/reference/vitest/) |
+| [`@repobuddy/typescript`](https://npmjs.org/package/@repobuddy/typescript) | Composable `tsconfig` presets and the `buddy ts` CLI plugin | [typescript](/repobuddy/reference/typescript/) |
+| [`@repobuddy/test`](https://npmjs.org/package/@repobuddy/test) | `expect.order` and `isRunningInTest()`, for any test runner | [test](/repobuddy/reference/test/) |
+| [`repobuddy`](https://npmjs.org/package/repobuddy) | The `buddy` CLI, and the agent plugin that ships the skills below | [repobuddy](/repobuddy/reference/repobuddy/) |
+
+## Supported environments
+
+| Package | Module format | Runtime | Peer dependencies |
+| --- | --- | --- | --- |
+| `@repobuddy/biome` | JSONC configs | Biome | `@biomejs/biome >= 2` |
+| `@repobuddy/jest` | ESM and CommonJS | Node.js, jsdom | `jest >= 29.5.0`, `@swc/jest`, and optional transformers and watch plugins |
+| `@repobuddy/vitest` | ESM | Node.js, jsdom, happy-dom, edge-runtime, Playwright browsers | `vitest ^5.0.0`, optional `@vitest/browser-playwright ^5.0.0` |
+| `@repobuddy/typescript` | ESM, plus JSON tsconfigs | TypeScript, Node.js | none |
+| `@repobuddy/test` | ESM | any test runner | none |
+| `repobuddy` | ESM CLI | Node.js | none |
 
 ## Agent skills
 
