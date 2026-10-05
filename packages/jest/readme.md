@@ -14,10 +14,9 @@ export default {
   coveragePathIgnorePatterns: [
     /* ... */
   ],
-  extensionsToTreatAsEsm: ['.ts', '.tsx', '.mts'],
+  extensionsToTreatAsEsm: ['.ts', '.mts', '.tsx'],
   moduleNameMapper: {
-    '^(\\.{1,2}/.*)\\.js$': '$1',
-    /* ... and the ESM madness like `chalk` ... */
+    '^(\\.{1,2}/.*)\\.js$': '$1'
   },
   testEnvironment: 'node',
   testRegex: [
@@ -25,18 +24,8 @@ export default {
   ],
   roots: ['<rootDir>/ts'],
   transform: {
-    '^.+\\.(ts|tsx|cts|mts)$': ['ts-jest', [{
-      isolatedModules: true,
-      useESM: true,
-      diagnostics: {
-        // https://github.com/kulshekhar/ts-jest/issues/3820
-        ignoreCodes: [151001]
-      }
-    }]],
-    '\\.m?jsx?$': 'jest-esm-transformer-2',
-    /* ... more ESM madness ... */
+    '^.+\\.(js|jsx|cjs|mjs|ts|tsx|cts|mts)$': '@swc/jest'
   },
-  transformIgnorePatterns: [],
   watchPlugins: [
     'jest-watch-suspend',
     ['jest-watch-toggle-config', { setting: 'collectCoverage' }],
@@ -136,19 +125,21 @@ Here are some highlights:
   `configs.configNode(identifiers)` takes the identifiers to run,
   so `configs.configNode([...configs.defaultTestIdentifiers, ...configs.loadTestIdentifiers])` runs both.
   Either way, load test files are always ignored for coverage.
-- Uses [@repobuddy/jest/resolver] that handles [subpath imports][subpath-imports] correctly.
-- `cjs` uses [jest-esm-transformer-2] to transforms ESM dependencies.
-- `ts` uses [ts-jest] with `isolatedModule: true`.
+- `ts-esm` and `jsdom-ts-esm` use [@swc/jest] to transform both TypeScript and JavaScript.
+- `ts-cjs` and `jsdom-ts-cjs` use [ts-jest] with `isolatedModules: true`.
+- `cjs` presets use [jest-esm-transformer-2] to transform ESM dependencies.
+- `ts` and `jsdom-ts` pick the ESM or CJS preset from the `type` field of your `package.json`.
 - `watch` uses these plugins by default:
   - [jest-watch-suspend]
   - [jest-watch-toggle-config]
   - [jest-watch-typeahead]
 
+`jest` and [@swc/jest] are required peer dependencies.
 Since your project will only use a specific config,
-none of these packages are marked as required peer dependencies.
-You will need to add them to your project manually.
+the other packages are optional peer dependencies.
+You will need to add the ones your preset uses to your project manually.
 
-There will be a CLI tool in the future to help simplify that. Contribution welcome! 🍺
+`buddy check-deps` (from the `repobuddy` package) lists the packages your config needs.
 
 If you want to make some adjustments based on a particular preset,
 you can import the preset and customize it like so:
@@ -191,7 +182,7 @@ They can be predefined configs:
 or functions prefixed with `config`:
 
 - [configNode()](./src/configs/node.ts)
-- [configSource()](./src/configs/configSource.ts)
+- [configSource()](./src/configs/source.ts)
 
 or the test identifiers used to build them:
 
@@ -202,20 +193,26 @@ or the test identifiers used to build them:
 ## Fields
 
 Fields are predefined fields or functions about a particular field of the [jest config](https://jestjs.io/docs/configuration).
+They are exported under the `fields` namespace:
+
+```ts
+import { fields } from '@repobuddy/jest'
+```
 
 They can be `define` functions, which provides type assistants to define the particular field:
 
+- [defineModuleNameMappers](./src/fields/moduleNameMapper.ts)
 - [defineTransform](./src/fields/transform.ts)
 - [defineWatchPlugins](./src/fields/watchPlugins.ts)
 
 They can be `known` configurations, which you can use to build your configuration easily:
 
 - [knownExtensionsToTreatAsEsm](./src/fields/extensionsToTrestAsEsm.ts)
-- [knownRunners](./src/fields/runner.ts)
+- [knownModuleNameMappers](./src/fields/moduleNameMapper.ts)
 - [knownTestEnvironments](./src/fields/testEnvironment.ts)
-- [knownTestEnvironmentOptions](./src/fields/testEnvironment.ts)
 - [knownTransforms](./src/fields/transform.ts)
 - [knownWatchPlugins](./src/fields/watchPlugins.ts)
+- [watchPlugins](./src/fields/watchPlugins.ts): the watch plugins the `-watch` presets use
 
 ## Extract
 
@@ -251,60 +248,40 @@ There are also matchers which you can use to extend the `expect()` function:
 
 - [toSatisfies](./src/matchers/toSatisfies.ts): Similar functionality provided by [assertron] and [satisfier]
 
-Use `expect.extend({ toSatisfier })` to add it to your `expect()` function.
+Importing the matchers does not register them.
+Pass them to `expect.extend()`, for example in a file listed in `setupFilesAfterEnv`:
 
-You can also do `import '@repobuddy/jest/matchers'` in your setup to import them automatically.
+```ts
+import { expect } from '@jest/globals'
+import { toSatisfies } from '@repobuddy/jest/matchers'
+
+expect.extend({ toSatisfies })
+```
 
 ## Resolver
 
-[@repobuddy/jest/resolver] fixes the ESM [subpath imports][subpath-imports] issue by using [resolve.imports].
+`resolver` falls back to the [subpath imports][subpath-imports] (`imports` field of `package.json`) through
+[resolve.imports] when the default jest resolver fails.
+No preset sets it.
 
-So you don't need to do crazy hacks like:
+It is exported from the main entry only. There is no `@repobuddy/jest/resolver` entry,
+so point jest at a local file that re-exports it:
 
-```ts
-export default {
-  moduleNameMapper: {
-    '#(.*)': '$1'  // and this actually doesn't work in some cases
-  },
-  transformIgnorePatterns: [
-    'node_modules/(?!(chalk|#ansi-styles)/)'
-  ]
-}
+```js
+// jest.resolver.cjs
+module.exports = require('@repobuddy/jest').resolver
 ```
 
-or even
-
-```ts
-const path = require('node:path')
-
-const chalk = require.resolve('chalk')
-const chalkRootDir = chalk.slice(0, chalk.lastIndexOf('chalk'))
-
+```js
+// jest.config.cjs
 module.exports = {
-  // ...
-  moduleNameMapper: {
-    chalk,
-    '#ansi-styles': path.join(
-      chalkRootDir,
-      'chalk/source/vendor/ansi-styles/index.js',
-    ),
-    '#supports-color': path.join(
-      chalkRootDir,
-      'chalk/source/vendor/supports-color/index.js',
-    )
-  }
+  preset: '@repobuddy/jest/presets/js-cjs',
+  resolver: '<rootDir>/jest.resolver.cjs'
 }
 ```
 
-Now, all you need is:
-
-```ts
-export default {
-  resolver: '@repobuddy/jest/resolver'
-}
-```
-
-Or use one of the NodeJS presets!
+Recent versions of jest resolve subpath imports on their own,
+so you only need it when the default resolver fails.
 
 ## Notes
 
@@ -312,18 +289,22 @@ Here are some notes about [@repobuddy/jest] that you may find useful.
 
 ### `ts-jest`: `isolatedModules`
 
-By default, all `ts` presets have `isolatedModules` set to `true`.
+The `ts-cjs` presets use [ts-jest] with `isolatedModules` set to `true`.
+(The `ts-esm` presets use [@swc/jest], which does not type check.)
 
-If you want to change that, you can override with the `knownTransforms.tsJest*()` functions:
+If you want to change that, you can override with the `fields.knownTransforms.tsJest*()` functions:
 
 ```ts
-import { knownTransforms } from '@repobuddy/jest'
+import { fields } from '@repobuddy/jest'
 
 export default {
-  preset: '@repobuddy/jest/presets/ts-esm',
-  transform: knownTransforms.tsJest(/* your option */)
+  preset: '@repobuddy/jest/presets/ts-cjs',
+  transform: fields.knownTransforms.tsJestCjs({ isolatedModules: false })
 }
 ```
+
+Call them as methods of `fields.knownTransforms`: `tsJestCjs()` and `tsJestEsm()` use `this`,
+so a destructured copy throws.
 
 While you may want the type checking benefits,
 in my experience it is ok to break the types when you are in the middle of your code,
@@ -361,15 +342,18 @@ You may wonder why there are:
 ```js
 {
   "./presets/ts": {
-    "types": "./esm/presets/ts/jest-preset.d.ts",
-    "import": "./esm/presets/ts/jest-preset.js",
-    "default": "./cjs/presets/ts/jest-preset.js"
+    "import": {
+      "types": "./esm/presets/ts/jest-preset.d.ts",
+      "default": "./esm/presets/ts/jest-preset.js"
+    },
+    "require": {
+      "types": "./cjs/presets/ts/jest-preset.d.ts",
+      "default": "./presets/ts/jest-preset.js"
+    }
   },
   "./presets/ts/jest-preset": {
-    "types": "./esm/presets/ts/jest-preset.d.ts",
-    "import": "./esm/presets/ts/jest-preset.js",
-    "default": "./cjs/presets/ts/jest-preset.js"
-  },
+    /* same as above */
+  }
 }
 ```
 
@@ -381,11 +365,11 @@ and the `/packages/jest/presets/ts` is needed to work in Windows environment (or
 
 🤦
 
-[@repobuddy/jest]: https://github.com/repobuddy/jest
-[@repobuddy/jest/resolver]: ./src/resolver.ts
+[@repobuddy/jest]: https://github.com/repobuddy/repobuddy/tree/main/packages/jest
+[@swc/jest]: https://www.npmjs.com/package/@swc/jest
 [assertron]: https://github.com/unional/assertron
-[codecov-image]: https://codecov.io/gh/repobuddy/jest/branch/main/graph/badge.svg
-[codecov-url]: https://codecov.io/gh/repobuddy/jest
+[codecov-image]: https://codecov.io/gh/repobuddy/repobuddy/badge.svg?flag=jest
+[codecov-url]: https://codecov.io/gh/repobuddy/repobuddy
 [downloads-image]: https://img.shields.io/npm/dm/@repobuddy/jest.svg?style=flat
 [jest-esm-transformer-2]: https://www.npmjs.com/package/jest-esm-transformer-2
 [jest-watch-suspend]: https://www.npmjs.com/package/jest-watch-suspend
