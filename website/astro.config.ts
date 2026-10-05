@@ -130,6 +130,26 @@ export default defineConfig({
 					],
 				},
 				{
+					label: '@repobuddy/test',
+					collapsed: true,
+					items: [
+						{ label: 'Overview', slug: 'test' },
+						{
+							label: 'Guides',
+							items: [{ label: 'Use expect.order with Jest', slug: 'test/guides/expect-order-with-jest' }],
+						},
+						{
+							label: 'API',
+							items: [
+								{ label: 'All exports', slug: 'test/api' },
+								{ label: 'installOrder()', slug: 'test/api/install-order' },
+								{ label: 'isRunningInTest()', slug: 'test/api/is-running-in-test' },
+								{ label: 'Types', slug: 'test/api/types' },
+							],
+						},
+					],
+				},
+				{
 					label: 'repobuddy CLI',
 					collapsed: true,
 					items: [
