@@ -7,7 +7,7 @@
 
 ## Agent Skills
 
-`repobuddy` provides [agent skills] for AI coding assistants (Claude Code, Cursor, etc.) to help manage your repository. Skills live in [`packages/buddy/skills/`](./packages/buddy/skills/), ship inside the [`repobuddy`] npm package, and are installed with the [Skills CLI].
+`repobuddy` provides [agent skills] for AI coding assistants (Claude Code, Cursor, etc.) to help manage your repository. Skills live in [`packages/buddy/skills/`](./packages/buddy/skills/), ship inside the [`repobuddy`] npm package as a [universal plugin], and install from a plugin marketplace or with the [Skills CLI].
 
 ### Available Skills
 
@@ -25,40 +25,6 @@
 | [`setup-github-repo`] | Set up a GitHub repo with branch protection, a merge backstop, Dependabot, and CI |
 | [`website`] | Work on a repo's docs website — `init` adds an Astro/Starlight site to a monorepo; `deploy` publishes a static site to GitHub, GitLab, or Codeberg Pages, Bitbucket, or Azure Static Web Apps |
 | [`to-question`] | Word a question for Slack, Jira, Linear, Asana, GitHub, GitLab, Bugzilla, Redmine, Trac, or email — checks the markup before you paste |
-
-### Installing Skills
-
-**List available skills:**
-
-```sh
-npx skills add repobuddy/repobuddy --list
-```
-
-**Install all skills:**
-
-```sh
-npx skills add repobuddy/repobuddy
-```
-
-**Install specific skills:**
-
-```sh
-npx skills add repobuddy/repobuddy --skill create-issue --skill setup-github-repo
-```
-
-`init-buddy` and `min-release-age` run scripts that are built at release and ship only in the npm
-package. Installed from git as above, they run those scripts through `npx -y repobuddy@^1.8.0`
-instead, which needs network access.
-
-**Install from npm:**
-
-The skills also ship inside the [`repobuddy`] package as a [universal plugin], so installing the
-package makes them available to Claude Code, Cursor, Codex, and GitHub Copilot CLI:
-
-```sh
-npm install repobuddy
-npx skills experimental_sync
-```
 
 ### Installing as a Plugin
 
@@ -95,6 +61,37 @@ Start a new session before using the plugin.
 
 Cursor has no command-line install; a workspace admin imports the catalog from
 Dashboard → Plugins → Team Marketplaces → Add Marketplace → Import from Repo.
+
+See [Install the skills](https://repobuddy.github.io/repobuddy/skills/install/) for the update and uninstall
+commands of each route.
+
+### Installing with the Skills CLI
+
+For an agent without a plugin system:
+
+**List available skills:**
+
+```sh
+npx skills add repobuddy/repobuddy --list
+```
+
+**Install all skills:**
+
+```sh
+npx skills add repobuddy/repobuddy
+```
+
+**Install specific skills:**
+
+```sh
+npx skills add repobuddy/repobuddy --skill create-issue --skill setup-github-repo
+```
+
+Some skills run scripts that are built at release and ship only in the npm package. Installed from
+git as above, they run those scripts through `npx -y repobuddy@<version>` instead, which needs network
+access. See [Scripts and npx](https://repobuddy.github.io/repobuddy/skills/install/#scripts-and-npx).
+
+Update with `npx skills update`; uninstall with `npx skills remove <skill>` or `npx skills remove --all`.
 
 **Via Claude Code** — ask Claude to find and install a skill:
 
