@@ -1,5 +1,11 @@
 # @repobuddy/biome
 
+## 2.5.1
+
+### Patch Changes
+
+- 1620562: The readme names the performant config file `performant.jsonc`, the file the package ships.
+
 ## 2.5.0
 
 ### Minor Changes
