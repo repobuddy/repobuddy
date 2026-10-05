@@ -23,7 +23,7 @@ interface InstructionFile {
 }
 
 /** Where the instruction files state what the project is for and what it deliberately is not. */
-export interface ScopeFacts {
+interface ScopeFacts {
 	/** Files an instructions file names that carry the detail: a well-known name, or one with a scope or non-goals heading. */
 	linked: string[]
 	/** Well-known scope files (`GOALS.md`, `SCOPE.md`, …) at the root or under `docs/` that no instructions file names. */
