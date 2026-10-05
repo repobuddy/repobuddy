@@ -9,7 +9,7 @@ plugin is listed in the repobuddy config, `buddy ts` gains two commands. The com
 | Command | Purpose |
 | --- | --- |
 | [`buddy ts build <type>`](/repobuddy/typescript/cli/build/) | Run `tsc -p tsconfig.<type>.json`, then mark `cjs` and `tslib` output as CommonJS |
-| [`buddy ts copy-cjs-package-json <dir> <cwd>`](/repobuddy/typescript/cli/copy-cjs-package-json/) | Copy [`package.cjs.json`](/repobuddy/typescript/nodejs-package-cjs-json/) into `<cwd>/<dir>/package.json`. Alias: `cpj` |
+| [`buddy ts copy-cjs-package-json <dir> [cwd]`](/repobuddy/typescript/cli/copy-cjs-package-json/) | Copy [`package.cjs.json`](/repobuddy/typescript/nodejs-package-cjs-json/) into `<cwd>/<dir>/package.json`. Alias: `cpj` |
 
 ## Enable the plugin
 

@@ -22,8 +22,11 @@ each plugin will provide additional commands to the CLI.
 - `buddy test-scripts`: adds or adjusts the `test`, `coverage`, and `test:watch` scripts in the
   current project's `package.json`, matching the test runner it uses.
 - `buddy check-deps`: reports packages your jest config uses that your `package.json` does not declare.
-- 🚧 `buddy init`: creates a `.repobuddy.json` file in the current directory.
-- 🚧 `buddy add <plugin>`: adds a `@repobuddy/<plugin>` to your project.
+- `buddy plugins list`: lists the installed `buddy` plugins.
+- `buddy plugins search`: finds `buddy` plugins on npm.
+
+Global options such as `--silent` and `--verbose` go after the command name:
+`buddy test-scripts --silent`, not `buddy --silent test-scripts`.
 
 ### `buddy test-scripts`
 
@@ -61,10 +64,13 @@ buddy check-deps
 ```
 
 ```
-missing dependencies: 2 used by jest.config.mjs but not declared in package.json
-  jest-watch-suspend    preset(@repobuddy/jest/presets/ts-watch) watchPlugins
-  jest-watch-typeahead  preset(@repobuddy/jest/presets/ts-watch) watchPlugins
-install: pnpm add -D jest-watch-suspend jest-watch-typeahead
+missing dependencies: 5 used by jest.config.mjs but not declared in package.json
+  jest-esm-transformer-2    preset(@repobuddy/jest/presets/ts-watch) transform
+  jest-watch-suspend        preset(@repobuddy/jest/presets/ts-watch) watchPlugins
+  jest-watch-toggle-config  preset(@repobuddy/jest/presets/ts-watch) watchPlugins
+  jest-watch-typeahead      preset(@repobuddy/jest/presets/ts-watch) watchPlugins
+  ts-jest                   preset(@repobuddy/jest/presets/ts-watch) transform
+install: pnpm add -D jest-esm-transformer-2 jest-watch-suspend jest-watch-toggle-config jest-watch-typeahead ts-jest
 ```
 
 It exits `1` when something is missing and `0` otherwise, so it can gate a
@@ -81,7 +87,15 @@ flags. Run it from a `pretest` script or in CI instead.
 
 ### Available plugins
 
-- [@repobuddy/typescript](./packages/typescript/readme.md)
+List a plugin in a `.repobuddy.json` file at the project root to add its commands:
+
+```json
+{
+  "plugins": ["@repobuddy/typescript"]
+}
+```
+
+- [@repobuddy/typescript](https://github.com/repobuddy/repobuddy/tree/main/packages/typescript): adds `buddy ts`
 
 [`clibuilder`]: https://www.npmjs.com/package/clibuilder
 [`repobuddy`]: https://github.com/repobuddy/repobuddy/tree/main/packages/buddy

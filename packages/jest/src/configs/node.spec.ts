@@ -20,6 +20,15 @@ describe(`${configNode.name}()`, () => {
 		expect('feature.load.js').toMatch(new RegExp(testRegex!))
 	})
 
+	it('matches the same extensions in the node-version patterns as in the base pattern', () => {
+		const [base, ...versioned] = configNode(['spec'], 18).testRegex
+		const extensions = ['js', 'jsx', 'cjs', 'mjs', 'ts', 'tsx', 'cts', 'mts']
+		for (const ext of extensions) {
+			expect(`feature.spec.${ext}`).toMatch(new RegExp(base!))
+			expect(`feature.spec.node18.${ext}`).toMatch(new RegExp(versioned[0]!))
+		}
+	})
+
 	it('ignores load test files for coverage even when it does not run them', () => {
 		const [ignorePattern] = configNode().coveragePathIgnorePatterns
 		expect('feature.load.ts').toMatch(new RegExp(ignorePattern!))

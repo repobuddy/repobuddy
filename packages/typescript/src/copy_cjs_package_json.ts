@@ -16,6 +16,7 @@ export const copyCJSPackageJson = command({
 		{
 			name: 'cwd',
 			description: 'project directory. Defaults to `process.cwd()`',
+			type: z.optional(z.string()),
 		},
 	],
 	async run({ dir, cwd = process.cwd() }) {

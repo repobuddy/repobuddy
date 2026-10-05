@@ -40,7 +40,7 @@ Printed from the built preset with Node.js 26, in a directory that has a `src` f
 	testEnvironment: 'node',
 	testRegex: [
 		'\\.(spec|test|unit|accept|integrate|learning|system|perf|stress)(\\.node)?\\.(js|jsx|cjs|mjs|ts|tsx|cts|mts)$',
-		'\\.(spec|test|unit|accept|integrate|learning|system|perf|stress)\\.node14\\.(js|jtx|cjs|mjs|ts|tsx|cts|mts)$',
+		'\\.(spec|test|unit|accept|integrate|learning|system|perf|stress)\\.node14\\.(js|jsx|cjs|mjs|ts|tsx|cts|mts)$',
 		// one entry per Node.js major, from 15 up to the running major
 	],
 }

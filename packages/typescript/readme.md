@@ -45,14 +45,26 @@ It seems like somehow it is treated as CommonJS while it is not (setting `useESM
 
 ## buddy CLI
 
-- 🐤 `buddy ts build cjs` (in beta)
-- 🐤 `buddy ts build tslib` (in beta)
-- 🚧 `buddy ts init`
-- 🚧 `buddy ts up`
+[@repobuddy/typescript] is a plugin for the `buddy` CLI from the [repobuddy] package.
+List it in a `.repobuddy.json` file at the project root to add the `ts` commands:
 
-[@repobuddy/typescript]: ./README.md
+```json
+{
+  "plugins": ["@repobuddy/typescript"]
+}
+```
+
+The commands are in beta:
+
+- 🐤 `buddy ts build <cjs|esm|tslib>`: runs `tsc -p tsconfig.<type>.json`,
+  then marks `cjs` and `tslib` output as CommonJS with a `package.json`.
+- 🐤 `buddy ts copy-cjs-package-json <dir> [cwd]` (alias `cpj`): copies that `package.json` into `<cwd>/<dir>`.
+  `cwd` defaults to the current directory.
+
+[@repobuddy/typescript]: ./readme.md
 [downloads-image]: https://img.shields.io/npm/dm/@repobuddy/typescript.svg?style=flat
 [downloads-url]: https://npmjs.org/package/@repobuddy/typescript
 [npm-image]: https://img.shields.io/npm/v/@repobuddy/typescript.svg?style=flat
 [npm-url]: https://npmjs.org/package/@repobuddy/typescript
+[repobuddy]: https://www.npmjs.com/package/repobuddy
 [typescript]: https://typescriptlang.org/

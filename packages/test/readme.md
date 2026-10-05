@@ -54,22 +54,38 @@ it('calls the callbacks in order', () => {
 The returned instance carries the whole `AssertOrder` surface:
 `once`, `on`, `atLeastOnce`, `exactly`, `any`, `onAny`, `is`, `not`, `wait`, `end`, and the rest.
 
-`installOrder()` does not know about your runner's types, so augment them yourself:
+`installOrder()` does not know about your runner's types, so augment them yourself.
+For Jest, with `expect` imported from `@jest/globals`:
 
 ```ts
 import type { ExpectWithOrder } from '@repobuddy/test'
 
-declare module '@jest/expect' {
-  interface Expect extends ExpectWithOrder {}
+declare module 'expect' {
+  interface BaseExpect extends ExpectWithOrder {}
 }
 ```
+
+With the global `expect` from `@types/jest`:
+
+```ts
+import type { ExpectWithOrder } from '@repobuddy/test'
+
+declare global {
+  namespace jest {
+    interface Expect extends ExpectWithOrder {}
+  }
+}
+```
+
+Do not augment `@jest/expect`: its `expect` type is a type alias, so `expect.order` still reports `TS2339`.
 
 Using [@repobuddy/vitest]? It ships `@repobuddy/vitest/setup/order`,
 which installs `order` and augments `vitest`'s types for you.
 
-[downloads-image]: https://img.shields.io/npm/dm/@repobuddy/typescript.svg?style=flat
-[downloads-url]: https://npmjs.org/package/@repobuddy/typescript
-[npm-image]: https://img.shields.io/npm/v/@repobuddy/typescript.svg?style=flat
-[npm-url]: https://npmjs.org/package/@repobuddy/typescript
+[downloads-image]: https://img.shields.io/npm/dm/@repobuddy/test.svg?style=flat
+[downloads-url]: https://npmjs.org/package/@repobuddy/test
+[npm-image]: https://img.shields.io/npm/v/@repobuddy/test.svg?style=flat
+[npm-url]: https://npmjs.org/package/@repobuddy/test
+[@repobuddy/test]: https://www.npmjs.com/package/@repobuddy/test
 [@repobuddy/vitest]: https://www.npmjs.com/package/@repobuddy/vitest
 [assertron]: https://github.com/cyberuni/assertron

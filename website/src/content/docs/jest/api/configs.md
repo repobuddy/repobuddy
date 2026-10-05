@@ -60,7 +60,6 @@ Behavior:
 - The version list uses `process.version` when `configNode()` runs.
 - `minNodeVersion` one above the running major gives no version patterns. A higher value throws
   `RangeError: Invalid array length`.
-- The version patterns list the extension `jtx` instead of `jsx`. See [test file names](/repobuddy/jest/reference/test-file-names/#node-presets).
 
 ```js
 configs.configNode(['load'], 24)
@@ -71,9 +70,9 @@ configs.configNode(['load'], 24)
 // 	testEnvironment: 'node',
 // 	testRegex: [
 // 		'\\.(load)(\\.node)?\\.(js|jsx|cjs|mjs|ts|tsx|cts|mts)$',
-// 		'\\.(load)\\.node24\\.(js|jtx|cjs|mjs|ts|tsx|cts|mts)$',
-// 		'\\.(load)\\.node25\\.(js|jtx|cjs|mjs|ts|tsx|cts|mts)$',
-// 		'\\.(load)\\.node26\\.(js|jtx|cjs|mjs|ts|tsx|cts|mts)$',
+// 		'\\.(load)\\.node24\\.(js|jsx|cjs|mjs|ts|tsx|cts|mts)$',
+// 		'\\.(load)\\.node25\\.(js|jsx|cjs|mjs|ts|tsx|cts|mts)$',
+// 		'\\.(load)\\.node26\\.(js|jsx|cjs|mjs|ts|tsx|cts|mts)$',
 // 	],
 // }
 ```
@@ -100,7 +99,7 @@ const node: ReturnType<typeof configNode>
 	testEnvironment: 'node',
 	testRegex: [
 		'\\.(spec|test|unit|accept|integrate|learning|system|perf|stress)(\\.node)?\\.(js|jsx|cjs|mjs|ts|tsx|cts|mts)$',
-		'\\.(spec|test|unit|accept|integrate|learning|system|perf|stress)\\.node14\\.(js|jtx|cjs|mjs|ts|tsx|cts|mts)$',
+		'\\.(spec|test|unit|accept|integrate|learning|system|perf|stress)\\.node14\\.(js|jsx|cjs|mjs|ts|tsx|cts|mts)$',
 		// one entry per Node.js major, from 15 up to the running major
 	],
 }
