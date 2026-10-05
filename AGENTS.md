@@ -144,9 +144,12 @@ file this repo intentionally keeps out of sync with the tool's own output.
 
 **Documentation site** lives under `website/` (Astro + Starlight), served at `https://repobuddy.github.io/repobuddy/`.
 The sidebar is declared explicitly in `website/astro.config.ts`, so a new page needs an entry there or it ships
-unreachable. Internal Markdown links carry the base path (`/repobuddy/reference/jest/`); sidebar entries take bare
-slugs. Each published package has a page under `website/src/content/docs/reference/` — when a package's presets,
-exports, options, or commands change, update its page from the source, not from the readme.
+unreachable. Internal Markdown links carry the base path (`/repobuddy/jest/presets/ts-esm/`); sidebar entries take bare
+slugs. Each package has its own section under `website/src/content/docs/<section>/` (`jest`, `vitest`, `biome`,
+`typescript`, `test`, `cli`), with an overview, task guides, and one reference page per preset, export, or command;
+each public skill has a page under `skills/`. When a package's presets, exports, options, or commands change, update
+the matching reference page from the source, not from the readme, and the site-wide `compatibility.md` when a peer
+range or supported environment changes.
 
 **Build pipeline**: Turborepo tasks are declared in `turbo.json`. `coverage` and `test` depend on `@repobuddy/jest#build` and `@repobuddy/vitest#build` first, because the repo dogfoods its own jest/vitest configs.
 

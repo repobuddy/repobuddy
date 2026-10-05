@@ -1,72 +1,50 @@
 ---
 title: Getting Started
-description: Introduction to repobuddy
+description: Find the repobuddy package for the job you want done, install it, and open its first page.
 ---
 
-Repobuddy provides various tools and presets to help handle the chore of set up and maintain repository.
+import { LinkCard, CardGrid } from '@astrojs/starlight/components';
 
-Each package is installed independently — pick the ones matching the tools your repository already uses.
+Repobuddy is a set of separate packages. Install only the ones that match the tools your repository already uses.
 
-## Installation
+## Choose by what you want to do
 
-import { Tabs, TabItem } from '@astrojs/starlight/components';
+| I want to | Install | Start here |
+| --- | --- | --- |
+| Test with Jest | `@repobuddy/jest` | [Choose a Jest preset](/repobuddy/jest/) |
+| Test with Vitest in Node.js or jsdom | `@repobuddy/vitest` | [Run Node.js tests](/repobuddy/vitest/guides/node-tests/) |
+| Run browser tests (Vitest + Playwright) | `@repobuddy/vitest` | [Run browser tests](/repobuddy/vitest/guides/browser-tests/) |
+| Assert the order code runs in | `@repobuddy/vitest` or `@repobuddy/test` | [`expect.order` with Vitest](/repobuddy/vitest/guides/expect-order/), [with Jest](/repobuddy/test/guides/expect-order-with-jest/) |
+| Lint and format with Biome | `@repobuddy/biome` | [Adopt a Biome preset](/repobuddy/biome/guides/adopt/) |
+| Configure TypeScript (`tsconfig`) | `@repobuddy/typescript` | [Configure a monorepo package](/repobuddy/typescript/guides/monorepo/) |
+| Build a package as CommonJS and ESM | `@repobuddy/typescript` + `repobuddy` | [Build CommonJS and ESM](/repobuddy/typescript/guides/dual-cjs-esm-build/) |
+| Write `test`/`coverage` scripts, check Jest dependencies | `repobuddy` | [The `buddy` CLI](/repobuddy/cli/) |
+| Give a coding agent repo chores (issues, dependency PRs, repo setup) | `repobuddy` skills | [Agent skills](/repobuddy/skills/) |
 
-<Tabs>
-	<TabItem label="pnpm">
+Not sure a package fits your setup? Check the [compatibility matrix](/repobuddy/compatibility/) before you install.
 
-```sh
-pnpm add -D @repobuddy/biome
-```
+## Install
 
-	</TabItem>
-	<TabItem label="npm">
-
-```sh
-npm install -D @repobuddy/biome
-```
-
-	</TabItem>
-	<TabItem label="yarn">
-
-```sh
-yarn add -D @repobuddy/biome
-```
-
-	</TabItem>
-</Tabs>
-
-Swap `@repobuddy/biome` for whichever package you need:
-
-| Package | Use it for |
-| --- | --- |
-| `@repobuddy/biome` | Predefined [Biome](https://biomejs.dev) configs |
-| `@repobuddy/jest` | [Jest](https://jestjs.io/) presets and config helpers |
-| `@repobuddy/vitest` | [Vitest](https://vitest.dev/) presets and config helpers |
-| `@repobuddy/typescript` | TypeScript configs and utilities |
-| `repobuddy` | CLI for managing your repository |
-
-## Usage
-
-Most packages work by extending a preset. For example, `@repobuddy/biome`:
-
-```jsonc
-// biome.json
-{
-	"extends": ["@repobuddy/biome"]
-}
-```
-
-See the [package reference](/repobuddy/reference/packages/) for every preset, option, and command.
-
-## Agent Skills
-
-Repobuddy also ships [agent skills](https://github.com/vercel-labs/skills) for AI coding assistants such as
-Claude Code and Cursor — creating issues, merging dependency PRs, and setting up a GitHub repo or Pages site.
+Every package installs as a dev dependency. Replace the package name with the one from the table:
 
 ```sh
-# list what is available
-npx skills add repobuddy/repobuddy --list
+# npm
+npm install -D @repobuddy/vitest
 
-# install them all
-npx skills add repobuddy/repobuddy
+# yarn
+yarn add -D @repobuddy/vitest
+
+# pnpm
+pnpm add -D @repobuddy/vitest
 ```
+
+Each package's overview lists the peer dependencies to install with it.
+
+The agent skills install through your coding agent, not as a dependency. See [Install the skills](/repobuddy/skills/install/).
+
+## Next
+
+<CardGrid>
+	<LinkCard title="Compatibility" href="/repobuddy/compatibility/" description="Tool versions, module formats, and environments each package supports." />
+	<LinkCard title="Packages" href="/repobuddy/packages/" description="Every package, what it ships, and where its reference starts." />
+</CardGrid>

@@ -19,19 +19,11 @@ export default defineConfig({
 			],
 			sidebar: [
 				{
-					label: 'Guides',
-					items: [{ label: 'Getting Started', slug: 'guides/getting-started' }],
-				},
-				{
-					label: 'Packages',
+					label: 'Getting started',
 					items: [
-						{ label: 'Overview', slug: 'reference/packages' },
-						{ label: '@repobuddy/biome', slug: 'reference/biome' },
-						{ label: '@repobuddy/jest', slug: 'reference/jest' },
-						{ label: '@repobuddy/vitest', slug: 'reference/vitest' },
-						{ label: '@repobuddy/typescript', slug: 'reference/typescript' },
-						{ label: '@repobuddy/test', slug: 'reference/test' },
-						{ label: 'repobuddy', slug: 'reference/repobuddy' },
+						{ label: 'Choose a package', slug: 'guides/getting-started' },
+						{ label: 'Packages', slug: 'packages' },
+						{ label: 'Compatibility', slug: 'compatibility' },
 					],
 				},
 				{
@@ -286,6 +278,16 @@ export default defineConfig({
 			},
 		}),
 	],
+	// The per-package pages from #763 moved into one section per package.
+	redirects: {
+		'/reference/packages': '/repobuddy/packages/',
+		'/reference/biome': '/repobuddy/biome/',
+		'/reference/jest': '/repobuddy/jest/',
+		'/reference/vitest': '/repobuddy/vitest/',
+		'/reference/typescript': '/repobuddy/typescript/',
+		'/reference/test': '/repobuddy/test/',
+		'/reference/repobuddy': '/repobuddy/cli/',
+	},
 	site: 'https://repobuddy.github.io',
 	base: '/repobuddy',
 })
