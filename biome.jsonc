@@ -16,7 +16,9 @@
 			"!.agents",
 			"!**/.claude-plugin",
 			"!**/.cursor-plugin",
-			"!**/.codex-plugin"
+			"!**/.codex-plugin",
+			// Generated and minified by the min-release-age skill; copied in, never edited.
+			"!.github/scripts/min-release-age.mjs"
 		]
 	},
 	"formatter": {
