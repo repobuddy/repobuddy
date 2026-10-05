@@ -32,16 +32,15 @@ Then run `buddy --help`. See [the `buddy` CLI](/repobuddy/cli/).
 
 | Route | Command | Skill scripts |
 | --- | --- | --- |
-| Skills CLI | `npx skills add repobuddy/repobuddy` | run through `npx` |
-| npm | `npm install repobuddy`, then `npx skills experimental_sync` | built, from the package |
 | Claude Code | `/plugin marketplace add repobuddy/repobuddy`, then `/plugin install repobuddy@repobuddy` | built, from the npm package |
 | Codex | `codex plugin marketplace add repobuddy/repobuddy`, then `codex plugin add repobuddy@repobuddy` | built, from the npm package |
 | GitHub Copilot CLI | `copilot plugin marketplace add repobuddy/repobuddy`, then `copilot plugin install repobuddy@repobuddy` | run through `npx` |
 | Cursor | A workspace admin imports the repository as a team marketplace | |
+| Skills CLI, for other agents | `npx skills add repobuddy/repobuddy` | run through `npx` |
 
 Claude Code and Codex read the catalog in `.claude-plugin/marketplace.json`, which installs the plugin from the
 `repobuddy` npm package. Copilot CLI reads `.github/plugin/marketplace.json`, which installs it from this repository.
-See [Install the skills](/repobuddy/skills/install/) for each route in full.
+See [Install the skills](/repobuddy/skills/install/) for each route's install, update, and uninstall commands.
 
 ## Choose a starting page
 
