@@ -234,7 +234,7 @@ describe('buildChecks', () => {
 				'skipped, private: website',
 			],
 		})
-		const passing = { ...scope, packages: [scope.packages[0]] }
+		const passing = { ...scope, packages: scope.packages.slice(0, 1) }
 		expect(check(readyFacts({ isMonorepo: true, scope: passing }), 'instructions-scope')).toMatchObject({
 			status: 'judge',
 			detail: [
