@@ -49,7 +49,7 @@ The package does not declare TypeScript as a peer dependency. Install the TypeSc
 | `extends` arrays | [`tsconfig/monorepo`](/repobuddy/typescript/tsconfig/monorepo/) and `emit/buddy` use an `extends` array, which TypeScript 5.0 added. [`tsconfig/legacy/monorepo`](/repobuddy/typescript/tsconfig/legacy-monorepo/) inlines the same options for older versions and for tools that cannot follow an array. |
 | Legacy module files | `modules/commonjs-legacy` and `modules/es2020-legacy` are for older TypeScript. Both fail on TypeScript 6 and 7. See [Modules](/repobuddy/typescript/tsconfig/modules/). |
 | Module format | The JavaScript entry (the CLI plugin) is ESM only: the `.` export has an `import` condition and no `require` condition. The tsconfig and `nodejs/*` files are plain JSON. |
-| CLI host | The `ts` commands run inside the `buddy` CLI from the [`repobuddy`](/repobuddy/cli/) package. |
+| CLI host | The `ts` commands run inside the `buddy` CLI from the [`repobuddy`](/repobuddy/repobuddy/) package. |
 | Monorepo and single package | The presets work for either. `tsconfig/monorepo` turns on `composite` for project references. |
 
 Checked against TypeScript 6.0.3 and 7.0.2: every tsconfig file compiles except the three listed under

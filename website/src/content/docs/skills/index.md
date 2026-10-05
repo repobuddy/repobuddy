@@ -3,9 +3,10 @@ title: Agent skills
 description: The 15 repobuddy skills for coding agents, grouped by what you want done, with a page for each.
 ---
 
-repobuddy ships agent skills: instruction packs that a coding agent loads when a request matches. Each skill covers one
-repository chore, such as filing an issue, merging dependency PRs, or setting up branch protection. Ask in plain words
-("add badges to the readme") or run the slash command (`/add-badges`).
+The [`repobuddy` package](/repobuddy/repobuddy/) is an agent plugin as well as a CLI. The plugin ships agent skills:
+instruction packs that a coding agent loads when a request matches. Each skill covers one repository chore, such as
+filing an issue, merging dependency PRs, or setting up branch protection. Ask in plain words ("add badges to the
+readme") or run the slash command (`/add-badges`).
 
 Skills that need a deterministic step run a bundled script. See [Skill scripts](/repobuddy/cli/skill-scripts/).
 [Install the skills](/repobuddy/skills/install/) first.
