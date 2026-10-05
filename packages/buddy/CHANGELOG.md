@@ -1,5 +1,27 @@
 # repobuddy
 
+## 2.1.0
+
+### Minor Changes
+
+- 85edd47: `agent-readiness bench` hands over to ACED's measured layer. The skill now runs its benchmark through ACED's `bench` skill, or its engine `npx -y -p cyber-aced@^0.4.0 aced-bench`, with the suite `repobuddy.readiness` at `.agents/aced/bench/repobuddy.readiness/`. Level 5 reads that suite's committed `baseline.json`.
+  
+  `agent-readiness.mjs bench` now prints where the benchmark moved and exits 1. The script no longer plans, runs, or compares a bench itself. If your repo has `.agents/readiness/bench/`, move it with `git mv .agents/readiness/bench .agents/aced/bench/repobuddy.readiness`, point the check paths in `tasks.json` at the new folder, and record a new baseline with ACED. Until you do, level 5 fails. The new `bench convert` subcommand turns an old results file into a version-3 record that `aced-bench compare` can read.
+- d806ce7: New `agent-readiness suggest` command. It reads ACED bench comparisons of the suite `repobuddy.readiness` that are tagged with an area (`aced-bench compare … --tag area=<id>`) and suggests a weight for the `## Weights` section of `.agents/references/repobuddy.readiness.md`. It moves a weight one step of 5, clamped to 0–40, only when two or more comparisons show the same pass-rate or token/turn effect and none shows the opposite. Otherwise it says "keep the weight". Cost in dollars never decides. It prints the override line and its evidence, and never writes the file.
+- 53e722e: `agent-readiness` now reads its area weights from the reference `repobuddy.readiness`, resolved by `@cyberuni/agent-harness`. The skill ships the default copy in `references/repobuddy.readiness.md`, with the weights in a `## Weights` section. A repo overrides the weights in `.agents/references/repobuddy.readiness.md`:
+  
+  ```markdown
+  ---
+  merge: merge-sections
+  ---
+  
+  ## Weights
+  
+  - verification: 40
+  ```
+  
+  `.agents/readiness/weights.json` is deprecated. For this release it is still read when no project override exists, and the script prints the exact override file to create in its place. A later release stops reading it.
+
 ## 2.0.0
 
 ### Major Changes
