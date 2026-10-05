@@ -185,7 +185,8 @@ next area.
    This skill does not edit what an owner owns, even when the change looks small.
 3. **Propose each unowned fix, one at a time.** Name the check, the files it touches, and the change
    (a diff, or a short description for a large one). Apply it only on a yes. A no, or no answer, skips
-   it; record the skip. A fix that also needs a change in another area (a new verify script that the
+   it; record the skip. A fix that states what the project will not do (`instructions-scope`) is a
+   draft for the owner to rewrite, never a boundary you chose. A fix that also needs a change in another area (a new verify script that the
    instructions file must name) edits only this area's files now and leaves the rest to that area.
 4. **Verify.** Run the repo's verify command when one exists. If it fails because of this area's
    edits, fix that or revert the edit, with the user's say.
