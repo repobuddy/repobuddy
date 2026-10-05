@@ -39,6 +39,8 @@ minimumReleaseAgeExclude:
   - '@mocktomata/*'
   - '@repobuddy/*'
   - '@unional/*'
+  # min-release-age: lift @cyberuni/agent-harness@0.5.0 until 2026-10-06T02:00:00Z
+  - '@cyberuni/agent-harness@0.5.0'
 
 packages:
   - examples/*
