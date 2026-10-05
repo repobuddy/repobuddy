@@ -17,24 +17,23 @@ hero:
       variant: secondary
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components';
+import { LinkCard, CardGrid } from '@astrojs/starlight/components';
 
-## Repobuddy can...
+## What do you want to do?
 
-<CardGrid stagger>
-	<Card title="biome" icon="pencil">
-		Format your code with [biome](https://biomejs.dev).
-	</Card>
-	<Card title="jest" icon="add-document">
-		Drastically simplify your [jest](https://jestjs.io/) config for JavaScript, TypeScript, CJS, ESM, NodeJS, JSDOM project.
-	</Card>
-	<Card title="vitest" icon="rocket">
-		Share [vitest](https://vitest.dev/) presets for Node.js and browser testing without the boilerplate.
-	</Card>
-	<Card title="typescript" icon="setting">
-		Configure [TypeScript](https://www.typescriptlang.org/) for simple or monorepo
-	</Card>
-	<Card title="agent skills" icon="robot">
-		Install [agent skills](https://github.com/vercel-labs/skills) so your AI assistant can file issues, merge dependency PRs, and set up repos.
-	</Card>
+<CardGrid>
+	<LinkCard title="Test with Jest" href="/repobuddy/jest/" description="One preset line for TypeScript or JavaScript, ESM or CommonJS, Node.js or jsdom." />
+	<LinkCard title="Test with Vitest" href="/repobuddy/vitest/" description="Presets for Node.js, jsdom, and happy-dom tests, with shared defaults and file-name conventions." />
+	<LinkCard title="Run browser tests" href="/repobuddy/vitest/guides/browser-tests/" description="Vitest browser mode with Playwright and Chromium, set up by one plugin." />
+	<LinkCard title="Lint and format" href="/repobuddy/biome/" description="Two Biome configs, recommended and performant." />
+	<LinkCard title="Configure TypeScript" href="/repobuddy/typescript/" description="tsconfig presets for a monorepo package, building blocks, and a CommonJS build helper." />
+	<LinkCard title="Run repo chores from the CLI" href="/repobuddy/cli/" description="buddy writes test scripts, checks Jest dependencies, and loads plugins." />
+	<LinkCard title="Hand chores to a coding agent" href="/repobuddy/skills/" description="Agent skills that file issues, merge dependency PRs, set up repos, and review code." />
+</CardGrid>
+
+## Look something up
+
+<CardGrid>
+	<LinkCard title="Does it support my setup?" href="/repobuddy/compatibility/" description="Tool versions, Node.js, CJS and ESM, environments, and what is not supported." />
+	<LinkCard title="Which package do I need?" href="/repobuddy/guides/getting-started/" description="Pick a package by the task you want done." />
 </CardGrid>
