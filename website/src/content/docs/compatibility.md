@@ -10,12 +10,12 @@ support section with its sources.
 
 | Package | Tool peer | Optional peers |
 | --- | --- | --- |
+| [`repobuddy`](/repobuddy/repobuddy/) | none | none |
 | [`@repobuddy/jest`](/repobuddy/jest/) | `jest >=29.5.0` | `@swc/jest ^0.2.31` (required peer, used by the `ts-esm` presets), `ts-jest ^29`, `jest-esm-transformer-2 ^1`, `jest-watch-suspend ^1 \|\| ^2`, `jest-watch-toggle-config ^3`, `jest-watch-typeahead ^3.0.0`, `identity-obj-proxy ^3.0.0` |
 | [`@repobuddy/vitest`](/repobuddy/vitest/) | `vitest ^5.0.0` (Vitest 5 only) | `@vitest/browser-playwright ^5.0.0`, for browser tests |
 | [`@repobuddy/biome`](/repobuddy/biome/) | `@biomejs/biome >= 2` | none |
 | [`@repobuddy/typescript`](/repobuddy/typescript/) | none declared; install the TypeScript your project needs | `repobuddy`, for the `buddy ts` commands |
 | [`@repobuddy/test`](/repobuddy/test/) | none; works with any runner | none |
-| [`repobuddy`](/repobuddy/repobuddy/) | none | none |
 
 No package declares an `engines` field, so none states a minimum Node.js version.
 
@@ -23,12 +23,12 @@ No package declares an `engines` field, so none states a minimum Node.js version
 
 | Package | Module format | Environments |
 | --- | --- | --- |
+| `repobuddy` | ESM CLI, no importable API; agent plugin | Node.js for the CLI; Claude Code, Cursor, Codex, and GitHub Copilot CLI for the plugin |
 | `@repobuddy/jest` | ESM and CommonJS builds; presets for ESM and CommonJS projects. ESM presets need `NODE_OPTIONS=--experimental-vm-modules`. | `node`, `jsdom` (install `jest-environment-jsdom`) |
 | `@repobuddy/vitest` | ESM only | `node`, `jsdom`, `happy-dom`, `edge-runtime`; browser mode with Playwright, one headless Chromium instance by default |
 | `@repobuddy/biome` | JSONC configs | any project Biome 2 runs on |
 | `@repobuddy/typescript` | ESM only for the plugin; tsconfig files are JSON | Node.js, inside the `buddy` CLI |
 | `@repobuddy/test` | ESM only | any runner that loads ESM; tested with Vitest (Node.js and Chromium) and Jest in ESM mode |
-| `repobuddy` | ESM CLI, no importable API; agent plugin | Node.js for the CLI; Claude Code, Cursor, Codex, and GitHub Copilot CLI for the plugin |
 
 ## TypeScript
 
@@ -42,10 +42,10 @@ No package declares an `engines` field, so none states a minimum Node.js version
 
 | Package | Monorepo support |
 | --- | --- |
+| `repobuddy` | Each command acts on one package. Use `--cwd` for another package. |
 | `@repobuddy/jest` | Run Jest in each package, or use `projects` with a base preset per package and `watch` at the root. Source-folder and `type` detection read the directory Jest runs in, so under a root `projects` config set `roots` per project. See [Monorepo](/repobuddy/jest/guides/monorepo/). |
 | `@repobuddy/vitest` | One config per environment, run together through `test.projects` in a root config that owns coverage. |
 | `@repobuddy/typescript` | `tsconfig/monorepo` sets `composite` for project references and `tsc --build`. |
-| `repobuddy` | Each command acts on one package. Use `--cwd` for another package. |
 
 ## Agent plugin
 
