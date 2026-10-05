@@ -31,7 +31,7 @@ The recommended config is customized for people or teams that are proficient.
 
 i.e., you know what you are doing. The tools try to help but get out of your way.
 
-### `performant.json`
+### `performant.jsonc`
 
 If performance is a top priority for your project,
 some typical linting rules will hold you back.
