@@ -147,6 +147,11 @@ at a time between runs, so each delta has one cause.
   few percent in cost, so `noise` keeps its starting 15. Every other weight is still an unmeasured
   estimate.
 
+- `suggest` reads ACED bench comparisons tagged with an area (`--tag area=<id>`) and suggests a
+  weight for your override: one step of 5, clamped to 0-40, only when two comparisons agree and none
+  disagrees, and "keep the weight" otherwise. Cost in dollars never decides. It prints the line to
+  add and its evidence, and writes nothing.
+
 ## What it will not do
 
 - Edit the repository during `score`, or without your yes during `improve`.
@@ -166,6 +171,7 @@ node <skill-dir>/scripts/agent-readiness.mjs score [--dir <repo>] [--json] [--ch
 node <skill-dir>/scripts/agent-readiness.mjs score --package <path> [--json] [--check [--min-level <1-4>]]
 node <skill-dir>/scripts/agent-readiness.mjs bench [--init | --baseline] [--runs <n>] [--task <id>] [--ref <commit>] [--runner print|interactive] [--yes]
 node <skill-dir>/scripts/agent-readiness.mjs bench compare <before.json> <after.json> [--json]
+node <skill-dir>/scripts/agent-readiness.mjs suggest [--area <id>] [--json]
 npx -y repobuddy@^1.12.0 agent-readiness score
 npx -y repobuddy@^1.12.0 agent-readiness bench
 ```

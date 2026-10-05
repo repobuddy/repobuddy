@@ -5,6 +5,7 @@
  *   node scripts/agent-readiness.mjs score --package <path> [--json] [--check [--min-level <1-4>]]
  *   node scripts/agent-readiness.mjs bench [--dir <repo>] [--init | --baseline] [--runs <n>] [--task <id>] [--ref <commit>] [--runner print|interactive] [--yes] [--json]
  *   node scripts/agent-readiness.mjs bench compare <before.json> <after.json> [--json]
+ *   node scripts/agent-readiness.mjs suggest [--dir <repo>] [--area <id>] [<comparison.json>...] [--json]
  *
  * `score` reports the gated level (1-5), a score per area, the top three fixes, and the tokens every
  * agent session loads before it starts (instruction files plus installed skill descriptions, estimated
@@ -27,6 +28,12 @@
  * per task and pooled, the mean and median change, the min-max of each side, and an exact permutation
  * p-value. A bench run compares against its baseline the same way.
  *
+ * `suggest` reads ACED bench comparison records of suite `repobuddy.readiness` tagged with an area
+ * (`aced-bench compare … --tag area=<id>`), by default every one under
+ * `.agents/aced/results/bench/repobuddy.readiness/`, and suggests an area-weight override: a bounded
+ * step of 5, clamped to 0-40, only on an effect two records replicate, and "keep the weight"
+ * otherwise. It prints the override line and its evidence, and writes nothing.
+ *
  * With --package, it scores the consuming side instead: how cheaply another repo's agent can use the
  * package through what ships (declarations, exports map, README, changelog, llms.txt), with the same
  * gated report shape. Public surface size and a shipped agent skill are reported, not scored.
@@ -37,7 +44,7 @@
  * `references/`); a repo overrides its `## Weights` section in `.agents/references/repobuddy.readiness.md`.
  *
  * stdout: a human report, or JSON with --json. stderr: errors and per-run progress.
- * Exit 0 on success, 1 when bench cannot run or `score --check` finds the level below --min-level,
+ * Exit 0 on success, 1 when bench cannot run, suggest cannot read a comparison record, or `score --check` finds the level below --min-level,
  * 2 on bad usage or a malformed weights config.
  */
 
@@ -61,11 +68,21 @@ import { ConfigError, REFERENCE, readConfig } from '../agent-readiness/config.js
 import { collectFacts } from '../agent-readiness/facts.js'
 import { collectPackageFacts } from '../agent-readiness/package-facts.js'
 import { formatPackageReport, PACKAGE_MAX_LEVEL, scorePackage } from '../agent-readiness/package-score.js'
-import { checkLevel, formatCheck, formatReport, MAX_LEVEL, score } from '../agent-readiness/score.js'
+import {
+	AREA_WEIGHTS,
+	checkLevel,
+	formatCheck,
+	formatReport,
+	MAX_LEVEL,
+	score,
+	type WeightedArea,
+} from '../agent-readiness/score.js'
+import { findComparisons, formatSuggestions, SuggestError, suggest } from '../agent-readiness/suggest.js'
 
 const USAGE = `usage: agent-readiness.mjs score [--dir <repo> | --package <path>] [--json] [--run-knip] [--check [--min-level <n>]]
        agent-readiness.mjs bench [--dir <repo>] [--init | --baseline] [--runs <n>] [--task <id>] [--ref <commit>] [--runner print|interactive] [--yes] [--json]
-       agent-readiness.mjs bench compare <before.json> <after.json> [--json]`
+       agent-readiness.mjs bench compare <before.json> <after.json> [--json]
+       agent-readiness.mjs suggest [--dir <repo>] [--area <id>] [<comparison.json>...] [--json]`
 
 function usage(message: string): never {
 	process.stderr.write(`${message}\n${USAGE}\n`)
@@ -73,8 +90,8 @@ function usage(message: string): never {
 }
 
 interface Opts {
-	command: 'score' | 'bench' | 'compare'
-	/** `bench compare`'s two files, before and after. */
+	command: 'score' | 'bench' | 'compare' | 'suggest'
+	/** `bench compare`'s two files, before and after; `suggest`'s comparison records. */
 	files: string[]
 	dir: string
 	package: string | undefined
@@ -89,6 +106,8 @@ interface Opts {
 	check: boolean
 	minLevel?: number
 	runKnip: boolean
+	/** `suggest --area`. */
+	area?: WeightedArea
 }
 
 const BENCH_FLAGS = new Set(['--init', '--baseline', '--yes', '--runs', '--task', '--ref', '--runner'])
@@ -120,8 +139,41 @@ function parseCompare(rest: string[]): Opts {
 	}
 }
 
+function parseSuggest(rest: string[]): Opts {
+	const opts: Opts = {
+		command: 'suggest',
+		files: [],
+		dir: process.cwd(),
+		package: undefined,
+		json: false,
+		init: false,
+		baseline: false,
+		yes: false,
+		check: false,
+		runKnip: false,
+	}
+	for (let i = 0; i < rest.length; i++) {
+		const a = rest[i] as string
+		const value = () => {
+			const v = rest[++i]
+			if (v === undefined) usage(`${a} needs a value`)
+			return v
+		}
+		if (a === '--json') opts.json = true
+		else if (a === '--dir') opts.dir = resolve(value())
+		else if (a === '--area') {
+			const area = value()
+			if (!(area in AREA_WEIGHTS)) usage(`--area is one of ${Object.keys(AREA_WEIGHTS).join(', ')}`)
+			opts.area = area as WeightedArea
+		} else if (a.startsWith('--')) usage(`suggest does not take ${a}`)
+		else opts.files.push(resolve(a))
+	}
+	return opts
+}
+
 function parseArgs(argv: string[]): Opts {
 	const [command, ...rest] = argv
+	if (command === 'suggest') return parseSuggest(rest)
 	if (command !== 'score' && command !== 'bench') {
 		usage(command === undefined ? 'missing command' : `unknown command "${command}"`)
 	}
@@ -268,8 +320,27 @@ function skillDir(): string | undefined {
 	)
 }
 
+async function runSuggest(opts: Opts): Promise<void> {
+	try {
+		const config = await readConfig(opts.dir, { skillDir: skillDir() })
+		for (const warning of config.warnings) process.stderr.write(`${warning}\n`)
+		const weights = { ...AREA_WEIGHTS, ...config.weights }
+		const files = opts.files.length > 0 ? opts.files : findComparisons(opts.dir)
+		const result = suggest(files, weights, opts.area)
+		process.stdout.write(opts.json ? `${JSON.stringify(result, null, 2)}\n` : formatSuggestions(result))
+	} catch (e) {
+		if (!(e instanceof SuggestError || e instanceof ConfigError)) throw e
+		process.stderr.write(`${e.message}\n`)
+		process.exit(e instanceof ConfigError ? 2 : 1)
+	}
+}
+
 export async function main(argv: string[] = process.argv.slice(2)): Promise<void> {
 	const opts = parseArgs(argv)
+	if (opts.command === 'suggest') {
+		await runSuggest(opts)
+		return
+	}
 	if (opts.command === 'compare') {
 		runCompare(opts)
 		return

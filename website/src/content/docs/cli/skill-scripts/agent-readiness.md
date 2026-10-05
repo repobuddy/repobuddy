@@ -13,6 +13,7 @@ buddy agent-readiness score [--dir <repo>] [--json] [--run-knip] [--check [--min
 buddy agent-readiness score --package <path> [--json] [--check [--min-level <1-4>]]
 buddy agent-readiness bench [--dir <repo>] [--init | --baseline] [--runs <n>] [--task <id>] [--ref <commit>] [--runner print|interactive] [--yes] [--json]
 buddy agent-readiness bench compare <before.json> <after.json> [--json]
+buddy agent-readiness suggest [--dir <repo>] [--area <id>] [<comparison.json>...] [--json]
 ```
 
 ## Subcommands
@@ -23,12 +24,13 @@ buddy agent-readiness bench compare <before.json> <after.json> [--json]
 | `score --package` | Scores the consuming side of a package: what ships (declarations, exports map, README, changelog, `llms.txt`). The level tops out at 4. |
 | `bench` | Runs the task set in `.agents/readiness/bench/tasks.json` with Claude Code and records tokens, turns, tool calls, wall time, pass rate, and cost per successful task. |
 | `bench compare` | Compares two stored results files. Runs nothing and costs nothing. |
+| `suggest` | Reads ACED comparison records of suite `repobuddy.readiness` tagged with an `area` (by default every `compare-*.json` under `.agents/aced/results/bench/repobuddy.readiness/`) and prints a suggested `## Weights` line for `.agents/references/repobuddy.readiness.md`, with its evidence. Writes nothing. |
 
 ## Arguments
 
 | Flag | Used by | Type | Default | Effect |
 | --- | --- | --- | --- | --- |
-| `--dir` | `score`, `bench` | path | the current directory | The repository. Cannot be combined with `--package`. |
+| `--dir` | `score`, `bench`, `suggest` | path | the current directory | The repository. Cannot be combined with `--package`. |
 | `--package` | `score` | path | none | Scores a package instead of a repository. |
 | `--json` | all | boolean | off | Prints JSON. |
 | `--run-knip` | `score` | boolean | off | Runs the repository's knip command to settle the `dead-code` check. Dependencies must be installed. Not with `--package`. |
@@ -41,6 +43,7 @@ buddy agent-readiness bench compare <before.json> <after.json> [--json]
 | `--ref` | `bench` | commit | `HEAD` | Runs in a clean checkout of that commit, with `HEAD`'s task set. |
 | `--runner` | `bench` | `print` \| `interactive` | `print` | `print` runs `claude -p`. `interactive` runs each task in a tmux or herdr pane and needs `CLAUDE_CODE_OAUTH_TOKEN` or `ANTHROPIC_API_KEY`. |
 | `--yes` | `bench` | boolean | off | Runs the benchmark and spends money. Without it, `bench` prints only the plan and its spend ceiling. |
+| `--area` | `suggest` | weighted area id | every tagged area | Suggests for one area; an area with no comparison prints "keep the weight". |
 
 A `score` flag passed to `bench`, or a `bench` flag passed to `score`, is a usage error.
 
@@ -99,7 +102,7 @@ No task set: .agents/readiness/bench/tasks.json does not exist (create one with 
 | Code | When |
 | --- | --- |
 | `0` | Success, including a `bench` run without `--yes` that only prints the plan. |
-| `1` | `bench` cannot run, `bench compare` cannot read a file, or `score --check` finds the level below `--min-level`. |
+| `1` | `bench` cannot run, `bench compare` or `suggest` cannot read a file, or `score --check` finds the level below `--min-level`. |
 | `2` | A usage error, or malformed weights in the reference override or the deprecated `.agents/readiness/weights.json`. |
 
 ## Related
