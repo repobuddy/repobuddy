@@ -34,6 +34,53 @@ export default defineConfig({
 						{ label: 'repobuddy', slug: 'reference/repobuddy' },
 					],
 				},
+				{
+					label: 'Agent skills',
+					items: [
+						{ label: 'Overview', slug: 'skills' },
+						{ label: 'Install', slug: 'skills/install' },
+						{
+							label: 'Repo setup',
+							items: [
+								{ label: 'setup-github-repo', slug: 'skills/setup-github-repo' },
+								{ label: 'add-badges', slug: 'skills/add-badges' },
+								{ label: 'llms-txt', slug: 'skills/llms-txt' },
+							],
+						},
+						{
+							label: 'Dependencies and releases',
+							items: [
+								{ label: 'merge-dep-prs', slug: 'skills/merge-dep-prs' },
+								{ label: 'min-release-age', slug: 'skills/min-release-age' },
+								{ label: 'setup-npm-trusted-publishing', slug: 'skills/setup-npm-trusted-publishing' },
+							],
+						},
+						{
+							label: 'Review',
+							items: [
+								{ label: 'code-review', slug: 'skills/code-review' },
+								{ label: 'review-api', slug: 'skills/review-api' },
+								{ label: 'review-permissions', slug: 'skills/review-permissions' },
+								{ label: 'agent-readiness', slug: 'skills/agent-readiness' },
+							],
+						},
+						{ label: 'Docs', items: [{ label: 'website', slug: 'skills/website' }] },
+						{
+							label: 'Issues and questions',
+							items: [
+								{ label: 'create-issue', slug: 'skills/create-issue' },
+								{ label: 'to-question', slug: 'skills/to-question' },
+							],
+						},
+						{
+							label: 'Agent setup and sessions',
+							items: [
+								{ label: 'init-buddy', slug: 'skills/init-buddy' },
+								{ label: 'session', slug: 'skills/session' },
+							],
+						},
+					],
+				},
 			],
 			editLink: {
 				baseUrl: 'https://github.com/repobuddy/repobuddy/edit/main/website/',
