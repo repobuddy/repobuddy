@@ -25,7 +25,7 @@ node -e "console.log(require.resolve('@repobuddy/typescript/nodejs/package.cjs.j
 Two commands copy it for you:
 
 - [`buddy ts build cjs`](/repobuddy/typescript/cli/build/) runs `tsc` and then copies it to `cjs/package.json`.
-- [`buddy ts copy-cjs-package-json <dir> <cwd>`](/repobuddy/typescript/cli/copy-cjs-package-json/) copies it to
+- [`buddy ts copy-cjs-package-json <dir> [cwd]`](/repobuddy/typescript/cli/copy-cjs-package-json/) copies it to
   `<cwd>/<dir>/package.json`.
 
 ## Behavior

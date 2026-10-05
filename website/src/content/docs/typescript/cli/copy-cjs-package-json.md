@@ -3,16 +3,16 @@ title: buddy ts copy-cjs-package-json
 description: Copies package.cjs.json into a CommonJS build's output folder as package.json.
 ---
 
-`buddy ts copy-cjs-package-json <dir> <cwd>` copies [`package.cjs.json`](/repobuddy/typescript/nodejs-package-cjs-json/)
+`buddy ts copy-cjs-package-json <dir> [cwd]` copies [`package.cjs.json`](/repobuddy/typescript/nodejs-package-cjs-json/)
 to `<cwd>/<dir>/package.json`. Use it after a CommonJS build step that `buddy ts build` does not run, such as esbuild.
 
 ## Usage
 
 ```sh
-buddy ts copy-cjs-package-json <dir> <cwd>
+buddy ts copy-cjs-package-json <dir> [cwd]
 
 # alias
-buddy ts cpj <dir> <cwd>
+buddy ts cpj <dir> [cwd]
 ```
 
 Requires the [plugin to be enabled](/repobuddy/typescript/cli/#enable-the-plugin).
@@ -22,12 +22,12 @@ Requires the [plugin to be enabled](/repobuddy/typescript/cli/#enable-the-plugin
 | Argument | Type | Default | Effect |
 | --- | --- | --- | --- |
 | `dir` | string | required | The output folder of the CommonJS build, relative to `cwd`. |
-| `cwd` | string | required in practice | The project directory. Pass `.` for the current directory. |
+| `cwd` | string | `process.cwd()` | The project directory. |
 
 The command has no flags.
 
-The source code defaults `cwd` to `process.cwd()`, and `--help` says so. The CLI still treats the argument as
-required: `buddy ts cpj cjs` exits with code `2` and `missing required argument <cwd>`. Always pass it.
+Before `@repobuddy/typescript` 2.2.2, the CLI treated `cwd` as required: `buddy ts cpj cjs` exited with code `2`
+and `missing required argument <cwd>`. On those versions, pass `.` for the current directory.
 
 ## Output
 
@@ -42,7 +42,7 @@ copy-cjs-package-json: completed
 | --- | --- |
 | `0` | The file was copied. |
 | `1` | `<cwd>/<dir>` does not exist (`ENOENT`, printed as an uncaught error). |
-| `2` | `dir` or `cwd` is missing. |
+| `2` | `dir` is missing. |
 
 ## Behavior
 
@@ -54,7 +54,7 @@ copy-cjs-package-json: completed
 Copy into `cjs/` in the current directory:
 
 ```sh
-buddy ts cpj cjs .
+buddy ts cpj cjs
 ```
 
 Copy into another project's output folder:
