@@ -90,6 +90,46 @@ export default defineConfig({
 					],
 				},
 				{
+					label: '@repobuddy/typescript',
+					collapsed: true,
+					items: [
+						{ label: 'Overview', slug: 'typescript' },
+						{
+							label: 'Guides',
+							items: [
+								{ label: 'Configure a monorepo package', slug: 'typescript/guides/monorepo' },
+								{ label: 'Compose your own tsconfig', slug: 'typescript/guides/compose-tsconfig' },
+								{ label: 'Build CommonJS and ESM', slug: 'typescript/guides/dual-cjs-esm-build' },
+							],
+						},
+						{
+							label: 'tsconfig presets',
+							items: [
+								{ label: 'All presets', slug: 'typescript/tsconfig' },
+								{ label: 'monorepo', slug: 'typescript/tsconfig/monorepo' },
+								{ label: 'legacy/monorepo', slug: 'typescript/tsconfig/legacy-monorepo' },
+								{ label: 'diagnostics', slug: 'typescript/tsconfig/diagnostics' },
+								{ label: 'emit', slug: 'typescript/tsconfig/emit' },
+								{ label: 'interop', slug: 'typescript/tsconfig/interop' },
+								{ label: 'javascript', slug: 'typescript/tsconfig/javascript' },
+								{ label: 'language', slug: 'typescript/tsconfig/language' },
+								{ label: 'modules', slug: 'typescript/tsconfig/modules' },
+								{ label: 'projects', slug: 'typescript/tsconfig/projects' },
+								{ label: 'type-checking', slug: 'typescript/tsconfig/type-checking' },
+								{ label: 'nodejs/package.cjs.json', slug: 'typescript/nodejs-package-cjs-json' },
+							],
+						},
+						{
+							label: 'CLI plugin',
+							items: [
+								{ label: 'Overview', slug: 'typescript/cli' },
+								{ label: 'buddy ts build', slug: 'typescript/cli/build' },
+								{ label: 'buddy ts copy-cjs-package-json', slug: 'typescript/cli/copy-cjs-package-json' },
+							],
+						},
+					],
+				},
+				{
 					label: 'repobuddy CLI',
 					collapsed: true,
 					items: [
