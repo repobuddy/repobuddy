@@ -35,6 +35,29 @@ export default defineConfig({
 					],
 				},
 				{
+					label: '@repobuddy/biome',
+					collapsed: true,
+					items: [
+						{ label: 'Overview', slug: 'biome' },
+						{
+							label: 'Guides',
+							items: [
+								{ label: 'Adopt a preset', slug: 'biome/guides/adopt' },
+								{ label: 'Override a rule', slug: 'biome/guides/override-rules' },
+							],
+						},
+						{
+							label: 'Configs',
+							items: [
+								{ label: 'All configs', slug: 'biome/configs' },
+								{ label: 'recommended', slug: 'biome/configs/recommended' },
+								{ label: 'performant', slug: 'biome/configs/performant' },
+								{ label: 'Compare', slug: 'biome/configs/compare' },
+							],
+						},
+					],
+				},
+				{
 					label: 'Agent skills',
 					items: [
 						{ label: 'Overview', slug: 'skills' },
