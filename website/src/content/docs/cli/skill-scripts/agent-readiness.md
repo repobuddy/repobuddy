@@ -51,6 +51,9 @@ A `score` flag passed to `bench`, or a `bench` flag passed to `score`, is a usag
 - A check with status `JUDGE` is one the script cannot decide. The agent running the skill settles it. `--check`
   counts only the gates the script decides.
 - Token counts are estimated at four characters per token.
+- `instructions-scope` (instructions area, level 3, not a gate) is `fail` when no instructions file states a purpose
+  or boundary, or when a well-known scope file such as `GOALS.md` exists but no instructions file names it. When a
+  statement is found, it is `JUDGE`. It is `n/a` when the repository has no instructions file.
 - `.agents/readiness/weights.json` can override the area weights. A malformed file exits `2`.
 - `bench --baseline` writes `.agents/readiness/bench/baseline.json`. Every other run is compared against it.
 

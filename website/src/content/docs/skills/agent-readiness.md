@@ -31,10 +31,19 @@ Run `/agent-readiness <subcommand>`, or ask in plain words.
 | `bench --runs <n>`, `--task <id>`, `--ref <commit>`, `--runner print\|interactive` | Run count, one task, a past commit, or interactive Claude Code sessions in tmux or herdr. |
 | `bench compare <before.json> <after.json>` | Compares two stored results with spread and permutation p-values. Free. |
 
+## The scope check
+
+`instructions-scope` (level 3, not a gate) asks whether the instructions file says what the project is for and what
+it is not. The script looks for a scope, purpose, or non-goals statement in the instructions file or in a local file
+it names. It fails when nothing states the boundary, or when a well-known scope file such as `GOALS.md`, `SCOPE.md`,
+or `VISION.md` exists but no instructions file names it. When it finds a statement, the agent judges whether the
+boundary is specific enough to turn down a real change.
+
 ## What it produces or changes
 
 - `score` changes nothing.
-- `improve` makes one commit per area. Optional `.agents/readiness/weights.json` reorders fixes but never changes the level.
+- `improve` makes one commit per area. For a missing scope statement it drafts 2 to 4 lines of purpose and boundary
+  for `AGENTS.md` and a `GOALS.md` (goals, non-goals, rejected directions) from the README. You decide every boundary. Optional `.agents/readiness/weights.json` reorders fixes but never changes the level.
 - `bench` writes results under `.agents/readiness/bench/` (transcripts gzipped, git-ignored).
 
 ## Asks before acting
