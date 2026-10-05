@@ -95,20 +95,18 @@ Propose `GOALS.md` at the root, unless the repo already has a file the instructi
 instead:
 
 ```markdown
-# Goals
-
 ## Goals
-<!-- only lines that help decide whether a change belongs -->
+
 ## Non-goals
-<!-- each: a request someone could make, answered no -->
+
 ## Rejected directions
-<!-- each: what was proposed, and why not -->
 ```
 
 Every line is read by an agent deciding whether a change belongs, so every line must help it decide.
-Write no preamble or framing sentence. Keep a non-goal or rejected direction only when it would make
-the agent turn down a plausible change, and a goal only when it tells the agent whether a change fits.
-Leave out a section with nothing in it.
+Write no preamble or framing sentence, and no comments. A goal stays only when it tells the agent
+whether a change fits. A non-goal names a request someone could make, answered no. A rejected
+direction names what was proposed and why not. Keep either only when it would make the agent turn
+down a plausible change. Leave out a section with nothing in it.
 
 When the repo keeps decision records (`docs/adr`, `docs/decisions`), rejected directions can stay
 there, and the instructions file names both. Show both drafts and ask the owner to confirm or rewrite
