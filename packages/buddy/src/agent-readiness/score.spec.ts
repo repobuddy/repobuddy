@@ -217,6 +217,43 @@ describe('buildChecks', () => {
 		})
 	})
 
+	it('scores the root and each published package of a monorepo, failing when any fails', () => {
+		const pkg = (dir: string, over = {}) => ({ dir, name: dir, linked: [], unlinked: [], sections: [], ...over })
+		const scope = {
+			linked: [],
+			unlinked: [],
+			sections: ['AGENTS.md:1: ## What belongs in this repo'],
+			packages: [pkg('packages/a', { linked: ['packages/a/GOALS.md'] }), pkg('packages/b')],
+			privatePackages: ['website'],
+		}
+		expect(check(readyFacts({ isMonorepo: true, scope }), 'instructions-scope')).toMatchObject({
+			status: 'fail',
+			detail: [
+				'packages/b (packages/b): no scope statement',
+				'found: root, packages/a (packages/a)',
+				'skipped, private: website',
+			],
+		})
+		const passing = { ...scope, packages: [scope.packages[0]] }
+		expect(check(readyFacts({ isMonorepo: true, scope: passing }), 'instructions-scope')).toMatchObject({
+			status: 'judge',
+			detail: [
+				'root: AGENTS.md:1: ## What belongs in this repo',
+				'packages/a (packages/a): packages/a/GOALS.md, named in an instructions file',
+				'skipped, private: website',
+			],
+		})
+		const noRoot = { ...passing, sections: [], unlinked: ['GOALS.md'] }
+		expect(check(readyFacts({ isMonorepo: true, scope: noRoot }), 'instructions-scope')).toMatchObject({
+			status: 'fail',
+			detail: [
+				'root: GOALS.md exists, but no instructions file names it',
+				'found: packages/a (packages/a)',
+				'skipped, private: website',
+			],
+		})
+	})
+
 	it('does not let a missing scope statement lower the level', () => {
 		const none = { linked: [], unlinked: [], sections: [] }
 		expect(score(readyFacts({ scope: none })).level).toBe(MAX_LEVEL)

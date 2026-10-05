@@ -6,9 +6,10 @@
  */
 
 import { spawnSync } from 'node:child_process'
-import { existsSync, readdirSync, readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { pathToFileURL } from 'node:url'
+import { workspaceDirs, workspaceGlobs } from './workspaces.js'
 
 export interface HarnessFinding {
 	path: string
@@ -72,49 +73,6 @@ function sourceEntry(packageDir: string, transformTypes: boolean): string[] | un
 	return ['--experimental-transform-types', '--input-type=module', '-e', code]
 }
 
-/** The repo's workspace package globs, from `pnpm-workspace.yaml` or `package.json` `workspaces`. */
-function workspaceGlobs(dir: string, workspaces: unknown): string[] {
-	if (Array.isArray(workspaces)) return workspaces.filter((g) => typeof g === 'string')
-	const packages = (workspaces as { packages?: unknown } | undefined)?.packages
-	if (Array.isArray(packages)) return packages.filter((g) => typeof g === 'string')
-	let yaml: string
-	try {
-		yaml = readFileSync(join(dir, 'pnpm-workspace.yaml'), 'utf8')
-	} catch {
-		return []
-	}
-	const globs: string[] = []
-	let inPackages = false
-	for (const line of yaml.split('\n')) {
-		if (/^packages:/.test(line)) inPackages = true
-		else if (/^\S/.test(line)) inPackages = false
-		else if (inPackages) {
-			const glob = /^\s+-\s+['"]?([^'"\s]+)['"]?/.exec(line)?.[1]
-			if (glob) globs.push(glob)
-		}
-	}
-	return globs
-}
-
-/** Directories the globs name; only `dir/*` and literal paths, which is what workspace globs use in practice. */
-function workspaceDirs(dir: string, globs: string[]): string[] {
-	const excluded = new Set(globs.filter((g) => g.startsWith('!')).map((g) => join(dir, g.slice(1))))
-	return globs
-		.filter((g) => !g.startsWith('!'))
-		.flatMap((glob) => {
-			const parent = /^(.+)\/\*$/.exec(glob)?.[1]
-			if (!parent) return glob.includes('*') ? [] : [join(dir, glob)]
-			try {
-				return readdirSync(join(dir, parent), { withFileTypes: true })
-					.filter((e) => e.isDirectory())
-					.map((e) => join(dir, parent, e.name))
-			} catch {
-				return []
-			}
-		})
-		.filter((d) => !excluded.has(d))
-}
-
 /**
  * How to start buddy-agent-harness for this repo, or `undefined` when there is none. The repo's own
  * package comes first, then a workspace package, then an installed dependency: when the repo is
@@ -135,7 +93,8 @@ export function findHarnessDoctor(
 		const doctor = local('repo', dir, root.bin)
 		if (doctor) return doctor
 	}
-	for (const packageDir of workspaceDirs(dir, workspaceGlobs(dir, (root as { workspaces?: unknown })?.workspaces))) {
+	for (const relative of workspaceDirs(dir, workspaceGlobs(dir, (root as { workspaces?: unknown })?.workspaces))) {
+		const packageDir = join(dir, relative)
 		const manifest = readManifest(packageDir)
 		if (manifest?.name !== NAME) continue
 		const doctor = local('workspace', packageDir, manifest.bin)

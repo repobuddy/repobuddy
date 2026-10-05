@@ -65,7 +65,8 @@ order the fix list ranks them.
 1. It proposes each fix on its own, with the files and the change, and applies it only when you say
    yes. A fix you decline is skipped and listed. For a missing scope statement it drafts 2-4 lines
    for `AGENTS.md` and a `GOALS.md` (goals, non-goals, rejected directions) from the README, and you
-   decide every boundary.
+   decide every boundary. In a monorepo it drafts the root lines on what belongs in the repo and one
+   `GOALS.md` per published package that lacks one, with no root `GOALS.md`.
 2. It runs the verify command, then commits the area's approved fixes as one commit. Two areas never
    share a commit.
 3. It hands the fixes other skills own to those skills instead of making them itself:

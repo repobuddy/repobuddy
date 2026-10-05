@@ -15,7 +15,7 @@ files. Hand fixes to it. This area only reads and reports, and it reads what bud
 | `instructions-file` | 3 | yes | script: a root instructions file exists |
 | `instructions-commands` | 3 | yes | script: each `pnpm <x>`, `npm run <x>`, `yarn <x>`, `bun run <x>`, `make <x>` it names exists in the root `package.json` or `Makefile` |
 | `instructions-accurate` | 3 | yes | **judgment** |
-| `instructions-scope` | 3 | no | script finds the statement: a scope, purpose, or non-goals heading or line in an instructions file, or a file one names; then **judgment** |
+| `instructions-scope` | 3 | no | script finds the statement: a scope, purpose, or non-goals heading or line in an instructions file, or a file one names; in a monorepo, per published package too; then **judgment** |
 | `instructions-lean` | 4 | yes | script: all instruction files together under ~3000 tokens (four characters per token) |
 | `harness-doctor` | 3 | no | script: buddy-agent-harness `doctor` reports no findings |
 | `harness-<problem>` | 3 | no | script: one per problem `doctor` reports, such as `harness-missing` |
@@ -109,6 +109,35 @@ there, and the instructions file names both. Show both drafts and ask the owner 
 every boundary: what a project will not do is the owner's decision, and a boundary the agent invented
 is worse than none. Keep the instructions-file part to 2-4 lines, since `instructions-lean` counts it
 on every turn.
+
+### In a monorepo
+
+A monorepo (a `pnpm-workspace.yaml`, a `package.json` `workspaces`, or a `lerna.json`) has no single
+scope: each package has its own, and one consolidated root file drifts from all of them. So the check
+splits:
+
+- **The root** passes on a repo-level statement in the root instructions file: what belongs in this
+  repo, such as what a new package must be. No root `GOALS.md` is expected, and its absence is not a
+  failure; one that exists unnamed still fails, as above.
+- **Each workspace package that is not `private`** passes on a scope file inside it (a well-known
+  name at the package root or its `docs/`, or a file with a scope heading) that the package's own
+  `AGENTS.md`/`CLAUDE.md` or a root instructions file names, or on a scope line in the package's own
+  `AGENTS.md`/`CLAUDE.md`. A link resolves from the file that holds it, so the package's `AGENTS.md`
+  can say `GOALS.md` and the root says `packages/jest/GOALS.md`.
+- **`private` packages are skipped**: apps, the docs site, examples, test fixtures such as
+  `testcases/`. Nobody else installs them, so a change to one is the repo's call, which the root
+  statement covers. The detail lists them as skipped.
+
+The check fails when the root or any counted package fails, and the detail names each one that
+failed and which passed. It stays level 3 and not a gate. Judge each statement the script found, as
+above; fail on a package whose boundary is boilerplate.
+
+**Fixing it in a monorepo.** Draft the 2-4 root lines on what belongs in the repo, and one
+`GOALS.md` per failing package, in the package's directory, from its readme, `package.json`
+`description`, and source. Name each from the package's `AGENTS.md` when it has one, else from the
+root instructions file with a short trigger line per package or one line covering all of them
+("Before changing a package, read its GOALS.md"; the script needs each path, so list them). Do not
+draft a root `GOALS.md`. The owner decides every boundary, package by package.
 
 `score --package` does not run this check. A consumer's agent calls the package; it is not deciding
 whether a change belongs in it, and the instructions file does not ship.
