@@ -7,8 +7,8 @@ hero:
   image:
     file: ../../assets/logo.png
   actions:
-    - text: Choose a package
-      link: '#which-package-do-i-install'
+    - text: Get started
+      link: /repobuddy/repobuddy/
       icon: right-arrow
       variant: primary
     - text: View on GitHub
@@ -35,15 +35,15 @@ import { LinkCard, CardGrid } from '@astrojs/starlight/components';
 
 | I want to | Install |
 | --- | --- |
-| Write `test`/`coverage` scripts, check Jest dependencies | `repobuddy` (CLI) |
-| Give a coding agent repo chores (issues, dependency PRs, repo setup) | `repobuddy` (agent plugin) |
-| Test with Jest | `@repobuddy/jest` |
-| Test with Vitest in Node.js or jsdom | `@repobuddy/vitest` |
-| Run browser tests (Vitest + Playwright) | `@repobuddy/vitest` |
-| [Assert the order code runs in](/repobuddy/vitest/guides/expect-order/) | `@repobuddy/vitest`, or `@repobuddy/test` [with Jest](/repobuddy/test/guides/expect-order-with-jest/) |
-| Lint and format with Biome | `@repobuddy/biome` |
-| Configure TypeScript (`tsconfig`) | `@repobuddy/typescript` |
-| [Build a package as CommonJS and ESM](/repobuddy/typescript/guides/dual-cjs-esm-build/) | `@repobuddy/typescript` + `repobuddy` |
+| Write `test`/`coverage` scripts, check Jest dependencies | [`repobuddy`](/repobuddy/cli/) (CLI) |
+| Give a coding agent repo chores (issues, dependency PRs, repo setup) | [`repobuddy`](/repobuddy/skills/) (agent plugin) |
+| Test with Jest | [`@repobuddy/jest`](/repobuddy/jest/) |
+| Test with Vitest in Node.js or jsdom | [`@repobuddy/vitest`](/repobuddy/vitest/) |
+| [Run browser tests (Vitest + Playwright)](/repobuddy/vitest/guides/browser-tests/) | [`@repobuddy/vitest`](/repobuddy/vitest/) |
+| [Assert the order code runs in](/repobuddy/vitest/guides/expect-order/) | [`@repobuddy/vitest`](/repobuddy/vitest/), or [`@repobuddy/test`](/repobuddy/test/) [with Jest](/repobuddy/test/guides/expect-order-with-jest/) |
+| Lint and format with Biome | [`@repobuddy/biome`](/repobuddy/biome/) |
+| Configure TypeScript (`tsconfig`) | [`@repobuddy/typescript`](/repobuddy/typescript/) |
+| [Build a package as CommonJS and ESM](/repobuddy/typescript/guides/dual-cjs-esm-build/) | [`@repobuddy/typescript`](/repobuddy/typescript/) + [`repobuddy`](/repobuddy/repobuddy/) |
 
 Each package's overview has its install command, the peer dependencies to install with it, and what it supports. The
 `repobuddy` agent plugin installs through your coding agent, not as a dependency; see
