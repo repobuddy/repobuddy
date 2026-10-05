@@ -32,7 +32,7 @@ export const BASELINE_FILE = `${BENCH_DIR}/baseline.json`
 const RESULTS_DIR = `${BENCH_DIR}/results`
 
 /** A baseline older than this no longer counts as measured: the repo has moved on since. */
-export const BASELINE_MAX_AGE_DAYS = 90
+const BASELINE_MAX_AGE_DAYS = 90
 
 /**
  * The shape of a results file and of `baseline.json`. A file with no `schemaVersion` is version 1,
@@ -340,7 +340,7 @@ export function hostShell(command: string, cwd: string, timeoutMs: number): Shel
 }
 
 /* istanbul ignore next -- spawns the real agent; tests drive runs through a fake Runner */
-export const printRunner: Runner = {
+const printRunner: Runner = {
 	name: 'print',
 	shell: hostShell,
 	agent(config, task, checkout, timeoutMs) {
@@ -576,7 +576,7 @@ export function readBaseline(dir: string): Baseline | undefined {
 	}
 }
 
-export function baselineAgeDays(baseline: Pick<Baseline, 'createdAt'>, now: Date): number {
+function baselineAgeDays(baseline: Pick<Baseline, 'createdAt'>, now: Date): number {
 	return Math.floor((now.getTime() - new Date(baseline.createdAt).getTime()) / 86_400_000)
 }
 

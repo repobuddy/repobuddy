@@ -8,7 +8,7 @@
 import { spawnSync } from 'node:child_process'
 import { existsSync, readdirSync, readFileSync, realpathSync, statSync } from 'node:fs'
 import { basename, join, posix } from 'node:path'
-import { readBaseline } from './bench.js'
+import { readBaselineAt } from './aced-bench.js'
 import { findUndocumentedEnv, isSetupDoc, type UndocumentedEnv } from './env.js'
 import { findSearchedFixtureDirs, type SearchedFixtureDir } from './fixtures.js'
 import { findHarnessDoctor, type HarnessDoctorRun, runHarnessDoctor } from './harness-doctor.js'
@@ -608,6 +608,6 @@ export function collectFacts(dir: string, options: CollectOptions = {}): Facts {
 		deadCodeCommand,
 		...(options.runKnip && deadCodeCommand ? { deadCodeRun: runKnip(dir, deadCodeCommand) } : {}),
 		...(harnessDoctor ? { harnessDoctor: runHarnessDoctor(dir, harnessDoctor) } : {}),
-		benchBaselineAt: readBaseline(dir)?.createdAt,
+		benchBaselineAt: readBaselineAt(dir),
 	}
 }
