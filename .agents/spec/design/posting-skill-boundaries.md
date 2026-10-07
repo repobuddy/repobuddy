@@ -12,7 +12,7 @@ line that actually separates them is **who puts the text where it is going**.
 | Skill | Composes | Delivers | Trigger shape |
 |---|---|---|---|
 | `to-question` | yes — a fixed section template | **no** — stops at the clipboard | "help me word this so I can post it" (as a *comment*) |
-| `create-issue` | yes — a bug/feature-request shape | **yes** — `gh` / `glab` creates the issue | "file a bug", "open an issue" |
+| `file-issue` | yes — a bug/feature-request shape | **yes** — `gh` / `glab` creates the issue | "file a bug", "open an issue" |
 | `research-workbench:community-post` | yes — after running `deep-research` | **yes** — files to the chosen venue | "research this and post it" |
 
 `to-question` is the only one that never touches the network. That is not an omission; it is the
@@ -24,20 +24,20 @@ that will render correctly when pasted.
 ## The sharper line: new item vs. comment on an existing one
 
 The apparent overlap is that `to-question` accepts `github`, `gitlab`, `jira`, `linear`, `asana`,
-`bugzilla`, `redmine` and `trac` as targets, and `create-issue` also works against trackers. It dissolves once you say what the
+`bugzilla`, `redmine` and `trac` as targets, and `file-issue` also works against trackers. It dissolves once you say what the
 composed text actually *is* on a tracker:
 
-- **`create-issue` creates an item that does not exist yet** — an issue, a bug, a feature request.
+- **`file-issue` creates an item that does not exist yet** — an issue, a bug, a feature request.
 - **`to-question` writes a comment on an item that already exists** (or a Slack message, or an
   email). It never opens anything.
 
 So the two never contend for the same act. They are not two ways to reach a tracker; they are the
 *create* path and the *comment* path, and only one of them can be what the user meant.
 
-This is also why only `create-issue` needs a **dedup search**: creating a duplicate item is a real
+This is also why only `file-issue` needs a **dedup search**: creating a duplicate item is a real
 harm, and commenting on an item the user is already looking at cannot duplicate anything.
 
-The verb usually names it outright — "file/open/create an issue" is `create-issue`; "help me word
+The verb usually names it outright — "file/open/create an issue" is `file-issue`; "help me word
 this" is `to-question`. Where the verb is ambiguous, ask whether the thing being written *needs an
 item to exist first*. If it does, it is a comment.
 

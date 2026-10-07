@@ -1,13 +1,13 @@
 ---
-name: create-issue
-description: "Use this skill when creating GitHub or GitLab issues; searches for duplicates before filing."
+name: file-issue
+description: "Use this skill when filing or creating GitHub or GitLab issues; searches for duplicates before filing."
 ---
 
-# Create Issue
+# File Issue
 
-Creates a well-formed bug report or feature request on the appropriate issue tracker, after checking for existing similar issues to avoid duplicates.
+Files a well-formed bug report or feature request on the appropriate issue tracker, after checking for existing similar issues to avoid duplicates.
 
-Use when asked to create an issue, file a bug, open a feature request, or report a problem.
+Use when asked to file an issue, create an issue, file a bug, open a feature request, or report a problem.
 
 ## Supported Platforms
 

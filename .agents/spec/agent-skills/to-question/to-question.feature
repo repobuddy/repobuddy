@@ -11,7 +11,7 @@ Feature: to-question — compose a technical question and render it for a target
 
   @trigger
   Scenario Outline: engages to word a question, not to file an item or research a post
-    Given a developer in a repo where create-issue and community-post are also installed
+    Given a developer in a repo where file-issue and community-post are also installed
     And the developer has been weighing fixed-delay against exponential backoff for webhook retries
     When the developer says "<query>"
     Then to-question being selected is <should_trigger>

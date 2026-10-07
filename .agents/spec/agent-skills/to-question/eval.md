@@ -20,7 +20,7 @@ graded on come from there rather than from SKILL.md.
 **All three layers carry signal**, because the fit tier is `strong`
 ([README.md](./README.md) `## Use Cases`):
 
-- **trigger** — the skill sits in a repo alongside `create-issue` and
+- **trigger** — the skill sits in a repo alongside `file-issue` and
   `research-workbench:community-post`, which share its vocabulary. Whether it engages on the right
   requests is a genuine decision, not a formality.
 - **behavior** — the dialect rules, the fallback, and the handoff branches are conduct once engaged.

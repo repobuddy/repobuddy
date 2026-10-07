@@ -46,7 +46,7 @@ Skills that need a deterministic step run a bundled script. See [Skill scripts](
 
 | Skill | Use it to |
 | --- | --- |
-| [`create-issue`](/repobuddy/skills/create-issue/) | File a bug or feature request on GitHub or GitLab, after a duplicate search |
+| [`file-issue`](/repobuddy/skills/file-issue/) | File a bug or feature request on GitHub or GitLab, after a duplicate search |
 | [`to-question`](/repobuddy/skills/to-question/) | Word a question or unblock request for Slack, Jira, GitHub, email, and others |
 
 ## Agent setup and sessions
