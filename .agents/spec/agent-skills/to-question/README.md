@@ -45,7 +45,7 @@ nowhere to go. That is why `unblock`'s ask is a required slot naming a person an
 action, not a closing "thoughts?".
 
 **What the output is, on each kind of target.** This is load-bearing, because it is what separates
-the skill from `create-issue`:
+the skill from `file-issue`:
 
 | Target | The composed text is pasted as |
 |---|---|
@@ -92,15 +92,15 @@ label.
 ### Non-goals
 
 - **Delivering the post.** No posting, filing, sending, or authenticating. A user who wants the
-  thing to *exist* on a tracker is routed to `create-issue`; one who wants it researched first is
+  thing to *exist* on a tracker is routed to `file-issue`; one who wants it researched first is
   routed to `research-workbench:community-post`. The reasoning is
   [ADR 0001](../../design/decisions/0001-to-question-owns-composition-not-delivery.md), and the
   routing rule is [posting-skill-boundaries](../../design/posting-skill-boundaries.md).
-- **Duplicate checking.** `create-issue` searches for existing issues before filing because filing a
+- **Duplicate checking.** `file-issue` searches for existing issues before filing because filing a
   duplicate is a real harm. Composing text carries no such risk, and this skill does not search.
 - **Research.** It works from what the user brings. It does not go find prior art.
 - **Content shapes beyond `question` and `unblock`.** The shape is a parameter, but only two rows
-  exist, and the others were rejected rather than deferred: a bug report is `create-issue`'s (it
+  exist, and the others were rejected rather than deferred: a bug report is `file-issue`'s (it
   captures the environment and dedups), an RFC is `research-workbench:community-post`'s (it advocates
   one design and gathers prior art), a code-review comment is the wrong scale by an order of
   magnitude, and a status update is a different genre. See
@@ -148,7 +148,7 @@ four are now resolved on this branch.
 4. **The description did not describe a trigger — fixed.** The skill's frontmatter `description` is
    the surface the harness matches a user's request against, so for a strong-fit skill it is the
    activation decision's main input. It read as a statement of what the skill does rather than when
-   to use it, while both skills it competes with (`create-issue`, `community-post`) lead with "Use
+   to use it, while both skills it competes with (`file-issue`, `community-post`) lead with "Use
    this skill when…" — so on a request the three all plausibly match, this one was the weakest
    worded. It now leads with the trigger and says *paste*, which is the word that separates it from
    filing.
@@ -268,7 +268,7 @@ format resolution — the mode the instance is in, which the platform name does 
 ```mermaid
 graph TD
     A[Skill invoked with a question] --> B{Is the request<br/>compose-only?}
-    B -->|User asked to file/open an issue| C[Defer to create-issue]
+    B -->|User asked to file/open an issue| C[Defer to file-issue]
     B -->|User asked for research-backed post| D[Defer to community-post]
     B -->|User asked for wording/formatting| S1{Shape named or<br/>user says blocked?}
     S1 -->|Says blocked / names unblock| S2[Resolve shape to unblock<br/>and say so if it was inferred]
@@ -357,7 +357,7 @@ handoff, so reporting a copy that did not happen loses the approved output silen
 
 | Edge | Path (Given) | Scenario |
 |---|---|---|
-| `B` (the routing decision, all three branches) | a repo where create-issue and community-post are also installed | `` `engages to word a question, not to file an item or research a post` `` |
+| `B` (the routing decision, all three branches) | a repo where file-issue and community-post are also installed | `` `engages to word a question, not to file an item or research a post` `` |
 | `E -->|No| F` | no platform named anywhere in the request | `` `defaults to slack when no platform is named, and says so` `` |
 | `G1 -->|No — platform fixes it| G3` | user named jira | `` `renders jira wiki markup when jira is named` `` |
 | `G1 -->|No — platform fixes it| G3` | user named linear | `` `caps headings at four levels when linear is named` `` |

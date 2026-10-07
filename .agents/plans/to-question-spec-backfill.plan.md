@@ -110,13 +110,13 @@ chosen-vs-rejected forks in `.agents/spec/agent-skills/to-question/to-question.s
 ## Resolved decisions (settled — do not relitigate)
 
 - **`to-question` composes and renders; it never delivers.** It stops at the clipboard. This is the
-  boundary with `create-issue` (which creates items and dedups first) and
+  boundary with `file-issue` (which creates items and dedups first) and
   `research-workbench:community-post` (which researches first). The three partition on **delivery**,
   not content — `to-question` is the only one that never touches the network, and Slack/Jira/email
   are precisely the venues an agent usually cannot post to.
 - **On trackers the output is a comment on an item that already exists**, never a new item. This is
   the sharper form of the boundary above and it dissolves the GitHub/GitLab overlap entirely:
-  `create-issue` owns the create path, `to-question` owns the comment path.
+  `file-issue` owns the create path, `to-question` owns the comment path.
 - **The opening line carries no label.** Ask the question directly in one line. Email's subject is a
   separate line for the client's Subject field, never inside the pasted body.
 - **Announce a guess, not a certainty.** Defaulting to slack announces; falling back to the markdown

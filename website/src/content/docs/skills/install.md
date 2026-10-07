@@ -84,13 +84,13 @@ npx skills add repobuddy/repobuddy --list
 
 # install all of them, or some of them
 npx skills add repobuddy/repobuddy
-npx skills add repobuddy/repobuddy --skill create-issue --skill setup-github-repo
+npx skills add repobuddy/repobuddy --skill file-issue --skill setup-github-repo
 
 # update every skill in skills-lock.json
 npx skills update
 
 # uninstall one, or all of them
-npx skills remove create-issue
+npx skills remove file-issue
 npx skills remove --all
 ```
 

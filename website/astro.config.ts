@@ -94,7 +94,7 @@ export default defineConfig({
 								{
 									label: 'Issues and questions',
 									items: [
-										{ label: 'create-issue', slug: 'skills/create-issue' },
+										{ label: 'file-issue', slug: 'skills/file-issue' },
 										{ label: 'to-question', slug: 'skills/to-question' },
 									],
 								},

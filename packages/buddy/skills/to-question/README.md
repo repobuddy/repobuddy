@@ -89,7 +89,7 @@ opposite rules.
 3. Iterates with you until you're happy with the output
 4. Copies the result to your clipboard — or, where no clipboard is available, leaves it in a private temp file and tells you the path
 
-It formats for you to paste. It never posts, files, or sends anything — to file an issue, use `create-issue`; to post somewhere public, use `research-workbench:community-post`.
+It formats for you to paste. It never posts, files, or sends anything — to file an issue, use `file-issue`; to post somewhere public, use `research-workbench:community-post`.
 
 ## Output structure
 
