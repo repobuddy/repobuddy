@@ -184,6 +184,6 @@ npx skills add repobuddy/repobuddy --skill init-buddy
 ```
 
 A skill installed with `skills add` comes from git and has no built `scripts/` folder. It runs its
-script through `npx -y repobuddy@^1.8.0` instead, which needs network access. The plugin install
+script through `npx -y repobuddy@^2.1.0` instead, which needs network access. The plugin install
 ships the script with the skill. The `gh-api-guard` hook has no `npx` fallback, because a hook runs on every
 `gh api` or `glab api` call; install the plugin, or copy the script out of the npm package, to use it.

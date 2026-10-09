@@ -35,7 +35,7 @@ Two things are chosen independently: the **content shape** (which sections the d
 | `question` | The user is undecided between alternatives and wants input | Context → Use Cases → Problem → Options → Questions | ✓ |
 | `unblock` | The user is stuck and needs a named person to do a named thing | Blocked on → Already tried → **What I need from you** → By when | |
 
-`question` is the default, so a request that names no shape composes exactly as it always has. Pick
+`question` is the default, so a request that names no shape composes as a plain question. Pick
 `unblock` when the user's own words say they are blocked — *blocked*, *stuck*, *waiting on*, *can't
 proceed until*, *need access to*, or a request that already carries a deadline.
 

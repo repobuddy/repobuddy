@@ -29,7 +29,7 @@ node <this-skill-dir>/scripts/detect-env.mjs [--host <kind[=hostname]>]... [--pr
 ```
 
 The script ships in the `repobuddy` npm package. If `scripts/detect-env.mjs` is missing (the skill was
-installed from git) or cannot be run, use `npx -y repobuddy@^1.8.0 env` with the same arguments.
+installed from git) or cannot be run, use `npx -y repobuddy@^2.1.0 env` with the same arguments.
 
 - It reads the hosts from the repo's git remotes. Pass `--host` when there is no repo, when the user names a host, or to add a self-hosted instance (`--host gitlab=git.corp.example`).
 - If a host shows as `unknown`, re-run with `--probe`. It asks that host's API which product it runs.

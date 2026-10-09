@@ -16,7 +16,7 @@ Applies a standard set of GitHub repository settings with the `gh` CLI: merge op
 2. **Detects the current state** with a bundled script, then summarizes the pending changes and asks you to confirm. The state snapshot goes to the OS temp directory, never into the repo. If an earlier version of the skill left `.github/setup-state.json` in the repo, the script deletes it and the skill tells you.
 3. **Applies the repository settings:** delete branches on merge, allow auto-merge, squash and rebase merges, and updating a PR branch, and turns off merge commits.
 4. **Turns on Dependabot security updates** if they are off.
-5. **Creates a branch ruleset** named `default-branch-protection` when no branch ruleset exists. It blocks deleting and force-pushing the default branch, with Administrators and Maintainers able to bypass. When it also writes `pull-request.yml`, it requires the `all-checks` status check. Otherwise it asks whether you want required checks and which job names to use.
+5. **Creates a branch ruleset** named `default-branch-protection` when no branch ruleset exists. It blocks deleting and force-pushing the default branch, with Administrators able to bypass. When it also writes `pull-request.yml`, it requires the `all-checks` status check. Otherwise it asks whether you want required checks and which job names to use.
 6. **Reports the merge backstop, and offers one if there is none.** It tells you whether the default branch already has one: GitHub's merge queue, a rule requiring the branch to be up to date before merging, or a third-party queue such as Mergify (found by its config file). If one exists, it adds nothing. If none does, it offers a `merge-backstop` ruleset with no bypass actors, so an agent running with an admin token goes through it too:
    - a **merge queue** where GitHub offers one: public repos owned by an organization, and private ones on GitHub Enterprise Cloud;
    - otherwise, **require up to date**.
@@ -61,5 +61,5 @@ npx skills add repobuddy/repobuddy --skill setup-github-repo
 ```
 
 A skill installed with `skills add` comes from git and has no built `scripts/` folder. It runs its
-scripts through `npx -y repobuddy@^1.15.0` instead, which needs network access. The plugin install
+scripts through `npx -y repobuddy@^2.1.0` instead, which needs network access. The plugin install
 ships the scripts with the skill.

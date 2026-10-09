@@ -24,7 +24,7 @@ export interface ScaffoldState {
 
 export const ALL_WORKFLOWS = ['pull-request', 'release', 'dependabot-automerge', 'codeql']
 
-const NODE_LTS_VERSIONS = [20, 22, 24]
+const NODE_LTS_VERSIONS = [22, 24]
 
 function installCmd(pm: string | null): string {
 	switch (pm) {

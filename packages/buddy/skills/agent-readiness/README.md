@@ -151,7 +151,7 @@ node <skill-dir>/scripts/agent-readiness.mjs score [--dir <repo>] [--json] [--ch
 node <skill-dir>/scripts/agent-readiness.mjs score --package <path> [--json] [--check [--min-level <1-4>]]
 node <skill-dir>/scripts/agent-readiness.mjs bench convert <results.json> --arm <label> [--task-set <dir>] [--out <file>]
 node <skill-dir>/scripts/agent-readiness.mjs suggest [--area <id>] [--json]
-npx -y repobuddy@^1.12.0 agent-readiness score
+npx -y repobuddy@^2.1.0 agent-readiness score
 ```
 
 ## Install

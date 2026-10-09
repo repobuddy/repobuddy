@@ -268,7 +268,7 @@ grep -rl '"version": null' . --include="package.json" | grep -v node_modules
 
 ---
 
-### Build tool: pipeline/tasks rename (Turbo v2)
+### Build tool: pipeline renamed to tasks
 
 **Symptom:** `Found 'pipeline' field instead of 'tasks'`
 
@@ -320,7 +320,7 @@ grep -rl '"version": null' . --include="package.json" | grep -v node_modules
 ```yaml
 # pnpm-workspace.yaml
 overrides:
-  typescript: '~5.x.x'
+  typescript: '<range the library needs>'
 ```
 
 ---
