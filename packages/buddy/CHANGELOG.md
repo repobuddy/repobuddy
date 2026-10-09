@@ -1,5 +1,16 @@
 # repobuddy
 
+## 2.2.0
+
+### Minor Changes
+
+- 7b3fcc2: Rename the `create-issue` skill to `file-issue`.
+  If you invoke `/create-issue` or install it with `--skill create-issue`, use `file-issue` instead.
+
+### Patch Changes
+
+- 86499c7: Fix skill errors found by a prompt audit: `setup-github-repo` no longer adds the Triage role (id 2) as a ruleset bypass actor and drops Node 20 from the CI matrix, `llms-txt` points at `buddy-agent-harness:init-buddy-agent-harness`, `setup-npm-trusted-publishing` names the right step, pinned `repobuddy` ranges are `^2.1.0`, and dated or migration-relative wording is removed.
+
 ## 2.1.0
 
 ### Minor Changes
