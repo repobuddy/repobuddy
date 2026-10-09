@@ -261,8 +261,8 @@ importers:
         specifier: ^10.1.0
         version: 10.1.0
       cyber-mux:
-        specifier: ^0.8.0
-        version: 0.8.0(typescript@7.0.2)
+        specifier: ^0.9.0
+        version: 0.9.1(typescript@7.0.2)
       jest:
         specifier: ^30.0.0
         version: 30.4.2(@types/node@24.13.3)(supports-color@8.1.1)
@@ -4900,8 +4900,8 @@ packages:
   csstype@3.2.3:
     resolution: {integrity: sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==}
 
-  cyber-mux@0.8.0:
-    resolution: {integrity: sha512-Et9hyCQZBpVuiuXIbrof8L7AQicyR9gZW6S9Q3Tav2Qsc+URZM0FdTJZyrZ4LckmtLZzpNK68Br2UxVZMQ/ilg==}
+  cyber-mux@0.9.1:
+    resolution: {integrity: sha512-DnVXMdAi558x6ZtjexsYHVgnapMX0NAvFx3eFw3CsbwazzjnnybrLplXpvxrDd57/iAplJBN2tL22YVKcBQkNA==}
     engines: {node: '>=22'}
     hasBin: true
 
@@ -11778,8 +11778,10 @@ snapshots:
 
   csstype@3.2.3: {}
 
-  cyber-mux@0.8.0(typescript@7.0.2):
+  cyber-mux@0.9.1(typescript@7.0.2):
     dependencies:
+      '@clibuilder/axi': 0.1.0(clibuilder@11.3.2(typescript@7.0.2))
+      '@cyberuni/agent-harness': 0.6.0(typescript@7.0.2)
       clibuilder: 11.3.2(typescript@7.0.2)
     transitivePeerDependencies:
       - typescript
