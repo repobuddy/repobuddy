@@ -57,13 +57,13 @@
 		"verify": "npm-run-all -p build typecheck -p test"
 	},
 	"devDependencies": {
-		"@cyberuni/agent-harness": "^0.5.0",
+		"@cyberuni/agent-harness": "^0.6.0",
 		"@jest/globals": "^30.0.0",
 		"@repobuddy/jest": "workspace:*",
-		"buddy-agent-harness": "^0.19.0",
+		"buddy-agent-harness": "^0.20.0",
 		"clibuilder": "^11.3.2",
 		"cross-env": "^10.1.0",
-		"cyber-mux": "^0.8.0",
+		"cyber-mux": "^0.9.0",
 		"jest": "^30.0.0",
 		"npm-run-all2": "^9.0.0",
 		"rimraf": "^6.0.1",

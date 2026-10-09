@@ -1,9 +1,9 @@
 ---
-title: create-issue
+title: file-issue
 description: File a bug report or feature request on GitHub or GitLab, after searching for duplicates and confirming with you.
 ---
 
-`create-issue` detects the tracker from the `origin` remote, gathers the details, searches open and closed issues for
+`file-issue` detects the tracker from the `origin` remote, gathers the details, searches open and closed issues for
 duplicates, and creates the issue only after you confirm.
 
 ## When to use
@@ -14,7 +14,7 @@ duplicates, and creates the issue only after you confirm.
 
 ## Invoke
 
-Run `/create-issue`, or ask in plain words. It takes no arguments.
+Run `/file-issue`, or ask in plain words. It takes no arguments.
 
 ## What it does
 
@@ -40,7 +40,7 @@ It never creates an issue without the duplicate search and your confirmation.
 ## Example
 
 ```
-/create-issue the build crashes on Node 24 when the cache dir is missing
+/file-issue the build crashes on Node 24 when the cache dir is missing
 ```
 
-More detail: [skill README](https://github.com/repobuddy/repobuddy/tree/main/packages/buddy/skills/create-issue).
+More detail: [skill README](https://github.com/repobuddy/repobuddy/tree/main/packages/buddy/skills/file-issue).

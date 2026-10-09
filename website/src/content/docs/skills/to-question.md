@@ -10,7 +10,7 @@ result. It never posts, files, or sends anything.
 
 - You want a question or a "I am blocked on X" message ready to paste into Slack, Jira, GitHub, email, and similar.
 
-To file an issue, use [`create-issue`](/repobuddy/skills/create-issue/). For a public venue (Stack Overflow, Reddit,
+To file an issue, use [`file-issue`](/repobuddy/skills/file-issue/). For a public venue (Stack Overflow, Reddit,
 Discord, X, and others) it points you to `research-workbench:community-post` instead.
 
 ## Invoke

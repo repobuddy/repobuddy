@@ -21,7 +21,7 @@ Tested against five other things a person might want to post:
 
 | Content shape | Does the template fit? | Call |
 |---|---|---|
-| **Bug report** | No. Wants Steps to Reproduce / Expected / Actual / Environment. "Options" is meaningless — a bug has no alternatives to weigh. | **Cut** — `create-issue` already does this properly, including environment capture and a dedup search. Duplicating it here would be a worse copy without the dedup. |
+| **Bug report** | No. Wants Steps to Reproduce / Expected / Actual / Environment. "Options" is meaningless — a bug has no alternatives to weigh. | **Cut** — `file-issue` already does this properly, including environment capture and a dedup search. Duplicating it here would be a worse copy without the dedup. |
 | **RFC / design proposal** | Partly. Motivation → Alternatives → Unresolved questions maps well. The gap is that an RFC *advocates one design*, while this template presents options neutrally. | **Cut for now** — the advocacy shape is `research-workbench:community-post`'s, which additionally gathers prior art. Revisit only if someone wants an RFC without research. |
 | **Code-review comment** | No. Wrong scale by an order of magnitude — a review comment is one to three sentences anchored to a line. Five ceremonial sections would be absurd. | **Cut** — not a near-miss, a different genre. |
 | **Status update** | No. Done / Next / Blockers. No problem, no options, no questions. | **Cut** — different genre again; `asana-standup` covers the internal case. |
@@ -134,7 +134,7 @@ skill that legitimately ships static resources is not forced into the wrong one.
 
 ---
 
-## 3. Does this overlap `create-issue` and `research-workbench:community-post`?
+## 3. Does this overlap `file-issue` and `research-workbench:community-post`?
 
 Read fully; both are genuinely adjacent. The conclusion is that **there is no duplication, but the
 boundary was undocumented**, which is the thing that would have caused trouble.
@@ -144,7 +144,7 @@ The three partition on **delivery**, not on content:
 | Skill | Composes | Delivers | Researches first |
 |---|---|---|---|
 | `to-question` | yes | **no** — stops at the clipboard | no |
-| `create-issue` | yes | yes (`gh` / `glab`) | no, but dedups |
+| `file-issue` | yes | yes (`gh` / `glab`) | no, but dedups |
 | `community-post` | yes | yes (venue of choice) | yes |
 
 `to-question` is the only one that never touches the network, and its platform list is the evidence
@@ -152,7 +152,7 @@ that this is a real niche rather than an omission: **Slack, Jira and email are p
 an agent usually cannot post to** — a DM, an SSO-gated tracker, a mail client it has no session with.
 Where the human is the delivery mechanism, handing them correctly-rendered text is the whole job.
 
-**Public venues went to `community-post` (#582).** The delivery axis above settles `create-issue`
+**Public venues went to `community-post` (#582).** The delivery axis above settles `file-issue`
 cleanly, but it does *not* settle a public venue, because `community-post` also stops at a human
 paste for Discord, Reddit and X — on those venues neither skill delivers, so "who delivers" cannot
 tell them apart. The axis that does is **whether the audience already has the context**, and every
@@ -163,10 +163,10 @@ answer, which are two of this skill's own stated non-goals. Stack-Overflow-only 
 rejected on those grounds; X/Bluesky were separately cut in #579 for having no markup and a
 280/300-character cap.
 
-**The one real overlap** is that `to-question` accepts `github`/`gitlab`, where `create-issue` can
-post. **Keep both**, because they serve different acts: `create-issue` makes an issue *exist*
+**The one real overlap** is that `to-question` accepts `github`/`gitlab`, where `file-issue` can
+post. **Keep both**, because they serve different acts: `file-issue` makes an issue *exist*
 (and must dedup first, since a duplicate issue is a real harm), while `to-question` also serves
-pasting into a *comment* box on an existing issue or PR, which `create-issue` does not do. The
+pasting into a *comment* box on an existing issue or PR, which `file-issue` does not do. The
 disambiguator is the user's verb — "file/open" versus "help me word".
 
 **Done on this branch, no issue needed:** the boundary is now written down in
@@ -296,6 +296,6 @@ fire: Jira's "Markdown code fence" scan ran over lines the fence pass had alread
 | 4 — Portable handoff path instead of hardcoded `/tmp/question.md` | [#580](https://github.com/repobuddy/repobuddy/issues/580) — **delivered** |
 | 5 — The non-Markdown trackers, and the mode the instance is in | [#598](https://github.com/repobuddy/repobuddy/issues/598) — **delivered**: `references/plaintext.md`, `references/textile.md`, `references/trac.md`, a Markdown-mode `bugzilla` row, mode resolution with the stated assumption, and four checker targets |
 
-Fork 3 (the overlap with `create-issue` and `community-post`) needed no issue — it resolved to
+Fork 3 (the overlap with `file-issue` and `community-post`) needed no issue — it resolved to
 "no duplication, boundary undocumented", and the boundary is now documented and enforced by the
 suite's near-miss scenarios on this branch.

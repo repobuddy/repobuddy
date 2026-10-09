@@ -148,7 +148,7 @@ level 4, so there `--min-level` takes 1 to 4.
    a published artifact the repo deliberately commits is still noise to search, but say why it is
    there. Never flip a security failure without reading the file.
 4. **Report** in the shape below.
-5. **Offer the next step.** Offer `improve` for the area of the first fix, and `create-issue` for
+5. **Offer the next step.** Offer `improve` for the area of the first fix, and `file-issue` for
    fixes the user wants tracked instead. Change nothing without a yes.
 
 | Area | Reference | Fixes hand off to |
@@ -159,7 +159,7 @@ level 4, so there `--min-level` takes 1 to 4.
 | Signal-to-noise | `references/areas/noise.md` | none |
 | Self-describing code | `references/areas/self-describing.md` | none |
 | Environment and setup | `references/areas/environment.md` | none |
-| Task discovery | `references/areas/task-discovery.md` | `create-issue` for templates |
+| Task discovery | `references/areas/task-discovery.md` | `file-issue` for templates |
 | Security | `references/areas/security.md` | `review-permissions`, `setup-github-repo`, `min-release-age`, `setup-npm-trusted-publishing` |
 
 ## Report
@@ -230,7 +230,7 @@ next area.
    If the user asked for no commits, leave the changes staged and stop after this area.
 6. **Hand off owned fixes.** After the commit, offer to run each owner skill for its findings, one
    at a time. What an owner changes is its own work and its own commit, never this area's. When the
-   owner skill is not installed, name it and how to get it, or offer `create-issue`. The repobuddy
+   owner skill is not installed, name it and how to get it, or offer `file-issue`. The repobuddy
    skills install with `npx skills add repobuddy/repobuddy --skill <name>`; buddy-agent-harness is a
    separate plugin (https://github.com/repobuddy/buddy-agent-harness).
 7. **Re-score.** Run **Score** steps 1–3 again. Report the level change and the area's score change,

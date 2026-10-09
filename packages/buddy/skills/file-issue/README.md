@@ -1,4 +1,4 @@
-# create-issue
+# file-issue
 
 Files a bug report or feature request on the repository's issue tracker. It searches for an existing issue first and asks you before it creates anything, so it does not file a duplicate.
 
@@ -27,7 +27,7 @@ Files a bug report or feature request on the repository's issue tracker. It sear
 
 ## How to invoke
 
-Ask for it directly, or run `/create-issue` where slash commands are supported.
+Ask for it directly, or run `/file-issue` where slash commands are supported.
 
 ## What it produces
 
@@ -36,5 +36,5 @@ A new issue on GitHub or GitLab and its URL, or, when a duplicate already exists
 ## Install
 
 ```sh
-npx skills add repobuddy/repobuddy --skill create-issue
+npx skills add repobuddy/repobuddy --skill file-issue
 ```

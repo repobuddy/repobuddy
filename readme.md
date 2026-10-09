@@ -14,7 +14,7 @@
 | Skill | Description |
 | --- | --- |
 | [`agent-readiness`] | Score how ready a repo is for coding agents — a gated level, the three fixes worth the most, and the tokens every session loads — hold a level in CI, then fix the findings one area per commit, and benchmark what agents cost before and after; `--package` scores how easily consumers' agents can use a library |
-| [`create-issue`] | Create a bug report or feature request — searches for duplicates first |
+| [`file-issue`] | File a bug report or feature request — searches for duplicates first |
 | [`llms-txt`] | Publish an `llms.txt` generated from a project's real public surface, with a CI drift check |
 | [`init-buddy`] | Set up the machine for the repo's git host — detects the OS and existing MCP servers, then installs and logs in `gh`, `glab`, `tea`, `fj`, or `az`, and proposes a starting harness allow list |
 | [`merge-dep-prs`] | Merge pending dependency update PRs — gates each merge on whether CI reached what the change can break, diagnoses CI failures, never merges release PRs |
@@ -84,7 +84,7 @@ npx skills add repobuddy/repobuddy
 **Install specific skills:**
 
 ```sh
-npx skills add repobuddy/repobuddy --skill create-issue --skill setup-github-repo
+npx skills add repobuddy/repobuddy --skill file-issue --skill setup-github-repo
 ```
 
 Some skills run scripts that are built at release and ship only in the npm package. Installed from
@@ -166,7 +166,7 @@ npx skills add repobuddy/agent-changesets
 [Skills CLI]: https://github.com/vercel-labs/skills
 [universal plugin]: https://github.com/agentplugins/agent-plugins-spec
 [`agent-readiness`]: ./packages/buddy/skills/agent-readiness/SKILL.md
-[`create-issue`]: ./packages/buddy/skills/create-issue/SKILL.md
+[`file-issue`]: ./packages/buddy/skills/file-issue/SKILL.md
 [`llms-txt`]: ./packages/buddy/skills/llms-txt/SKILL.md
 [`init-buddy`]: ./packages/buddy/skills/init-buddy/SKILL.md
 [`merge-dep-prs`]: ./packages/buddy/skills/merge-dep-prs/SKILL.md
