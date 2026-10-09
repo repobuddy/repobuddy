@@ -22,7 +22,7 @@ An agent meeting a library cold has its type declarations, its source, and no ma
 | Published | yes — package `files` and/or the docs site | no |
 | Source | derived from the surface | judgement, hand-written |
 
-Both can exist; they should not overlap. If a fact is only useful to someone editing the repo, it belongs in `AGENTS.md` — see `buddy-agent-harness:init`. If `AGENTS.md` starts restating the public API, cut it and point at `llms.txt`.
+Both can exist; they should not overlap. If a fact is only useful to someone editing the repo, it belongs in `AGENTS.md` — see `buddy-agent-harness:init-buddy-agent-harness`. If `AGENTS.md` starts restating the public API, cut it and point at `llms.txt`.
 
 ## Step 1 — Decide whether the project needs one
 

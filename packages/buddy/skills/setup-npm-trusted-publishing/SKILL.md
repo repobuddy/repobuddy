@@ -47,13 +47,13 @@ SKILL_DIR=$(npx skills path setup-npm-trusted-publishing 2>/dev/null || echo "$H
 if [ -f "$SKILL_DIR/scripts/npm-trust.mjs" ]; then
   RUN="node $SKILL_DIR/scripts/npm-trust.mjs"
 else
-  RUN="npx -y repobuddy@^1.9.0 npm-trust"
+  RUN="npx -y repobuddy@^2.1.0 npm-trust"
 fi
 $RUN plan --org <login> --verbose
 ```
 
 The script ships in the `repobuddy` npm package. If `scripts/npm-trust.mjs` is missing (the skill was
-installed from git) or cannot be run, use `npx -y repobuddy@^1.9.0 npm-trust <command>` with the same
+installed from git) or cannot be run, use `npx -y repobuddy@^2.1.0 npm-trust <command>` with the same
 arguments.
 
 Writes `.github/npm-trust-plan.json` and prints a JSON ack. **Do not parse stdout for the plan** — read the artifact:
@@ -121,7 +121,7 @@ Only after a release has published through OIDC:
 1. Delete `NPM_TOKEN` from repo secrets (`gh secret delete NPM_TOKEN --repo <owner/name>`).
 2. Optionally set **Require two-factor authentication and disallow tokens** in the package's Publishing access settings.
 
-Step 2 is a one-way narrowing that breaks every remaining token-based publish for that package. Never bundle it with Step 4.
+The second action is a one-way narrowing that breaks every remaining token-based publish for that package. Never bundle it with Step 4.
 
 ## Anti-patterns
 

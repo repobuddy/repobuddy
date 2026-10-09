@@ -22,7 +22,7 @@ Run `/setup-github-repo`, or ask in plain words. It takes no arguments and works
 - Repository settings: delete branches on merge, allow auto-merge, squash and rebase merges, update PR branch; merge commits off.
 - Dependabot security updates, if off.
 - A `default-branch-protection` ruleset when no branch ruleset exists. It blocks deleting and force-pushing the default
-  branch, with Administrators and Maintainers able to bypass. It requires the `all-checks` status check when it also
+  branch, with Administrators able to bypass. It requires the `all-checks` status check when it also
   writes `pull-request.yml`.
 - A merge backstop if the branch has none: a `merge-backstop` ruleset with no bypass actors, as a merge queue where
   GitHub offers one (public org repos, private repos on GitHub Enterprise Cloud), otherwise require up to date. It

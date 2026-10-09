@@ -41,7 +41,7 @@ node <this-skill-dir>/scripts/agent-readiness.mjs suggest [--dir <repo>] [--area
 `<this-skill-dir>` is the directory holding this SKILL.md, not the current working directory.
 
 The script ships in the `repobuddy` npm package. If `scripts/agent-readiness.mjs` is missing (the skill
-was installed from git) or cannot be run, use `npx -y repobuddy@^1.12.0 agent-readiness score` with the
+was installed from git) or cannot be run, use `npx -y repobuddy@^2.1.0 agent-readiness score` with the
 same arguments.
 
 `score` reads files and asks `git` which files are tracked and ignored. It builds, installs, and runs
@@ -99,8 +99,8 @@ merge: merge-sections
 `merge: merge-sections` replaces only the `## Weights` section; an area it leaves out keeps its
 default. `--package` does not read it. Weights never touch gates or the level, so an override cannot
 lower the bar CI holds. The report marks each overridden weight. A malformed item stops the script
-(exit 2) rather than scoring with a guess. The old `.agents/readiness/weights.json` is still read, for
-one release, when no project override exists; the script then prints the override file to create.
+(exit 2) rather than scoring with a guess. A legacy `.agents/readiness/weights.json` is still read
+when no project override exists; the script then prints the override file to create.
 Offer to create it, and to delete the JSON file, on the user's yes.
 
 ### Suggesting a weight
@@ -309,11 +309,11 @@ Compare one area's changes at a time, or the effect of each cannot be told apart
    3-5 tasks of this repo's own: a seeded bug, a small feature, a question whose answer the `check` can
    grep. Write no task yourself.
 
-**Moving from the old bench.** `agent-readiness.mjs bench` now only prints this handover. A repo with
+**Moving a `.agents/readiness/bench/` folder.** `agent-readiness.mjs bench` now only prints this handover. A repo with
 `.agents/readiness/bench/` moves it with `git mv .agents/readiness/bench
 .agents/aced/bench/repobuddy.readiness`, points any check paths in `tasks.json` at the new folder, and
-records a new baseline with ACED: the engine reads only schema version 3. `bench convert` turns an
-old results file into a version-3 record, so `aced-bench compare` can re-read an old pair; see
+records a new baseline with ACED: the engine reads only schema version 3. `bench convert` turns a
+legacy results file into a version-3 record, so `aced-bench compare` can re-read a legacy pair; see
 [references/bench-results.md](references/bench-results.md). Converted records compare only with each
 other, never with a run ACED made.
 

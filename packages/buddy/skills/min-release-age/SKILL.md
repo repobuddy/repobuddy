@@ -29,7 +29,7 @@ node <this-skill-dir>/scripts/min-release-age.mjs restore [--dry-run]
 ```
 
 The script ships in the `repobuddy` npm package. If `scripts/min-release-age.mjs` is missing (the skill
-was installed from git) or cannot be run, use `npx -y repobuddy@^1.8.0 release-age <command>` with the
+was installed from git) or cannot be run, use `npx -y repobuddy@^2.1.0 release-age <command>` with the
 same arguments.
 
 It detects the package manager from `packageManager`, then from lockfiles. Pass `--pm pnpm|yarn|npm|bun`
@@ -67,7 +67,7 @@ Entries without a marker are permanent policy. Never add, remove, or rewrite the
    - Report what was checked. If anything looks wrong, stop and tell the user instead of lifting.
 3. **Handle npm and bun.** They cannot exempt a single version. Tell the user that the lift exempts **every** version of the package until it expires, and run with `--name-wide` only after they agree.
 4. Run `lift <pkg@version>`. The script sets the expiry to the publish time plus the gate window. After that time the version passes the gate without the exemption.
-5. **Schedule the removal.** `lift` reports `ci`, and its summary ends with a `cleanup job:` line (an older script without them: run `status`). If `ci.installed` is false, run Setup CI now and put the job in the same change as the lift. This step is required, not an offer: without the job, an expired lift stays in the config until someone remembers to run Restore. Setup CI still asks before any change outside the repo (step 7 there). If the user declines that part, commit the job anyway, and tell them which outside step is left and that the lift stays until it is done or they run Restore.
+5. **Schedule the removal.** `lift` reports `ci`, and its summary ends with a `cleanup job:` line (if they are missing, run `status`). If `ci.installed` is false, run Setup CI now and put the job in the same change as the lift. This step is required, not an offer: without the job, an expired lift stays in the config until someone remembers to run Restore. Setup CI still asks before any change outside the repo (step 7 there). If the user declines that part, commit the job anyway, and tell them which outside step is left and that the lift stays until it is done or they run Restore.
 6. Run the install so the lockfile records the version and its integrity hash. Commit the config change with the lockfile, and with the cleanup job from step 5 when it is new.
 7. **Keep the reason neutral.** Commit messages and PR text say which package was lifted, not why. If the reason is an undisclosed vulnerability, keep that detail in a private security advisory.
 
@@ -88,7 +88,7 @@ Entries without a marker are permanent policy. Never add, remove, or rewrite the
 2. If `ci.installed` is true, report where the job is and stop.
 3. If `provider` does not match what the user expects (for example, the repo is mirrored or several CI systems are present), confirm the target with the user.
 4. Every reference copies `scripts/min-release-age.mjs` into the repo. If the skill has no `scripts/`
-   folder, take the file from the package instead: run `npm pack repobuddy@^1.8.0` in a temp directory,
+   folder, take the file from the package instead: run `npm pack repobuddy@^2.1.0` in a temp directory,
    extract the tarball, and copy `package/skills/min-release-age/scripts/min-release-age.mjs`.
 5. Load **only** the file named in `ci.reference` and follow it:
 

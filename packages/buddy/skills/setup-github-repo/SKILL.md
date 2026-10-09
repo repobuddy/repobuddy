@@ -42,14 +42,14 @@ SKILL_DIR=$(npx skills path setup-github-repo 2>/dev/null || echo "$HOME/.agents
 if [ -f "$SKILL_DIR/scripts/detect-state.mjs" ]; then
   ACK=$(node "$SKILL_DIR/scripts/detect-state.mjs")
 else
-  ACK=$(npx -y repobuddy@^1.15.0 detect-state)
+  ACK=$(npx -y repobuddy@^2.1.0 detect-state)
 fi
 STATE=$(printf '%s' "$ACK" | jq -r .artifact)
 printf '%s\n' "$ACK"
 ```
 
 The script ships in the `repobuddy` npm package. If `scripts/detect-state.mjs` is missing (the skill
-was installed from git) or cannot be run, use `npx -y repobuddy@^1.15.0 detect-state` with the same
+was installed from git) or cannot be run, use `npx -y repobuddy@^2.1.0 detect-state` with the same
 arguments.
 
 The script writes the state artifact **outside the repo tree** — under the OS temp dir, at the
@@ -58,8 +58,8 @@ copy left in the working tree reads like a statement of the repo's settings poli
 run made it stale. Capture the path as `$STATE` (above) and pass it to every later step; if a
 later step runs in a shell where `$STATE` is unset, use the literal path the ack printed.
 
-If the ack carries `removedLegacyArtifact`, an earlier version of this skill had left that file in
-the repo and the script deleted it. Tell the user — if they had committed it, it now shows as a
+If the ack carries `removedLegacyArtifact`, the script found a state file left in the repo and
+deleted it. Tell the user — if they had committed it, it now shows as a
 deletion in `git status`.
 
 The ack carries only the artifact path and a count. **Do not parse stdout for state** — read the
@@ -120,7 +120,7 @@ gh api --method POST "repos/$REPO/rulesets" \
   --field target="branch" \
   --field enforcement="active" \
   --field 'conditions={"ref_name":{"include":["~DEFAULT_BRANCH"],"exclude":[]}}' \
-  --field 'bypass_actors=[{"actor_id":5,"actor_type":"RepositoryRole","bypass_mode":"always"},{"actor_id":2,"actor_type":"RepositoryRole","bypass_mode":"always"}]' \
+  --field 'bypass_actors=[{"actor_id":5,"actor_type":"RepositoryRole","bypass_mode":"always"}]' \
   --input - <<'EOF'
 {
   "rules": [
@@ -131,7 +131,7 @@ gh api --method POST "repos/$REPO/rulesets" \
 EOF
 ```
 
-Actor IDs: `5` = Administrators, `2` = Maintainers (standard GitHub built-in role IDs).
+Actor ID `5` = Administrators (the standard GitHub built-in role ID). Do not add `2`: that is the Triage role, which has no push access, so the bypass would grant nothing.
 
 ### Required status checks
 
@@ -201,9 +201,13 @@ Either needs **required status checks**, or nothing is gated: use the checks cho
 none, the backstop is not worth adding yet — say so.
 
 Put the backstop in its own ruleset, `merge-backstop`, with **no bypass actors**. The default-branch
-ruleset lets Administrators and Maintainers bypass, and an agent often runs with an admin token — a
+ruleset lets Administrators bypass, and an agent often runs with an admin token — a
 bypassable backstop is exactly the hole this closes. If the owner needs an emergency path, they can
 disable the ruleset for that one merge.
+
+A changesets Version Packages PR opened with the default `GITHUB_TOKEN` gets no checks, so a
+backstop that requires checks and has no bypass actors blocks it. Open that PR with a token or app
+that triggers workflows, or have the owner disable the ruleset for that one merge.
 
 Merge queue (`merge_method` must be one the repo allows — Step 2 allows `SQUASH` and `REBASE`):
 
@@ -280,12 +284,12 @@ SKILL_DIR=$(npx skills path setup-github-repo 2>/dev/null || echo "$HOME/.agents
 if [ -f "$SKILL_DIR/scripts/scaffold-workflows.mjs" ]; then
   node "$SKILL_DIR/scripts/scaffold-workflows.mjs" --state "$STATE" --yes
 else
-  npx -y repobuddy@^1.15.0 scaffold-workflows --state "$STATE" --yes
+  npx -y repobuddy@^2.1.0 scaffold-workflows --state "$STATE" --yes
 fi
 ```
 
 The script ships in the `repobuddy` npm package. If `scripts/scaffold-workflows.mjs` is missing (the
-skill was installed from git) or cannot be run, use `npx -y repobuddy@^1.15.0 scaffold-workflows` with
+skill was installed from git) or cannot be run, use `npx -y repobuddy@^2.1.0 scaffold-workflows` with
 the same arguments.
 
 Use `--yes` for agent runs (non-interactive). Omit `--yes` for human runs — the script prompts on stderr. Read JSON stdout for `created` and `skipped`; add `--verbose` for progress on stderr.
@@ -319,7 +323,7 @@ After generating files: "Review the generated workflows before committing — CI
 
 ### LTS matrix
 
-For Node.js projects, the CI job uses a matrix of active LTS versions. The scaffold uses `[20, 22, 24]` by default. Edit the `node-version` matrix in the generated file to adjust.
+For Node.js projects, the CI job uses a matrix of active LTS versions. The scaffold uses `[22, 24]` by default. Edit the `node-version` matrix in the generated file to adjust.
 
 ## Step 6 — Optional settings
 
@@ -364,10 +368,9 @@ Print a final table:
   stale the moment Steps 2–5 apply the plan it holds. Nothing reads it after the run. Leave it for
   the OS to reap, or delete it — either is fine, and neither touches the repo. Do not commit it, do
   not copy it into the repo, and do not add it to `.gitignore`; it never appears in `git status`.
-  Earlier versions of this skill wrote it to `.github/setup-state.json`; the detect script deletes
-  that leftover if it finds one.
+  The detect script deletes a leftover `.github/setup-state.json` if it finds one.
 - **No org assumptions**: generated workflows are standalone — no reusable workflow references from any specific org. If your org has shared workflows, replace the generated file contents manually.
-- **Bypass actor IDs**: role IDs `5` (Administrators) and `2` (Maintainers) are standard GitHub built-in roles. Do not substitute org-specific team IDs.
+- **Bypass actor IDs**: role ID `5` (Administrators) is a standard GitHub built-in role. Do not substitute org-specific team IDs, and do not add `2` (Triage, which grants nothing).
 - **`--enable-auto-merge`**: enables the feature on the repo but does not auto-merge individual PRs; branch protection rules must still be satisfied per PR.
 - **One backstop**: a native merge queue, a require-up-to-date rule, or a third-party queue — detect which, never stack them.
 - **Status check timing**: if CI has never run, the check context won't exist in GitHub's UI. Add it after the first CI run completes, or re-run the skill then.
