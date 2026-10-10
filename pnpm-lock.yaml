@@ -252,8 +252,8 @@ importers:
         specifier: workspace:*
         version: link:../jest
       buddy-agent-harness:
-        specifier: ^0.20.0
-        version: 0.20.0(typescript@7.0.2)
+        specifier: ^0.21.0
+        version: 0.21.0(typescript@7.0.2)
       clibuilder:
         specifier: ^11.3.2
         version: 11.3.2(typescript@7.0.2)
@@ -1478,6 +1478,12 @@ packages:
     peerDependencies:
       clibuilder: ^11.0.0
 
+  '@clibuilder/axi@0.2.0':
+    resolution: {integrity: sha512-OdQGC+WX7nJKV3Mu78RX7ZeLFi6OKCcokancO63HznGLEvT4Rh7YonmLya92rtXdsVHsJ9Z8AfOZC5LpM33f8A==}
+    engines: {node: '>= 20.19'}
+    peerDependencies:
+      clibuilder: ^11.3.3
+
   '@commitlint/cli@21.2.2':
     resolution: {integrity: sha512-a+6hQxIxnpdvSvS2apvttPNbEliYsVC3PqFYDiiB2kjbwIsQsj1urvQ4Tkf70pKYozPalKAuRQmm/GHwndduqA==}
     engines: {node: '>=22.12.0'}
@@ -1594,11 +1600,6 @@ packages:
   '@ctrl/tinycolor@4.2.0':
     resolution: {integrity: sha512-kzyuwOAQnXJNLS9PSyrk0CWk35nWJW/zl/6KvnTBMFK65gm7U1/Z5BqjxeapjZCIhQcM/DsrEmcbRwDyXyXK4A==}
     engines: {node: '>=14'}
-
-  '@cyberuni/agent-harness@0.5.0':
-    resolution: {integrity: sha512-TyfqEHYfHiU9Uw8CE1J393+H/CyBv9Vv7+w3YrAKHmTgMqoH+cFPujFpgkU3uT5sr7xUg1RiEHICXuVao14Wbg==}
-    engines: {node: '>=22'}
-    hasBin: true
 
   '@cyberuni/agent-harness@0.6.0':
     resolution: {integrity: sha512-ELy0pcHiRb9vjaVymBIvCQTDaQTOyliVKEx3MdpiDLeaGAYkhBwgCfoIa/ov/hPFxed4gQdYLBv6O3UTNgr78A==}
@@ -4638,8 +4639,8 @@ packages:
   bser@2.1.1:
     resolution: {integrity: sha512-gQxTNE/GAfIIrmHLUE3oJyp5FO6HRBfhjnw4/wMmA63ZGDJnWBmgY/lyQBpnDUkGmAhbSe39tx2d/iTOAfglwQ==}
 
-  buddy-agent-harness@0.20.0:
-    resolution: {integrity: sha512-+Hkgl4SaKScyjIy0FfgMBj4BQGxb1p/DIAb8E2HPrj4pffeelgGZ9QvCEXb5t6kUifght7k8KBUF3ty24jNDng==}
+  buddy-agent-harness@0.21.0:
+    resolution: {integrity: sha512-EvHuXrIMToSu4i5dBf35c9WfQk8a5mM5IMp7ETqQBPp0CsWwDr274JE3qUIEYj50uLtV+pS42HIHT+N97DG8Dg==}
     engines: {node: '>=22'}
     hasBin: true
 
@@ -8763,6 +8764,11 @@ snapshots:
       '@toon-format/toon': 4.1.1
       clibuilder: 11.3.2(typescript@7.0.2)
 
+  '@clibuilder/axi@0.2.0(clibuilder@11.3.2(typescript@7.0.2))':
+    dependencies:
+      '@toon-format/toon': 4.1.1
+      clibuilder: 11.3.2(typescript@7.0.2)
+
   '@commitlint/cli@21.2.2(@types/node@24.13.3)(conventional-commits-parser@7.1.2)(typescript@7.0.2)':
     dependencies:
       '@commitlint/config-conventional': 21.2.2
@@ -8903,14 +8909,6 @@ snapshots:
   '@csstools/css-tokenizer@3.0.4': {}
 
   '@ctrl/tinycolor@4.2.0': {}
-
-  '@cyberuni/agent-harness@0.5.0(typescript@7.0.2)':
-    dependencies:
-      '@toon-format/toon': 4.1.1
-      clibuilder: 11.3.2(typescript@7.0.2)
-      yaml: 2.9.0
-    transitivePeerDependencies:
-      - typescript
 
   '@cyberuni/agent-harness@0.6.0(typescript@7.0.2)':
     dependencies:
@@ -11521,9 +11519,10 @@ snapshots:
     dependencies:
       node-int64: 0.4.0
 
-  buddy-agent-harness@0.20.0(typescript@7.0.2):
+  buddy-agent-harness@0.21.0(typescript@7.0.2):
     dependencies:
-      '@cyberuni/agent-harness': 0.5.0(typescript@7.0.2)
+      '@clibuilder/axi': 0.2.0(clibuilder@11.3.2(typescript@7.0.2))
+      '@cyberuni/agent-harness': 0.6.0(typescript@7.0.2)
       clibuilder: 11.3.2(typescript@7.0.2)
       jsonc-parser: 3.3.1
       smol-toml: 1.8.0
