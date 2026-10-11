@@ -1,5 +1,5 @@
 ---
-cr-ref: issue-epic-initiative
+cr-ref: github-801
 target: packages/buddy/skills/file-issue
 status: in-progress
 todos:
@@ -18,10 +18,16 @@ todos:
   - content: Fold the spike results into ADR 0003 and the glossary
     status: completed
   - content: File this plan as an epic with its child issues (dogfood the epic workflow by hand)
-    status: pending
+    status: completed
 ---
 
 # Epic: file tracked work at any level, on any tracker
+
+Filed as [repobuddy/repobuddy#801](https://github.com/repobuddy/repobuddy/issues/801). Children, in
+order: #802, #803, #804, [cyberuni/cyber-asana#266](https://github.com/cyberuni/cyber-asana/issues/266),
+#805, #806, #807. Related, not blocking:
+[cyberuni/agent-harness#79](https://github.com/cyberuni/agent-harness/issues/79) (list references by
+name pattern).
 
 This plan is tracked as an epic, by hand, the way the `epic` skill will do it. Each section below
 is a step that skill must perform. Where this session did something the skill should do, the
@@ -145,6 +151,9 @@ Results go here and into ADR 0003 when the spikes return.
     unrelated reference tagged `match: description`, which the skill must drop.
   - **Decided:** per-tracker capabilities. A tracker's search, link, and auth are not per level, so
     per-level names would copy them into each file. Per-level choice lives in the routing.
+- **Corrected by filing:** GitHub accepted cyber-asana#266 as a sub-issue of repobuddy#801, across
+  owners (`gh issue edit 801 --add-sub-issue <url>`). The tracker-mapping spike's reading of the
+  REST docs ("the sub-issue must share the parent's owner") is wrong for this case.
 - **Superseded** above: `<plugin>.tracker-adapter.<tracker>` and `repobuddy.work-tracker`. A
   consumer cannot look a name up when the provider's plugin name or the tracker's name is part of
   it and unknown; see ADR 0003, decisions 4, 5, 8, 9.
@@ -188,3 +197,9 @@ What the `epic` skill must do, observed in this session:
 11. **A breakdown can surface a missing child.** The `project-tracker` set-up skill appeared only
     when a mixed-tracker team was considered. The skill tries one non-default configuration against
     the breakdown before filing it.
+12. **Filing, as run.** Duplicate search on each repo (five queries here, none matched); read the
+    repo's issue types and labels first; create the level label when missing (`epic` did not
+    exist); create the parent, then each child with `--parent` and its category as the issue type;
+    a child in another repo is created there and attached with `--add-sub-issue`; read back
+    `subIssuesSummary` to confirm the count. A body written before a step ran can go stale: the
+    epic body claimed cross-owner nesting was impossible and was edited after the attach worked.
