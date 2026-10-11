@@ -29,12 +29,22 @@ kind of tracked work, on any tracker, with teams able to adjust the details.
 4. **The tracker is injected.** The skills own the workflow: gather, check for duplicates, confirm,
    create, report. An **adapter** supplies the operations: `detect`, `kinds`, `search`, `create`,
    `link`, `promote`, `url`. GitHub and GitLab adapters are built in; a tracker package such as
-   `cyber-asana` ships its own as a reference. The adapter is chosen by the tracker the user names,
-   then the project's `work-tracker` reference (which may route by kind, e.g. bugs to GitHub,
-   initiatives to Asana), then the git remote.
-5. **Customization goes through `@cyberuni/agent-harness` references**: `work-tracker` for the
-   adapter and routing, `work-item/levels` for the level definitions, and `work-item/<category>` for
-   each body template. A team overrides one section with a `merge-sections` override.
+   `cyber-asana` ships its own as the reference `cyber-asana.tracker-adapter`. The adapter is
+   chosen by the tracker the user names, then the `repobuddy.work-tracker` reference (which may
+   route by kind, e.g. bugs to GitHub, initiatives to Asana), then the git remote.
+5. **Customization goes through `@cyberuni/agent-harness` references.** repobuddy ships the
+   defaults, prefixed with its plugin name as every plugin-shipped reference must be:
+
+   | Reference | Holds |
+   |---|---|
+   | `repobuddy.work-tracker` | the adapter choice and routing by kind |
+   | `repobuddy.work-levels` | the level checks |
+   | `repobuddy.work-template.<kind>` | one body template per category or level: `bug`, `feature`, `task`, `epic`, `initiative` |
+   | `<plugin>.tracker-adapter` | one tracker's operations, shipped by the tracker's package |
+
+   A name uses dots, never `/`: agent-harness reads `a/b` as reference `b` in plugin `a`. A team
+   overrides a default by writing the same name to `.agents/references/`, with `merge: merge-sections`
+   to replace only the sections it redefines.
 6. **A security vulnerability is never filed as a public issue.** It goes to the repository's
    private channel (a GitHub security advisory, or the contact in `SECURITY.md`).
 
