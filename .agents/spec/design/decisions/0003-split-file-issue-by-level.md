@@ -28,10 +28,17 @@ kind of tracked work, on any tracker, with teams able to adjust the details.
 
 4. **The tracker is injected.** The skills own the workflow: gather, check for duplicates, confirm,
    create, report. An **adapter** supplies the operations: `detect`, `kinds`, `search`, `create`,
-   `link`, `promote`, `url`. GitHub and GitLab adapters are built in; a tracker package such as
-   `cyber-asana` ships its own as the reference `cyber-asana.tracker-adapter`. The adapter is
-   chosen by the tracker the user names, then the `repobuddy.work-tracker` reference (which may
-   route by kind, e.g. bugs to GitHub, initiatives to Asana), then the git remote.
+   `link`, `retype`, `url`. `retype` moves an item up or down a level and says whether it did so in
+   place. An adapter is a reference named `<plugin>.tracker-adapter.<tracker>`, one section per
+   operation. An operation the tracker lacks is marked unsupported, and the skill applies the
+   fallback, which is written once, in the skills: no in-place retype means create at the new
+   level, link, and close the old item after confirmation; no search means the user confirms there
+   is no duplicate; no native link means a link in the body. repobuddy ships the GitHub and GitLab
+   adapters (`repobuddy.tracker-adapter.github`, `.gitlab`) the same way, so a team can override
+   them; a tracker package such as `cyber-asana` ships its own. The adapter is chosen by the
+   tracker the user names, then the `repobuddy.work-tracker` reference (which may route by kind,
+   e.g. bugs to GitHub, initiatives to Asana), then the git remote. Bitbucket has no built-in
+   adapter: its native issue tracker is gone, so it routes to a Jira adapter.
 5. **Customization goes through `@cyberuni/agent-harness` references.** repobuddy ships the
    defaults, prefixed with its plugin name as every plugin-shipped reference must be:
 
@@ -40,11 +47,11 @@ kind of tracked work, on any tracker, with teams able to adjust the details.
    | `repobuddy.work-tracker` | the adapter choice and routing by kind |
    | `repobuddy.work-levels` | the level checks |
    | `repobuddy.work-template.<kind>` | one body template per category or level: `bug`, `feature`, `task`, `epic`, `initiative` |
-   | `<plugin>.tracker-adapter` | one tracker's operations, shipped by the tracker's package |
+   | `<plugin>.tracker-adapter.<tracker>` | one tracker's operations |
 
    A name uses dots, never `/`: agent-harness reads `a/b` as reference `b` in plugin `a`. A team
    overrides a default by writing the same name to `.agents/references/`, with `merge: merge-sections`
-   to replace only the sections it redefines.
+   to replace only the sections it redefines, or add one the default lacks.
 6. **A security vulnerability is never filed as a public issue.** It goes to the repository's
    private channel (a GitHub security advisory, or the contact in `SECURITY.md`).
 
@@ -95,6 +102,15 @@ quarters is not a repository chore. It is built last, once there is a real initi
 and may live in a tracker or planning package instead.
 
 ## Consequences
+
+- **On GitHub, the issue type carries the category and a label carries the level.** An epic is an
+  issue labelled `epic` with sub-issues; an initiative is labelled `initiative` with epics as
+  sub-issues. Retyping changes the label, in place. Issue types exist only in organizations, so a
+  user-owned repository falls back to the `bug` and `enhancement` labels for the category.
+- **On GitLab, epics need Premium.** On the Free tier the adapter falls back to a labelled issue
+  with tasks.
+- The spike reports behind these points are linked from
+  [`.agents/plans/issue-epic-initiative.plan.md`](../../../plans/issue-epic-initiative.plan.md).
 
 - Build order: rename `file-issue` to `issue` with categories and the built-in adapters, then move
   the templates into references, then ship the first external adapter (`cyber-asana`), then `epic`
