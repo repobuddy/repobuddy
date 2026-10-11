@@ -417,14 +417,13 @@
 		"jest-resolve": "^30.0.0",
 		"read-pkg-up": "^7.0.1",
 		"resolve.imports": "^2.0.0",
-		"satisfier": "^5.4.6",
-		"type-plus": "8.0.0-beta.12"
+		"satisfier": "^5.4.6"
 	},
 	"devDependencies": {
 		"@jest/expect": "^30.0.0",
 		"@jest/globals": "^30.0.0",
 		"@types/jest": "^30.0.0",
-		"assertron": "^11.7.0",
+		"assertron": "^11.7.1",
 		"chalk": "^6.0.0",
 		"cross-env": "^10.1.0",
 		"esbuild": "^0.28.0",

@@ -1,5 +1,5 @@
 import { filename } from 'dirname-filename-esm'
-import { testType } from 'type-plus'
+import { testType } from 'type-plus/testing'
 
 it(`${filename(import.meta)} executed`, () => {})
 
