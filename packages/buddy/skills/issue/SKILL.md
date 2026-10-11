@@ -1,153 +1,92 @@
 ---
-name: file-issue
-description: "Use this skill when filing or creating GitHub or GitLab issues; searches for duplicates before filing."
+name: issue
+description: "Use this skill when filing or creating an issue, ticket, bug report, feature request, or task on GitHub or GitLab; searches for duplicates before filing."
 ---
 
-# File Issue
+# Issue
 
-Files a well-formed bug report or feature request on the appropriate issue tracker, after checking for existing similar issues to avoid duplicates.
+Files one well-formed item of tracked work (a bug, a feature, or a task) on the project's issue tracker, after checking for existing similar items to avoid duplicates.
 
-Use when asked to file an issue, create an issue, file a bug, open a feature request, or report a problem.
+Use when asked to file an issue, create a ticket, file a bug, open a feature request, add a task, or report a problem.
 
-## Supported Platforms
+This skill files a **single issue**. It is not for an epic or an initiative, and not for a comment on an item that already exists (that is `to-question`). Never file a security vulnerability as a public issue: send it to the repository's private channel (a GitHub security advisory, or the contact in `SECURITY.md`) and stop.
 
-Detect the platform from the git remote URL:
+## Categories
 
-| Remote pattern | Platform | CLI tool |
+| Category | Use when | Body template |
 |---|---|---|
-| `github.com` | GitHub | `gh` |
-| `gitlab.com` or self-hosted GitLab | GitLab | `glab` |
-| `bitbucket.org` | Bitbucket | `gh` with Bitbucket extension or browser |
+| bug | something behaves differently than it should | Description, Steps to Reproduce, Expected, Actual, Environment, Notes |
+| feature | new behavior someone wants | Description (the need, then the wanted behavior), Use Cases, Notes |
+| task | work to be done that is neither a defect nor new behavior (a chore, a refactor, a migration) | Description, Done when, Notes |
 
-If `gh` or `glab` is missing or not logged in, run the `init-buddy` skill when it is installed; otherwise tell the user to install and log in.
+If the category is unclear from the request, ask.
 
-```bash
-git remote get-url origin
-```
+## Trackers
+
+A tracker's operations live in a capabilities reference named `project-tracker.capabilities.<tracker>`. This skill owns the workflow; the reference owns the commands.
+
+1. List what is installed: run `reference search project-tracker.capabilities` with the `reference` skill in the `cyber-agent-harness` plugin. Keep only names that start with `project-tracker.capabilities.`; drop fuzzier matches.
+2. Load the one whose `Detect` section matches the repository (`git remote get-url origin`). Two matches: ask. A name that is ambiguous between plugins: report both qualified names and ask which to pin.
+3. When the command cannot run or finds nothing, read `references/project-tracker.capabilities.github.md` in this skill's folder if the remote is `github.com`.
+4. The remote is GitLab (`gitlab.com` or self-hosted) and no GitLab reference exists: use the **GitLab fallback** at the end of this file.
+5. Any other remote (including Bitbucket, whose native tracker is gone): say that no tracker is set up for it, and stop. Do not file anywhere else.
+
+Where the reference marks an operation unsupported: with no `Search`, the user confirms there is no duplicate; with no native `Link`, put the link in the body.
 
 ## Steps
 
-### 1. Gather issue details
+### 1. Gather the details
 
-If the user has not already provided them, ask for:
-- **Title** — short, specific summary of the bug or request
-- **Type** — bug or feature request
-- **Description** — what is happening / what is wanted, steps to reproduce (for bugs), expected vs actual behavior
+Ask only for what the user has not said:
+- **Title**: a short, specific summary
+- **Category**: bug, feature, or task
+- **Description**: what is happening or wanted; for a bug, steps to reproduce and expected vs actual behavior; for a task, what done looks like
 
-Do not ask for information the user has already provided.
+### 2. Gather environment and version details (bugs)
 
-### 2. Gather environment and version details
+Collect what maintainers need to reproduce: OS, architecture, container/WSL/CI context when relevant; runtime, package manager, and toolchain versions; the affected package version and closely related dependency versions. If the package under test uses one toolchain version and the failing consumer another, record both. Read exact versions from the machine or repo instead of asking. A feature or task gets environment details only when they bear on it.
 
-For bug reports, collect the system and package information that will help maintainers reproduce and triage the issue.
+### 3. Search for existing issues
 
-Include relevant details such as:
-- **Host environment** — OS/distribution, kernel, architecture, container/WSL/CI context when relevant
-- **Runtime and tooling** — Node/Python/runtime version, package manager, compiler/transpiler version, browser version, framework CLI version
-- **Package or app versions** — the affected package version, and any closely related dependency versions that materially affect the bug
-- **Version split notes** — if the package under test uses one toolchain version but the failing downstream consumer uses another, capture both explicitly
+Run the tracker's `Search` operation at least twice with different keywords (the full title, then the core noun and verb). Show each hit: number, title, state (open or closed), URL, and ask whether one is the same issue.
 
-Prefer discovering exact versions from the local environment or repo when possible instead of asking the user. If the issue is a feature request, include environment details only when they materially affect the request.
+If the user confirms a match, stop. Give the existing issue's URL and suggest a comment or reaction there. Do not create a duplicate.
 
-### 3. Search for similar existing issues
+### 4. Confirm
 
-Before creating, search for duplicates. Use the title keywords and key terms from the description.
+Summarize what will be created: title, category, key points of the description, the type or label the tracker will use, and any environment details. Ask for confirmation. Do not proceed without it.
 
-**GitHub:**
-```bash
-gh issue list --repo <owner>/<repo> --state all --search "<keywords>" --limit 10
-```
+### 5. Create
 
-**GitLab:**
-```bash
-glab issue list --all --search "<keywords>"
-```
+Run the tracker's `Kinds` operation, then `Create` with the category it maps to. Write the body from the category's template to a file; leave out sections that do not apply.
 
-Search at least twice with different keyword combinations (e.g. full title, then core noun/verb only) to maximize recall.
+Keep the body free of internal file names, commit SHAs, and implementation details unless the user asks. If the repository is public, keep out anything from a private tracker (its titles, URLs, or customer details).
 
-Present any matches to the user:
-- List each result: issue number, title, state (open/closed), URL
-- Ask if any of them is the same issue they want to report
+### 6. Report
 
-If a match is found and the user confirms it is the same issue, stop — do not create a duplicate. Instead, provide the URL of the existing issue and suggest the user add a comment or reaction if they want to signal the issue affects them too.
+Give the URL of the new issue.
 
-### 4. Confirm creation
+## Level check
 
-If no duplicates found (or user confirms none match), summarize what will be created:
-- Title
-- Type (bug / feature request)
-- Key points from the description
-- Environment and version details that will be included, when relevant
+If the item looks too big for one issue (several independently shippable parts, more than one owner) or too small to track (a one-line fix with no lifecycle), say so in the confirmation and suggest filing it at another level. Only suggest; file at this level if the user does not change it.
 
-Ask for confirmation before proceeding.
+## GitLab fallback
 
-### 5. Create the issue
-
-**GitHub:**
-```bash
-gh issue create \
-  --repo <owner>/<repo> \
-  --title "<title>" \
-  --label "<bug|enhancement>" \
-  --body "$(cat <<'EOF'
-## Description
-
-<description>
-
-## Steps to Reproduce (bugs only)
-
-1. ...
-
-## Expected Behavior
-
-<expected>
-
-## Actual Behavior
-
-<actual>
-
-## Environment
-
-- OS: ...
-- Architecture: ...
-- Runtime: ...
-- Package manager: ...
-- Affected package: ...
-- Related toolchain/compiler: ...
-
-## Notes
-
-<version split, container/WSL/CI context, or other triage-relevant details>
-EOF
-)"
-```
-
-**GitLab:**
-```bash
-glab issue create \
-  --title "<title>" \
-  --label "<bug|feature>" \
-  --description "<body>"
-```
-
-For feature requests use label `enhancement` (GitHub) or `feature` (GitLab). For bugs use label `bug`.
-
-If labels don't exist in the repo, omit the `--label` flag rather than erroring.
-
-### 6. Confirm and report
-
-After creation, output the issue URL so the user can navigate to it directly.
+For a GitLab remote with no capabilities reference: `glab` must be installed and logged in (run `init-buddy` when installed, else tell the user). Search with `glab issue list --all --search "<keywords>"`; create with `glab issue create --title "<title>" --description "<body>" --label "<label>"` using `bug` for a bug and `feature` for a feature; a task takes no label unless the repo has `task`. Omit `--label` when the label does not exist.
 
 ## What NOT to Do
 
 - Do not create an issue without checking for duplicates first
 - Do not skip the confirmation step
-- Do not invent labels — only use labels that exist or the platform defaults (`bug`, `enhancement`)
-- Do not include internal file names, commit SHAs, or implementation details in the issue body unless the user specifically asks
+- Do not invent labels or issue types: use only those the repository has
+- Do not file an epic or initiative here, or a security vulnerability publicly
+- Do not close, retype, or move an existing item
 
 ## Verification
 
-- [ ] Gathered environment and package/runtime/toolchain version details when relevant
+- [ ] Loaded the tracker's capabilities (or applied the GitLab fallback)
+- [ ] Gathered environment and version details for a bug
 - [ ] Searched for duplicates with at least two keyword combinations
 - [ ] User confirmed no duplicate exists
-- [ ] User confirmed the issue details before creation
+- [ ] User confirmed the category and details before creation
 - [ ] Issue URL returned to user after creation

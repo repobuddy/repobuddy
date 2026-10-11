@@ -1,40 +1,47 @@
-# file-issue
+# issue
 
-Files a bug report or feature request on the repository's issue tracker. It searches for an existing issue first and asks you before it creates anything, so it does not file a duplicate.
+Files one item of tracked work (a bug, a feature, or a task) on the repository's issue tracker. It searches for an existing issue first and asks you before it creates anything, so it does not file a duplicate. It was called `file-issue` before 3.0.
 
 ## When to use
 
 - "file a bug for this"
 - "open a feature request"
-- "create an issue for the crash we just found"
+- "add a task to track the migration"
 - "report this problem upstream"
 
 ## What it does
 
-1. **Detects the tracker** from the `origin` remote: GitHub through `gh`, GitLab (gitlab.com or self-hosted) through `glab`. If the CLI is missing or logged out, it runs [`init-buddy`](../init-buddy/README.md) when that is installed, and otherwise tells you to install and log in.
-2. **Gathers the details:** title, bug or feature request, and a description. For a bug, that includes steps to reproduce and expected vs actual behavior. It asks only for what you have not already said.
-3. **Collects environment and versions** for a bug: OS and architecture, runtime and package manager, the affected package version, and related toolchain versions. It reads these from your machine and the repo where it can, rather than asking. When the package under test and the failing consumer use different toolchain versions, it records both. A feature request gets environment details only when they bear on the request.
-4. **Searches for duplicates** in open and closed issues, at least twice with different keywords (the full title, then the core terms). It lists each match with its number, title, state, and URL, and asks whether one is your issue. If you say yes, it stops and gives you that issue's URL, so you can comment or react there instead.
-5. **Confirms** the title, type, key points, and the environment details it will include, and waits for your go-ahead.
-6. **Creates the issue** with a structured body: description, steps to reproduce, expected and actual behavior, environment, and notes. It labels a bug `bug` and a feature request `enhancement` (GitHub) or `feature` (GitLab), and leaves the label off when the repo does not have it.
-7. **Reports the URL** of the new issue.
+1. **Finds the tracker.** It lists the installed `project-tracker.capabilities.<tracker>` references and loads the one that matches the `origin` remote. GitHub ships with this skill. GitLab works through a built-in fallback until its own reference ships. Any other host, Bitbucket included, gets a message and no filing.
+2. **Gathers the details:** title, category (bug, feature, or task), and a description. It asks only for what you have not said.
+3. **Collects environment and versions** for a bug, from your machine and the repo where it can.
+4. **Searches for duplicates** in open and closed issues, at least twice. If you say a hit is your issue, it stops and gives you that URL.
+5. **Confirms** the title, category, and details, and waits for your go-ahead.
+6. **Creates the issue.** On GitHub the category is the issue type (`Bug`, `Feature`, `Task`); a repository without issue types gets the `bug` or `enhancement` label instead.
+7. **Reports the URL.**
+
+If the item looks too big or too small for one issue, it says so and suggests another level. It never changes the level itself.
 
 ## Safety
 
-- It never creates an issue without searching for duplicates and getting your confirmation.
-- It does not invent labels; it uses only labels the repo has, or the platform defaults.
-- It leaves internal file names, commit SHAs, and implementation details out of the issue body unless you ask for them.
+- It never creates an issue without a duplicate search and your confirmation.
+- It uses only labels and issue types the repository has.
+- It never files a security vulnerability publicly; it points to the private channel.
+- It keeps internal file names, commit SHAs, and anything from a private tracker out of the body.
+
+## Requirements
+
+`gh` 2.94.0 or later for GitHub, logged in. [`init-buddy`](../init-buddy/README.md) sets it up.
+
+## Upgrading from `file-issue`
+
+Invoke `issue` (`/issue`) where you invoked `file-issue`. Bitbucket is no longer a target.
 
 ## How to invoke
 
-Ask for it directly, or run `/file-issue` where slash commands are supported.
-
-## What it produces
-
-A new issue on GitHub or GitLab and its URL, or, when a duplicate already exists, the URL of that issue instead.
+Ask for it directly, or run `/issue` where slash commands are supported.
 
 ## Install
 
 ```sh
-npx skills add repobuddy/repobuddy --skill file-issue
+npx skills add repobuddy/repobuddy --skill issue
 ```
