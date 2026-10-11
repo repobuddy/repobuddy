@@ -16,7 +16,7 @@ todos:
   - content: 'Spike: name clashes for issue, epic, initiative in the skills registry'
     status: completed
   - content: Fold the spike results into ADR 0003 and the glossary
-    status: pending
+    status: completed
   - content: File this plan as an epic with its child issues (dogfood the epic workflow by hand)
     status: pending
 ---
@@ -138,3 +138,8 @@ What the `epic` skill must do, observed in this session:
    with `reference show`.
 5. **Track before filing.** The plan is local until the breakdown is stable; filing comes last,
    after duplicate check and confirmation.
+6. **Spike in parallel, decide in one place.** The four spikes ran as separate agents. Their
+   proposals conflicted (`promote` vs a demote op, `work-adapter` vs `tracker-adapter`, Feature type
+   on an epic vs category on the type), and the conflicts were settled in the plan, then folded
+   into the ADR. The skill keeps spike results beside the epic and records the decision taken from
+   each.
