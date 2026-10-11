@@ -25,11 +25,12 @@ If the category is unclear from the request, ask.
 
 A tracker's operations live in a capabilities reference named `project-tracker.capabilities.<tracker>`. This skill owns the workflow; the reference owns the commands.
 
-1. List what is installed: run `reference search project-tracker.capabilities` with the `reference` skill in the `cyber-agent-harness` plugin. Keep only names that start with `project-tracker.capabilities.`; drop fuzzier matches.
-2. Load the one whose `Detect` section matches the repository (`git remote get-url origin`). Two matches: ask. A name that is ambiguous between plugins: report both qualified names and ask which to pin.
-3. When the command cannot run or finds nothing, read `references/project-tracker.capabilities.github.md` in this skill's folder if the remote is `github.com`.
-4. The remote is GitLab (`gitlab.com` or self-hosted) and no GitLab reference exists: use the **GitLab fallback** at the end of this file.
-5. Any other remote (including Bitbucket, whose native tracker is gone): say that no tracker is set up for it, and stop. Do not file anywhere else.
+1. Read the host of `git remote get-url origin`. A host that is neither `github.com` nor GitLab (including Bitbucket, whose native tracker is gone): say that no tracker is set up for it, and stop. Do not file anywhere else.
+2. List what is installed: run `reference search project-tracker.capabilities` with the `reference` skill in the `cyber-agent-harness` plugin. Keep only names that start with `project-tracker.capabilities.`; drop fuzzier matches.
+3. Load the one whose `Detect` section matches the host. Two matches, or a name that is ambiguous between plugins: report both qualified names, ask which to pin, and load neither until answered.
+4. When the command cannot run or finds nothing and the host is `github.com`, read `references/project-tracker.capabilities.github.md` in this skill's folder.
+5. A GitLab host with no GitLab reference: use the **GitLab fallback** at the end of this file.
+6. For GitHub, the reference's `Detect` also needs `gh` 2.98.0 or later and a logged-in `gh`. When it is older or logged out, say what to upgrade or run, and stop.
 
 Where the reference marks an operation unsupported: with no `Search`, the user confirms there is no duplicate; with no native `Link`, put the link in the body.
 

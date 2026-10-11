@@ -43,8 +43,8 @@ label, and a task gets a label only if the repository has `task`.
 
 ### Settled by the spikes
 
-- Minimum `gh` is 2.98.0, the first release with `--type`, `--parent`, and `--add-sub-issue`
-  (release notes of v2.98.0, 2026-06-10). Checked against 2.102.0.
+- Minimum `gh` is 2.98.0. `--type`, `--parent`, and `--add-sub-issue` arrived in 2.94.0 (2026-06-10);
+  the duplicate search's `--search-type hybrid` arrived in 2.98.0. Checked against 2.102.0.
 - `--type` on a repository without issue types is **untested**. The reference reads `issueTypes`
   first and never passes `--type` when it is null.
 
@@ -62,10 +62,10 @@ shape the body and the confirmation.
 
 | # | Use case (surface: `/issue`) | Actor / goal | Entry point | Extensions |
 |---|---|---|---|---|
-| 1 | **File a bug** | Reporter: get a reproducible defect on the tracker without duplicating one | Trigger: asks to file or report a defect. Inputs: title, description, steps, expected and actual. Outcome: a bug-category issue and its URL | 5–9 |
-| 2 | **File a feature** | Reporter: record wanted behavior as its own issue | Same trigger with a request for new behavior. Outcome: a feature-category issue and its URL | 5–9 |
-| 3 | **File a task** | Reporter: track a chore that is neither defect nor feature | Same trigger with a chore. Outcome: a task-category issue and its URL | 5–9 |
-| 4 | **Let a sibling skill offer filing** | Sibling skill: give the reporter a path to file a finding | The same entry point, with the finding as the description | 5–9 |
+| 1 | **File a bug** | Reporter: get a reproducible defect on the tracker without duplicating one | Trigger: asks to file or report a defect. Inputs: title, description, steps, expected and actual. Outcome: a bug-category issue and its URL | 5–12 |
+| 2 | **File a feature** | Reporter: record wanted behavior as its own issue | Same trigger with a request for new behavior. Outcome: a feature-category issue and its URL | 5–12 |
+| 3 | **File a task** | Reporter: track a chore that is neither defect nor feature | Same trigger with a chore. Outcome: a task-category issue and its URL | 5–12 |
+| 4 | **Let a sibling skill offer filing** | Sibling skill: give the reporter a path to file a finding | The same entry point, with the finding as the description | 5–12 |
 
 **Extensions** (every path that does not reach "an issue exists and its URL is reported"), shared by
 use cases 1–4 and drawn in the Control Flow:
@@ -75,6 +75,9 @@ use cases 1–4 and drawn in the Control Flow:
 7. **The item is a security vulnerability.** The skill points to the private channel and creates nothing.
 8. **The host has no tracker set up** (Bitbucket or anything else). The skill says so and creates nothing.
 9. **The item is the wrong size.** The confirmation suggests another level; the issue is still filed at this one if the reporter does not change it. Variants: the repo has no issue types (label instead of type), the host is GitLab (fallback commands).
+10. **The category is unclear.** The skill asks for it before gathering anything else.
+11. **More than one capabilities reference matches the host.** The skill asks which to use and loads neither until answered.
+12. **`gh` is older than 2.98.0 or logged out.** The skill says what to upgrade or run, and creates nothing.
 
 **Surface trace.** The capability takes three inputs: title (every use case), category (every use
 case; it decides the template and the type or label), and description (every use case). It exposes
@@ -89,9 +92,19 @@ graph TD
     B -->|No| C{Host of the origin remote}
     C -->|other host| F[Say no tracker is set up<br/>and stop]
     C -->|gitlab| E[Use the GitLab fallback commands]
-    C -->|github.com| D[Load project-tracker.capabilities.github]
-    D --> G[Gather title, category, description<br/>and for a bug the environment]
-    E --> G
+    C -->|github.com| T{gh at least 2.98.0<br/>and logged in?}
+    T -->|No| Y[Say what to upgrade or run<br/>and stop]
+    T -->|Yes| R{How many capabilities<br/>references match the host?}
+    R -->|Two or more| R2[Ask which to use and wait]
+    R -->|One| D[Load it]
+    R -->|None found or command cannot run| R3[Read the bundled GitHub reference]
+    R2 --> D
+    R3 --> D
+    D --> W{Is the category clear?}
+    E --> W
+    W -->|No| W2[Ask for the category]
+    W -->|Yes| G[Gather title, description<br/>and for a bug the environment]
+    W2 --> G
     G --> H{Search twice:<br/>does the reporter confirm a hit?}
     H -->|Yes| I[Give the existing URL and stop]
     H -->|No| J{Does the item fit<br/>one issue?}
@@ -101,7 +114,7 @@ graph TD
     L -->|No| M[Create nothing and stop]
     L -->|Yes| N{Does the repo have<br/>issue types?}
     N -->|Yes| O[Create with the type for the category]
-    N -->|No| P[Create with the category label]
+    N -->|No| P[Create with the category label<br/>only if the repo has it]
     O --> Q[Report the URL]
     P --> Q
 ```
@@ -118,6 +131,11 @@ The GitLab fallback creates with a label and has no type branch, so `N` applies 
 | `B → C (No)` | an ordinary defect report | `files an ordinary defect instead of treating it as a vulnerability` |
 | `C → D (github.com)` | origin is github.com | `maps each category to the tracker's type on a repo with issue types` |
 | `G` (gather) | a bug in a package with a Node toolchain | `collects environment details for a bug from the machine` |
+| `T → R (Yes)` | one capabilities reference matches the host | `lists the capabilities references and loads the one that matches the host` |
+| `R → R3 (None found or command cannot run)` | the reference command cannot run | `reads the bundled GitHub reference when the reference command cannot run` |
+| `W → G (Yes)` | a request that says it is a bug | `writes a bug body with steps, expected, and actual behavior` |
+| `W → G (Yes)` | a request that wants new behavior | `writes a feature body with the need and use cases, and no bug sections` |
+| `N → P (No)` | the repo has no enhancement label | `omits the label when the repo does not have it` |
 | `H → J (No)` | the first search returns hits that are not the reporter's issue | `searches at least twice and shows each hit before creating` |
 | `J → L (Fits)` | one deliverable with one owner | `adds no level suggestion to an item that fits one issue` |
 | `L → N (Yes)` | the reporter has confirmed the summary | `creates only after the summary is confirmed` |
@@ -128,10 +146,13 @@ The GitLab fallback creates with a label and has no type branch, so `N` applies 
 | `—` (artifact) | the shipped skill and its two reference copies | `ships a Validate section whose mechanical assertions pass` |
 | `C → E (gitlab)` | origin is gitlab.com and no GitLab reference exists | `files on GitLab through the fallback` |
 
-### Extensions 5–9 — the paths that do not file
+### Extensions 5–12 — the paths that do not file
 
 | Edge | Path (Given) | Scenario |
 |---|---|---|
+| `T → Y (No)` | gh 2.97.0 is installed | `stops with an upgrade message when gh is older than 2.98.0` |
+| `R → R2 (Two or more)` | two plugins ship a reference for the host | `asks which capabilities reference to use when two match` |
+| `W → W2 (No)` | a request that says only "file this" | `asks for the category when the request does not give one` |
 | `H → I (Yes)` | a search hit the reporter confirms is the same issue | `stops at a confirmed duplicate` |
 | `L → M (No)` | the reporter declines the summary | `creates nothing when the user declines` |
 | `B → Z (Yes)` | the report describes an unauthenticated remote code execution | `does not file a vulnerability publicly` |

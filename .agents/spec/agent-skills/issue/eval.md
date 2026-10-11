@@ -21,7 +21,7 @@ and category mapping are conduct. Quality: whether a body fits its category is a
 
 **`activation_threshold` is 0.8**, for the same reason as `to-question`: the skill is chosen against a near-identical sibling.
 
-**The rubric scenario carries its own threshold (7 of 9)**, which overrides `default_threshold`.
+**The rubric scenario carries its own threshold (5 of 6)**, which overrides `default_threshold`.
 
 ## The rubric: what each dimension pays for
 
@@ -42,11 +42,16 @@ been measured against a judge's noise (cSEM); that needs a non-author run, so tr
 
 ## Known weaknesses
 
-A judged run reads a narrated transcript. Five scenarios assert that a command ran or did not:
-`creates only after the summary is confirmed`, `creates nothing when the user declines`, `stops at a
-confirmed duplicate`, `does not file a vulnerability publicly`, and `refuses a host with no tracker
-set up`. A transcript cannot show that nothing was created, so treat their passes as unproven. The
-same limit is recorded for `to-question`. Real filing is verified by hand on a throwaway issue that is
+A judged run reads a narrated transcript. These scenarios assert that a command ran, did not run,
+or was passed a flag: `creates only after the summary is confirmed`, `creates nothing when the user
+declines`, `stops at a confirmed duplicate`, `does not file a vulnerability publicly`, `refuses a host
+with no tracker set up`, `maps each category to the tracker's type`, `falls back to labels`, `omits the
+label when the repo does not have it`, `stops with an upgrade message`, and `reads the bundled GitHub
+reference`. A transcript cannot show that nothing was created or which flags a command took, so treat
+their passes as unproven. `creates only after the summary is confirmed` states the confirmation in its
+Given, so it cannot catch a skill that skips confirmation; `creates nothing when the user declines`
+carries that. The same limit is recorded for `to-question`. `ships a Validate section...` is a static
+check of files, not simulated behavior. Real filing is verified by hand on a throwaway issue that is
 closed at once, never by an eval.
 
 The untested `--type` call on a repository without issue types is deliberately never made: the

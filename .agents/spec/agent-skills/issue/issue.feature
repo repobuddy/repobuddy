@@ -127,6 +127,47 @@ Feature: issue — file one bug, feature, or task on the tracker
     And its capabilities reference is byte-identical to the copy in packages/buddy/references
 
   @behavior
+  Scenario: lists the capabilities references and loads the one that matches the host
+    Given the origin remote is github.com
+    And exactly one reference named project-tracker.capabilities.github is installed
+    And a fuzzier search hit named project-tracker.routing is also returned
+    When issue resolves the tracker
+    Then it loads project-tracker.capabilities.github
+    And it does not load project-tracker.routing
+
+  @behavior
+  Scenario: reads the bundled GitHub reference when the reference command cannot run
+    Given the origin remote is github.com
+    And the reference command exits with an error
+    When issue resolves the tracker
+    Then it reads references/project-tracker.capabilities.github.md in its own folder
+
+  @behavior
+  Scenario: writes a bug body with steps, expected, and actual behavior
+    Given the user confirms a bug "cache returns stale entries after a restart"
+    And the user says a restart then a read returns the pre-restart value instead of the new one
+    When issue writes the body
+    Then the body has a Steps to Reproduce section
+    And the body has an Expected Behavior section
+    And the body has an Actual Behavior section
+
+  @behavior
+  Scenario: writes a feature body with the need and use cases, and no bug sections
+    Given the user confirms a feature "export the report as CSV"
+    When issue writes the body
+    Then the body has a Use Cases section
+    And the body has no Steps to Reproduce heading
+
+  @behavior
+  Scenario: omits the label when the repo does not have it
+    Given the origin remote is github.com
+    And the repo's issueTypes is null
+    And the repo has no label named enhancement
+    When issue creates a confirmed feature
+    Then the create command has no --label option
+    And the create command has no --type option
+
+  @behavior
   Scenario: files on GitLab through the fallback
     Given the origin remote is gitlab.com
     And no GitLab capabilities reference is installed
@@ -134,7 +175,30 @@ Feature: issue — file one bug, feature, or task on the tracker
     When the user confirms a bug
     Then issue runs glab issue create with --label bug
 
-  # ── Extensions 5–9 — the paths that do not file ──
+  # ── Extensions 5–12 — the paths that do not file ──
+
+  @behavior
+  Scenario: stops with an upgrade message when gh is older than 2.98.0
+    Given the origin remote is github.com
+    And gh --version reports 2.97.0
+    When issue resolves the tracker
+    Then it tells the user to upgrade gh
+    And it runs no create command
+
+  @behavior
+  Scenario: asks which capabilities reference to use when two match
+    Given the origin remote is github.com
+    And two plugins each ship project-tracker.capabilities.github
+    When issue resolves the tracker
+    Then it lists both qualified names and asks which to use
+    And it loads neither before the user answers
+
+  @behavior
+  Scenario: asks for the category when the request does not give one
+    Given the user says "file this" and gives no word that says bug, feature, or task
+    When issue gathers the details
+    Then it asks which category the item is
+    And it runs no search before the user answers
 
   @behavior
   Scenario: stops at a confirmed duplicate
