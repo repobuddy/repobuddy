@@ -1,6 +1,7 @@
 import type { Config } from 'jest'
-import type { AnyRecord } from 'type-plus'
 import { optionize } from '../utils/index.js'
+
+type AnyRecord = Record<PropertyKey, any>
 
 export type Transform = Exclude<Config['transform'], undefined>
 

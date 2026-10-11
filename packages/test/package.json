@@ -67,6 +67,6 @@
 		"vitest": "^4.1.4"
 	},
 	"dependencies": {
-		"assertron": "^11.7.0"
+		"assertron": "^11.7.1"
 	}
 }

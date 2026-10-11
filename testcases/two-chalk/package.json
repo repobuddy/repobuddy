@@ -11,7 +11,7 @@
 	"devDependencies": {
 		"@jest/globals": "^30.0.0",
 		"@repobuddy/jest": "workspace:^",
-		"@unional/fixture": "^6.0.1",
+		"@unional/fixture": "^6.0.2",
 		"cross-env": "^10.1.0",
 		"jest": "^30.0.0",
 		"jest-esm-transformer-2": "^1.0.0",
