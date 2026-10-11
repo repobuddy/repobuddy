@@ -30,10 +30,9 @@ kind of tracked work, on any tracker, with teams able to adjust the details.
    create, report. An **adapter** supplies the operations: `detect`, `kinds`, `search`, `create`,
    `link`, `retype`, `url`. `retype` moves an item up or down a level and says whether it did so in
    place. An adapter is a reference named `<plugin>.tracker-adapter.<tracker>`, one section per
-   operation. An operation the tracker lacks is marked unsupported, and the skill applies the
-   fallback, which is written once, in the skills: no in-place retype means create at the new
-   level, link, and close the old item after confirmation; no search means the user confirms there
-   is no duplicate; no native link means a link in the body. repobuddy ships the GitHub and GitLab
+   operation. An operation the tracker lacks is marked unsupported, and the skill applies a
+   generic fallback: no search means the user confirms there is no duplicate; no native link means
+   a link in the body. Retype is not generic; see 7. repobuddy ships the GitHub and GitLab
    adapters (`repobuddy.tracker-adapter.github`, `.gitlab`) the same way, so a team can override
    them; a tracker package such as `cyber-asana` ships its own. The adapter is chosen by the
    tracker the user names, then the `repobuddy.work-tracker` reference (which may route by kind,
@@ -54,6 +53,18 @@ kind of tracked work, on any tracker, with teams able to adjust the details.
    to replace only the sections it redefines, or add one the default lacks.
 6. **A security vulnerability is never filed as a public issue.** It goes to the repository's
    private channel (a GitHub security advisory, or the contact in `SECURITY.md`).
+7. **How an item changes level is the adapter's, and a team can override it.** Trackers differ in
+   whether a level change is in place (a GitHub label, an Asana parent task) or makes a new object
+   (a Linear project, a GitLab epic), in their limits (GitHub: 100 children, 8 levels; GitLab:
+   nested epics need Ultimate), and in what can happen to the children. So the adapter's `Retype`
+   section states, for each of issue → epic, epic → initiative, epic → issue, and initiative →
+   epic: in place or a new item; what happens to open children (kept, re-parented, folded into a
+   checklist, closed as not planned); and the limits. A team overrides that section with
+   `merge-sections`, for example to keep sub-issues when an epic is demoted. The skill keeps the
+   steps and the guards no adapter or team may change: confirm before any write, list every child
+   the change touches, never close a child as a duplicate, and never drop a child without saying
+   where it went. Where an adapter is silent, the skill uses its default: create at the new level,
+   link, and close the old item after confirmation.
 
 ## Why
 
@@ -112,9 +123,10 @@ and may live in a tracker or planning package instead.
 - The spike reports behind these points are linked from
   [`.agents/plans/issue-epic-initiative.plan.md`](../../../plans/issue-epic-initiative.plan.md).
 
-- Build order: rename `file-issue` to `issue` with categories and the built-in adapters, then move
-  the templates into references, then ship the first external adapter (`cyber-asana`), then `epic`
-  with promotion, then `initiative`.
+- Build order, GitHub and Asana first: rename `file-issue` to `issue` with categories and the
+  GitHub adapter, then move the templates into references, then ship the `cyber-asana` adapter,
+  then `epic` with level changes on both, then the GitLab adapter, then `initiative`. Other
+  trackers (Linear, Jira) follow, as adapters in their own packages.
 - Renaming `file-issue` breaks anyone who invokes it by name; the changeset says so.
 - [`posting-skill-boundaries.md`](../posting-skill-boundaries.md), the glossary, and
   [0001](./0001-to-question-owns-composition-not-delivery.md) name `file-issue` as the owner of the
