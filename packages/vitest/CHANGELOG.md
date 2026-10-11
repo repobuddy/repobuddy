@@ -1,5 +1,12 @@
 # @repobuddy/vitest
 
+## 3.0.1
+
+### Patch Changes
+
+- Updated dependencies [fcd82e3]
+  - @repobuddy/test@1.1.2
+
 ## 3.0.0
 
 ### Major Changes
