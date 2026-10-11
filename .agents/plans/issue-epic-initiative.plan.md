@@ -203,3 +203,23 @@ What the `epic` skill must do, observed in this session:
     a child in another repo is created there and attached with `--add-sub-issue`; read back
     `subIssuesSummary` to confirm the count. A body written before a step ran can go stale: the
     epic body claimed cross-owner nesting was impossible and was edited after the attach worked.
+13. **Running a child (#802) by hand.** What the first child taught the `epic` skill about handing a
+    child to a pod:
+    - *Base branch moves.* The child started from the design branch because the design was not on
+      trunk. Merging that PR left the child with nothing to rebase but its base; the skill states the
+      base up front and tells the pod when it merges.
+    - *A minimum tool version is a fact to look up, not guess.* The spike left it `[U]`; the answer
+      (`gh` 2.94.0) came from one search of the CLI's release notes. The child's brief names such risks
+      so the pod resolves them.
+    - *Shipping a reference needs a channel.* The `files` list in `package.json` carried only
+      `skills/`, so a plugin-tier `references/` folder would not have been published. Skills CLI
+      installs copy only skill folders, so the capabilities reference also ships a copy inside the
+      skill. That copy is a known duplicate; #803, which moves references out, should dedupe it.
+    - *A rename sweeps by grep, then by reading.* A global replace of the old name left sentences
+      like "where issue and community-post are installed"; the diff review caught the ones that
+      needed backticks. Historical records (ADRs, spike reports, this plan) keep the old name.
+    - *A frozen-feature rename is not a narrowing.* The `to-question` suite names `file-issue` in a
+      Given step; replacing the name is a pure rename and needs no re-open.
+    - *The mission loop is heavy for one child.* The SDD judge rounds were skipped in this run (no
+      user channel, no judge agents); the spec node and evals were written by the pod and reviewed
+      by `pnpm verify` and the audit only. The `epic` skill should say what a child's pod may skip.
