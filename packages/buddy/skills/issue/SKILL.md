@@ -15,7 +15,7 @@ This skill files a **single issue**. It is not for an epic or an initiative, and
 
 | Category | Use when | Body template |
 |---|---|---|
-| bug | something behaves differently than it should | Description, Steps to Reproduce, Expected, Actual, Environment, Notes |
+| bug | something behaves differently than it should | Description, Steps to Reproduce, Expected Behavior, Actual Behavior, Environment, Notes |
 | feature | new behavior someone wants | Description (the need, then the wanted behavior), Use Cases, Notes |
 | task | work to be done that is neither a defect nor new behavior (a chore, a refactor, a migration) | Description, Done when (a check someone can run), Out of scope, Notes |
 
