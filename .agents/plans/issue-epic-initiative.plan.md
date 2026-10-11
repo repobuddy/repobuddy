@@ -44,16 +44,21 @@ override the levels, templates, and routing. See
 
 ## Child issues
 
-Ordered as ADR 0003's build order. Each ships on its own.
+Ordered as ADR 0003's build order: GitHub and Asana first, then the rest. Each ships on its own.
 
-1. **`issue`**: rename `file-issue` to `issue`, add the task category and the built-in GitHub and
-   GitLab adapters. Breaking rename, with a changeset. Update every page that names `file-issue`
-   (spec docs, `to-question`, `agent-readiness`, website, root readme), except ADR 0001.
+1. **`issue`**: rename `file-issue` to `issue`, add the task category and the built-in GitHub
+   adapter. Breaking rename, with a changeset. Update every page that names `file-issue` (spec
+   docs, `to-question`, `agent-readiness`, website, root readme), except ADR 0001.
 2. **References**: move the templates and level checks into `repobuddy.work-levels` and
    `repobuddy.work-template.<kind>`; add `repobuddy.work-tracker`.
-3. **`cyber-asana.tracker-adapter`**: the first external adapter, in the `cyber-asana` repository.
-4. **`epic`**: create an epic and its issues; promote issue → epic; demote initiative → epic.
-5. **`initiative`**: built last, against a real initiative (ADR 0003, Scope).
+3. **`cyber-asana.tracker-adapter.asana`**: the first external adapter, in the `cyber-asana`
+   repository.
+4. **`epic`**: create an epic and its issues; promote issue → epic; demote initiative → epic; the
+   `Retype` sections of the GitHub and Asana adapters.
+5. **GitLab adapter**: `repobuddy.tracker-adapter.gitlab`, Free-tier fallback included.
+6. **`initiative`**: built last, against a real initiative (ADR 0003, Scope).
+
+Linear, Jira, and other trackers come after this epic, as adapters in their own packages.
 
 Each child gets an SDD spec node under `.agents/spec/agent-skills/` and evals before it ships.
 
@@ -69,9 +74,12 @@ Results go here and into ADR 0003 when the spikes return.
 - **Levels, transitions, templates** ([report](./issue-epic-initiative/spike-levels-templates.md);
   external citations are from memory and unverified):
   - *Reference split* matches the names in ADR 0003: `repobuddy.work-levels` is one file, an H2 per
-    level with fixed H3s (Is, Done when, Too big, Too small) and a `## Transitions` block of knobs;
+    level with fixed H3s (Is, Done when, Too big, Too small). The spike's `## Transitions` knobs
+    moved to each adapter's `Retype` section (ADR 0003, decision 7);
     one `repobuddy.work-template.<kind>` per kind. Headings are API. `merge-sections` appends a
     section the base lacks (agent-harness `reference-document.ts`), so a team can add one.
+  - The transition rules below are now the *default* the skill falls back to; each adapter states
+    its own, and a team overrides them (ADR 0003, decision 7).
   - *issue → epic* keeps the original in place as the epic and moves its acceptance criteria into a
     first child; a new parent only where the tracker cannot retype.
   - *epic → initiative* creates a new parent with a metric (name, baseline, target); the epic
@@ -143,3 +151,11 @@ What the `epic` skill must do, observed in this session:
    on an epic vs category on the type), and the conflicts were settled in the plan, then folded
    into the ADR. The skill keeps spike results beside the epic and records the decision taken from
    each.
+7. **Put per-tracker behavior in the adapter, not the skill.** The first draft wrote the
+   level-change fallback once, in the skills. The owner pointed out that each tracker changes levels
+   differently and teams want to tune it, so the strategy moved to the adapter's `Retype` section
+   and only the guards stayed in the skill. When the skill breaks work down, it asks of each rule:
+   does this vary by tracker or by team? If so, it belongs in a reference.
+8. **Order children by the owner's priority, not by the design's tidiness.** Build order put GitHub
+   and GitLab together as "the built-ins"; the owner's priority is GitHub and Asana. The skill asks
+   for priority before it orders children.
