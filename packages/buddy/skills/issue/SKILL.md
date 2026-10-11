@@ -9,7 +9,7 @@ Files one well-formed item of tracked work (a bug, a feature, or a task) on the 
 
 Use when asked to file an issue, create a ticket, file a bug, open a feature request, add a task, or report a problem.
 
-This skill files a **single issue**. It is not for an epic or an initiative, and not for a comment on an item that already exists (that is `to-question`). Never file a security vulnerability as a public issue: send it to the repository's private channel (a GitHub security advisory, or the contact in `SECURITY.md`) and stop. Check for this first, before step 1.
+This skill files a **single issue**. It is not for an epic or an initiative, and not for a comment on an item that already exists (that is `to-question`). Never file a security vulnerability (a flaw that lets someone run code, or read or change data, they are not allowed to) as a public issue: send it to the repository's private channel (a GitHub security advisory, or the contact in `SECURITY.md`) and stop. Check for this first, before step 1.
 
 ## Categories
 
@@ -17,7 +17,7 @@ This skill files a **single issue**. It is not for an epic or an initiative, and
 |---|---|---|
 | bug | something behaves differently than it should | Description, Steps to Reproduce, Expected, Actual, Environment, Notes |
 | feature | new behavior someone wants | Description (the need, then the wanted behavior), Use Cases, Notes |
-| task | work to be done that is neither a defect nor new behavior (a chore, a refactor, a migration) | Description, Done when, Notes |
+| task | work to be done that is neither a defect nor new behavior (a chore, a refactor, a migration) | Description, Done when (a check someone can run), Out of scope, Notes |
 
 If the category is unclear from the request, ask.
 
@@ -55,11 +55,11 @@ If the user confirms a match, stop. Give the existing issue's URL and suggest a 
 
 ### 4. Confirm
 
-Summarize what will be created: title, category, key points of the description, the type or label the tracker will use, and any environment details. Ask for confirmation. Do not proceed without it.
+Run the tracker's `Kinds` operation (the GitLab fallback has none) so the type or label is known. Summarize what will be created: title, category, key points of the description, the type or label the tracker will use, and any environment details. Ask for confirmation. Do not proceed without it.
 
 ### 5. Create
 
-Run the tracker's `Kinds` operation, then `Create` with the category it maps to. Write the body from the category's template to a file; leave out sections that do not apply.
+Run the tracker's `Create` operation with the category `Kinds` mapped to. Write the body from the category's template to a file; leave out sections that do not apply.
 
 Keep the body free of internal file names, commit SHAs, and implementation details unless the user asks. If the repository is public, keep out anything from a private tracker (its titles, URLs, or customer details).
 
