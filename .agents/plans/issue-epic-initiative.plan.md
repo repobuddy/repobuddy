@@ -8,11 +8,11 @@ todos:
   - content: Align the reference names with agent-harness naming (repobuddy. prefix, dots not slashes)
     status: completed
   - content: 'Spike: GitHub, GitLab, Bitbucket mapping of each adapter op and each level'
-    status: in_progress
+    status: completed
   - content: 'Spike: adapter contract, stress-tested on Asana and Linear; work-tracker format'
-    status: in_progress
+    status: completed
   - content: 'Spike: promotion and demotion rules, level checks, body templates'
-    status: in_progress
+    status: completed
   - content: 'Spike: name clashes for issue, epic, initiative in the skills registry'
     status: completed
   - content: Fold the spike results into ADR 0003 and the glossary
@@ -65,6 +65,63 @@ Results go here and into ADR 0003 when the spikes return.
   `initiative`. Nearest are differently named (`mattpocock/skills@to-issues`, `create-epics`,
   `bmad-ticket`). `find` is fuzzy and capped near 20 results, so an exact match outside the top
   results is not ruled out. `create-issue` is common, one more reason to leave that name.
+
+- **Levels, transitions, templates** ([report](./issue-epic-initiative/spike-levels-templates.md);
+  external citations are from memory and unverified):
+  - *Reference split* matches the names in ADR 0003: `repobuddy.work-levels` is one file, an H2 per
+    level with fixed H3s (Is, Done when, Too big, Too small) and a `## Transitions` block of knobs;
+    one `repobuddy.work-template.<kind>` per kind. Headings are API. `merge-sections` appends a
+    section the base lacks (agent-harness `reference-document.ts`), so a team can add one.
+  - *issue → epic* keeps the original in place as the epic and moves its acceptance criteria into a
+    first child; a new parent only where the tracker cannot retype.
+  - *epic → initiative* creates a new parent with a metric (name, baseline, target); the epic
+    becomes its first shell.
+  - *epic → issue* retypes in place when no child is open; with up to 5 (knob) open children, folds
+    them into a checklist and closes each as not planned, after confirmation; above that, or with
+    grandchildren, it refuses and offers re-parenting. Never close children as duplicates.
+  - *initiative → epic* asks per child epic, warns that the metric is dropped, refuses while a child
+    epic has open issues.
+  - The adapter's `promote` needs a demote counterpart; see `retype` below.
+- **Adapter contract** ([report](./issue-epic-initiative/spike-adapter-contract.md); Linear pages
+  were read as summaries):
+  - An adapter is a reference with one section per op: Applies when, Prerequisites, Levels and
+    categories, Search, Create, Link, Retype, URLs, optional Conventions. Frontmatter carries
+    `contract: 1`. It marks which ops write, so the skill confirms before them.
+  - Every op returns an item ref `{id, title, state, url, level}`, so `search` reports the level.
+  - An op the tracker lacks opens with `**Unsupported.**`. Fallbacks live once, in the skills:
+    no in-place retype → create at the new level, link, comment, close the old item only after
+    confirmation; no search → ask the user to confirm there is no duplicate; no native link →
+    link by reference in the body.
+  - **Decided here:** `promote` becomes `retype`, both directions, returning `inPlace`. Adapters are
+    named `<plugin>.tracker-adapter.<tracker>`, which covers a plugin with several trackers, and the
+    built-ins ship the same way (`repobuddy.tracker-adapter.github`, `.gitlab`), so a team can
+    override a built-in like any other reference.
+  - `repobuddy.work-tracker`: frontmatter `default`, an `## Adapters` table and a `## Routes` table of
+    `level, category, tracker` rows; first match wins, then the default, then the git remote.
+  - *Asana*: issue = task, epic = parent task with subtasks, retype in place. Initiative (goal or
+    portfolio) is not covered by `cyber-asana`; open until `initiative` is built.
+    `cyber-asana`'s `plan-work` nearly duplicates `epic`: `epic` owns the neutral workflow,
+    `cyber-asana` keeps its conventions and ships the adapter, and does not depend on repobuddy.
+  - *Linear*: issue = issue, epic = project, initiative = initiative. "Convert to project" consumes
+    the issue, so retype is not in place.
+
+- **GitHub, GitLab, Bitbucket** ([report](./issue-epic-initiative/spike-tracker-mapping.md); each
+  claim marked verified by command or from docs):
+  - *GitHub*: `gh` 2.102.0 has native `--parent`, `--type`, `--add-sub-issue`, `--remove-sub-issue`,
+    and `view --json subIssues,parent`. 100 children per parent, 8 levels deep. Issue types are
+    org-only: this repo returns Bug, Feature, Task; a user-owned repo returns none, so fall back to
+    the `bug` and `enhancement` labels after `gh label list`.
+  - **Decided here:** on GitHub the issue type carries the *category* and an `epic` or `initiative`
+    label carries the *level*, with sub-issues as the children. That keeps the two axes apart, which
+    the spike's "type Feature plus `epic` label" did not. Retype is in place: change the label.
+  - *GitLab*: epics need Premium or Ultimate, live at group level, became work items in 18.1, and the
+    REST epics API is deprecated; child epics need Ultimate. `glab` has only an experimental
+    `work-items` command, so the adapter uses `glab api`. Free tier falls back to a labelled issue
+    with tasks. The work-items GraphQL calls are untested.
+  - **Decided here:** drop Bitbucket. Its native issue tracker is reported removed (not fetched);
+    a Bitbucket repository routes through `repobuddy.work-tracker` to a Jira adapter.
+  - Risks to cover in the `issue` spec: the minimum `gh` version for these flags, `--type` on a repo
+    without types, and the GitLab calls on a real instance.
 
 ## Dogfood notes
 
