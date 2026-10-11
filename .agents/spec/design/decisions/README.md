@@ -7,3 +7,4 @@ record, not a spec.
 | ADR | Decision |
 |---|---|
 | [0001](./0001-to-question-owns-composition-not-delivery.md) | `to-question` composes and hands off; it does not deliver |
+| [0002](./0002-routing-skills-are-named-noun-first.md) | Routing skills are named after their noun; single-procedure skills stay verb-noun |
