@@ -40,25 +40,28 @@ override the levels, templates, and routing. See
 ## Non-goals
 
 - Filing documents or submissions that have no lifecycle (ADR 0003, Scope).
-- A tracker adapter other than GitHub, GitLab, and `cyber-asana` in this epic.
+- Capabilities for a tracker other than GitHub, GitLab, and Asana in this epic.
 
 ## Child issues
 
 Ordered as ADR 0003's build order: GitHub and Asana first, then the rest. Each ships on its own.
 
-1. **`issue`**: rename `file-issue` to `issue`, add the task category and the built-in GitHub
-   adapter. Breaking rename, with a changeset. Update every page that names `file-issue` (spec
-   docs, `to-question`, `agent-readiness`, website, root readme), except ADR 0001.
-2. **References**: move the templates and level checks into `repobuddy.work-levels` and
-   `repobuddy.work-template.<kind>`; add `repobuddy.work-tracker`.
-3. **`cyber-asana.tracker-adapter.asana`**: the first external adapter, in the `cyber-asana`
-   repository.
-4. **`epic`**: create an epic and its issues; promote issue → epic; demote initiative → epic; the
-   `Retype` sections of the GitHub and Asana adapters.
-5. **GitLab adapter**: `repobuddy.tracker-adapter.gitlab`, Free-tier fallback included.
-6. **`initiative`**: built last, against a real initiative (ADR 0003, Scope).
+1. **`issue`**: rename `file-issue` to `issue`, add the task category and
+   `project-tracker.capabilities.github`. Breaking rename, with a changeset. Update every page that
+   names `file-issue` (spec docs, `to-question`, `agent-readiness`, website, root readme), except
+   ADR 0001.
+2. **References and contract**: move the templates and level checks into `repobuddy.work-levels`
+   and `repobuddy.work-template.<kind>`; write `project-tracker.contract`.
+3. **`project-tracker`**: the set-up skill. Lists installed capabilities, writes
+   `project-tracker.routing` with pinned choices, checks it.
+4. **`project-tracker.capabilities.asana`**: in the `cyber-asana` repository.
+5. **`epic`**: create an epic and its issues; promote issue → epic; demote initiative → epic; the
+   `Retype` sections for GitHub and Asana; moves across trackers.
+6. **`project-tracker.capabilities.gitlab`**, Free-tier fallback included.
+7. **`initiative`**: built last, against a real initiative (ADR 0003, Scope).
 
-Linear, Jira, and other trackers come after this epic, as adapters in their own packages.
+Outside this epic: Linear, Jira, and GitHub Discussions capabilities, written by whoever needs them.
+In agent-harness, a `reference list <glob>` would make discovery exact (not blocking; not filed).
 
 Each child gets an SDD spec node under `.agents/spec/agent-skills/` and evals before it ships.
 
@@ -131,6 +134,21 @@ Results go here and into ADR 0003 when the spikes return.
   - Risks to cover in the `issue` spec: the minimum `gh` version for these flags, `--type` on a repo
     without types, and the GitLab calls on a real instance.
 
+- **Discovery by shared name** (tested against agent-harness with a scratch fixture: two fake
+  provider packages and a project override):
+  - Per-level names (`project-tracker.epic`): `reference show` exits 1 with "held by more than one
+    plugin; ask for one of prov-asana/…, prov-gh/…"; the qualified name resolves; a bare
+    `merge-sections` override over two providers stays ambiguous, over the qualified name it
+    applies.
+  - Per-tracker names (`project-tracker.capabilities.<tracker>`): `reference search
+    project-tracker.capabilities` returns both providers tagged `match: prefix`, and also a planted
+    unrelated reference tagged `match: description`, which the skill must drop.
+  - **Decided:** per-tracker capabilities. A tracker's search, link, and auth are not per level, so
+    per-level names would copy them into each file. Per-level choice lives in the routing.
+- **Superseded** above: `<plugin>.tracker-adapter.<tracker>` and `repobuddy.work-tracker`. A
+  consumer cannot look a name up when the provider's plugin name or the tracker's name is part of
+  it and unknown; see ADR 0003, decisions 4, 5, 8, 9.
+
 ## Dogfood notes
 
 What the `epic` skill must do, observed in this session:
@@ -159,3 +177,14 @@ What the `epic` skill must do, observed in this session:
 8. **Order children by the owner's priority, not by the design's tidiness.** Build order put GitHub
    and GitLab together as "the built-ins"; the owner's priority is GitHub and Asana. The skill asks
    for priority before it orders children.
+9. **Name extension points after the interface, not the provider.** The first adapter names carried
+   the provider's plugin (`cyber-asana.…`), then the tracker as a lookup key; both make the consumer
+   know something it cannot. The owner moved them to a shared prefix that is listed, not looked up.
+   When the skill files a child that defines an extension point, it states who looks the name up
+   and what they know at that moment.
+10. **Test the platform before deciding on it.** The two naming schemes were run against the real
+    resolver before choosing; the answer (both work, search needs filtering) differed from the
+    assumption (wildcards needed).
+11. **A breakdown can surface a missing child.** The `project-tracker` set-up skill appeared only
+    when a mixed-tracker team was considered. The skill tries one non-default configuration against
+    the breakdown before filing it.
