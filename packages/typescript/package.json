@@ -1,6 +1,6 @@
 {
 	"name": "@repobuddy/typescript",
-	"version": "2.2.2",
+	"version": "2.2.3",
 	"description": "Your TypeScript buddy",
 	"keywords": [
 		"repobuddy",
@@ -55,7 +55,7 @@
 		"verify": "npm-run-all -p build coverage -p size"
 	},
 	"dependencies": {
-		"clibuilder": "^11.3.0",
+		"clibuilder": "^11.3.3",
 		"dirname-filename-esm": "^1.1.1",
 		"execa": "^10.0.0"
 	},

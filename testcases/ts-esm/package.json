@@ -12,7 +12,7 @@
 		"@jest/globals": "^30.0.0",
 		"@repobuddy/jest": "workspace:^",
 		"@repobuddy/typescript": "workspace:^",
-		"assertron": "^11.7.0",
+		"assertron": "^11.7.1",
 		"chalk": "^6.0.0",
 		"cross-env": "^10.1.0",
 		"dirname-filename-esm": "^1.1.1",

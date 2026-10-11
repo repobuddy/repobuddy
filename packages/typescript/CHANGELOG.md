@@ -1,5 +1,11 @@
 # @repobuddy/typescript
 
+## 2.2.3
+
+### Patch Changes
+
+- fcd82e3: Update `assertron` to `^11.7.1` and `clibuilder` to `^11.3.3`.
+
 ## 2.2.2
 
 ### Patch Changes

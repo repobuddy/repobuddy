@@ -1,5 +1,11 @@
 # @unional/jest-presets
 
+## 7.1.2
+
+### Patch Changes
+
+- fcd82e3: Remove the `type-plus` dependency. Its one type is now defined inline.
+
 ## 7.1.1
 
 ### Patch Changes
