@@ -43,8 +43,8 @@ label, and a task gets a label only if the repository has `task`.
 
 ### Settled by the spikes
 
-- Minimum `gh` is 2.94.0, the first release with `--type`, `--parent`, and `--add-sub-issue`
-  (release notes of v2.94.0, 2026-06-10). Checked against 2.102.0.
+- Minimum `gh` is 2.98.0, the first release with `--type`, `--parent`, and `--add-sub-issue`
+  (release notes of v2.98.0, 2026-06-10). Checked against 2.102.0.
 - `--type` on a repository without issue types is **untested**. The reference reads `issueTypes`
   first and never passes `--type` when it is null.
 

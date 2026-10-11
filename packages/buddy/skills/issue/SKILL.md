@@ -1,6 +1,6 @@
 ---
 name: issue
-description: "Use this skill when filing or creating an issue, ticket, bug report, feature request, or task on GitHub or GitLab; searches for duplicates before filing."
+description: "Use this skill when filing a bug, feature, or task as an issue on GitHub or GitLab; searches for duplicates first."
 ---
 
 # Issue
@@ -9,7 +9,7 @@ Files one well-formed item of tracked work (a bug, a feature, or a task) on the 
 
 Use when asked to file an issue, create a ticket, file a bug, open a feature request, add a task, or report a problem.
 
-This skill files a **single issue**. It is not for an epic or an initiative, and not for a comment on an item that already exists (that is `to-question`). Never file a security vulnerability as a public issue: send it to the repository's private channel (a GitHub security advisory, or the contact in `SECURITY.md`) and stop.
+This skill files a **single issue**. It is not for an epic or an initiative, and not for a comment on an item that already exists (that is `to-question`). Never file a security vulnerability as a public issue: send it to the repository's private channel (a GitHub security advisory, or the contact in `SECURITY.md`) and stop. Check for this first, before step 1.
 
 ## Categories
 
@@ -68,11 +68,11 @@ Give the URL of the new issue.
 
 ## Level check
 
-If the item looks too big for one issue (several independently shippable parts, more than one owner) or too small to track (a one-line fix with no lifecycle), say so in the confirmation and suggest filing it at another level. Only suggest; file at this level if the user does not change it.
+If the item looks too big for one issue (several independently shippable parts, more than one owner) or too small to track (a one-line fix with no lifecycle), say so in the confirmation. For an item that is too big, suggest an epic (the `epic` skill when it is installed; otherwise one parent issue with child issues); for one that is too small, suggest not tracking it. Only suggest; file at this level if the user does not change it.
 
 ## GitLab fallback
 
-For a GitLab remote with no capabilities reference: `glab` must be installed and logged in (run `init-buddy` when installed, else tell the user). Search with `glab issue list --all --search "<keywords>"`; create with `glab issue create --title "<title>" --description "<body>" --label "<label>"` using `bug` for a bug and `feature` for a feature; a task takes no label unless the repo has `task`. Omit `--label` when the label does not exist.
+For a GitLab remote with no capabilities reference: `glab` must be installed and logged in (run `init-buddy` when installed, else tell the user). Search with `glab issue list --all --search "<keywords>"`. Check labels with `glab label list`; use `bug` for a bug and `feature` for a feature, a task takes `task` only if listed, and omit `--label` when the label is not listed. Create with `glab issue create --title "<title>" --description "$(cat <body-file>)" --label "<label>"`, with the body written to a file first.
 
 ## What NOT to Do
 
@@ -84,6 +84,7 @@ For a GitLab remote with no capabilities reference: `glab` must be installed and
 
 ## Verification
 
+- [ ] Checked the request is not a security vulnerability
 - [ ] Loaded the tracker's capabilities (or applied the GitLab fallback)
 - [ ] Gathered environment and version details for a bug
 - [ ] Searched for duplicates with at least two keyword combinations

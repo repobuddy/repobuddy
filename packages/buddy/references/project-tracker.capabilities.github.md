@@ -9,7 +9,7 @@ tags: [project-tracker, github, issue]
 - Visibility: public for a public repository, private for a private one. Read it with `gh repo view --json isPrivate`.
 - Levels held: issue, epic, initiative.
 - Categories held: bug, feature, task.
-- Needs `gh` 2.94.0 or later (the first release with `--type`, `--parent`, and `--add-sub-issue`). Check with `gh --version`; when older, tell the user to upgrade and stop.
+- Needs `gh` 2.98.0 or later (`--type`, `--parent`, and `--add-sub-issue` arrived in 2.94.0; `--search-type` in 2.98.0). Check with `gh --version`; when older, tell the user to upgrade and stop.
 
 ## Detect
 
@@ -23,7 +23,7 @@ Read the issue types of the repository:
 
 ```bash
 gh api graphql -f query='{repository(owner:"<owner>",name:"<repo>"){issueTypes(first:20){nodes{name}}}}' \
-  --jq '.data.repository.issueTypes.nodes[].name'
+  --jq '(.data.repository.issueTypes.nodes // [])[].name'
 ```
 
 - Types come back (organization-owned repositories; defaults are `Bug`, `Feature`, `Task`): the type carries the category. Map bug to `Bug`, feature to `Feature`, task to `Task`. When a team renamed or removed a type, use the closest name from the list; when none fits, create the issue without a type and say so.

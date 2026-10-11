@@ -18,7 +18,7 @@ Run `/issue`, or ask in plain words. It takes no arguments.
 
 ## What it does
 
-1. Loads the tracker's capabilities: GitHub (`gh` 2.94.0 or later) ships with the skill; GitLab (`glab`) uses a built-in fallback.
+1. Loads the tracker's capabilities: GitHub (`gh` 2.98.0 or later) ships with the skill; GitLab (`glab`) uses a built-in fallback.
 2. Asks only for what you have not said: title, category (bug, feature, or task), description, and for a bug the steps and expected vs actual behavior.
 3. For a bug, reads OS, runtime, package manager, and package versions from your machine instead of asking.
 4. Searches for duplicates at least twice with different keywords. If you confirm a match, it stops and gives you that issue's URL.
