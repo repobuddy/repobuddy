@@ -50,24 +50,84 @@ label, and a task gets a label only if the repository has `task`.
 
 ## Use Cases
 
-1. A maintainer reports a bug and gets a duplicate check, a confirmation, and a bug-shaped issue.
-2. A contributor proposes a feature and gets a feature-shaped issue.
-3. A maintainer tracks a chore and gets a task-shaped issue.
-4. A reporter whose problem is already filed is sent to the existing issue and files nothing.
-5. A reporter in a user-owned repository, with no issue types, gets the category as a label.
-6. A reporter with a GitLab remote still files, through the fallback.
-7. A reporter on an unsupported host (Bitbucket) is told so and nothing is filed.
-8. A reporter whose item is too large for one issue is told, and chooses.
+**Actors.** A *reporter* (a maintainer or contributor who found something) invokes the skill. A
+*sibling skill* (`agent-readiness` offers it for a finding) invokes it on the reporter's behalf. A
+*triager* reads the result without invoking anything, and a *private-tracker owner* is affected when
+a public issue could leak their details. The triager and the owner are stakeholders; their goals
+shape the body and the confirmation.
+
+| # | Use case (surface: `/issue`) | Actor / goal | Entry point | Extensions |
+|---|---|---|---|---|
+| 1 | **File a bug** | Reporter: get a reproducible defect on the tracker without duplicating one | Trigger: asks to file or report a defect. Inputs: title, description, steps, expected and actual. Outcome: a bug-category issue and its URL | 5–9 |
+| 2 | **File a feature** | Reporter: record wanted behavior as its own issue | Same trigger with a request for new behavior. Outcome: a feature-category issue and its URL | 5–9 |
+| 3 | **File a task** | Reporter: track a chore that is neither defect nor feature | Same trigger with a chore. Outcome: a task-category issue and its URL | 5–9 |
+| 4 | **Let a sibling skill offer filing** | Sibling skill: give the reporter a path to file a finding | The same entry point, with the finding as the description | 5–9 |
+
+**Extensions** (every path that does not reach "an issue exists and its URL is reported"), shared by
+use cases 1–4 and drawn in the Control Flow:
+
+5. **A duplicate exists.** The reporter confirms a search hit is the same issue: nothing is created; the existing URL is given.
+6. **The reporter does not confirm.** Nothing is created.
+7. **The item is a security vulnerability.** The skill points to the private channel and creates nothing.
+8. **The host has no tracker set up** (Bitbucket or anything else). The skill says so and creates nothing.
+9. **The item is the wrong size.** The confirmation suggests another level; the issue is still filed at this one if the reporter does not change it. Variants: the repo has no issue types (label instead of type), the host is GitLab (fallback commands).
+
+**Surface trace.** The capability takes three inputs: title (every use case), category (every use
+case; it decides the template and the type or label), and description (every use case). It exposes
+no flags or options, so there are no forbidden combinations.
 
 ## Control Flow
 
-1. Resolve the tracker: list `project-tracker.capabilities.` names, load the one whose Detect matches
-   the remote; fall back to the skill's shipped GitHub copy, then the GitLab fallback; else stop.
-2. Gather title, category, description; for a bug, environment.
-3. Search at least twice. A confirmed match ends the run with the existing URL.
-4. Confirm title, category, type or label, key points. No confirmation, no write.
-5. Create per the reference's Kinds and Create; report the URL.
+```mermaid
+graph TD
+    A[Request to file an item] --> B{Is it a security<br/>vulnerability?}
+    B -->|Yes| Z[Point to the private channel<br/>and stop]
+    B -->|No| C{Host of the origin remote}
+    C -->|other host| F[Say no tracker is set up<br/>and stop]
+    C -->|gitlab| E[Use the GitLab fallback commands]
+    C -->|github.com| D[Load project-tracker.capabilities.github]
+    D --> G[Gather title, category, description<br/>and for a bug the environment]
+    E --> G
+    G --> H{Search twice:<br/>does the reporter confirm a hit?}
+    H -->|Yes| I[Give the existing URL and stop]
+    H -->|No| J{Does the item fit<br/>one issue?}
+    J -->|Too big or too small| K[Add a level suggestion<br/>to the summary]
+    J -->|Fits| L{Does the reporter<br/>confirm the summary?}
+    K --> L
+    L -->|No| M[Create nothing and stop]
+    L -->|Yes| N{Does the repo have<br/>issue types?}
+    N -->|Yes| O[Create with the type for the category]
+    N -->|No| P[Create with the category label]
+    O --> Q[Report the URL]
+    P --> Q
+```
+
+The GitLab fallback creates with a label and has no type branch, so `N` applies to the GitHub path.
 
 ## Scenario map
 
-See [issue.feature](./issue.feature). Measurement policy: [eval.md](./eval.md).
+### Use cases 1–4 — file an item
+
+| Edge | Path (Given) | Scenario |
+|---|---|---|
+| `A` (engage) | a repo with `to-question` and `community-post` also installed | `engages to file one item of tracked work, not to comment or plan` |
+| `B → C (No)` | an ordinary defect report | `files an ordinary defect instead of treating it as a vulnerability` |
+| `C → D (github.com)` | origin is github.com | `maps each category to the tracker's type on a repo with issue types` |
+| `G` (gather) | a bug in a package with a Node toolchain | `collects environment details for a bug from the machine` |
+| `H → J (No)` | the first search returns hits that are not the reporter's issue | `searches at least twice and shows each hit before creating` |
+| `J → L (Fits)` | one deliverable with one owner | `adds no level suggestion to an item that fits one issue` |
+| `L → N (Yes)` | the reporter has confirmed the summary | `creates only after the summary is confirmed` |
+| `N → P (No)` | issueTypes is null and the repo has bug and enhancement labels | `falls back to labels on a repo without issue types` |
+| `O` / `Q` (body and report) | a confirmed task in a public repo, the request cites a commit SHA and a private tracker URL | `writes a task body that fits the category and keeps private details out` |
+| `C → E (gitlab)` | origin is gitlab.com and no GitLab reference exists | `files on GitLab through the fallback` |
+
+### Extensions 5–9 — the paths that do not file
+
+| Edge | Path (Given) | Scenario |
+|---|---|---|
+| `H → I (Yes)` | a search hit the reporter confirms is the same issue | `stops at a confirmed duplicate` |
+| `L → M (No)` | the reporter declines the summary | `creates nothing when the user declines` |
+| `B → Z (Yes)` | the report describes an unauthenticated remote code execution | `does not file a vulnerability publicly` |
+| `C → F (other host)` | origin is bitbucket.org | `refuses a host with no tracker set up` |
+| `J → K (Too big or too small)` | one request covering five independently shippable features | `suggests another level for an oversized item and still files at issue level` |
+| `J → K (Too big or too small)` | a one-character typo fix in a comment | `suggests not tracking an item too small for an issue` |
