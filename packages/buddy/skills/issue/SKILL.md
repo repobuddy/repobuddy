@@ -82,12 +82,13 @@ For a GitLab remote with no capabilities reference: `glab` must be installed and
 - Do not file an epic or initiative here, or a security vulnerability publicly
 - Do not close, retype, or move an existing item
 
-## Verification
+## Validate
 
-- [ ] Checked the request is not a security vulnerability
-- [ ] Loaded the tracker's capabilities (or applied the GitLab fallback)
-- [ ] Gathered environment and version details for a bug
-- [ ] Searched for duplicates with at least two keyword combinations
-- [ ] User confirmed no duplicate exists
-- [ ] User confirmed the category and details before creation
-- [ ] Issue URL returned to user after creation
+- [ ] The description in the frontmatter is at most 120 characters, and `name` equals the directory name
+- [ ] `references/project-tracker.capabilities.github.md` is byte-identical to `packages/buddy/references/project-tracker.capabilities.github.md`
+- [ ] The request was checked for a security vulnerability before any step ran
+- [ ] The tracker's capabilities were loaded, or the GitLab fallback applied
+- [ ] At least two searches with different keywords ran before any create command
+- [ ] No create command ran without the user's confirmation of the summary
+- [ ] The body of a task or feature carries no bug-only section; a public issue carries no private-tracker detail
+- [ ] The URL of the new issue, or of the existing duplicate, was returned

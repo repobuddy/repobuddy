@@ -50,6 +50,10 @@ label, and a task gets a label only if the repository has `task`.
 
 ## Use Cases
 
+**Fit:** strong
+
+`issue` makes a real activation decision: its vocabulary ("ticket", "issue", "task") overlaps `to-question`, `community-post`, and the planned `epic` skill. Its steps are judgment, not mechanism (category, duplicate matching, level fit).
+
 **Actors.** A *reporter* (a maintainer or contributor who found something) invokes the skill. A
 *sibling skill* (`agent-readiness` offers it for a finding) invokes it on the reporter's behalf. A
 *triager* reads the result without invoking anything, and a *private-tracker owner* is affected when
@@ -118,7 +122,10 @@ The GitLab fallback creates with a label and has no type branch, so `N` applies 
 | `J → L (Fits)` | one deliverable with one owner | `adds no level suggestion to an item that fits one issue` |
 | `L → N (Yes)` | the reporter has confirmed the summary | `creates only after the summary is confirmed` |
 | `N → P (No)` | issueTypes is null and the repo has bug and enhancement labels | `falls back to labels on a repo without issue types` |
-| `O` / `Q` (body and report) | a confirmed task in a public repo, the request cites a commit SHA and a private tracker URL | `writes a task body that fits the category and keeps private details out` |
+| `O` / `Q` (body) | a confirmed task "migrate the build to tsdown" in a public repo | `writes a task body whose end state and scope can be checked` |
+| `O` / `Q` (body) | the same task, with a request that cites a commit SHA and an internal tracker address | `keeps a commit SHA and an internal tracker address out of a public issue body` |
+| `O` / `Q` (body) | the same task | `leaves bug-only sections out of a task body` |
+| `—` (artifact) | the shipped skill and its two reference copies | `ships a Validate section whose mechanical assertions pass` |
 | `C → E (gitlab)` | origin is gitlab.com and no GitLab reference exists | `files on GitLab through the fallback` |
 
 ### Extensions 5–9 — the paths that do not file

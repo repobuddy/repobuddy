@@ -86,20 +86,45 @@ Feature: issue — file one bug, feature, or task on the tracker
     And it does not pass --type
 
   @quality @rubric
-  Scenario: writes a task body that fits the category and keeps private details out
+  Scenario: writes a task body whose end state and scope can be checked
     Given the user confirms a task "migrate the build to tsdown" in a public repo
-    And the user's request cites commit 9f2c1ab and an internal tracker item at tracker.internal.example/ENG-41
+    And the user says the build runs on webpack today and CI must stay under ten minutes
     When issue writes the body
     Then the body is graded:
       """
       dimensions:
-        done_when: 3          # the body states what done looks like as a checkable end state, not
-                              # as "the migration is finished"
-        category_fit: 3       # the body has no steps-to-reproduce, expected, or actual section
-        public_safety: 3      # neither the commit SHA nor the internal tracker address appears
-      threshold: 7
+        end_state_checkability: 3  # a reader can tell from the body alone whether the task is
+                                   # finished, by a stated check rather than "the migration is done"
+        scope_statement: 3         # the body names what moves from what to what, and what stays
+                                   # untouched, so two readers would not scope it differently
+      threshold: 5
       """
     And the body scores at or above the threshold
+
+  @behavior
+  Scenario: keeps a commit SHA and an internal tracker address out of a public issue body
+    Given the repo is public
+    And the user confirms a task "migrate the build to tsdown"
+    And the user's request cites commit 9f2c1ab and an internal tracker item at tracker.internal.example/ENG-41
+    When issue writes the body
+    Then the body does not contain 9f2c1ab
+    And the body does not contain tracker.internal.example
+
+  @behavior
+  Scenario: leaves bug-only sections out of a task body
+    Given the user confirms a task "migrate the build to tsdown"
+    When issue writes the body
+    Then the body has no Steps to Reproduce heading
+    And the body has no Expected Behavior heading
+
+  @behavior
+  Scenario: ships a Validate section whose mechanical assertions pass
+    Given the issue skill as shipped in packages/buddy/skills/issue
+    When its SKILL.md is read
+    Then it has a Validate section
+    And the description in its frontmatter is at most 120 characters
+    And its frontmatter name equals its directory name
+    And its capabilities reference is byte-identical to the copy in packages/buddy/references
 
   @behavior
   Scenario: files on GitLab through the fallback

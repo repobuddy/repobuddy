@@ -25,18 +25,20 @@ and category mapping are conduct. Quality: whether a body fits its category is a
 
 ## The rubric: what each dimension pays for
 
-`writes a task body that fits the category and keeps private details out` has three dimensions, each
-worth 3, threshold 7. The Given plants a commit SHA and an internal tracker address in the request,
-so a copier of the bug template or of the user's own words loses points.
+`writes a task body whose end state and scope can be checked` has two dimensions, each worth 3,
+threshold 5. Two properties the first draft scored are now booleans, because nobody would trade them
+for strength elsewhere: leaking a commit SHA or internal address
+(`keeps a commit SHA and an internal tracker address out of a public issue body`) and carrying
+bug-only sections (`leaves bug-only sections out of a task body`).
 
 | Dimension | Plausible wrong subject | What it banks | Trade |
 |---|---|---|---|
-| `done_when` | restates the title as the goal ("migration is finished") | 2 of 3 elsewhere | Strength in category fit does not pay for a vague end state: a task with no checkable end is unfinishable, so this stays a dimension only because a partial end state ("builds in CI") is still useful. |
-| `category_fit` | fills the bug template with an empty repro section | 2 of 3 elsewhere | A task body with a repro section is noisier, not wrong, so strong done-when and safety may pay for it. |
-| `public_safety` | pastes the request text including the SHA and tracker address | 0 on this dimension | Not substitutable: leaking a private address is a floor, not a trade. It sits in the sum only because the threshold of 7 means a leak (6 at best) fails the scenario; a boolean `Then` would say the same. If cSEM measurement shows 7 is inside the judge's noise, move it to a boolean scenario. |
+| `end_state_checkability` | restates the title as the goal ("migration is finished") | 0 to 1 | A precise scope can pay a little for a weak end state, because the reader can still derive a check from a well-scoped task. |
+| `scope_statement` | copies the user's sentence and names no boundary | 0 to 1 | A checkable end state can pay a little for a loose scope, because the check pins the scope. |
 
-The best wrong subject banks 6 (done-when 3, category fit 3, leak 0), strictly under 7. The cut has
-not been measured with a judge's cSEM; that needs a non-author run, so treat 7 as ungrounded.
+The best wrong subject banks end-state 1 and scope 3, or the reverse, so 4 of 6, strictly under the
+threshold of 5. A subject strong on one and absent on the other scores 3 and fails. The cut has not
+been measured against a judge's noise (cSEM); that needs a non-author run, so treat 5 as ungrounded.
 
 ## Known weaknesses
 
