@@ -1,6 +1,7 @@
 ---
 description: What the GitHub tracker can do for issue, epic, and initiative skills; operations, levels, categories, and visibility.
 tags: [project-tracker, github, issue]
+contract: 1
 ---
 
 ## Tracker

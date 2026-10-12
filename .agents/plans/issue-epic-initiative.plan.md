@@ -228,3 +228,23 @@ What the `epic` skill must do, observed in this session:
     without issue types creates the issue and then fails, so the skill checks for a stray before any
     retry. A judge that reads instructions cannot find this; only the live call did. The `epic` skill
     must do the same after any failed create in a batch, or it files duplicates of its own children.
+15. **Running a child (#803) by hand.** What the second child taught the `epic` skill:
+    - *Test the override path before writing the references.* A scratch project declaring the package
+      as a dependency, with one `merge-sections` file in `.agents/references/`, showed that a plugin
+      copy is read from a package the project declares, that a redefined section replaces the base,
+      and that a new section is appended. The skill that defines an extension point proves the
+      override works in the same child, not a later one.
+    - *The `list <pattern>` flag is not in every build.* The local agent-harness binary rejected
+      `reference list 'project-tracker.capabilities.*'` because its `dist` predated the change. A brief
+      that depends on a sibling repository's unreleased feature should say which build to use.
+    - *A shipped duplicate needs a generator, not a checklist line.* The first child guarded two copies
+      with a Validate assertion a human had to run. #803 made the plugin copy canonical and wrote
+      `scripts/sync-skill-references.mjs`, which copies the references each `SKILL.md` names in
+      backticks and fails `verify` when one is stale. The `epic` skill should ask of any duplicate it
+      files a child for: what regenerates it?
+    - *A template's headings are its API.* The first draft moved the spike's template headings
+      (Summary, Motivation) over the ones the shipped skill and its evals already used (Description,
+      Use Cases). The move kept the shipped headings; a rename is a separate, changeset-worthy change.
+    - *Split the contract from the first implementation, then make the implementation conform.* The
+      contract was written to match the GitHub reference that already existed, and the reference gained
+      only a `contract: 1` line. Writing the contract first would have forced a rewrite of a tested file.

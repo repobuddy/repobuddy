@@ -10,6 +10,7 @@ One unit per shipped skill.
 | [merge-dep-prs](./merge-dep-prs/README.md) | Merge dependency-update PRs — **the merge gate only** |
 | [to-question](./to-question/README.md) | Format a question or discussion for a target platform |
 | [issue](./issue/README.md) | File one bug, feature, or task on the tracker, after a duplicate check |
+| [work-references](./work-references/README.md) | The level checks, body templates, and tracker contract the level skills load by name |
 
 Skills present in `skills/` with no unit here are **not yet backfilled** — `agent-readiness`,
 `init-buddy`, `min-release-age`, `session`, `setup-github-repo`, `setup-npm-trusted-publishing`, `website`. They are a
