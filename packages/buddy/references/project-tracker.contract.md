@@ -1,5 +1,5 @@
 ---
-description: What a project-tracker.capabilities.<tracker> reference must contain, and the contract version skills check.
+description: What a project-tracker.capabilities.<tracker> reference must contain, the contract version skills check, and the format of project-tracker.routing.
 tags: [project-tracker, contract]
 contract: 1
 ---
@@ -47,3 +47,29 @@ Every operation that returns an item gives the skill this record, read from what
 ## Overrides
 
 A team overrides one section by writing a reference with the same name and `merge: merge-sections`. Over a tracker two plugins ship, the override takes the qualified name.
+
+## Routing
+
+`project-tracker.routing` is the project's own reference, in its `.agents/references/` folder; no default ships, so its absence means the project has no routing. The `project-tracker` skill writes it and the level skills read it. It has two `##` sections, in this order, each a table.
+
+`## Routes`: which tracker holds a level and a category.
+
+| Column | Holds |
+|---|---|
+| `Level` | `issue`, `epic`, `initiative`, or `any` |
+| `Category` | `bug`, `feature`, `task`, or `any` |
+| `Tracker` | the pin: `<plugin>/project-tracker.capabilities.<tracker>`, or the bare `project-tracker.capabilities.<tracker>` when the project itself defines the tracker |
+
+The first row that matches the level and category wins; `any` matches everything. A level and category that no row matches have no route, and a level skill stops instead of guessing. Put specific rows first and a catch-all last.
+
+`## Moves`: what happens to the source when an item moves from one tracker to another.
+
+| Column | Holds |
+|---|---|
+| `From` | the pin the item leaves |
+| `To` | the pin it moves to |
+| `Source after the move` | `moved` (close the source as moved) or `mirror` (keep it open) |
+
+A pair with no row means `moved`, except that a move from a private tracker to a public one is never allowed, with a row or without: visibility is read from each reference's `Tracker` section, a row for that pair is invalid, and a skill that meets the pair stops. A private tracker's details never go into a public one. When an item moves from a public tracker to a private one, the public item says only that it is tracked internally, with no title or URL.
+
+Reading a pin: `reference show <pin>` resolves it. Exit 1 with `no reference named` means the pin is missing; exit 1 with `held by more than one plugin` means a bare name is ambiguous. `reference show <pin> --format json` carries the frontmatter, so `contract` is in `metadata`. To turn a bare name from `reference search` into a pin, run `reference where <name>`: the slot marked `used` names the plugin, and a project-tier slot means the bare name is the pin.
