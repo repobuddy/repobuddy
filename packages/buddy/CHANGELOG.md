@@ -1,5 +1,35 @@
 # repobuddy
 
+## 3.0.0
+
+### Major Changes
+
+- bdb4d40: **Breaking:** the `file-issue` skill is now `issue`. Invoke `/issue` (or `npx skills add repobuddy/repobuddy --skill issue`) where you used `file-issue`; `npx skills remove file-issue` drops the old one.
+  
+  - It files a bug, a feature, or a task. On GitHub the category is the issue type (`Bug`, `Feature`, `Task`); a repository without issue types gets the `bug` or `enhancement` label.
+  - GitHub's commands now live in a shipped `project-tracker.capabilities.github` reference. Filing on GitHub needs `gh` 2.98.0 or later.
+  - Bitbucket is no longer a target; its native issue tracker is gone.
+  - It suggests a different level when an item looks too big or too small, and never files a security vulnerability publicly.
+
+### Minor Changes
+
+- 1f85752: Moves to clibuilder 12. The `buddy` CLI keeps its commands, arguments, and flags, and still loads plugins from the repobuddy config (now through `@clibuilder/plugins`, so `buddy ts build` and `buddy ts copy-cjs-package-json` still work). What changes is how it prints and fails:
+  
+  - `buddy test-scripts` and `buddy check-deps` print their answer on stdout in clibuilder's default `toon` format, and no longer log it as lines. Pass `--format text` for the lines they printed before; `--format json` for JSON.
+  - Progress and warnings go to stderr: `buddy ts build` and `buddy ts copy-cjs-package-json` write their progress lines there instead of stdout.
+  - A usage error (an unknown flag, a bad `--runner` value, a missing argument) is now a coded report on stdout with exit code 2. It used to be prose with the full help on stderr.
+  - `--format <toon|json|text>` is accepted by every command, and `--help` answers on stdout in that format (`--format text` for the old help).
+  - `--show-config` answers on stdout in `toon` by default; pass `--format text` for the old lines.
+  - `repobuddy` now depends on `args-minus`, so a plugin's commands and the CLI share one copy of it.
+  - `@repobuddy/typescript` depends on `clibuilder` `^12.0.0` (was `^11.3.3`). A plugin command written for the 11 `activate(cli)` hook still loads.
+- 697f4e3: New skill `project-tracker` sets up, shows, changes, and checks the project's `project-tracker.routing`: which tracker holds each level and category, with each choice pinned as `<plugin>/project-tracker.capabilities.<tracker>` and a per-pair policy for what a move does to its source (close it as moved, or keep it open as a mirror). It lists the installed capabilities by their shared prefix, so a new tracker needs no change here, and refuses a move from a private tracker to a public one. Check reports a route whose tracker is missing, held by two plugins, on an unknown contract version, or that no route covers. `issue` now files to the routed tracker when a routing exists, stops with the problem named when a pin or route does not resolve, and behaves as before otherwise, ending its report with a suggestion to run `project-tracker`. `project-tracker.contract` gains a `Routing` section that defines the routing's tables; the contract version stays 1.
+- f4dc546: The `issue` skill now loads its body templates and level checks by name through agent-harness, so a project can override one section with `merge-sections`. A template section is a `##`; in `repobuddy.work-levels` an override restates a whole level, because the resolver replaces a whole `##` section. The package ships new references: `repobuddy.work-levels`, `repobuddy.work-template.bug`, `.feature`, `.task`, `.epic`, and `.initiative`, and `project-tracker.contract`, which says what a `project-tracker.capabilities.<tracker>` reference must contain. `project-tracker.capabilities.github` now declares `contract: 1`, and the skill stops on a capabilities reference whose contract version it does not know.
+
+### Patch Changes
+
+- ec765fc: The `issue` skill now says what to do after a failed create: when the failed command left an issue behind, give that issue's URL and do not retry; when it left none, say nothing was filed before any retry. Its fallback to the bundled GitHub reference now reads as applying after the fuzzier search matches are dropped.
+- 87983f6: The `to-question` and `review-permissions` skill scripts are now compiled from `src` by `plugin build` into one self-contained `.mjs` each, so a skill linked or copied on its own still runs. Every `npx` reference in the skills is pinned to an exact version, and skill links no longer leave the skill folder.
+
 ## 2.2.0
 
 ### Minor Changes
