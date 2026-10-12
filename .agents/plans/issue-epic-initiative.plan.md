@@ -253,3 +253,32 @@ What the `epic` skill must do, observed in this session:
     - *Judges caught what self-review missed.* A map row homed the "could not add label" case on the type path (`O`) when that failure belongs to the label path (`P`); a Given said "listed afterwards", presupposing the list its own Then asserts.
     - *A spec Then can outrun the skill's words.* "Report the stray's URL" had no sentence in `SKILL.md` or the reference; the Then was reworded to trace to the Report step. Left for a later skill edit: say in step 5 that a found stray is reported and not retried, and that step 4's "finds nothing" means after the fuzzier names are dropped.
     - *`audit validate` with no path only scans `.agents/skills`.* Pass `--path packages/buddy/skills/<skill>` to cover a shipped skill.
+17. **Running a child (#804) by hand, the `project-tracker` skill.** What the third child taught the `epic` skill:
+    - *A routing needs the category before it can route.* The first graph asked for the category after
+      the tracker was chosen; a routed project cannot choose without it. The spec judge found it in
+      round 3. The `epic` skill asks for the level's inputs before it resolves a tracker, and a
+      request with a category-less route table is the test.
+    - *Test the resolver's names before writing the skill.* A scratch project with three fake providers
+      showed that a tracker one plugin ships comes back bare, one two plugins ship comes back as
+      `<plugin>/name`, `reference where` names the plugin of a bare hit, and `--format json` carries the
+      frontmatter. The impl judge then caught a prefix filter written as "names that start with
+      `project-tracker.capabilities.`", which drops every qualified name: filter on `match: prefix`.
+    - *A fuzzy hit in a test Given must exist in the scenario's world.* Two Givens returned the routing as
+      a fuzzier hit while saying no routing exists. The real fuzzy hit in a project with no routing is
+      `project-tracker.contract` (`match: description`).
+    - *A map-vs-graph script beats a judge round.* Rounds 2 and 4 failed on map edges naming nodes
+      a reworked graph no longer had, and on Givens that contradicted themselves. A twenty-line script
+      that checks every map edge against the Mermaid graph found the first class at once. The `epic` skill
+      runs one before it dispatches a judge, and sweeps for the rule a finding instantiates.
+    - *The iteration cap is a stop for a regression, not a stop for progress.* Findings fell 11, 4, 1, 2, 0
+      over five rounds. The count was reset once at the cap because they kept shrinking; a regression
+      (a finding on an artifact the last round changed) stopped the loop for a re-plan each time.
+    - *`reference create` never overwrites.* Change must replace the file at the slot path
+      `reference where` prints; set-up uses `create --template`.
+    - *A private tracker is a separate case for every rule.* Move policy is ordered, so the skill asks for
+      each ordered pair that has no row and never asks for a private-to-public one. The `epic` skill
+      meets that pair when it moves an item and must stop on it, row or not.
+    - *Fixture the second tracker as a plugin, not a mock.* Two fake provider packages in `node_modules`
+      plus a stub CLI for each tracker let a subagent run the skills literally. It found that a tracker
+      with no host cannot answer `Detect`, so `issue` with no routing guesses (recorded as a follow-up).
+
