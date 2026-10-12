@@ -176,6 +176,19 @@ Feature: issue — file one bug, feature, or task on the tracker
     Then it reads references/project-tracker.capabilities.github.md in its own folder
 
   @behavior
+  Scenario Outline: reads the bundled GitHub reference when the reference search finds no match
+    Given the origin remote is github.com
+    And the reference search runs without error and returns <search_result>
+    When issue resolves the tracker
+    Then it reads references/project-tracker.capabilities.github.md in its own folder
+    And it loads no reference from the search result
+
+    Examples:
+      | search_result                                          |
+      | no names                                               |
+      | only project-tracker.routing, a fuzzier match          |
+
+  @behavior
   Scenario: writes a bug body with steps, expected, and actual behavior
     Given the user confirms a bug "cache returns stale entries after a restart"
     And the user says a restart then a read returns the pre-restart value instead of the new one
@@ -208,7 +221,7 @@ Feature: issue — file one bug, feature, or task on the tracker
     When the user confirms a bug
     Then issue runs glab issue create with --label bug
 
-  # ── Extensions 5–13 — the paths that do not file ──
+  # ── Extensions 5–14 — the paths that do not file ──
 
   @behavior
   Scenario: stops with an upgrade message when gh is older than 2.98.0
@@ -275,3 +288,21 @@ Feature: issue — file one bug, feature, or task on the tracker
     When issue shows its confirmation
     Then it says the item looks too small to track as an issue
     And it files one issue if the user does not change the level
+
+  @behavior
+  Scenario: does not retry a failed create that left an issue behind
+    Given the user has confirmed a task "migrate the build to tsdown"
+    And gh issue create exits 1 with 'type "Task" not found' because the repo renamed its types after they were read
+    And the newest issues on the repo include one titled "migrate the build to tsdown" created a moment ago
+    When issue continues
+    Then it runs no second create command
+    And it gives that issue's URL as the filed issue, per the Report step
+
+  @behavior
+  Scenario: lists the newest issues after a failed create that left nothing behind
+    Given the user has confirmed a task "migrate the build to tsdown"
+    And gh issue create exits 1 with "could not add label"
+    And the newest issues on the repo include none titled "migrate the build to tsdown"
+    When issue continues
+    Then it lists the newest issues before it runs any second create command
+    And it does not tell the user that an issue was filed
