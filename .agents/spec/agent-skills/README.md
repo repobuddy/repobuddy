@@ -10,6 +10,7 @@ One unit per shipped skill.
 | [merge-dep-prs](./merge-dep-prs/README.md) | Merge dependency-update PRs — **the merge gate only** |
 | [to-question](./to-question/README.md) | Format a question or discussion for a target platform |
 | [issue](./issue/README.md) | File one bug, feature, or task on the tracker, after a duplicate check |
+| [project-tracker](./project-tracker/README.md) | Set up, show, change, and check which tracker holds each level and category, and the move policy between trackers |
 | [work-references](./work-references/README.md) | The level checks, body templates, and tracker contract the level skills load by name |
 
 Skills present in `skills/` with no unit here are **not yet backfilled** — `agent-readiness`,

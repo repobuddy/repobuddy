@@ -21,7 +21,7 @@ ship in `packages/buddy/references/`, the plugin tier agent-harness resolves
 | `repobuddy.work-levels` | the level checks | one `##` per level (Issue, Epic, Initiative), each with `### Is`, `### Done when`, `### Too big`, `### Too small` |
 | `repobuddy.work-template.bug`, `.feature`, `.task` | a body template for a category | the `##` sections of the template |
 | `repobuddy.work-template.epic`, `.initiative` | a body template for a level | the `##` sections of the template |
-| `project-tracker.contract` | the sections a capabilities reference must have, the `**Unsupported.**` marker, the item ref, the contract version | `Version`, `Sections`, `Unsupported`, `Item ref`, `Overrides` |
+| `project-tracker.contract` | the sections a capabilities reference must have, the `**Unsupported.**` marker, the item ref, the contract version, and the format of `project-tracker.routing` (its `Routes` and `Moves` tables) | `Version`, `Sections`, `Unsupported`, `Item ref`, `Overrides`, `Routing` |
 
 **Headings are API.** A team overrides text with `merge: merge-sections`, so renaming a heading breaks
 every override of it and needs a changeset. The resolver matches and replaces a whole `##` section
@@ -44,5 +44,5 @@ the number; renaming or removing a section, or changing the item ref, raises it.
 ### Non-goals
 
 - Scenarios for the epic and initiative templates and the contract's `Link`, `Retype`, and `Close` sections; they ship now and are exercised by the `epic` skill when it lands.
-- The `project-tracker.routing` reference and the set-up skill (a later child of the epic).
+- The routing itself and the set-up skill: they are the [project-tracker](../project-tracker/README.md) unit. This unit owns only the table formats the contract holds.
 - Capabilities for any tracker other than GitHub.

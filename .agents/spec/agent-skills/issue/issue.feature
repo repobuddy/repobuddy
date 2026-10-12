@@ -1,3 +1,4 @@
+@frozen
 Feature: issue — file one bug, feature, or task on the tracker
 
   The skill gathers the details, searches for an existing issue, confirms with the user, creates
@@ -23,6 +24,7 @@ Feature: issue — file one bug, feature, or task on the tracker
       | write up a slack ping, I'm blocked on the staging role           | no             |
       | break this project into an epic with child issues                | no             |
       | close issue 12 as not planned                                    | no             |
+      | set up which tracker holds bugs and which holds epics            | no             |
 
   @behavior
   Scenario: files an ordinary defect instead of treating it as a vulnerability
@@ -104,6 +106,7 @@ Feature: issue — file one bug, feature, or task on the tracker
   @behavior
   Scenario: keeps a commit SHA and an internal tracker address out of a public issue body
     Given the repo is public
+    And the project has no project-tracker.routing
     And the user confirms a task "migrate the build to tsdown"
     And the user's request cites commit 9f2c1ab and an internal tracker item at tracker.internal.example/ENG-41
     When issue writes the body
@@ -162,15 +165,17 @@ Feature: issue — file one bug, feature, or task on the tracker
   @behavior
   Scenario: lists the capabilities references and loads the one that matches the host
     Given the origin remote is github.com
+    And the project has no project-tracker.routing
     And exactly one reference named project-tracker.capabilities.github is installed
-    And a fuzzier search hit named project-tracker.routing is also returned
+    And a fuzzier search hit named project-tracker.contract is also returned
     When issue resolves the tracker
     Then it loads project-tracker.capabilities.github
-    And it does not load project-tracker.routing
+    And it does not load project-tracker.contract
 
   @behavior
   Scenario: reads the bundled GitHub reference when the reference command cannot run
     Given the origin remote is github.com
+    And the project has no .agents/references/project-tracker.routing.md file
     And the reference command exits with an error
     When issue resolves the tracker
     Then it reads references/project-tracker.capabilities.github.md in its own folder
@@ -178,6 +183,7 @@ Feature: issue — file one bug, feature, or task on the tracker
   @behavior
   Scenario Outline: reads the bundled GitHub reference when the reference search finds no match
     Given the origin remote is github.com
+    And the project has no project-tracker.routing
     And the reference search runs without error and returns <search_result>
     When issue resolves the tracker
     Then it reads references/project-tracker.capabilities.github.md in its own folder
@@ -186,7 +192,7 @@ Feature: issue — file one bug, feature, or task on the tracker
     Examples:
       | search_result                                          |
       | no names                                               |
-      | only project-tracker.routing, a fuzzier match          |
+      | only project-tracker.contract, a fuzzier match         |
 
   @behavior
   Scenario: writes a bug body with steps, expected, and actual behavior
@@ -215,11 +221,109 @@ Feature: issue — file one bug, feature, or task on the tracker
 
   @behavior
   Scenario: files on GitLab through the fallback
-    Given the origin remote is gitlab.com
+    Given the project has no project-tracker.routing
+    And the origin remote is gitlab.com
     And no GitLab capabilities reference is installed
     And the repo has the label bug
     When the user confirms a bug
     Then issue runs glab issue create with --label bug
+
+  # ── Use case 5 — file to the routed tracker ──
+
+  @behavior
+  Scenario: files to the routed tracker instead of the origin host's
+    Given the origin remote is github.com
+    And the project has a project-tracker.routing with the route "issue, bug, prov-b/project-tracker.capabilities.beta"
+    And prov-b ships a project-tracker.capabilities.beta that declares contract: 1 and whose Create section runs "beta-cli add"
+    When the user confirms a bug
+    Then issue loads prov-b/project-tracker.capabilities.beta
+    And it runs "beta-cli add" to create the item
+    And it runs no gh issue create command
+
+  @behavior
+  Scenario: asks for the category before choosing a route
+    Given the project has a project-tracker.routing with the routes "issue, bug, prov-b/project-tracker.capabilities.beta" and "any, any, prov-a/project-tracker.capabilities.alpha", in that order
+    And the user says "file this" and gives no word that says bug, feature, or task
+    When issue starts
+    Then it asks which category the item is before it loads any capabilities reference
+    And after the user answers bug it loads prov-b/project-tracker.capabilities.beta
+
+  @behavior
+  Scenario: takes the first matching route over a later catch-all
+    Given the origin remote is gitlab.com
+    And the project has a project-tracker.routing with the routes "issue, bug, prov-b/project-tracker.capabilities.beta" and "any, any, prov-a/project-tracker.capabilities.alpha", in that order
+    When the user confirms a bug
+    Then issue loads prov-b/project-tracker.capabilities.beta
+    And it does not load prov-a/project-tracker.capabilities.alpha
+
+  @behavior
+  Scenario: falls through to the catch-all when no earlier row matches
+    Given the origin remote is gitlab.com
+    And the project has a project-tracker.routing with the routes "issue, bug, prov-b/project-tracker.capabilities.beta" and "any, any, prov-a/project-tracker.capabilities.alpha", in that order
+    When the user confirms a feature
+    Then issue loads prov-a/project-tracker.capabilities.alpha
+    And it does not load prov-b/project-tracker.capabilities.beta
+
+  @behavior
+  Scenario: stops when no route matches the category
+    Given the project has a project-tracker.routing with only the route "issue, bug, prov-a/project-tracker.capabilities.alpha"
+    When the user asks to file a feature
+    Then issue says no route matches issue with category feature
+    And it suggests running project-tracker change
+    And it runs no search and no create command
+
+  @behavior
+  Scenario Outline: stops when a route's pin does not resolve to one reference
+    Given the project has a project-tracker.routing whose bug route pins <pin>
+    And reference show for that pin exits 1 with <error>
+    When the user asks to file a bug
+    Then issue names the pin and says it <problem>
+    And it suggests running project-tracker check
+    And it runs no search and no create command
+
+    Examples:
+      | pin                                         | error                               | problem                              |
+      | prov-gone/project-tracker.capabilities.alpha | no reference named                  | resolves to no reference             |
+      | project-tracker.capabilities.alpha           | held by more than one plugin        | is held by more than one plugin      |
+
+  @behavior
+  Scenario: stops when a routing exists and the reference command cannot run
+    Given the project has the file .agents/references/project-tracker.routing.md with the route "any, any, prov-a/project-tracker.capabilities.alpha"
+    And the reference command exits with an error
+    When the user asks to file a bug
+    Then issue names the pin prov-a/project-tracker.capabilities.alpha and says the reference command cannot run
+    And it runs no search and no create command
+
+  @behavior
+  Scenario: suggests project-tracker once in the report when no routing exists
+    Given the project has no project-tracker.routing
+    And the origin remote is github.com
+    When issue creates a confirmed issue and reports its URL
+    Then the report has one line suggesting the project-tracker skill to set up routing
+
+  @behavior
+  Scenario: adds no suggestion to the report when a routing chose the tracker
+    Given the project has a project-tracker.routing with the route "any, any, prov-a/project-tracker.capabilities.alpha"
+    When issue creates a confirmed issue and reports its URL
+    Then the report does not mention project-tracker
+
+  @behavior
+  Scenario: keeps private-tracker details out of an item filed on a public routed tracker
+    Given the repo is private
+    And the routing sends tasks to a tracker whose Visibility is public
+    And the user confirms a task "migrate the build to tsdown"
+    And the user's request cites the item tracker.internal.example/ENG-41 on a private tracker
+    When issue writes the body
+    Then the body does not contain tracker.internal.example
+
+  @behavior
+  Scenario: keeps a private-tracker reference in an item filed on a private routed tracker
+    Given the repo is public
+    And the routing sends tasks to a tracker whose Visibility is private
+    And the user confirms a task "migrate the build to tsdown"
+    And the user's request cites the item tracker.internal.example/ENG-41 on a private tracker
+    When issue writes the body
+    Then the body contains tracker.internal.example/ENG-41
 
   # ── Extensions 5–14 — the paths that do not file ──
 
@@ -270,7 +374,8 @@ Feature: issue — file one bug, feature, or task on the tracker
 
   @behavior
   Scenario: refuses a host with no tracker set up
-    Given the origin remote is bitbucket.org
+    Given the project has no project-tracker.routing
+    And the origin remote is bitbucket.org
     When issue resolves the tracker
     Then it says no tracker is set up for that host
     And it runs no create command
