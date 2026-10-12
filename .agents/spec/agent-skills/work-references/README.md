@@ -23,10 +23,12 @@ ship in `packages/buddy/references/`, the plugin tier agent-harness resolves
 | `repobuddy.work-template.epic`, `.initiative` | a body template for a level | the `##` sections of the template |
 | `project-tracker.contract` | the sections a capabilities reference must have, the `**Unsupported.**` marker, the item ref, the contract version | `Version`, `Sections`, `Unsupported`, `Item ref`, `Overrides` |
 
-**Headings are API.** A team overrides text by heading path with `merge: merge-sections`, so renaming
-a heading breaks every override of it and needs a changeset. `merge-sections` replaces the sections
-the override redefines and appends one the base lacks; both were run against the real resolver with a
-project override over a plugin copy.
+**Headings are API.** A team overrides text with `merge: merge-sections`, so renaming a heading breaks
+every override of it and needs a changeset. The resolver matches and replaces a whole `##` section
+and appends one the base lacks (run against the real resolver with a project override over a plugin
+copy). In a template, a `##` is one section, so an override restates just that one. In
+`repobuddy.work-levels` a `##` is a whole level: an override of one level restates all four of its
+`###` parts (Is, Done when, Too big, Too small), or the level loses the ones it leaves out.
 
 **One canonical copy.** The file in `packages/buddy/references/` is the source. A skill also carries
 a copy of each reference its `SKILL.md` names in backticks, because Skills CLI installs copy only a

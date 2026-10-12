@@ -26,7 +26,7 @@ If the category is unclear from the request, ask.
 Load these with the `reference` skill in the `cyber-agent-harness` plugin, so a project's own override applies:
 
 - Before step 1: `repobuddy.work-levels` (the level checks) and `project-tracker.contract` (what a capabilities reference holds).
-- When the category is known: the template reference for it, from the table above. Fill in its sections in order; leave out a section that does not apply. Its headings are the only fixed part: a team may reword the text under them or add a section.
+- When the category is known: the template reference for it, from the table above. Keep every section it has, in order; write `None` under one you have nothing for. A section a team adds or rewords is part of the template. Its headings are the only fixed part: a team may reword the text under them or add a section.
 
 ## Trackers
 
@@ -67,7 +67,7 @@ Run the tracker's `Kinds` operation (the GitLab fallback has none) so the type o
 
 ### 5. Create
 
-Run the tracker's `Create` operation with the category `Kinds` mapped to. Write the body from the category's template reference to a file.
+Run the tracker's `Create` operation with the category `Kinds` mapped to. Write the body from the category's template reference to a file, with every section the reference has.
 
 If a create command fails, check for an issue it left behind before retrying (the reference says how).
 

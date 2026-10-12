@@ -138,8 +138,8 @@ Feature: issue — file one bug, feature, or task on the tracker
 
   @behavior
   Scenario: follows a project override of the level checks
-    Given the project overrides the Too big section of the Issue level in repobuddy.work-levels
-    And the override reads "- It names more than one package."
+    Given the project overrides the Issue level in repobuddy.work-levels with all four of its parts
+    And the Too big part of that override reads "- It names more than one package."
     And the default Too big section would only note, not suggest, for this request
     When the user asks for one issue that names @repobuddy/jest and @repobuddy/vitest
     Then issue's confirmation says the item looks too big for one issue
