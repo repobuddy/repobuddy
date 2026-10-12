@@ -314,6 +314,7 @@ Feature: issue — file one bug, feature, or task on the tracker
     Given agent-readiness finished and offers to file its finding "no CONTRIBUTING.md in the repo"
     And the user accepts the offer
     And the origin remote is github.com
+    And the first search returns two issues the user does not call the same
     When issue takes the finding as the description
     Then it runs at least two searches with different keywords before any create command
     And it lists each hit with number, title, state, and URL

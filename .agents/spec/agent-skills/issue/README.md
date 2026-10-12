@@ -184,6 +184,8 @@ reference's `Create` section, which lists the newest issues before any retry.
 
 ### Use case 4 — a sibling skill offers filing
 
+A handed-over finding enters at `G`, and the typed scenarios' Givens do not pin that entry, so each edge is stated again for it.
+
 | Edge | Path (Given) | Scenario |
 |---|---|---|
 | `G → H` | a finding handed over by `agent-readiness` | `searches for duplicates before filing a finding a sibling skill hands over` |
@@ -191,4 +193,3 @@ reference's `Create` section, which lists the newest issues before any retry.
 | `L → N (Yes)` / `L → M (No)` | the same, no hit is the user's issue | `creates a finding a sibling skill hands over only when the user confirms the summary` |
 | `B → C (No)` | an ordinary finding from `agent-readiness` | `files an ordinary finding from a sibling skill instead of treating it as a vulnerability` |
 | `B → Z (Yes)` | a finding that leaks a token | `does not file a security finding from a sibling skill publicly` |
-
