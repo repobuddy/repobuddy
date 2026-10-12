@@ -223,3 +223,8 @@ What the `epic` skill must do, observed in this session:
     - *The mission loop is heavy for one child.* The SDD judge rounds were skipped in this run (no
       user channel, no judge agents); the spec node and evals were written by the pod and reviewed
       by `pnpm verify` and the audit only. The `epic` skill should say what a child's pod may skip.
+14. **Test the untested risk by hand, and expect a failed write to leave a trace.** The `--type`
+    risk from the spike was resolved on a private scratch repo: `gh issue create --type` on a repo
+    without issue types creates the issue and then fails, so the skill checks for a stray before any
+    retry. A judge that reads instructions cannot find this; only the live call did. The `epic` skill
+    must do the same after any failed create in a batch, or it files duplicates of its own children.

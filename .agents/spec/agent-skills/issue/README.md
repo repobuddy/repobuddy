@@ -45,8 +45,8 @@ label, and a task gets a label only if the repository has `task`.
 
 - Minimum `gh` is 2.98.0. `--type`, `--parent`, and `--add-sub-issue` arrived in 2.94.0 (2026-06-10);
   the duplicate search's `--search-type hybrid` arrived in 2.98.0. Checked against 2.102.0.
-- `--type` on a repository without issue types is **untested**. The reference reads `issueTypes`
-  first and never passes `--type` when it is null.
+- `--type` on a repository without issue types was **tested** (a private user-owned scratch repo, 2026-10-11): `gh issue create --type Bug` creates the issue untyped, then exits 1 with `type "Bug" not found; available types:`. The reference reads `issueTypes` first, never passes `--type` when it is null, and checks for a stray issue after any failed create. A missing `--label` fails with `could not add label` and creates nothing.
+- Live-tested on GitHub: bug, feature, and task with `--type` on an org repo (#809 to #811), and the label path on a user-owned repo. GitLab is untested: `glab` is not installed and no GitLab host is authenticated here.
 
 ## Use Cases
 

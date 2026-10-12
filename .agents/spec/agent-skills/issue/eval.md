@@ -54,5 +54,5 @@ carries that. The same limit is recorded for `to-question`. `ships a Validate se
 check of files, not simulated behavior. Real filing is verified by hand on a throwaway issue that is
 closed at once, never by an eval.
 
-The untested `--type` call on a repository without issue types is deliberately never made: the
-`falls back to labels` scenario asserts it is not passed.
+The `--type` call on a repository without issue types was tried by hand and creates an untyped issue
+before failing, so the `falls back to labels` scenario asserts it is not passed.

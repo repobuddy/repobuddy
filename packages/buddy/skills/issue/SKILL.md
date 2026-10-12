@@ -61,6 +61,8 @@ Run the tracker's `Kinds` operation (the GitLab fallback has none) so the type o
 
 Run the tracker's `Create` operation with the category `Kinds` mapped to. Write the body from the category's template to a file; leave out sections that do not apply.
 
+If a create command fails, check for an issue it left behind before retrying (the reference says how).
+
 Keep the body free of internal file names, commit SHAs, and implementation details unless the user asks. If the repository is public, keep out anything from a private tracker (its titles, URLs, or customer details).
 
 ### 6. Report

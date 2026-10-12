@@ -27,7 +27,7 @@ gh api graphql -f query='{repository(owner:"<owner>",name:"<repo>"){issueTypes(f
 ```
 
 - Types come back (organization-owned repositories; defaults are `Bug`, `Feature`, `Task`): the type carries the category. Map bug to `Bug`, feature to `Feature`, task to `Task`. When a team renamed or removed a type, use the closest name from the list; when none fits, create the issue without a type and say so.
-- `issueTypes` is `null` or empty (user-owned repositories have no issue types): the label carries the category. Bug is `bug`, feature is `enhancement`, task has no default label, so use `task` only when `gh label list --repo <owner>/<repo> --json name --jq '.[].name'` shows it. Never pass `--type` to such a repository; its behavior is untested.
+- `issueTypes` is `null` or empty (user-owned repositories have no issue types): the label carries the category. Bug is `bug`, feature is `enhancement`, task has no default label, so use `task` only when `gh label list --repo <owner>/<repo> --json name --jq '.[].name'` shows it. Never pass `--type` to such a repository: tested on a user-owned repository, `gh issue create --type Bug` creates the issue without a type and then exits 1 with `type "Bug" not found`, so a retry files a second copy.
 - Level: an `epic` or `initiative` label. An issue with neither is an issue.
 - Use only labels and types that exist. Do not create labels.
 
@@ -56,6 +56,7 @@ gh issue create --repo <owner>/<repo> --title "<title>" --body-file <file> \
 - For an epic, add `--label epic`; for an initiative, add `--label initiative`. Both keep the category type of the work.
 - `--parent` attaches the new issue as a sub-issue of an existing one.
 - `gh issue create` prints the URL of the new issue.
+- When `gh issue create` exits non-zero, list the newest issues (`gh issue list --repo <owner>/<repo> --state all --limit 3`) before any retry: some failures leave an issue behind (`--type` on a repository without types does; a missing `--label` does not, it fails with `could not add label`).
 
 ## Link
 
