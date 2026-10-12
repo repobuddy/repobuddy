@@ -8,8 +8,9 @@ CLI reads `plugin.json` directly. `packages/buddy/.agents/universal-plugin.json`
 this repo's release wiring reads; do not set `packagePath` in `plugin.json`.
 
 The `version` script runs `scripts/sync-plugin-manifests.mjs` after `changeset version`: it runs
-`universal-plugin publish sync-version` (never `plugin version` — changesets decides the number), then `plugin build`,
-pinned to an exact `universal-plugin` version. `scripts/check-plugin-version.mjs` (`check-plugin-version` in `verify`)
+`universal-plugin plugin version --from-package` (changesets decides the number; the command carries it into the
+manifests and stamps the `npx repobuddy@<version>` pins in the skills, then rebuilds), using the `universal-plugin`
+devDependency of `packages/buddy`. `scripts/check-plugin-version.mjs` (`check-plugin-version` in `verify`)
 fails when `packages/buddy/package.json`'s version disagrees with the manifest, any vendor manifest, or either
 catalog's `repobuddy` entry.
 

@@ -34,6 +34,7 @@ minimumReleaseAgeExclude:
   - vitest-plugin-vis
   - node-supported-releases
   - buddy-agent-harness
+  - universal-plugin
   - '@just-func/*'
   - '@just-web/*'
   - '@mocktomata/*'

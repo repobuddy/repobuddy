@@ -10,7 +10,10 @@
 				"skills/setup-github-repo/scripts/detect-state.mjs",
 				"skills/setup-github-repo/scripts/scaffold-workflows.mjs",
 				"skills/setup-npm-trusted-publishing/scripts/npm-trust.mjs",
-				"skills/agent-readiness/scripts/agent-readiness.mjs"
+				"skills/agent-readiness/scripts/agent-readiness.mjs",
+				"skills/to-question/scripts/check-format.mjs",
+				"skills/to-question/scripts/question-path.mjs",
+				"skills/review-permissions/scripts/scan-permissions.mjs"
 			]
 		},
 		"pack:check": {
