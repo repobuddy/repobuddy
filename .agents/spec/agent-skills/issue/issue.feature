@@ -296,7 +296,7 @@ Feature: issue — file one bug, feature, or task on the tracker
     And the newest issues on the repo include one titled "migrate the build to tsdown" created a moment ago
     When issue continues
     Then it runs no second create command
-    And it gives that issue's URL as the filed issue, per the Report step
+    And it gives that issue's URL as the new issue
 
   @behavior
   Scenario: lists the newest issues after a failed create that left nothing behind
@@ -305,4 +305,4 @@ Feature: issue — file one bug, feature, or task on the tracker
     And the newest issues on the repo include none titled "migrate the build to tsdown"
     When issue continues
     Then it lists the newest issues before it runs any second create command
-    And it does not tell the user that an issue was filed
+    And it tells the user nothing was filed

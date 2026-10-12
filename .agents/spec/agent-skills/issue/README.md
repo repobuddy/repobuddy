@@ -86,7 +86,7 @@ use cases 1–4 and drawn in the Control Flow:
 11. **More than one capabilities reference matches the host.** The skill asks which to use and loads neither until answered.
 12. **`gh` is older than 2.98.0 or logged out.** The skill says what to upgrade or run, and creates nothing.
 13. **The capabilities reference's contract version is unknown or missing.** The skill names the tracker and the version, and creates nothing.
-14. **A create fails.** The skill lists the newest issues before any retry. A stray issue the failed create left behind is not retried, and its URL is the one reported (`--type` on a repo without types creates the issue, then exits 1); with none, the skill does not claim an issue was filed.
+14. **A create fails.** The skill lists the newest issues before any retry. A stray issue the failed create left behind is not retried, and its URL is the one reported as the new issue (`--type` on a repo without types creates the issue, then exits 1); with none, the skill says nothing was filed before any retry.
 
 **Surface trace.** The capability takes three inputs: title (every use case), category (every use
 case; it decides the template and the type or label), and description (every use case). It exposes

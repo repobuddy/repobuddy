@@ -35,7 +35,7 @@ A tracker's operations live in a capabilities reference named `project-tracker.c
 1. Read the host of `git remote get-url origin`. A host that is neither `github.com` nor GitLab (including Bitbucket, whose native tracker is gone): say that no tracker is set up for it, and stop. Do not file anywhere else.
 2. List what is installed: run `reference search project-tracker.capabilities` with the `reference` skill in the `cyber-agent-harness` plugin. Keep only names that start with `project-tracker.capabilities.`; drop fuzzier matches.
 3. Load the one whose `Detect` section matches the host. Two matches, or a name that is ambiguous between plugins: report both qualified names, ask which to pin, and load neither until answered.
-4. When the command cannot run or finds nothing and the host is `github.com`, load `project-tracker.capabilities.github` from this skill's `references/` folder.
+4. When the command cannot run, or nothing is left after step 2 drops the fuzzier names, and the host is `github.com`, load `project-tracker.capabilities.github` from this skill's `references/` folder.
 5. Read `contract:` in the loaded reference's frontmatter. When it is missing, or is not a contract version `project-tracker.contract` declares, name the tracker and the version, and stop.
 6. A GitLab host with no GitLab reference: use the **GitLab fallback** at the end of this file.
 7. For GitHub, the reference's `Detect` also needs `gh` 2.98.0 or later and a logged-in `gh`. When it is older or logged out, say what to upgrade or run, and stop.
@@ -69,7 +69,7 @@ Run the tracker's `Kinds` operation (the GitLab fallback has none) so the type o
 
 Run the tracker's `Create` operation with the category `Kinds` mapped to. Write the body from the category's template reference to a file, with every section the reference has.
 
-If a create command fails, check for an issue it left behind before retrying (the reference says how).
+If a create command fails, check for an issue it left behind before retrying (the reference says how). When one is there, do not retry: give its URL as the new issue in step 6. When none is, say nothing was filed before any retry.
 
 Keep the body free of internal file names, commit SHAs, and implementation details unless the user asks. If the repository is public, keep out anything from a private tracker (its titles, URLs, or customer details).
 
