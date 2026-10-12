@@ -40,6 +40,7 @@
 		"!**/*.{spec,test,unit,accept,integrate,system,perf,stress}.*",
 		"plugin.json",
 		"skills/",
+		"references/",
 		".claude-plugin/plugin.json",
 		".cursor-plugin/plugin.json",
 		".codex-plugin/plugin.json"
