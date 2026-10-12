@@ -11,7 +11,7 @@ Files one item of tracked work (a bug, a feature, or a task) on the repository's
 
 ## What it does
 
-1. **Finds the tracker.** It lists the installed `project-tracker.capabilities.<tracker>` references and loads the one that matches the `origin` remote. GitHub ships with this skill. GitLab works through a built-in fallback until its own reference ships. Any other host, Bitbucket included, gets a message and no filing.
+1. **Finds the tracker.** When the project has a `project-tracker.routing` (set up by [`project-tracker`](../project-tracker/README.md)), it files on the tracker routed for the category and never guesses: a missing or ambiguous pin, or no matching route, stops it with the problem named. Without a routing it lists the installed `project-tracker.capabilities.<tracker>` references and loads the one that matches the `origin` remote, and suggests running `project-tracker` at the end. GitHub ships with this skill. GitLab works through a built-in fallback until its own reference ships. Any other host, Bitbucket included, gets a message and no filing.
 2. **Gathers the details:** title, category (bug, feature, or task), and a description. It asks only for what you have not said.
 3. **Collects environment and versions** for a bug, from your machine and the repo where it can.
 4. **Searches for duplicates** in open and closed issues, at least twice. If you say a hit is your issue, it stops and gives you that URL.
