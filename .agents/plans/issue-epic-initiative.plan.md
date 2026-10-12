@@ -248,3 +248,8 @@ What the `epic` skill must do, observed in this session:
     - *Split the contract from the first implementation, then make the implementation conform.* The
       contract was written to match the GitHub reference that already existed, and the reference gained
       only a `contract: 1` line. Writing the contract first would have forced a rewrite of a tested file.
+16. **Closing coverage gaps in a shipped suite (the `issue` spec).** Three additive scenarios (search finds no match; stray issue after a failed create, present and absent) went through real cold judges:
+    - *The conductor's governance declaration is checked.* The first spec-judge round blocked at pre-flight because the declared set left out the oracle, builder, and architect bars. Load every resolved-actor bar before declaring, not only the entry set.
+    - *Judges caught what self-review missed.* A map row homed the "could not add label" case on the type path (`O`) when that failure belongs to the label path (`P`); a Given said "listed afterwards", presupposing the list its own Then asserts.
+    - *A spec Then can outrun the skill's words.* "Report the stray's URL" had no sentence in `SKILL.md` or the reference; the Then was reworded to trace to the Report step. Left for a later skill edit: say in step 5 that a found stray is reported and not retried, and that step 4's "finds nothing" means after the fuzzier names are dropped.
+    - *`audit validate` with no path only scans `.agents/skills`.* Pass `--path packages/buddy/skills/<skill>` to cover a shipped skill.

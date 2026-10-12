@@ -176,6 +176,19 @@ Feature: issue — file one bug, feature, or task on the tracker
     Then it reads references/project-tracker.capabilities.github.md in its own folder
 
   @behavior
+  Scenario Outline: reads the bundled GitHub reference when the reference search finds no match
+    Given the origin remote is github.com
+    And the reference search runs without error and returns <search_result>
+    When issue resolves the tracker
+    Then it reads references/project-tracker.capabilities.github.md in its own folder
+    And it loads no reference from the search result
+
+    Examples:
+      | search_result                                          |
+      | no names                                               |
+      | only project-tracker.routing, a fuzzier match          |
+
+  @behavior
   Scenario: writes a bug body with steps, expected, and actual behavior
     Given the user confirms a bug "cache returns stale entries after a restart"
     And the user says a restart then a read returns the pre-restart value instead of the new one
@@ -208,7 +221,7 @@ Feature: issue — file one bug, feature, or task on the tracker
     When the user confirms a bug
     Then issue runs glab issue create with --label bug
 
-  # ── Extensions 5–13 — the paths that do not file ──
+  # ── Extensions 5–14 — the paths that do not file ──
 
   @behavior
   Scenario: stops with an upgrade message when gh is older than 2.98.0
@@ -275,3 +288,69 @@ Feature: issue — file one bug, feature, or task on the tracker
     When issue shows its confirmation
     Then it says the item looks too small to track as an issue
     And it files one issue if the user does not change the level
+
+  @behavior
+  Scenario: does not retry a failed create that left an issue behind
+    Given the user has confirmed a task "migrate the build to tsdown"
+    And gh issue create exits 1 with 'type "Task" not found' because the repo renamed its types after they were read
+    And the newest issues on the repo include one titled "migrate the build to tsdown" created a moment ago
+    When issue continues
+    Then it runs no second create command
+    And it gives that issue's URL as the new issue
+
+  @behavior
+  Scenario: lists the newest issues after a failed create that left nothing behind
+    Given the user has confirmed a task "migrate the build to tsdown"
+    And gh issue create exits 1 with "could not add label"
+    And the newest issues on the repo include none titled "migrate the build to tsdown"
+    When issue continues
+    Then it lists the newest issues before it runs any second create command
+    And it tells the user nothing was filed
+
+  # ── Use case 4 — a sibling skill offers filing ──
+
+  @behavior
+  Scenario: searches for duplicates before filing a finding a sibling skill hands over
+    Given agent-readiness finished and offers to file its finding "no CONTRIBUTING.md in the repo"
+    And the user accepts the offer
+    And the origin remote is github.com
+    And the first search returns two issues the user does not call the same
+    When issue takes the finding as the description
+    Then it runs at least two searches with different keywords before any create command
+    And it lists each hit with number, title, state, and URL
+
+  @behavior
+  Scenario: stops at a confirmed duplicate of a finding a sibling skill hands over
+    Given agent-readiness offers to file its finding "no CONTRIBUTING.md in the repo" and the user accepts
+    And a search hit titled "Add a CONTRIBUTING guide" that the user confirms is the same issue
+    When issue continues
+    Then it gives that issue's URL
+    And it runs no create command
+
+  @behavior
+  Scenario Outline: creates a finding a sibling skill hands over only when the user confirms the summary
+    Given agent-readiness offers to file its finding "no CONTRIBUTING.md in the repo" and the user accepts
+    And no search hit is the user's issue
+    And issue has shown the summary
+    When the user says "<answer>"
+    Then issue <create_outcome>
+
+    Examples:
+      | answer          | create_outcome                              |
+      | yes, file it    | creates the issue and reports its URL       |
+      | no, hold off    | runs no create command                      |
+
+  @behavior
+  Scenario: files an ordinary finding from a sibling skill instead of treating it as a vulnerability
+    Given agent-readiness offers to file its finding "no CONTRIBUTING.md in the repo" and the user accepts
+    And the finding describes no way to read or change data the user is not allowed to
+    When issue classifies the request
+    Then it continues to gather details and search
+    And it does not point to a private security channel
+
+  @behavior
+  Scenario: does not file a security finding from a sibling skill publicly
+    Given agent-readiness offers to file its finding "the deploy workflow prints the npm token to the public log" and the user accepts
+    When issue classifies the request
+    Then it points to the repository's private security channel
+    And it runs no create command

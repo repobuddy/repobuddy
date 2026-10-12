@@ -69,10 +69,10 @@ shape the body and the confirmation.
 
 | # | Use case (surface: `/issue`) | Actor / goal | Entry point | Extensions |
 |---|---|---|---|---|
-| 1 | **File a bug** | Reporter: get a reproducible defect on the tracker without duplicating one | Trigger: asks to file or report a defect. Inputs: title, description, steps, expected and actual. Outcome: a bug-category issue and its URL | 5–13 |
-| 2 | **File a feature** | Reporter: record wanted behavior as its own issue | Same trigger with a request for new behavior. Outcome: a feature-category issue and its URL | 5–13 |
-| 3 | **File a task** | Reporter: track a chore that is neither defect nor feature | Same trigger with a chore. Outcome: a task-category issue and its URL | 5–13 |
-| 4 | **Let a sibling skill offer filing** | Sibling skill: give the reporter a path to file a finding | The same entry point, with the finding as the description | 5–13 |
+| 1 | **File a bug** | Reporter: get a reproducible defect on the tracker without duplicating one | Trigger: asks to file or report a defect. Inputs: title, description, steps, expected and actual. Outcome: a bug-category issue and its URL | 5–14 |
+| 2 | **File a feature** | Reporter: record wanted behavior as its own issue | Same trigger with a request for new behavior. Outcome: a feature-category issue and its URL | 5–14 |
+| 3 | **File a task** | Reporter: track a chore that is neither defect nor feature | Same trigger with a chore. Outcome: a task-category issue and its URL | 5–14 |
+| 4 | **Let a sibling skill offer filing** | Sibling skill: give the reporter a path to file a finding | The same entry point, with the finding as the description | 5–14 |
 
 **Extensions** (every path that does not reach "an issue exists and its URL is reported"), shared by
 use cases 1–4 and drawn in the Control Flow:
@@ -86,6 +86,7 @@ use cases 1–4 and drawn in the Control Flow:
 11. **More than one capabilities reference matches the host.** The skill asks which to use and loads neither until answered.
 12. **`gh` is older than 2.98.0 or logged out.** The skill says what to upgrade or run, and creates nothing.
 13. **The capabilities reference's contract version is unknown or missing.** The skill names the tracker and the version, and creates nothing.
+14. **A create fails.** The skill lists the newest issues before any retry. A stray issue the failed create left behind is not retried, and its URL is the one reported as the new issue (`--type` on a repo without types creates the issue, then exits 1); with none, the skill says nothing was filed before any retry.
 
 **Surface trace.** The capability takes three inputs: title (every use case), category (every use
 case; it decides the template and the type or label), and description (every use case). It exposes
@@ -125,11 +126,16 @@ graph TD
     L -->|Yes| N{Does the repo have<br/>issue types?}
     N -->|Yes| O[Create with the type for the category]
     N -->|No| P[Create with the category label<br/>only if the repo has it]
-    O --> Q[Report the URL]
-    P --> Q
+    O --> X{Did the create<br/>exit non-zero?}
+    P --> X
+    X -->|No| Q[Report the URL]
+    X -->|Yes| S{Does the newest-issues list<br/>show a stray issue?}
+    S -->|Yes| S2[Report the stray<br/>and do not retry]
+    S -->|No| S3[Retry or report the failure]
 ```
 
-The GitLab fallback creates with a label and has no type branch, so `N` applies to the GitHub path.
+The GitLab fallback creates with a label and has no type branch, so `N` applies to the GitHub path. The `X` check follows the
+reference's `Create` section, which lists the newest issues before any retry.
 
 ## Scenario map
 
@@ -143,6 +149,7 @@ The GitLab fallback creates with a label and has no type branch, so `N` applies 
 | `G` (gather) | a bug in a package with a Node toolchain | `collects environment details for a bug from the machine` |
 | `T → R (Yes)` | one capabilities reference matches the host | `lists the capabilities references and loads the one that matches the host` |
 | `R → R3 (None found or command cannot run)` | the reference command cannot run | `reads the bundled GitHub reference when the reference command cannot run` |
+| `R → R3 (None found or command cannot run)` | the search runs and returns no names, or only a fuzzier match | `reads the bundled GitHub reference when the reference search finds no match` |
 | `W → G (Yes)` | a confirmed task and a project override of one template section | `writes the body from the template reference, not from the skill` |
 | `J → K` | a project override of the Too big section | `follows a project override of the level checks` |
 | `W → G (Yes)` | a request that says it is a bug | `writes a bug body with steps, expected, and actual behavior` |
@@ -158,7 +165,7 @@ The GitLab fallback creates with a label and has no type branch, so `N` applies 
 | `—` (artifact) | the shipped skill and its reference copies | `ships a Validate section whose mechanical assertions pass` |
 | `C → E (gitlab)` | origin is gitlab.com and no GitLab reference exists | `files on GitLab through the fallback` |
 
-### Extensions 5–13 — the paths that do not file
+### Extensions 5–14 — the paths that do not file
 
 | Edge | Path (Given) | Scenario |
 |---|---|---|
@@ -172,3 +179,17 @@ The GitLab fallback creates with a label and has no type branch, so `N` applies 
 | `J → K (Too big or too small)` | one request covering five independently shippable features | `suggests another level for an oversized item and still files at issue level` |
 | `J → K (Too big or too small)` | a one-character typo fix in a comment | `suggests not tracking an item too small for an issue` |
 | `V → V2 (No)` | a capabilities reference with an unknown or missing contract version | `stops on a capabilities reference whose contract version it does not know` |
+| `O → X (Yes), S (Yes)` | a failed create left an issue with the confirmed title | `does not retry a failed create that left an issue behind` |
+| `P → X (Yes), S (No)` | a failed create left nothing behind | `lists the newest issues after a failed create that left nothing behind` |
+
+### Use case 4 — a sibling skill offers filing
+
+A handed-over finding enters at `G`, and the typed scenarios' Givens do not pin that entry, so each edge is stated again for it.
+
+| Edge | Path (Given) | Scenario |
+|---|---|---|
+| `G → H` | a finding handed over by `agent-readiness` | `searches for duplicates before filing a finding a sibling skill hands over` |
+| `H → I (Yes)` | the same, with a hit the user confirms | `stops at a confirmed duplicate of a finding a sibling skill hands over` |
+| `L → N (Yes)` / `L → M (No)` | the same, no hit is the user's issue | `creates a finding a sibling skill hands over only when the user confirms the summary` |
+| `B → C (No)` | an ordinary finding from `agent-readiness` | `files an ordinary finding from a sibling skill instead of treating it as a vulnerability` |
+| `B → Z (Yes)` | a finding that leaks a token | `does not file a security finding from a sibling skill publicly` |
