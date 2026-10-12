@@ -30,7 +30,7 @@ If the item looks too big or too small for one issue, it says so and suggests an
 
 ## Requirements
 
-`gh` 2.98.0 or later for GitHub, logged in. [`init-buddy`](../init-buddy/README.md) sets it up.
+`gh` 2.98.0 or later for GitHub, logged in. [`init-buddy`](https://github.com/repobuddy/repobuddy/blob/main/packages/buddy/skills/init-buddy/README.md) sets it up.
 
 ## Upgrading from `file-issue`
 

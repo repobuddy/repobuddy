@@ -29,6 +29,11 @@
 					}
 				},
 				"copilot-cli": {}
+			},
+			"scripts": {
+				"skills/to-question/scripts/check-format.mjs": "src/skills/check-format.ts",
+				"skills/to-question/scripts/question-path.mjs": "src/skills/question-path.ts",
+				"skills/review-permissions/scripts/scan-permissions.mjs": "src/skills/scan-permissions.ts"
 			}
 		}
 	}

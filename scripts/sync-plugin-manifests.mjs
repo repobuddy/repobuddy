@@ -9,11 +9,10 @@
  * scripts/sync-plugin-manifests.mjs`), after changesets has already bumped
  * `packages/buddy/package.json`.
  *
- * Uses `universal-plugin publish sync-version` (the changesets-repo command: it carries the
- * released number from `package.json` into the canonical manifest — never `plugin version`,
- * which would pick a number changesets is about to pick again) and `universal-plugin plugin
- * build` (regenerates the vendor manifests and, as a side effect, the two local marketplace
- * catalogs). The npx version is pinned so a release always runs the same tool.
+ * Uses `universal-plugin plugin version --from-package`: it carries the number changesets wrote
+ * into `package.json` into the canonical manifest, stamps every `npx repobuddy@<version>` pin in
+ * the skills, and rebuilds the vendor manifests and the two local marketplace catalogs. The
+ * tool's version is the `universal-plugin` devDependency of `packages/buddy`.
  *
  * `plugin build`'s catalog generation only ever emits a `./`-relative local-path `source`
  * (confirmed against the tool's own marketplace/init spec) — it has no concept of an npm-package
@@ -30,17 +29,18 @@
 import { execFileSync } from 'node:child_process'
 import { readFileSync, writeFileSync } from 'node:fs'
 
-const UNIVERSAL_PLUGIN = 'universal-plugin@0.8.0'
-const PLUGIN_ROOT = 'packages/buddy'
 const CLAUDE_CATALOG = '.claude-plugin/marketplace.json'
 const NPM_SOURCE = { source: 'npm', package: 'repobuddy' }
 
+// `universal-plugin` is a devDependency of `packages/buddy`, so `pnpm exec` runs the version the
+// lockfile pins. `exec` runs in the package directory, hence `--root .`.
 function run(args) {
-	execFileSync('npx', [UNIVERSAL_PLUGIN, ...args], { stdio: 'inherit' })
+	execFileSync('pnpm', ['--filter', 'repobuddy', 'exec', 'universal-plugin', ...args, '--root', '.'], {
+		stdio: 'inherit',
+	})
 }
 
-run(['publish', 'sync-version', '--root', PLUGIN_ROOT])
-run(['plugin', 'build', '--root', PLUGIN_ROOT])
+run(['plugin', 'version', '--from-package'])
 
 const catalog = JSON.parse(readFileSync(CLAUDE_CATALOG, 'utf-8'))
 const entry = catalog.plugins.find((p) => p.name === 'repobuddy')

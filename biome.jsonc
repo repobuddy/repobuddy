@@ -18,7 +18,10 @@
 			"!**/.cursor-plugin",
 			"!**/.codex-plugin",
 			// Generated and minified by the min-release-age skill; copied in, never edited.
-			"!.github/scripts/min-release-age.mjs"
+			"!.github/scripts/min-release-age.mjs",
+			// Compiled by `plugin build` from packages/buddy/src/skills/; committed, never edited.
+			"!packages/buddy/skills/to-question/scripts",
+			"!packages/buddy/skills/review-permissions/scripts"
 		]
 	},
 	"formatter": {
