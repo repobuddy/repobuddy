@@ -14,11 +14,12 @@
 | Skill | Description |
 | --- | --- |
 | [`agent-readiness`] | Score how ready a repo is for coding agents — a gated level, the three fixes worth the most, and the tokens every session loads — hold a level in CI, then fix the findings one area per commit, and benchmark what agents cost before and after; `--package` scores how easily consumers' agents can use a library |
-| [`issue`] | File a bug, feature, or task on GitHub — searches for duplicates first |
+| [`issue`] | File a bug, feature, or task on GitHub, or on the tracker a routing names — searches for duplicates first |
 | [`llms-txt`] | Publish an `llms.txt` generated from a project's real public surface, with a CI drift check |
 | [`init-buddy`] | Set up the machine for the repo's git host — detects the OS and existing MCP servers, then installs and logs in `gh`, `glab`, `tea`, `fj`, or `az`, and proposes a starting harness allow list |
 | [`merge-dep-prs`] | Merge pending dependency update PRs — gates each merge on whether CI reached what the change can break, diagnoses CI failures, never merges release PRs |
 | [`min-release-age`] | Lift the minimum-release-age gate for one package version, restore it when the version ages past the window, and schedule the cleanup in CI |
+| [`project-tracker`] | Record which tracker holds each level and category of work — bugs on GitHub, epics elsewhere — and check the routing still resolves, so `issue` files where the team decided |
 | [`review-api`] | Review a library's public API for consistency and completeness against its own conventions — drift, sibling-justified gaps, docs vs exports |
 | [`review-permissions`] | Audit what your agents are allowed to do — risk-rank every grant, then tighten and consolidate it |
 | [`session`] | `pause` any agent session into checkpoints a fresh session can continue from — next step first, settled decisions, open questions, in another repo when the work belongs there — and `resume` one without reopening settled decisions |
@@ -167,6 +168,7 @@ npx skills add repobuddy/agent-changesets
 [universal plugin]: https://github.com/agentplugins/agent-plugins-spec
 [`agent-readiness`]: ./packages/buddy/skills/agent-readiness/SKILL.md
 [`issue`]: ./packages/buddy/skills/issue/SKILL.md
+[`project-tracker`]: ./packages/buddy/skills/project-tracker/SKILL.md
 [`llms-txt`]: ./packages/buddy/skills/llms-txt/SKILL.md
 [`init-buddy`]: ./packages/buddy/skills/init-buddy/SKILL.md
 [`merge-dep-prs`]: ./packages/buddy/skills/merge-dep-prs/SKILL.md
