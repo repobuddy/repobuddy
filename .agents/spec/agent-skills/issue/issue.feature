@@ -124,7 +124,40 @@ Feature: issue — file one bug, feature, or task on the tracker
     Then it has a Validate section
     And the description in its frontmatter is at most 120 characters
     And its frontmatter name equals its directory name
-    And its capabilities reference is byte-identical to the copy in packages/buddy/references
+
+  @behavior
+  Scenario: writes the body from the template reference, not from the skill
+    Given the user confirms a task "migrate the build to tsdown"
+    And the project has .agents/references/repobuddy.work-template.task.md with merge: merge-sections
+    And that file redefines only the Done when section as "- [ ] release notes merged"
+    And that file adds a Rollout section reading "Ship behind the tsdown flag first"
+    When issue writes the body of the task
+    Then the body has a Done when section whose item is "release notes merged"
+    And the body has a Rollout section that reads "Ship behind the tsdown flag first"
+    And the body has the default Description and Out of scope sections
+
+  @behavior
+  Scenario: follows a project override of the level checks
+    Given the project overrides the Too big section of the Issue level in repobuddy.work-levels
+    And the override reads "- It names more than one package."
+    And the default Too big section would only note, not suggest, for this request
+    When the user asks for one issue that names @repobuddy/jest and @repobuddy/vitest
+    Then issue's confirmation says the item looks too big for one issue
+    And it suggests an epic
+
+  @behavior
+  Scenario Outline: stops on a capabilities reference whose contract version it does not know
+    Given the origin remote is github.com
+    And the installed project-tracker.capabilities.github has <contract_state>
+    And project-tracker.contract declares contract: 1
+    When issue loads the capabilities reference
+    Then it names the tracker and says its contract version is not known
+    And it runs no duplicate search and no create command
+
+    Examples:
+      | contract_state             |
+      | contract: 2 in frontmatter |
+      | no contract in frontmatter |
 
   @behavior
   Scenario: lists the capabilities references and loads the one that matches the host
@@ -175,7 +208,7 @@ Feature: issue — file one bug, feature, or task on the tracker
     When the user confirms a bug
     Then issue runs glab issue create with --label bug
 
-  # ── Extensions 5–12 — the paths that do not file ──
+  # ── Extensions 5–13 — the paths that do not file ──
 
   @behavior
   Scenario: stops with an upgrade message when gh is older than 2.98.0

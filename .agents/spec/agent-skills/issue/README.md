@@ -25,6 +25,13 @@ live in `project-tracker.capabilities.<tracker>`, found by listing that name pre
 `project-tracker.capabilities.github` and nothing else. Until GitLab's reference ships, `issue` keeps
 a short GitLab fallback inline; Bitbucket is dropped because its native tracker is gone.
 
+**Templates and level checks are references.** The body template for each category is
+`repobuddy.work-template.<category>`, and the checks that say an item is too big or too small are the
+issue sections of `repobuddy.work-levels`. The skill loads them by name through agent-harness, so a
+project overrides one section with `merge-sections`. The capabilities reference declares the
+`contract:` it follows, and the skill stops on a version `project-tracker.contract` does not name. The
+references are specified in [work-references](../work-references/README.md).
+
 **Category and level are separate.** Category (bug, feature, task) says why the work exists. This
 skill creates at the issue level only. When an item looks too big or too small, it suggests another
 level in the confirmation and files at this one unless the person changes it. It does not promote or
@@ -62,10 +69,10 @@ shape the body and the confirmation.
 
 | # | Use case (surface: `/issue`) | Actor / goal | Entry point | Extensions |
 |---|---|---|---|---|
-| 1 | **File a bug** | Reporter: get a reproducible defect on the tracker without duplicating one | Trigger: asks to file or report a defect. Inputs: title, description, steps, expected and actual. Outcome: a bug-category issue and its URL | 5–12 |
-| 2 | **File a feature** | Reporter: record wanted behavior as its own issue | Same trigger with a request for new behavior. Outcome: a feature-category issue and its URL | 5–12 |
-| 3 | **File a task** | Reporter: track a chore that is neither defect nor feature | Same trigger with a chore. Outcome: a task-category issue and its URL | 5–12 |
-| 4 | **Let a sibling skill offer filing** | Sibling skill: give the reporter a path to file a finding | The same entry point, with the finding as the description | 5–12 |
+| 1 | **File a bug** | Reporter: get a reproducible defect on the tracker without duplicating one | Trigger: asks to file or report a defect. Inputs: title, description, steps, expected and actual. Outcome: a bug-category issue and its URL | 5–13 |
+| 2 | **File a feature** | Reporter: record wanted behavior as its own issue | Same trigger with a request for new behavior. Outcome: a feature-category issue and its URL | 5–13 |
+| 3 | **File a task** | Reporter: track a chore that is neither defect nor feature | Same trigger with a chore. Outcome: a task-category issue and its URL | 5–13 |
+| 4 | **Let a sibling skill offer filing** | Sibling skill: give the reporter a path to file a finding | The same entry point, with the finding as the description | 5–13 |
 
 **Extensions** (every path that does not reach "an issue exists and its URL is reported"), shared by
 use cases 1–4 and drawn in the Control Flow:
@@ -78,6 +85,7 @@ use cases 1–4 and drawn in the Control Flow:
 10. **The category is unclear.** The skill asks for it before gathering anything else.
 11. **More than one capabilities reference matches the host.** The skill asks which to use and loads neither until answered.
 12. **`gh` is older than 2.98.0 or logged out.** The skill says what to upgrade or run, and creates nothing.
+13. **The capabilities reference's contract version is unknown or missing.** The skill names the tracker and the version, and creates nothing.
 
 **Surface trace.** The capability takes three inputs: title (every use case), category (every use
 case; it decides the template and the type or label), and description (every use case). It exposes
@@ -100,7 +108,9 @@ graph TD
     R -->|None found or command cannot run| R3[Read the bundled GitHub reference]
     R2 --> D
     R3 --> D
-    D --> W{Is the category clear?}
+    D --> V{Is the contract version<br/>one the skill knows?}
+    V -->|No| V2[Name the tracker and version<br/>and stop]
+    V -->|Yes| W{Is the category clear?}
     E --> W
     W -->|No| W2[Ask for the category]
     W -->|Yes| G[Gather title, description<br/>and for a bug the environment]
@@ -133,6 +143,8 @@ The GitLab fallback creates with a label and has no type branch, so `N` applies 
 | `G` (gather) | a bug in a package with a Node toolchain | `collects environment details for a bug from the machine` |
 | `T → R (Yes)` | one capabilities reference matches the host | `lists the capabilities references and loads the one that matches the host` |
 | `R → R3 (None found or command cannot run)` | the reference command cannot run | `reads the bundled GitHub reference when the reference command cannot run` |
+| `W → G (Yes)` | a confirmed task and a project override of one template section | `writes the body from the template reference, not from the skill` |
+| `J → K` | a project override of the Too big section | `follows a project override of the level checks` |
 | `W → G (Yes)` | a request that says it is a bug | `writes a bug body with steps, expected, and actual behavior` |
 | `W → G (Yes)` | a request that wants new behavior | `writes a feature body with the need and use cases, and no bug sections` |
 | `N → P (No)` | the repo has no enhancement label | `omits the label when the repo does not have it` |
@@ -143,10 +155,10 @@ The GitLab fallback creates with a label and has no type branch, so `N` applies 
 | `O` / `Q` (body) | a confirmed task "migrate the build to tsdown" in a public repo | `writes a task body whose end state and scope can be checked` |
 | `O` / `Q` (body) | the same task, with a request that cites a commit SHA and an internal tracker address | `keeps a commit SHA and an internal tracker address out of a public issue body` |
 | `O` / `Q` (body) | the same task | `leaves bug-only sections out of a task body` |
-| `—` (artifact) | the shipped skill and its two reference copies | `ships a Validate section whose mechanical assertions pass` |
+| `—` (artifact) | the shipped skill and its reference copies | `ships a Validate section whose mechanical assertions pass` |
 | `C → E (gitlab)` | origin is gitlab.com and no GitLab reference exists | `files on GitLab through the fallback` |
 
-### Extensions 5–12 — the paths that do not file
+### Extensions 5–13 — the paths that do not file
 
 | Edge | Path (Given) | Scenario |
 |---|---|---|
@@ -159,3 +171,4 @@ The GitLab fallback creates with a label and has no type branch, so `N` applies 
 | `C → F (other host)` | origin is bitbucket.org | `refuses a host with no tracker set up` |
 | `J → K (Too big or too small)` | one request covering five independently shippable features | `suggests another level for an oversized item and still files at issue level` |
 | `J → K (Too big or too small)` | a one-character typo fix in a comment | `suggests not tracking an item too small for an issue` |
+| `V → V2 (No)` | a capabilities reference with an unknown or missing contract version | `stops on a capabilities reference whose contract version it does not know` |

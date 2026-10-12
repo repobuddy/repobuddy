@@ -12,8 +12,9 @@ eval:
 
 # issue — measurement policy
 
-The subject is `packages/buddy/skills/issue/SKILL.md` together with
-`references/project-tracker.capabilities.github.md`, which holds the commands the judge follows.
+The subject is `packages/buddy/skills/issue/SKILL.md` together with its `references/` copies: the
+GitHub capabilities reference (the commands the judge follows), `repobuddy.work-levels`,
+`project-tracker.contract`, and the three body templates.
 
 **All three layers carry signal.** Trigger: the skill sits beside `to-question`, which shares its
 vocabulary ("ticket", "issue"), and an epic-planning skill. Behavior: duplicate search, confirmation,
@@ -46,8 +47,9 @@ A judged run reads a narrated transcript. These scenarios assert that a command 
 or was passed a flag: `creates only after the summary is confirmed`, `creates nothing when the user
 declines`, `stops at a confirmed duplicate`, `does not file a vulnerability publicly`, `refuses a host
 with no tracker set up`, `maps each category to the tracker's type`, `falls back to labels`, `omits the
-label when the repo does not have it`, `stops with an upgrade message`, and `reads the bundled GitHub
-reference`. A transcript cannot show that nothing was created or which flags a command took, so treat
+label when the repo does not have it`, `stops with an upgrade message`, `reads the bundled GitHub
+reference`, `writes the body from the template reference`, `follows a project override of the level
+checks`, and `stops on a capabilities reference whose contract version it does not know`. A transcript cannot show that nothing was created or which flags a command took, so treat
 their passes as unproven. `creates only after the summary is confirmed` states the confirmation in its
 Given, so it cannot catch a skill that skips confirmation; `creates nothing when the user declines`
 carries that. The same limit is recorded for `to-question`. `ships a Validate section...` is a static
