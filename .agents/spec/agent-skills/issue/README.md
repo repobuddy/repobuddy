@@ -181,3 +181,14 @@ reference's `Create` section, which lists the newest issues before any retry.
 | `V → V2 (No)` | a capabilities reference with an unknown or missing contract version | `stops on a capabilities reference whose contract version it does not know` |
 | `O → X (Yes), S (Yes)` | a failed create left an issue with the confirmed title | `does not retry a failed create that left an issue behind` |
 | `P → X (Yes), S (No)` | a failed create left nothing behind | `lists the newest issues after a failed create that left nothing behind` |
+
+### Use case 4 — a sibling skill offers filing
+
+| Edge | Path (Given) | Scenario |
+|---|---|---|
+| `G → H` | a finding handed over by `agent-readiness` | `searches for duplicates before filing a finding a sibling skill hands over` |
+| `H → I (Yes)` | the same, with a hit the user confirms | `stops at a confirmed duplicate of a finding a sibling skill hands over` |
+| `L → N (Yes)` / `L → M (No)` | the same, no hit is the user's issue | `creates a finding a sibling skill hands over only when the user confirms the summary` |
+| `B → C (No)` | an ordinary finding from `agent-readiness` | `files an ordinary finding from a sibling skill instead of treating it as a vulnerability` |
+| `B → Z (Yes)` | a finding that leaks a token | `does not file a security finding from a sibling skill publicly` |
+

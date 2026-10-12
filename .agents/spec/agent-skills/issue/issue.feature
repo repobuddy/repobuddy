@@ -306,3 +306,50 @@ Feature: issue — file one bug, feature, or task on the tracker
     When issue continues
     Then it lists the newest issues before it runs any second create command
     And it tells the user nothing was filed
+
+  # ── Use case 4 — a sibling skill offers filing ──
+
+  @behavior
+  Scenario: searches for duplicates before filing a finding a sibling skill hands over
+    Given agent-readiness finished and offers to file its finding "no CONTRIBUTING.md in the repo"
+    And the user accepts the offer
+    And the origin remote is github.com
+    When issue takes the finding as the description
+    Then it runs at least two searches with different keywords before any create command
+    And it lists each hit with number, title, state, and URL
+
+  @behavior
+  Scenario: stops at a confirmed duplicate of a finding a sibling skill hands over
+    Given agent-readiness offers to file its finding "no CONTRIBUTING.md in the repo" and the user accepts
+    And a search hit titled "Add a CONTRIBUTING guide" that the user confirms is the same issue
+    When issue continues
+    Then it gives that issue's URL
+    And it runs no create command
+
+  @behavior
+  Scenario Outline: creates a finding a sibling skill hands over only when the user confirms the summary
+    Given agent-readiness offers to file its finding "no CONTRIBUTING.md in the repo" and the user accepts
+    And no search hit is the user's issue
+    And issue has shown the summary
+    When the user says "<answer>"
+    Then issue <create_outcome>
+
+    Examples:
+      | answer          | create_outcome                              |
+      | yes, file it    | creates the issue and reports its URL       |
+      | no, hold off    | runs no create command                      |
+
+  @behavior
+  Scenario: files an ordinary finding from a sibling skill instead of treating it as a vulnerability
+    Given agent-readiness offers to file its finding "no CONTRIBUTING.md in the repo" and the user accepts
+    And the finding describes no way to read or change data the user is not allowed to
+    When issue classifies the request
+    Then it continues to gather details and search
+    And it does not point to a private security channel
+
+  @behavior
+  Scenario: does not file a security finding from a sibling skill publicly
+    Given agent-readiness offers to file its finding "the deploy workflow prints the npm token to the public log" and the user accepts
+    When issue classifies the request
+    Then it points to the repository's private security channel
+    And it runs no create command
