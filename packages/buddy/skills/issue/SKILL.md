@@ -1,6 +1,6 @@
 ---
 name: issue
-description: "Use this skill when filing a bug, feature, or task as an issue on GitHub or GitLab; searches for duplicates first."
+description: "Use this skill when filing a bug, feature, or task as an issue on the project's tracker; searches for duplicates first."
 ---
 
 # Issue
@@ -19,7 +19,7 @@ This skill files a **single issue**. It is not for an epic or an initiative, and
 | feature | new behavior someone wants | `repobuddy.work-template.feature` |
 | task | work to be done that is neither a defect nor new behavior (a chore, a refactor, a migration) | `repobuddy.work-template.task` |
 
-If the category is unclear from the request, ask.
+If the category is unclear from the request, ask, before the Trackers steps: a routing picks the tracker by category.
 
 ## References
 
@@ -32,13 +32,13 @@ Load these with the `reference` skill in the `cyber-agent-harness` plugin, so a 
 
 A tracker's operations live in a capabilities reference named `project-tracker.capabilities.<tracker>`. This skill owns the workflow; the reference owns the commands.
 
-1. Read the host of `git remote get-url origin`. A host that is neither `github.com` nor GitLab (including Bitbucket, whose native tracker is gone): say that no tracker is set up for it, and stop. Do not file anywhere else.
-2. List what is installed: run `reference search project-tracker.capabilities` with the `reference` skill in the `cyber-agent-harness` plugin. Keep only names that start with `project-tracker.capabilities.`; drop fuzzier matches.
-3. Load the one whose `Detect` section matches the host. Two matches, or a name that is ambiguous between plugins: report both qualified names, ask which to pin, and load neither until answered.
-4. When the command cannot run, or nothing is left after step 2 drops the fuzzier names, and the host is `github.com`, load `project-tracker.capabilities.github` from this skill's `references/` folder.
-5. Read `contract:` in the loaded reference's frontmatter. When it is missing, or is not a contract version `project-tracker.contract` declares, name the tracker and the version, and stop.
-6. A GitLab host with no GitLab reference: use the **GitLab fallback** at the end of this file.
-7. For GitHub, the reference's `Detect` also needs `gh` 2.98.0 or later and a logged-in `gh`. When it is older or logged out, say what to upgrade or run, and stop.
+1. Look for a routing: `reference show project-tracker.routing`. When the command finds none, there is no routing; go to Trackers step 3. When the command cannot run, read `.agents/references/project-tracker.routing.md` directly: absent means no routing (go to Trackers step 3); present means a routing exists whose pins cannot be resolved, so name the first matching pin, say the `reference` command cannot run, suggest running `project-tracker` check once it can, and stop. Its format is in `project-tracker.contract` (the `Routing` section).
+2. With a routing, take the first `Routes` row that matches the issue level and the category. No row matches: name the pair, suggest running `project-tracker` change, and stop. Run `reference show <pin> --format json` on the row's pin. It finds nothing, or says the bare name is held by more than one plugin: name the pin and the problem, suggest running `project-tracker` check, and stop. Otherwise load that reference and go to Trackers step 6; skip the host steps, since the routing replaces them.
+3. Read the host of `git remote get-url origin`. A host that is neither `github.com` nor GitLab (including Bitbucket, whose native tracker is gone): say that no tracker is set up for it, and stop. Do not file anywhere else.
+4. List what is installed: run `reference search project-tracker.capabilities` with the `reference` skill in the `cyber-agent-harness` plugin. Keep only hits whose `match` is `prefix`, which may carry a `<plugin>/` qualifier; drop fuzzier matches.
+5. Load the one whose `Detect` section matches the host. Two matches, or a name that is ambiguous between plugins: report both qualified names, ask which to pin, and load neither until answered. When the command cannot run, or nothing is left after step 4 drops the fuzzier names, and the host is `github.com`, load `project-tracker.capabilities.github` from this skill's `references/` folder. A GitLab host with no GitLab reference: use the **GitLab fallback** at the end of this file.
+6. Read `contract:` in the loaded reference's frontmatter. When it is missing, or is not a contract version `project-tracker.contract` declares, name the tracker and the version, and stop.
+7. Run the reference's `Detect` checks. For GitHub they need `gh` 2.98.0 or later and a logged-in `gh`; when it is older or logged out, say what to upgrade or run, and stop.
 
 Where the reference marks an operation unsupported: with no `Search`, the user confirms there is no duplicate; with no native `Link`, put the link in the body.
 
@@ -69,13 +69,13 @@ Run the tracker's `Kinds` operation (the GitLab fallback has none) so the type o
 
 Run the tracker's `Create` operation with the category `Kinds` mapped to. Write the body from the category's template reference to a file, with every section the reference has.
 
-If a create command fails, check for an issue it left behind before retrying (the reference says how). When one is there, do not retry: give its URL as the new issue in step 6. When none is, say nothing was filed before any retry.
+If a create command fails, check for an issue it left behind before retrying (the reference says how). When one is there, do not retry: give its URL as the new issue in the Report step. When none is, say nothing was filed before any retry.
 
-Keep the body free of internal file names, commit SHAs, and implementation details unless the user asks. If the repository is public, keep out anything from a private tracker (its titles, URLs, or customer details).
+Keep the body free of internal file names, commit SHAs, and implementation details unless the user asks. If the tracker is public (the `Visibility` in its `Tracker` section; for GitHub and the GitLab fallback, the repository's), keep out anything from a private tracker (its titles, URLs, or customer details).
 
 ### 6. Report
 
-Give the URL of the new issue.
+Give the URL of the new issue. When the tracker was found without a routing (Trackers step 3 onward), end with one line suggesting the `project-tracker` skill to set one up; when a routing chose the tracker, add nothing.
 
 ## Level check
 
@@ -99,7 +99,8 @@ For a GitLab remote with no capabilities reference: `glab` must be installed and
 - [ ] Every copy in this skill's `references/` equals the file of the same name in `packages/buddy/references/` (`node scripts/sync-skill-references.mjs --check`)
 - [ ] The levels, the contract, and the category's template were loaded, and the capabilities reference's `contract:` was checked
 - [ ] The request was checked for a security vulnerability before any step ran
-- [ ] The tracker's capabilities were loaded, or the GitLab fallback applied
+- [ ] The tracker's capabilities were loaded (the pinned one when a routing exists), or the GitLab fallback applied
+- [ ] With a routing, no host detection ran, and a missing or ambiguous pin or an unmatched route stopped the skill before any search
 - [ ] At least two searches with different keywords ran before any create command
 - [ ] No create command ran without the user's confirmation of the summary
 - [ ] The body of a task or feature carries no bug-only section; a public issue carries no private-tracker detail

@@ -46,7 +46,8 @@ Skills that need a deterministic step run a bundled script. See [Skill scripts](
 
 | Skill | Use it to |
 | --- | --- |
-| [`issue`](/repobuddy/skills/issue/) | File a bug, feature, or task on GitHub or GitLab, after a duplicate search |
+| [`issue`](/repobuddy/skills/issue/) | File a bug, feature, or task on the tracker for your repository, after a duplicate search |
+| [`project-tracker`](/repobuddy/skills/project-tracker/) | Set up, show, change, and check which tracker holds each level and category of work |
 | [`to-question`](/repobuddy/skills/to-question/) | Word a question or unblock request for Slack, Jira, GitHub, email, and others |
 
 ## Agent setup and sessions
