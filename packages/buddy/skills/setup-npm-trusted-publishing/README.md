@@ -14,7 +14,7 @@ It registers only the npm side. Adding OIDC to the release workflow and giving t
 ## Before you start
 
 - npm 11.15.0 or later, logged in, with account-level 2FA
-- `gh` logged in. If it is missing or logged out, the skill runs [`init-buddy`](../init-buddy/README.md) when that is installed.
+- `gh` logged in. If it is missing or logged out, the skill runs [`init-buddy`](https://github.com/repobuddy/repobuddy/blob/main/packages/buddy/skills/init-buddy/README.md) when that is installed.
 - the publishing job already declares `id-token: write`
 - each package already exists on the registry; trust cannot be registered before the first publish
 
@@ -39,7 +39,7 @@ A plan file at `.github/npm-trust-plan.json`, a trusted publisher registered on 
 
 ## Install
 
-Install the `repobuddy` plugin (see the [repository readme](../../../../readme.md#installing-as-a-plugin)), or add
+Install the `repobuddy` plugin (see the [repository readme](https://github.com/repobuddy/repobuddy/blob/main/readme.md#installing-as-a-plugin)), or add
 the skill alone:
 
 ```sh
@@ -47,5 +47,5 @@ npx skills add repobuddy/repobuddy --skill setup-npm-trusted-publishing
 ```
 
 A skill installed with `skills add` comes from git and has no built `scripts/` folder. It runs its
-script through `npx -y repobuddy@^2.1.0` instead, which needs network access. The plugin install
+script through `npx -y repobuddy@2.2.0` instead, which needs network access. The plugin install
 ships the script with the skill.

@@ -29,7 +29,7 @@ node <this-skill-dir>/scripts/min-release-age.mjs restore [--dry-run]
 ```
 
 The script ships in the `repobuddy` npm package. If `scripts/min-release-age.mjs` is missing (the skill
-was installed from git) or cannot be run, use `npx -y repobuddy@^2.1.0 release-age <command>` with the
+was installed from git) or cannot be run, use `npx -y repobuddy@2.2.0 release-age <command>` with the
 same arguments.
 
 It detects the package manager from `packageManager`, then from lockfiles. Pass `--pm pnpm|yarn|npm|bun`
@@ -88,7 +88,7 @@ Entries without a marker are permanent policy. Never add, remove, or rewrite the
 2. If `ci.installed` is true, report where the job is and stop.
 3. If `provider` does not match what the user expects (for example, the repo is mirrored or several CI systems are present), confirm the target with the user.
 4. Every reference copies `scripts/min-release-age.mjs` into the repo. If the skill has no `scripts/`
-   folder, take the file from the package instead: run `npm pack repobuddy@^2.1.0` in a temp directory,
+   folder, take the file from the package instead: run `npm pack repobuddy@2.2.0` in a temp directory,
    extract the tarball, and copy `package/skills/min-release-age/scripts/min-release-age.mjs`.
 5. Load **only** the file named in `ci.reference` and follow it:
 

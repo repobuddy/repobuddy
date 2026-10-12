@@ -41,7 +41,7 @@ node <this-skill-dir>/scripts/agent-readiness.mjs suggest [--dir <repo>] [--area
 `<this-skill-dir>` is the directory holding this SKILL.md, not the current working directory.
 
 The script ships in the `repobuddy` npm package. If `scripts/agent-readiness.mjs` is missing (the skill
-was installed from git) or cannot be run, use `npx -y repobuddy@^2.1.0 agent-readiness score` with the
+was installed from git) or cannot be run, use `npx -y repobuddy@2.2.0 agent-readiness score` with the
 same arguments.
 
 `score` reads files and asks `git` which files are tracked and ignored. It builds, installs, and runs
@@ -297,7 +297,7 @@ Compare one area's changes at a time, or the effect of each cannot be told apart
 1. **Hand over.** With the ACED plugin installed, load its `bench` skill by name and give it the suite
    `repobuddy.readiness`, and the arms when the user named them. It checks fit, shows the plan, asks
    for an explicit yes, runs, and reports the verdict. Follow it; add nothing to its numbers.
-2. **Without the plugin,** run ACED's engine with `npx -y -p cyber-aced@^0.4.0 aced-bench`, under the
+2. **Without the plugin,** run ACED's engine with `npx -y -p cyber-aced@0.4.2 aced-bench`, under the
    same rule: `plan --suite repobuddy.readiness --arm <label>=<subject> … --out <plan.json>` spends
    nothing; show the user every line of the plan, including its ceiling, the permission mode, and its
    warnings; run `run --plan <plan.json> --consent` only after their explicit yes to that plan; then

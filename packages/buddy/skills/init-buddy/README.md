@@ -163,7 +163,7 @@ metadata:
 - It never asks you to paste a token into the chat.
 - It does not install, enable, or edit MCP servers, and does not change repository settings.
 - It never writes to your global instruction file. The reminder line is handed to you to add.
-- It only adds allow and deny entries you approved. It never removes an entry or a deny rule, and never adds a remote or destructive command unless you name it and confirm it. An advanced entry is written only with its guard. To audit the allow list you already have, use [`review-permissions`](../review-permissions/README.md).
+- It only adds allow and deny entries you approved. It never removes an entry or a deny rule, and never adds a remote or destructive command unless you name it and confirm it. An advanced entry is written only with its guard. To audit the allow list you already have, use [`review-permissions`](https://github.com/repobuddy/repobuddy/blob/main/packages/buddy/skills/review-permissions/README.md).
 - It does not run `curl | sh` installers beyond the ones it lists by name. The one listed, Microsoft's Azure CLI script for Debian/Ubuntu, is shown to you before it runs.
 
 ## How to invoke
@@ -176,7 +176,7 @@ An installed, logged-in CLI for each host you chose, a summary of the environmen
 
 ## Install
 
-Install the `repobuddy` plugin (see the [repository readme](../../../../readme.md#installing-as-a-plugin)), or add
+Install the `repobuddy` plugin (see the [repository readme](https://github.com/repobuddy/repobuddy/blob/main/readme.md#installing-as-a-plugin)), or add
 the skill alone:
 
 ```sh
@@ -184,6 +184,6 @@ npx skills add repobuddy/repobuddy --skill init-buddy
 ```
 
 A skill installed with `skills add` comes from git and has no built `scripts/` folder. It runs its
-script through `npx -y repobuddy@^2.1.0` instead, which needs network access. The plugin install
+script through `npx -y repobuddy@2.2.0` instead, which needs network access. The plugin install
 ships the script with the skill. The `gh-api-guard` hook has no `npx` fallback, because a hook runs on every
 `gh api` or `glab api` call; install the plugin, or copy the script out of the npm package, to use it.

@@ -43,17 +43,17 @@ Ask the user which applies; do not assume.
 ## Step 2 — Plan
 
 ```bash
-SKILL_DIR=$(npx skills path setup-npm-trusted-publishing 2>/dev/null || echo "$HOME/.agents/skills/setup-npm-trusted-publishing")
+SKILL_DIR=$(npx skills@1.7.2 path setup-npm-trusted-publishing 2>/dev/null || echo "$HOME/.agents/skills/setup-npm-trusted-publishing")
 if [ -f "$SKILL_DIR/scripts/npm-trust.mjs" ]; then
   RUN="node $SKILL_DIR/scripts/npm-trust.mjs"
 else
-  RUN="npx -y repobuddy@^2.1.0 npm-trust"
+  RUN="npx -y repobuddy@2.2.0 npm-trust"
 fi
 $RUN plan --org <login> --verbose
 ```
 
 The script ships in the `repobuddy` npm package. If `scripts/npm-trust.mjs` is missing (the skill was
-installed from git) or cannot be run, use `npx -y repobuddy@^2.1.0 npm-trust <command>` with the same
+installed from git) or cannot be run, use `npx -y repobuddy@2.2.0 npm-trust <command>` with the same
 arguments.
 
 Writes `.github/npm-trust-plan.json` and prints a JSON ack. **Do not parse stdout for the plan** — read the artifact:
@@ -135,6 +135,6 @@ The second action is a one-way narrowing that breaks every remaining token-based
 
 ## References
 
-- `npx cyber-skills governance show agent-tool-output` — stdout/stderr contract for the bundled script
+- `npx cyber-skills@0.4.3 governance show agent-tool-output` — stdout/stderr contract for the bundled script
 - https://docs.npmjs.com/trusted-publishers/ — trusted publisher concepts and web UI equivalent
 - https://docs.npmjs.com/cli/v11/commands/npm-trust/ — `npm trust` subcommands and flags

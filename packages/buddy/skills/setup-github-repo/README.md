@@ -12,7 +12,7 @@ Applies a standard set of GitHub repository settings with the `gh` CLI: merge op
 
 ## What it does
 
-1. **Checks prerequisites:** `gh` logged in and a git remote present. If `gh` is missing or logged out, it runs [`init-buddy`](../init-buddy/README.md) when that is installed, and otherwise tells you what to fix.
+1. **Checks prerequisites:** `gh` logged in and a git remote present. If `gh` is missing or logged out, it runs [`init-buddy`](https://github.com/repobuddy/repobuddy/blob/main/packages/buddy/skills/init-buddy/README.md) when that is installed, and otherwise tells you what to fix.
 2. **Detects the current state** with a bundled script, then summarizes the pending changes and asks you to confirm. The state snapshot goes to the OS temp directory, never into the repo. If an earlier version of the skill left `.github/setup-state.json` in the repo, the script deletes it and the skill tells you.
 3. **Applies the repository settings:** delete branches on merge, allow auto-merge, squash and rebase merges, and updating a PR branch, and turns off merge commits.
 4. **Turns on Dependabot security updates** if they are off.
@@ -53,7 +53,7 @@ Updated repository settings, Dependabot security updates on, a default-branch ru
 
 ## Install
 
-Install the `repobuddy` plugin (see the [repository readme](../../../../readme.md#installing-as-a-plugin)), or add
+Install the `repobuddy` plugin (see the [repository readme](https://github.com/repobuddy/repobuddy/blob/main/readme.md#installing-as-a-plugin)), or add
 the skill alone:
 
 ```sh
@@ -61,5 +61,5 @@ npx skills add repobuddy/repobuddy --skill setup-github-repo
 ```
 
 A skill installed with `skills add` comes from git and has no built `scripts/` folder. It runs its
-scripts through `npx -y repobuddy@^2.1.0` instead, which needs network access. The plugin install
+scripts through `npx -y repobuddy@2.2.0` instead, which needs network access. The plugin install
 ships the scripts with the skill.
