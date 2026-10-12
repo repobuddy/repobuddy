@@ -13,13 +13,20 @@ This skill files a **single issue**. It is not for an epic or an initiative, and
 
 ## Categories
 
-| Category | Use when | Body template |
+| Category | Use when | Template reference |
 |---|---|---|
-| bug | something behaves differently than it should | Description, Steps to Reproduce, Expected Behavior, Actual Behavior, Environment, Notes |
-| feature | new behavior someone wants | Description (the need, then the wanted behavior), Use Cases, Notes |
-| task | work to be done that is neither a defect nor new behavior (a chore, a refactor, a migration) | Description, Done when (a check someone can run), Out of scope, Notes |
+| bug | something behaves differently than it should | `repobuddy.work-template.bug` |
+| feature | new behavior someone wants | `repobuddy.work-template.feature` |
+| task | work to be done that is neither a defect nor new behavior (a chore, a refactor, a migration) | `repobuddy.work-template.task` |
 
 If the category is unclear from the request, ask.
+
+## References
+
+Load these with the `reference` skill in the `cyber-agent-harness` plugin, so a project's own override applies:
+
+- Before step 1: `repobuddy.work-levels` (the level checks) and `project-tracker.contract` (what a capabilities reference holds).
+- When the category is known: the template reference for it, from the table above. Fill in its sections in order; leave out a section that does not apply. Its headings are the only fixed part: a team may reword the text under them or add a section.
 
 ## Trackers
 
@@ -28,9 +35,10 @@ A tracker's operations live in a capabilities reference named `project-tracker.c
 1. Read the host of `git remote get-url origin`. A host that is neither `github.com` nor GitLab (including Bitbucket, whose native tracker is gone): say that no tracker is set up for it, and stop. Do not file anywhere else.
 2. List what is installed: run `reference search project-tracker.capabilities` with the `reference` skill in the `cyber-agent-harness` plugin. Keep only names that start with `project-tracker.capabilities.`; drop fuzzier matches.
 3. Load the one whose `Detect` section matches the host. Two matches, or a name that is ambiguous between plugins: report both qualified names, ask which to pin, and load neither until answered.
-4. When the command cannot run or finds nothing and the host is `github.com`, read `references/project-tracker.capabilities.github.md` in this skill's folder.
-5. A GitLab host with no GitLab reference: use the **GitLab fallback** at the end of this file.
-6. For GitHub, the reference's `Detect` also needs `gh` 2.98.0 or later and a logged-in `gh`. When it is older or logged out, say what to upgrade or run, and stop.
+4. When the command cannot run or finds nothing and the host is `github.com`, load `project-tracker.capabilities.github` from this skill's `references/` folder.
+5. Read `contract:` in the loaded reference's frontmatter. When it is missing, or is not a contract version `project-tracker.contract` declares, name the tracker and the version, and stop.
+6. A GitLab host with no GitLab reference: use the **GitLab fallback** at the end of this file.
+7. For GitHub, the reference's `Detect` also needs `gh` 2.98.0 or later and a logged-in `gh`. When it is older or logged out, say what to upgrade or run, and stop.
 
 Where the reference marks an operation unsupported: with no `Search`, the user confirms there is no duplicate; with no native `Link`, put the link in the body.
 
@@ -59,7 +67,7 @@ Run the tracker's `Kinds` operation (the GitLab fallback has none) so the type o
 
 ### 5. Create
 
-Run the tracker's `Create` operation with the category `Kinds` mapped to. Write the body from the category's template to a file; leave out sections that do not apply.
+Run the tracker's `Create` operation with the category `Kinds` mapped to. Write the body from the category's template reference to a file.
 
 If a create command fails, check for an issue it left behind before retrying (the reference says how).
 
@@ -71,7 +79,7 @@ Give the URL of the new issue.
 
 ## Level check
 
-If the item looks too big for one issue (several independently shippable parts, more than one owner) or too small to track (a one-line fix with no lifecycle), say so in the confirmation. For an item that is too big, suggest an epic (the `epic` skill when it is installed; otherwise one parent issue with child issues); for one that is too small, suggest not tracking it. Only suggest; file at this level if the user does not change it.
+Read the issue level's `Too big` and `Too small` sections in `repobuddy.work-levels`. When the item meets them, say so in the confirmation. For an item that is too big, suggest an epic (the `epic` skill when it is installed; otherwise one parent issue with child issues); for one that is too small, suggest not tracking it. Only suggest; file at this level if the user does not change it.
 
 ## GitLab fallback
 
@@ -88,7 +96,8 @@ For a GitLab remote with no capabilities reference: `glab` must be installed and
 ## Validate
 
 - [ ] The description in the frontmatter is at most 120 characters, and `name` equals the directory name
-- [ ] `references/project-tracker.capabilities.github.md` is byte-identical to `packages/buddy/references/project-tracker.capabilities.github.md`
+- [ ] Every copy in this skill's `references/` equals the file of the same name in `packages/buddy/references/` (`node scripts/sync-skill-references.mjs --check`)
+- [ ] The levels, the contract, and the category's template were loaded, and the capabilities reference's `contract:` was checked
 - [ ] The request was checked for a security vulnerability before any step ran
 - [ ] The tracker's capabilities were loaded, or the GitLab fallback applied
 - [ ] At least two searches with different keywords ran before any create command
