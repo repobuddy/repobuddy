@@ -241,7 +241,14 @@ importers:
         version: 19.2.8
 
   packages/buddy:
+    dependencies:
+      args-minus:
+        specifier: 0.2.0
+        version: 0.2.0
     devDependencies:
+      '@clibuilder/plugins':
+        specifier: 0.2.0
+        version: 0.2.0(clibuilder@12.0.0(js-yaml@4.3.2))
       '@cyberuni/agent-harness':
         specifier: ^0.6.0
         version: 0.6.0(typescript@7.0.2)
@@ -255,8 +262,8 @@ importers:
         specifier: ^0.21.0
         version: 0.21.0(typescript@7.0.2)
       clibuilder:
-        specifier: ^11.3.3
-        version: 11.3.3(typescript@7.0.2)
+        specifier: ^12.0.0
+        version: 12.0.0(js-yaml@4.3.2)
       cross-env:
         specifier: ^10.1.0
         version: 10.1.0
@@ -413,8 +420,8 @@ importers:
   packages/typescript:
     dependencies:
       clibuilder:
-        specifier: ^11.3.3
-        version: 11.3.3(typescript@7.0.2)
+        specifier: ^12.0.0
+        version: 12.0.0(js-yaml@4.3.2)
       dirname-filename-esm:
         specifier: ^1.1.1
         version: 1.1.2
@@ -422,6 +429,9 @@ importers:
         specifier: ^10.0.0
         version: 10.0.1
     devDependencies:
+      '@clibuilder/plugins':
+        specifier: 0.2.0
+        version: 0.2.0(clibuilder@12.0.0(js-yaml@4.3.2))
       '@size-limit/preset-small-lib':
         specifier: ~14.2.0
         version: 14.2.0(size-limit@14.2.0)
@@ -1475,14 +1485,22 @@ packages:
   '@clibuilder/axi@0.1.0':
     resolution: {integrity: sha512-axduLxgCRP33iEPv8AGeFY9xDo0z6LH5JwhqpF/JqNmKo99UNI5rmSLduEjCfgIBc7TRwM1jiV0mBFNPKuLabA==}
     engines: {node: '>= 20.19'}
+    deprecated: Folded into clibuilder 12. Import the value helpers from "clibuilder/axi" and use the output, error and format support built into clibuilder. See https://clibuilder.github.io/clibuilder/guides/upgrade-to-12/
     peerDependencies:
       clibuilder: ^11.0.0
 
   '@clibuilder/axi@0.2.0':
     resolution: {integrity: sha512-OdQGC+WX7nJKV3Mu78RX7ZeLFi6OKCcokancO63HznGLEvT4Rh7YonmLya92rtXdsVHsJ9Z8AfOZC5LpM33f8A==}
     engines: {node: '>= 20.19'}
+    deprecated: Folded into clibuilder 12. Import the value helpers from "clibuilder/axi" and use the output, error and format support built into clibuilder. See https://clibuilder.github.io/clibuilder/guides/upgrade-to-12/
     peerDependencies:
       clibuilder: ^11.3.3
+
+  '@clibuilder/plugins@0.2.0':
+    resolution: {integrity: sha512-gzVujPFtDZteHiZJkltrftk8SqpXBzYxUgZ77MMdx9SdsefuHm5QJyHkGlZpJQgPSND9WTRobCyOLxV1HHLecw==}
+    engines: {node: '>= 20.19'}
+    peerDependencies:
+      clibuilder: ^12.0.0
 
   '@commitlint/cli@21.2.2':
     resolution: {integrity: sha512-a+6hQxIxnpdvSvS2apvttPNbEliYsVC3PqFYDiiB2kjbwIsQsj1urvQ4Tkf70pKYozPalKAuRQmm/GHwndduqA==}
@@ -4411,6 +4429,10 @@ packages:
   argparse@2.0.1:
     resolution: {integrity: sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==}
 
+  args-minus@0.2.0:
+    resolution: {integrity: sha512-WnIUyzhO4me3xx841rxfCU2C/PMpD+M1MraKb8hF2aGY4xS67bSV2EhpmegLlFM0UV11+hV9uHPbNHnH7ypL0w==}
+    engines: {node: '>=20'}
+
   argue-cli@3.2.0:
     resolution: {integrity: sha512-VipTB0gXgGIFO2Rg9yEVN5wLt2AurJcZqDbgmYSwPwsykhLrQhs240/bfceev4w68lI8JshoOJIk9uW7tFzROw==}
     engines: {node: '>=22'}
@@ -4662,6 +4684,15 @@ packages:
   clibuilder@11.3.3:
     resolution: {integrity: sha512-7hgRZA89+5wVrK5A+Ltvj+A2eL8thwQ8c3IE5lZLCWbunkdsnlJQE557UXn2XyD+Zc84a0tlpgD8AzgVUO+eHg==}
     engines: {node: '>= 20.19'}
+
+  clibuilder@12.0.0:
+    resolution: {integrity: sha512-k4scud2B6EFqzVmxmTVQMiW4xu9KzxV9+KVIPQVJeJFqg735a0H2iDMGFMIsHQVNdxwLqPjmNiK4CEUU5ZxNfA==}
+    engines: {node: '>= 20.19'}
+    peerDependencies:
+      js-yaml: ^4.1.0
+    peerDependenciesMeta:
+      js-yaml:
+        optional: true
 
   cliui@8.0.1:
     resolution: {integrity: sha512-BSeNnyus75C4//NQ9gQt1/csTXyo/8Sb+afLAkzAptFuMsod9HFokGNudZpi/oQV73hnVK+sR+5PVRMd+Dr7YQ==}
@@ -8665,6 +8696,13 @@ snapshots:
       '@toon-format/toon': 4.1.1
       clibuilder: 11.3.3(typescript@7.0.2)
 
+  '@clibuilder/plugins@0.2.0(clibuilder@12.0.0(js-yaml@4.3.2))':
+    dependencies:
+      clibuilder: 12.0.0(js-yaml@4.3.2)
+      find-installed-packages: 4.0.1
+      import-meta-resolve: 4.2.0
+      search-packages: 2.2.3
+
   '@commitlint/cli@21.2.2(@types/node@24.13.3)(conventional-commits-parser@7.1.2)(typescript@7.0.2)':
     dependencies:
       '@commitlint/config-conventional': 21.2.2
@@ -11118,6 +11156,8 @@ snapshots:
 
   argparse@2.0.1: {}
 
+  args-minus@0.2.0: {}
+
   argue-cli@3.2.0: {}
 
   aria-query@5.3.0:
@@ -11482,6 +11522,13 @@ snapshots:
       zod: 3.25.76
     transitivePeerDependencies:
       - typescript
+
+  clibuilder@12.0.0(js-yaml@4.3.2):
+    dependencies:
+      '@toon-format/toon': 4.1.1
+      args-minus: 0.2.0
+    optionalDependencies:
+      js-yaml: 4.3.2
 
   cliui@8.0.1:
     dependencies:

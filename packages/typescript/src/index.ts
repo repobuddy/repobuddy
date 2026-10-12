@@ -1,4 +1,4 @@
-import type { PluginActivationContext } from 'clibuilder'
+import type { PluginActivationContext } from '@clibuilder/plugins'
 import { build } from './build.js'
 import { copyCJSPackageJson } from './copy_cjs_package_json.js'
 

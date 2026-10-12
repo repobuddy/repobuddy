@@ -58,11 +58,12 @@
 		"verify": "npm-run-all -p build typecheck -p test"
 	},
 	"devDependencies": {
+		"@clibuilder/plugins": "0.2.0",
 		"@cyberuni/agent-harness": "^0.6.0",
 		"@jest/globals": "^30.0.0",
 		"@repobuddy/jest": "workspace:*",
 		"buddy-agent-harness": "^0.21.0",
-		"clibuilder": "^11.3.3",
+		"clibuilder": "^12.0.0",
 		"cross-env": "^10.1.0",
 		"cyber-mux": "^0.9.1",
 		"jest": "^30.0.0",
@@ -71,5 +72,8 @@
 		"tsdown": "^0.23.0",
 		"typescript": "^7.0.0",
 		"universal-plugin": "^0.14.0"
+	},
+	"dependencies": {
+		"args-minus": "0.2.0"
 	}
 }

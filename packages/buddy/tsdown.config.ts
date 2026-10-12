@@ -67,9 +67,15 @@ export default defineConfig([
 		// inlined automatically. `onlyBundle: false` silences the "bundled a dependency"
 		// warnings that are the whole point here.
 		//
-		// Expect two build warnings about unanalyzable dynamic imports: clibuilder loads
-		// third-party plugins and user config files by runtime-computed specifier. Both are
-		// correct by design and must stay dynamic; keeping this output ESM preserves them.
+		// Expect build warnings about unanalyzable dynamic imports: `@clibuilder/plugins` and
+		// clibuilder's config loader import third-party plugins and user config files by
+		// runtime-computed specifier. They are correct by design and must stay dynamic;
+		// keeping this output ESM preserves them.
+		//
+		// `args-minus` is the exception to inlining: it is a direct dependency of this package
+		// so that it stays external. A plugin such as `@repobuddy/typescript` builds its
+		// arguments with `t` from its own `clibuilder`, and clibuilder accepts only descriptors
+		// from the same `args-minus` instance. An inlined copy would reject every plugin command.
 		// `jsonc-parser` (reached through clibuilder) resolves to its UMD build via `main`,
 		// and that build's factory calls `require("./impl/format")` and three siblings —
 		// specifiers rolldown cannot analyse. So its `impl/` modules were never inlined, and

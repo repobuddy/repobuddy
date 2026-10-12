@@ -1,5 +1,7 @@
 import { readFileSync } from 'node:fs'
+import { plugins } from '@clibuilder/plugins'
 import { cli } from 'clibuilder'
+import { config } from 'clibuilder/config'
 import { installMissingConfigWarningFilter } from './cli-noise.js'
 import { checkDependenciesCommand } from './deps/check_dependencies_command.js'
 import { testScripts } from './test_scripts.js'
@@ -16,9 +18,8 @@ export const app = cli({
 	name: 'repobuddy',
 	version: pkg.version,
 	description: 'Your repo buddy',
-	// Load-bearing: this is how clibuilder finds the plugin commands other
-	// packages contribute, such as `buddy ts build cjs` from `@repobuddy/typescript`.
-	config: true,
 })
+	.use(config())
+	.use(plugins())
 	.command(testScripts)
 	.command(checkDependenciesCommand)

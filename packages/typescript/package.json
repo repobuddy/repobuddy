@@ -55,11 +55,12 @@
 		"verify": "npm-run-all -p build coverage -p size"
 	},
 	"dependencies": {
-		"clibuilder": "^11.3.3",
+		"clibuilder": "^12.0.0",
 		"dirname-filename-esm": "^1.1.1",
 		"execa": "^10.0.0"
 	},
 	"devDependencies": {
+		"@clibuilder/plugins": "0.2.0",
 		"@size-limit/preset-small-lib": "~14.2.0",
 		"@types/node": "^24.0.0",
 		"@vitest/coverage-v8": "^5.0.0",

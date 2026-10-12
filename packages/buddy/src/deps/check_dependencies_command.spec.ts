@@ -1,7 +1,7 @@
 import { mkdtemp, rm, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { afterAll, describe, expect, it } from '@jest/globals'
-import { testCommand } from 'clibuilder'
+import { testCommand } from 'clibuilder/testing'
 import { checkDependenciesCommand } from './check_dependencies_command.js'
 
 const created: string[] = []
@@ -24,7 +24,9 @@ describe('check-deps', () => {
 			'jest.config.json': { transform: { '^.+\\.ts$': 'ts-jest' } },
 		})
 
-		const { messages, exitCode } = await testCommand(checkDependenciesCommand, `check-deps --cwd=${dir}`)
+		const { messages, exitCode } = await testCommand(checkDependenciesCommand, `check-deps --cwd=${dir}`, {
+			format: 'text',
+		})
 
 		expect(exitCode).toBeUndefined()
 		expect(messages).toContain('all declared in package.json')
@@ -36,7 +38,9 @@ describe('check-deps', () => {
 			'jest.config.json': { transform: { '^.+\\.ts$': 'ts-jest' } },
 		})
 
-		const { messages, exitCode } = await testCommand(checkDependenciesCommand, `check-deps --cwd=${dir}`)
+		const { messages, exitCode } = await testCommand(checkDependenciesCommand, `check-deps --cwd=${dir}`, {
+			format: 'text',
+		})
 
 		expect(exitCode).toBe(1)
 		expect(messages).toContain('missing dependencies: 1 used by jest.config.json')
@@ -55,7 +59,9 @@ describe('check-deps', () => {
 	it('is available under its long alias', async () => {
 		const dir = await project({ 'package.json': { name: 'consumer' } })
 
-		const { messages, exitCode } = await testCommand(checkDependenciesCommand, `check-dependencies --cwd=${dir}`)
+		const { messages, exitCode } = await testCommand(checkDependenciesCommand, `check-dependencies --cwd=${dir}`, {
+			format: 'text',
+		})
 
 		expect(exitCode).toBeUndefined()
 		expect(messages).toContain('no jest configuration found')
