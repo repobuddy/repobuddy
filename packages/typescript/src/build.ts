@@ -1,16 +1,16 @@
 import { copyFile } from 'node:fs/promises'
 import { join } from 'node:path'
-import { command, z } from 'clibuilder'
+import { type cli, command, t } from 'clibuilder'
 import { dirname } from 'dirname-filename-esm'
 import { execa } from 'execa'
 
-export const build = command({
+export const build: cli.Command<any, any, any, any> = command({
 	name: 'build',
 	arguments: [
 		{
 			name: 'type',
 			description: 'type of build: cjs, esm, or tslib',
-			type: z.union([z.literal('cjs'), z.literal('tslib'), z.literal('esm')]),
+			type: t.enum(['cjs', 'tslib', 'esm']),
 		},
 	],
 	async run({ type }) {

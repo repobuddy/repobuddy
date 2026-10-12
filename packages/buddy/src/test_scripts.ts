@@ -1,6 +1,7 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { CliError, command, z } from 'clibuilder'
+import { CliError, type cli, command, t } from 'clibuilder'
+import { result } from 'clibuilder/axi'
 
 export type TestRunner = 'jest' | 'vitest'
 
@@ -69,17 +70,17 @@ function detectIndent(source: string) {
 	return match ? match[0] : '\t'
 }
 
-export const testScripts = command({
+export const testScripts: cli.Command<any, any, any, any> = command({
 	name: 'test-scripts',
 	description: 'Add or adjust the `test`, `coverage`, and `test:watch` scripts for the test runner the project uses.',
 	options: {
 		cwd: {
 			description: 'project directory. Defaults to the current working directory',
-			type: z.string().optional(),
+			type: t.string().optional(),
 		},
 		runner: {
 			description: 'the test runner to write scripts for. Defaults to the one the project depends on',
-			type: z.enum(['jest', 'vitest']).optional(),
+			type: t.enum(['jest', 'vitest']).optional(),
 		},
 	},
 	async run({ cwd, runner }) {
@@ -105,14 +106,15 @@ export const testScripts = command({
 			writeFileSync(manifestPath, `${JSON.stringify(pkg, undefined, indent)}${source.endsWith('\n') ? '\n' : ''}`)
 		}
 
-		for (const change of changes) {
-			if (change.action === 'add') this.ui.info(`added "${change.name}": ${change.to}`)
-			else if (change.action === 'adjust') this.ui.info(`adjusted "${change.name}": ${change.from} -> ${change.to}`)
-			else this.ui.info(`skipped "${change.name}": ${change.from}`)
-		}
-		if (writes.length === 0) this.ui.info(`the ${resolved} scripts are already what they should be`)
-
-		return changes
+		const lines = changes.map((change) =>
+			change.action === 'add'
+				? `added "${change.name}": ${change.to}`
+				: change.action === 'adjust'
+					? `adjusted "${change.name}": ${change.from} -> ${change.to}`
+					: `skipped "${change.name}": ${change.from}`,
+		)
+		if (writes.length === 0) lines.push(`the ${resolved} scripts are already what they should be`)
+		return result(changes, { render: { text: () => lines.join('\n') } })
 	},
 })
 

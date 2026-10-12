@@ -1,4 +1,5 @@
-import { CliError, command, exitCodes, z } from 'clibuilder'
+import { CliError, type cli, command, exitCodes, t } from 'clibuilder'
+import { result } from 'clibuilder/axi'
 import { checkDependencies } from './check_dependencies.js'
 import { formatDependencyReport } from './format_dependency_report.js'
 
@@ -13,14 +14,14 @@ import { formatDependencyReport } from './format_dependency_report.js'
  * gives the same answer at a moment when the answer is wanted, and its exit
  * code can gate a build.
  */
-export const checkDependenciesCommand = command({
+export const checkDependenciesCommand: cli.Command<any, any, any, any> = command({
 	name: 'check-deps',
 	alias: ['check-dependencies'],
 	description: 'Report packages the jest config uses that package.json does not declare',
 	options: {
 		cwd: {
 			description: 'The project to check. Defaults to the current directory.',
-			type: z.optional(z.string()),
+			type: t.string().optional(),
 		},
 	},
 	async run(args) {
@@ -36,8 +37,7 @@ export const checkDependenciesCommand = command({
 
 		const [summary, ...details] = formatDependencyReport(report)
 		if (report.missing.length === 0) {
-			this.ui.info(summary)
-			return report
+			return result(report, { render: { text: () => summary as string } })
 		}
 
 		throw new CliError(summary as string, { help: details, exitCode: exitCodes.error })

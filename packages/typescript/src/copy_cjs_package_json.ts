@@ -1,9 +1,9 @@
 import { copyFile } from 'node:fs/promises'
 import { join } from 'node:path'
-import { command, z } from 'clibuilder'
+import { type cli, command, t } from 'clibuilder'
 import { dirname } from 'dirname-filename-esm'
 
-export const copyCJSPackageJson = command({
+export const copyCJSPackageJson: cli.Command<any, any, any, any> = command({
 	name: 'copy-cjs-package-json',
 	description: 'Copy the package.json needed for CommonJS build.',
 	alias: ['cpj'],
@@ -11,12 +11,12 @@ export const copyCJSPackageJson = command({
 		{
 			name: 'dir',
 			description: 'where to copy the file to. This should be the `outDir` of the CommonJS build',
-			type: z.string(),
+			type: t.string(),
 		},
 		{
 			name: 'cwd',
 			description: 'project directory. Defaults to `process.cwd()`',
-			type: z.optional(z.string()),
+			type: t.string().optional(),
 		},
 	],
 	async run({ dir, cwd = process.cwd() }) {

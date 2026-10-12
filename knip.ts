@@ -68,6 +68,11 @@ const config: KnipConfig = {
 				'src/skills/{check-format,question-path,scan-permissions}.ts',
 				...testEntry,
 			],
+			ignoreDependencies: [
+				// Declared only so tsdown leaves it external in esm/bin.js: clibuilder (inlined) imports
+				// it, and plugins must share its instance. See tsdown.config.ts.
+				'args-minus',
+			],
 		},
 		'packages/jest': {
 			entry: testEntry,

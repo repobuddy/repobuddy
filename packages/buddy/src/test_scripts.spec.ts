@@ -2,7 +2,7 @@ import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { beforeEach, describe, expect, it } from '@jest/globals'
-import { testCommand } from 'clibuilder'
+import { testCommand } from 'clibuilder/testing'
 import { detectTestRunners, planTestScripts, testScripts } from './test_scripts.js'
 
 let cwd: string
@@ -20,7 +20,7 @@ function readManifest() {
 }
 
 function run(argv = '') {
-	return testCommand(testScripts, `test-scripts --cwd ${cwd} ${argv}`.trim())
+	return testCommand(testScripts, `test-scripts --cwd ${cwd} ${argv}`.trim(), { format: 'text' })
 }
 
 describe('detectTestRunners()', () => {
