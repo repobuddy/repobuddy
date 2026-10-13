@@ -48,14 +48,16 @@ target private, the source's comment says only that the work is tracked internal
 
 **Trackers are resolved as `issue` resolves them**: the routing's first matching row when one exists,
 else the `origin` host and the installed `project-tracker.capabilities.*` references, with the bundled
-GitHub copy as the fallback. The epic resolves at level epic, each child at level issue with its own
+GitHub and GitLab copies as the fallback. The epic resolves at level epic, each child at level issue with its own
 category, so an epic and its children may sit on different trackers; a child on another tracker is
 linked in its body. Children are filed through `issue` when it is installed.
 
 **This child's capabilities.** GitHub's `Retype` ships here, in place by label, with the body rewrite
 for issue → epic and the detach for initiative → epic spelled out. Asana's ships in `cyber-asana`
 (`project-tracker.capabilities.asana`, cyberuni/cyber-asana#266): in place by subtasks for issue ↔ epic,
-initiative unsupported. GitLab's is #806.
+initiative unsupported. GitLab's ships here too (#806): in place by the `epic` label on Free, a new
+group epic by `/promote_to Epic` on Premium and Ultimate, initiative on Ultimate only; its calls are
+untested on a real instance.
 
 ### Non-goals
 
@@ -63,7 +65,7 @@ initiative unsupported. GitLab's is #806.
 - Filing one issue (`issue`), setting up the routing (`project-tracker`), commenting (`to-question`).
 - A standalone move of an epic that is already at the epic level, because the routing changed.
 - Editing an epic's children after it is filed (re-parenting, re-ordering, closing).
-- Asana's or GitLab's capabilities text; they live in their own packages or children.
+- Asana's capabilities text; it lives in `cyber-asana`. GitLab's is specified by #806.
 
 ### Input from the hand-run epic
 

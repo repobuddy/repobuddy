@@ -33,7 +33,7 @@ glab api "projects/<project-enc>/labels?include_ancestor_groups=true&per_page=10
 - The label carries the category. Bug is the first of `bug`, `type::bug` that exists; feature is the first of `feature`, `enhancement`, `type::feature`; task is the first of `task`, `type::task`, `type::maintenance`. When none exists, create the item without a category label and say so. *(untested)*
 - Level, Free: an `epic` or `initiative` label on an issue. An issue with neither is an issue.
 - Level, Premium and Ultimate: an epic is a work item of type `Epic` in the group; one with the `initiative` label is an initiative (Ultimate only). Issues stay in the project.
-- Use only labels that exist; do not create labels. The REST create call creates a missing label silently, so check the list first.
+- Use only labels that exist. Do not create labels, except a missing level label after the user says yes to it (see **Retype**, Limits). The REST create call creates a missing label silently, so check the list first.
 - A GraphQL write needs global IDs, read them before it *(untested)*:
 
 ```bash
@@ -110,7 +110,7 @@ glab api graphql -f query='{namespace(fullPath:"<project or group>"){workItem(ii
   glab api graphql -f query='mutation{workItemUpdate(input:{id:"<child id>",hierarchyWidget:{parentId:"<parent id>"}}){errors}}'
   ```
 
-  An item has one parent; setting a new one moves it, and moving an issue between epics needs Ultimate. Limits: 5000 direct children per epic, epics nested 7 levels, a task in the same project as its issue, and a new child issue only in a project inside the epic's group.
+  An item has one parent; setting a new one moves it, and moving an issue between epics needs Ultimate. An existing issue in a project outside the epic's group attaches by its URL: read its id with `workItemsByReference(contextNamespacePath:"<group>",refs:["<url>"]){nodes{id}}`. Limits: 5000 direct children per epic, epics nested 7 levels, a task in the same project as its issue, and a new child issue only in a project inside the epic's group; read the tree before attaching. *(untested)*
 - On Free, an existing issue cannot become a child of an issue. Relate it to the epic instead, and add `- [ ] <project>#<iid>` to the epic's description.
 - Detach: the same mutation with `parentId:null`. *(untested)*
 - Related, blocking, blocked by *(untested; blocking links may need Premium)*:
@@ -128,19 +128,21 @@ glab api graphql -f query='{namespace(fullPath:"<project or group>"){workItem(ii
 
 ## Retype
 
-Free changes level in place with a label. Premium and Ultimate change between an issue and an epic by making a new item, because an epic lives in the group and an issue in the project.
+Free changes level in place with a label. Premium and Ultimate change between an issue and an epic by making a new item, because an epic lives in the group and an issue in the project. A level the routing puts on another tracker is a move, not a retype.
+
+Rewrite a body from a file: an issue with `glab api --method PUT "projects/<project-enc>/issues/<iid>" -F description=@<file>`; an epic with `workItemUpdate` `descriptionWidget:{description:…}`, sent with `--input` as in Create. *(untested)*
 
 | Change | Tier | Steps | Open children |
 |---|---|---|---|
-| issue → epic | Free | in place: add the `epic` label (`PUT projects/<project-enc>/issues/<iid>` with `add_labels=epic`) | tasks stay as its children |
-| issue → epic | Premium, Ultimate | new item: post the note `/promote_to Epic` on the issue (`POST projects/<project-enc>/issues/<iid>/notes` with `body=/promote_to Epic`). GitLab creates an epic in the parent group and copies title, description, comments, and group labels. Read the issue afterwards; if it is still open, close it as moved to the epic. *(untested)* | tasks cannot sit under an epic: list them, and with the user's agreement recreate each as an issue under the new epic, then close the task as moved |
+| issue → epic | Free | in place: add the `epic` label (`PUT projects/<project-enc>/issues/<iid>` with `add_labels=epic`); rewrite the body when the skill moves its acceptance criteria into a child; then link the children | tasks stay as its children |
+| issue → epic | Premium, Ultimate | new item: post the note `/promote_to Epic` on the issue (`POST projects/<project-enc>/issues/<iid>/notes` with `body=/promote_to Epic`). GitLab creates an epic in the parent group and copies title, description, comments, and group labels. Read the issue afterwards; if it is still open, close it as moved to the epic. Rewrite the new epic's body when the skill moves the criteria into a child. *(untested)* | tasks cannot sit under an epic: list them, and with the user's agreement recreate each as an issue under the new epic, then close the task as moved |
 | epic → initiative | Ultimate | in place: add the `initiative` label with `workItemUpdate` `labelsWidget:{addLabelIds:[…]}` *(untested)* | child epics and issues are kept |
 | epic → initiative | Premium, Free | **Unsupported**: an initiative holds epics, and only Ultimate nests epics | — |
 | epic → issue | Free | in place: remove the `epic` label (`remove_labels=epic`) | tasks kept |
 | epic → issue | Premium, Ultimate | new item: GitLab has no epic-to-issue conversion. Create an issue in the project the user names with the epic's title and description, relate it to each open child, then close the epic as moved *(untested)* | child issues are detached (`parentId:null`) and related to the new issue; never closed |
-| initiative → epic | Ultimate | in place: remove the `initiative` label (`removeLabelIds`) | kept; on Ultimate an epic may hold epics |
+| initiative → epic | Ultimate | in place: remove the `initiative` label (`removeLabelIds`); rewrite the body to drop the `Metric` section *(untested)* | kept, on Ultimate an epic may hold epics, unless the user asks to detach one (`parentId:null`); a child is never closed |
 
-The label must exist; when it does not, ask before creating it. Before a promote, list the issue's tasks and the epic's children so the user sees every item the change touches.
+Limits: 5000 children per epic, epics nested 7 levels (Ultimate). The level label must exist: `glab api "projects/<project-enc>/labels?include_ancestor_groups=true&search=<label>" --jq '.[].name'` for an issue's, `groups/<group-enc>/labels?search=<label>` for an epic's. When it does not, ask before creating it: `glab api --method POST "projects/<project-enc>/labels" -f name=<label> -f color=#6699cc` (on Free), or `groups/<group-enc>/labels` for an epic's. *(untested)* Before a promote, list the issue's tasks and the epic's children so the user sees every item the change touches.
 
 ## Close
 
