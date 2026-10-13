@@ -1,5 +1,6 @@
 # Included from .gitlab-ci.yml. Runs only from a pipeline schedule that sets MIN_RELEASE_AGE=restore.
 # Removes minimum-release-age lifts whose window has passed and opens (or updates) a merge request.
+# Setup CI replaces the `image:` and the script path below with the values the user chose.
 
 min-release-age:
   image: node:22

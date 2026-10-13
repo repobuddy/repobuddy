@@ -60,3 +60,33 @@ test('detectCi: a hostname merely containing "github" now classifies as github (
 	const d = detectCi(ciRepo({}), 'https://github.acme.com/a/b')
 	assert.equal(d.host, 'github')
 })
+
+test('detectCi: GitLab defaults the image and script path until a job is installed', () => {
+	const d = detectCi(ciRepo({ '.gitlab-ci.yml': 'x' }), 'git@gitlab.com:a/b.git')
+	assert.deepEqual([d.installed, d.image, d.script], [false, 'node:22', 'ci/min-release-age.mjs'])
+	assert.equal(detectCi(ciRepo({}), 'git@github.com:a/b.git').image, null)
+})
+
+test('detectCi: an installed GitLab job reports the image and script path it actually uses', () => {
+	const job = [
+		'min-release-age:',
+		'  image: registry.corp/mirror/node:22',
+		'  script:',
+		'    - node .gitlab/ci/min-release-age.mjs restore --json > /tmp/mra.json',
+		'',
+	].join('\n')
+	const d = detectCi(ciRepo({ '.gitlab-ci.yml': 'x', '.gitlab/ci/min-release-age.yml': job }), 'git@gitlab.com:a/b.git')
+	assert.deepEqual(
+		[d.installed, d.image, d.script],
+		[true, 'registry.corp/mirror/node:22', '.gitlab/ci/min-release-age.mjs'],
+	)
+	const named = job.replace('  image: registry.corp/mirror/node:22', '  image:\n    name: "mirror/node:22"')
+	const n = detectCi(ciRepo({ '.gitlab/ci/min-release-age.yml': named }), 'git@gitlab.com:a/b.git')
+	assert.equal(n.image, 'mirror/node:22')
+})
+
+test('detectCi: the script path comes from any installed job, not the provider default', () => {
+	const job = 'jobs:\n  restore:\n    steps:\n      - run: node tools/min-release-age.mjs restore --github-output\n'
+	const d = detectCi(ciRepo({ '.github/workflows/min-release-age.yml': job }), 'git@github.com:a/b.git')
+	assert.deepEqual([d.script, d.image], ['tools/min-release-age.mjs', null])
+})
