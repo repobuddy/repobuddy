@@ -61,23 +61,23 @@ gh issue create --repo <owner>/<repo> --title "<title>" --body-file <file> \
 
 ## Link
 
-- Child of: `--parent <number|url>` at create, or `gh issue edit <parent> --add-sub-issue <child>[,<child>...]` for existing issues. Limits: 100 sub-issues per parent, 8 levels deep.
+- Child of: `--parent <number|url>` at create, or `gh issue edit <parent> --add-sub-issue <child>[,<child>...]` for existing issues. A child in another repository, even under another owner, attaches by its URL. Limits: 100 sub-issues per parent, 8 levels deep; read `subIssuesSummary` before attaching.
 - Detach: `gh issue edit <parent> --remove-sub-issue <child>`.
 - Blocked by or blocking, and related items: `gh issue edit <n> --add-blocked-by <other>`, or a line in the body (`Related to #12`) when the host does not support relationships (GitHub Enterprise Server before 3.19).
 - Read the tree: `gh issue view <n> --json subIssues,subIssuesSummary,parent`.
 
 ## Retype
 
-A level change on GitHub is in place: the item keeps its number, URL, comments, and type.
+A level change on GitHub is in place: the item keeps its number, URL, comments, and type. Only the label changes, so the item stays in this repository; a level the routing puts on another tracker is a move, not a retype.
 
 | Change | Steps | Open children |
 |---|---|---|
-| issue → epic | `gh issue edit <n> --add-label epic`, then link the children | n/a |
+| issue → epic | `gh issue edit <n> --add-label epic`; rewrite the body with `gh issue edit <n> --body-file <file>` when the skill moves its acceptance criteria into a child; then link the children | n/a: an issue has none |
 | epic → initiative | swap the label: `--remove-label epic --add-label initiative` | kept as sub-issues; they are the initiative's epics |
 | epic → issue | `gh issue edit <n> --remove-label epic` | kept as sub-issues unless the user asks to detach them; a child is never closed |
-| initiative → epic | swap the label back | kept as sub-issues |
+| initiative → epic | swap the label back: `--remove-label initiative --add-label epic` | kept as sub-issues unless the user asks to detach one (`--remove-sub-issue`); a child is never closed |
 
-Limits: 100 children per parent, 8 levels. The label must exist; when it does not, ask before creating it.
+Limits: 100 children per parent, 8 levels. The level label must exist (`gh label list --repo <owner>/<repo> --search <label>`); when it does not, ask before creating it with `gh label create <label> --repo <owner>/<repo>`.
 
 ## Close
 
