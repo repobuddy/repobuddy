@@ -43,6 +43,6 @@ the number; renaming or removing a section, or changing the item ref, raises it.
 
 ### Non-goals
 
-- Scenarios for the epic and initiative templates and the contract's `Link`, `Retype`, and `Close` sections; they ship now and are exercised by the `epic` skill when it lands.
+- Scenarios for the epic and initiative templates and the contract's `Link`, `Retype`, and `Close` sections; the [epic](../epic/README.md) unit exercises them.
 - The routing itself and the set-up skill: they are the [project-tracker](../project-tracker/README.md) unit. This unit owns only the table formats the contract holds.
 - Capabilities for any tracker other than GitHub.
