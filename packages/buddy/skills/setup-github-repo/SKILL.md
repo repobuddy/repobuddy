@@ -82,16 +82,18 @@ gh repo edit "$REPO" \
   --delete-branch-on-merge \
   --enable-auto-merge \
   --enable-merge-commit=false \
-  --allow-squash-merge \
-  --allow-rebase-merge \
+  --enable-squash-merge \
+  --enable-rebase-merge \
   --allow-update-branch
 ```
 
 Verify:
 
 ```bash
-gh repo view "$REPO" --json deleteBranchOnMerge,allowAutoMerge,allowMergeCommit,allowSquashMerge,allowRebaseMerge,allowUpdateBranch
+gh api "repos/$REPO" --jq '{delete_branch_on_merge, allow_auto_merge, allow_merge_commit, allow_squash_merge, allow_rebase_merge, allow_update_branch}'
 ```
+
+`gh repo view --json` has no field for auto-merge or update-branch, so read them from the REST API.
 
 ## Step 3 — Enable Dependabot security updates
 
@@ -155,7 +157,7 @@ gh api --method PUT "repos/$REPO/rulesets/$RULESET_ID" \
         "strict_required_status_checks_policy": false,
         "do_not_enforce_on_create": false,
         "required_status_checks": [
-          {"context": "all-checks", "integration_id": null}
+          {"context": "all-checks"}
         ]
       }
     }
@@ -163,6 +165,9 @@ gh api --method PUT "repos/$REPO/rulesets/$RULESET_ID" \
 }
 EOF
 ```
+
+Leave `integration_id` out of each check rather than setting it to `null`: the API rejects `null` with
+a 422 (`Invalid property /rules/N: data matches no possible input`).
 
 Note: status check names must exactly match the `name:` field of the CI job as GitHub reports it. For standalone workflow jobs it is just the job key (e.g. `all-checks`); for reusable workflow calls it is prefixed with the calling job name (e.g. `code / all-checks`).
 
@@ -205,9 +210,24 @@ ruleset lets Administrators bypass, and an agent often runs with an admin token 
 bypassable backstop is exactly the hole this closes. If the owner needs an emergency path, they can
 disable the ruleset for that one merge.
 
-A changesets Version Packages PR opened with the default `GITHUB_TOKEN` gets no checks, so a
-backstop that requires checks and has no bypass actors blocks it. Open that PR with a token or app
-that triggers workflows, or have the owner disable the ruleset for that one merge.
+A changesets Version Packages PR opened with the default `GITHUB_TOKEN` gets its `pull_request` runs
+created but parked as `action_required`, so its required checks never report and a backstop with no
+bypass actors blocks it. Keep the release secretless: the shared `pnpm-release-changeset-oidc.yml`
+release workflows approve those parked runs after opening the PR, which needs the calling job to grant
+`actions: write`:
+
+```yaml
+release:
+  uses: <org>/.github/.github/workflows/pnpm-release-changeset-oidc.yml@<ref>
+  permissions:
+    id-token: write
+    contents: write
+    pull-requests: write
+    actions: write # approves the Version Packages PR's parked runs
+```
+
+Check the repo's `release.yml` for that grant, and add it if it is missing. Without it the release
+still publishes, but the PR waits until someone approves its runs from the Actions tab.
 
 Merge queue (`merge_method` must be one the repo allows — Step 2 allows `SQUASH` and `REBASE`):
 
@@ -237,7 +257,7 @@ gh api --method POST "repos/$REPO/rulesets" --input - <<'EOF'
       "parameters": {
         "strict_required_status_checks_policy": false,
         "do_not_enforce_on_create": false,
-        "required_status_checks": [{"context": "all-checks", "integration_id": null}]
+        "required_status_checks": [{"context": "all-checks"}]
       }
     }
   ]
