@@ -27,6 +27,7 @@ Load these with the `reference` skill in the `cyber-agent-harness` plugin, so a 
 
 - Before any mode: `repobuddy.work-levels` (the level checks), `project-tracker.contract` (what a capabilities reference holds, and the routing's format), and `repobuddy.work-template.epic` (the epic's body).
 - For Demote: `repobuddy.work-template.initiative`, to find the initiative's `Metric`.
+- For a child filed without the `issue` skill: its category's template, `repobuddy.work-template.bug`, `repobuddy.work-template.feature`, or `repobuddy.work-template.task`.
 
 Keep every section of the epic template, in order; write `None` under one you have nothing for. A section a team adds or rewords is part of the template.
 
@@ -38,12 +39,12 @@ These hold on every tracker and cannot be changed by a capabilities reference or
 - **List every child the change touches**, by title and URL, with what happens to each.
 - **Never close a child as a duplicate.** An existing item that matches a planned child is attached, not closed.
 - **Never drop a child silently.** Every child ends kept, re-parented, detached, or closed as not planned, and the report says which.
-- **A private tracker's details never go into a public one** (see Moves).
+- **A private tracker's details never go into a public one.** A public item names an item on a private tracker only as tracked internally, with no title or URL, wherever it would list or link it. A move from a private tracker to a public one stops (see Moves).
 - **A failed create is checked before any retry.** Look for the item it may have left behind, as the reference's `Create` section says; when one is there, use it and do not retry.
 
 ## Trackers
 
-A tracker's operations live in a capabilities reference named `project-tracker.capabilities.<tracker>`. This skill owns the workflow; the reference owns the commands. Resolve a tracker for a level and a category: the epic at level epic, each child at level issue with its own category. Know the category first: a routing chooses by it.
+A tracker's operations live in a capabilities reference named `project-tracker.capabilities.<tracker>`. This skill owns the workflow; the reference owns the commands. Resolve a tracker for a level and a category: the epic at level epic, each child at level issue with its own category, and a Promote or Demote source at its own level and category. Know the category first: a routing chooses by it. A source item given by URL is on the tracker whose `Url` section parses it; when that is not the tracker its route names, say so and stop.
 
 1. Look for a routing: `reference show project-tracker.routing`. When it finds none, go to step 3. When the command cannot run, read `.agents/references/project-tracker.routing.md` directly: absent means no routing (go to step 3); present means its pins cannot be resolved, so name the first matching pin, say the `reference` command cannot run, suggest `project-tracker` check once it can, and stop.
 2. With a routing, take the first `Routes` row that matches the level and the category. No row matches: name the pair, suggest `project-tracker` change, and stop. Run `reference show <pin> --format json` on its pin. It finds nothing, or says the bare name is held by more than one plugin: name the pin and the problem, suggest `project-tracker` check, and stop. Otherwise load that reference and go to step 6.
@@ -62,10 +63,10 @@ Where the reference marks an operation `**Unsupported.**`: with no `Search`, the
 2. **Level check.** Read the epic level's `Too big` and `Too small` in `repobuddy.work-levels`. Too big: suggest an initiative (the `initiative` skill when it is installed). Too small: suggest an issue (the `issue` skill). Only suggest; continue at this level when the user does not change it.
 3. **Audit for gaps.** List what is decided and what is not known yet. Each unknown becomes a **spike**: a child task titled `Spike: <question>`, whose done-when is a written answer, ordered before the children that depend on it. Do not guess an answer into a child.
 4. **Break it down.** Propose child issues, each independently shippable with one owner, each with a title, a category, and a one-line done-when. Run each through the issue level's `Too big` check; a child that meets it is split or named as a spike. Ask for the owner's priority and order the children by it. Then try one setup other than the default (another tracker for some category, or a team that overrides a step) against the breakdown, and add a child when that setup needs one.
-5. **Trackers.** Resolve the epic's tracker, and each child's. A child on another tracker than the epic cannot be a native child; it is linked in its body and listed in the epic's body.
+5. **Trackers.** Resolve the epic's tracker, and each child's. A child on another tracker than the epic cannot be a native child; it is linked in its body and listed in the epic's body, by title, or as tracked internally when the epic is public and the child's tracker private.
 6. **Search for duplicates.** Run the epic tracker's `Search` at least twice for the epic (the full title, then the core noun and verb), and once for each child on that child's tracker. Show each hit (title, state, URL, level). A hit the user says is the epic: stop and offer Promote (an issue) or Demote (an initiative) on it. A hit the user says is a child: attach it instead of creating it.
-7. **Confirm.** Run each tracker's `Kinds`. Show the epic (title, category, outcome, non-goals, done-when, tracker, and the level label or field it uses), each child in order (title, category, spike or not, tracker, created or attached), and any label the tracker needs that is missing. Ask once for the whole plan. Do not create anything without it; a missing label is created only on a yes to that line.
-8. **Create the epic.** Run its tracker's `Create` at level epic, with the body written to a file from `repobuddy.work-template.epic`. Under `Child Issues`, list the planned children by title.
+7. **Confirm.** Run each tracker's `Kinds`, and the level-label check its `Retype` Limits give, when it gives one. Show the epic (title, category, outcome, non-goals, done-when, tracker, and the level label or field it uses), each child in order (title, category, spike or not, tracker, created or attached), and, on its own line, any level label that is missing and will be created. Ask once for the whole plan. Do not create anything without it; a missing label is created, with the reference's command, only on a yes to that line.
+8. **Create the epic.** Run its tracker's `Create` at level epic, with the body written to a file from `repobuddy.work-template.epic`. Under `Child Issues`, list the planned children by title, as the Guards allow; the tracker's native link carries their numbers.
 9. **Create the children.** Create each child, in order, through the `issue` skill when it is installed, passing the title, category, body, tracker, and the epic as parent, and saying the search and the confirmation are done; otherwise run the child tracker's `Create` with its template reference (`repobuddy.work-template.<category>`) and the epic as parent. Attach each existing match with the `Link` section. After a failed create, follow the Guards before the next child.
 10. **Read back.** Read the epic's tree with the `Link` section and compare the count with the plan. Report any child that is missing.
 11. **Report.** The epic's URL, then each child's URL in order, marking spikes and attached items, and anything not filed with why.
@@ -75,7 +76,7 @@ Where the reference marks an operation `**Unsupported.**`: with no `Search`, the
 1. **Read the issue.** Parse its URL or number with the source tracker's `Url`, and read its title, body, state, category, and level. When its level is not issue, say what it is and stop. When it is closed, ask before going on.
 2. **Level check.** Read the issue level's `Too big` in `repobuddy.work-levels`. When the issue does not meet it, say so and ask whether to go on.
 3. **Plan.** Run Create steps 1, 3, and 4, starting from the issue's own text: its outcome becomes the epic's, and its acceptance criteria (`Done when`, `Expected`, a checklist) move into a **first child**, so the epic keeps one done-when, its children's.
-4. **Where the epic lives.** Resolve the tracker for level epic and the issue's category. The same tracker as the issue: retype in place. Another tracker: a move (see Moves).
+4. **Where the epic lives.** Resolve the tracker for level epic and the issue's category. The same tracker as the issue: retype in place. Another tracker: a move; run Moves step 1 now, before any search, so a private item's text never reaches a public tracker.
 5. **Search for duplicates** for each new child, as in Create step 6.
 6. **Confirm.** Show what the retype does, read from the reference's `Retype` row for issue → epic (in place or a new item, the steps, the limits), or from Moves; the epic's new body; and each child, the first one with the moved criteria. A row that is silent or unsupported means: create the epic, link the issue, and close it as moved.
 7. **Retype.** In place: run the row's steps, and rewrite the body from the epic template when the row says how; when it does not, leave the body and say the criteria are now in the first child. On another tracker: run Moves.
@@ -87,9 +88,9 @@ Where the reference marks an operation `**Unsupported.**`: with no `Search`, the
 2. **Warn about the metric.** Quote the `Metric` section from its body and say an epic has no metric, so it is dropped. Ask whether to keep the text under the epic's `Non-goals` or `Scope` as a note; never carry it as the done-when.
 3. **Level check.** Read the initiative level's `Too small` in `repobuddy.work-levels`. When the initiative meets none of it, say so and ask whether to go on.
 4. **Ask about each child epic, one by one.** Show its title, URL, state, and open children. Offer what the reference's `Retype` row for initiative → epic allows: keep it attached as the row says, or detach it to stand alone as an epic. When the user wants it folded in as an issue, that is an epic → issue change: say it belongs to `issue` and leave the child attached until then. A child epic is never closed by this mode.
-5. **Where the epic lives.** Resolve the tracker for level epic and the initiative's category; the same tracker retypes in place, another is a move.
-6. **Confirm.** Show the retype (in place or new item, the steps, the limits), the dropped metric, and every child epic with what happens to it. Wait for a yes.
-7. **Retype.** Run the row's steps and each child's detach, or Moves.
+5. **Where the epic lives.** Resolve the tracker for level epic and the initiative's category; the same tracker retypes in place, another is a move (run Moves step 1 now).
+6. **Confirm.** Show the retype (in place or new item, the steps, the limits), the new body (from `repobuddy.work-template.epic`, without the `Metric` section, with the note from step 2 if kept), and every child epic with what happens to it. Wait for a yes.
+7. **Retype.** Run the row's steps, rewriting the body when the row says how (when it does not, say the `Metric` section is still in the body), and each child's detach; or Moves.
 8. **Read back and report.** The epic's URL, each child epic with what happened to it, and the dropped metric.
 
 ## Moves
