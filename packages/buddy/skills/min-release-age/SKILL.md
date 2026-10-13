@@ -85,6 +85,7 @@ Entries without a marker are permanent policy. Never add, remove, or rewrite the
    - `systems`: the CI systems found in the repo
    - `provider`: the one to target
    - `reference`: the file to load for it
+   - `script`, `image`: where the job runs the script and, for templates that set one, its runner image. Read from the job when it is installed, otherwise the provider's defaults
 2. If `ci.installed` is true, report where the job is and stop.
 3. If `provider` does not match what the user expects (for example, the repo is mirrored or several CI systems are present), confirm the target with the user.
 4. Every reference copies `scripts/min-release-age.mjs` into the repo. If the skill has no `scripts/`
