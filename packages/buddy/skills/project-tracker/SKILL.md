@@ -5,9 +5,9 @@ description: "Use this skill when setting up, showing, changing, or checking whi
 
 # Project tracker
 
-Records which issue tracker holds each level and category of work, so `issue` (and later `epic` and `initiative`) file where the team decided and never guess. The record is the project's `project-tracker.routing` reference. This skill writes and checks it; the level skills read it.
+Records which issue tracker holds each level and category of work, so `issue`, `epic` (and later `initiative`) file where the team decided and never guess. The record is the project's `project-tracker.routing` reference. This skill writes and checks it; the level skills read it.
 
-Use when asked to set up where issues go, route bugs and features to different trackers, show the tracker routing, change which tracker holds something, or check that the routing still works. This skill does not file, move, or retype an item (that is `issue`, and later `epic`), and it writes no capabilities reference for a tracker.
+Use when asked to set up where issues go, route bugs and features to different trackers, show the tracker routing, change which tracker holds something, or check that the routing still works. This skill does not file, move, or retype an item (that is `issue` and `epic`), and it writes no capabilities reference for a tracker.
 
 ## References
 
