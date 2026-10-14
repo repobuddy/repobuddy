@@ -22,6 +22,8 @@ decision 2). It has three modes:
 - **Create**: an epic and its child issues. The outcome and done-when come first, then the non-goals,
   a gap audit that turns each unknown into a **spike** child, a breakdown ordered by the owner's
   priority, a duplicate search, one confirmation for the whole plan, and the filing.
+- **A shell** that `initiative` filed (an epic with an outcome and no children) is broken down by
+  Create: found by the duplicate search, it becomes the epic, and only its children are created.
 - **Promote** (issue → epic): the issue stays in place as the epic where the tracker allows, and its
   acceptance criteria move into a first child.
 - **Demote** (initiative → epic): the metric is shown and the user is warned it is dropped; each child
@@ -104,7 +106,7 @@ affected by a move.
 4. **The user declines the confirmation.** Nothing is written.
 5. **A level check fails.** The skill suggests the other level and continues only on the user's word.
 6. **An unknown in the scope.** It becomes a spike child, ordered before the children that depend on it.
-7. **A duplicate search hit.** A hit for a child is attached, not created; a hit for the epic offers Promote or Demote on it.
+7. **A duplicate search hit.** A hit for a child is attached, not created; a hit for the epic offers Promote or Demote on it, or, when it is a shell epic with no children, becomes the epic Create breaks down.
 8. **A create fails.** The skill looks for the item it left behind before the next child or any retry.
 9. **The source is not at the level the mode expects.** The skill names its level and stops.
 10. **The epic level routes to another tracker.** The change becomes a move.
@@ -163,6 +165,7 @@ graph TD
 | `R → R0 (No)` | a routing with no row for epic | `stops when the epic level has no route` |
 | `R0 → R1 (No)` | the tracker's reference does not hold initiative | `stops demoting on a tracker that holds no initiative` |
 | `S` | a search hit the user says is a child | `attaches an existing item instead of filing a duplicate child` |
+| `S` | a search hit the user says is the epic, a shell with no children | `breaks down a shell epic instead of filing a second one` |
 | `N → N1 (No)` | the plan shown and declined | `writes nothing when the user declines the plan` |
 | `N → W (Yes)` | the GitHub repo lacks the `epic` label | `creates a missing level label only on a yes` |
 | `W` | a child create fails and leaves an issue behind | `checks for a stray child before filing the next one` |
