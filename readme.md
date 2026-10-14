@@ -23,6 +23,7 @@
 | [`min-release-age`] | Lift the minimum-release-age gate for one package version, restore it when the version ages past the window, and schedule the cleanup in CI |
 | [`project-tracker`] | Record which tracker holds each level and category of work — bugs on GitHub, epics elsewhere — and check the routing still resolves, so `issue` files where the team decided |
 | [`review-api`] | Review a library's public API for consistency and completeness against its own conventions — drift, sibling-justified gaps, docs vs exports |
+| [`scaffold`] | Create a new repository or package from a recipe a plugin ships — lists the installed recipes, asks the recipe's inputs, runs the host's setup skill, and writes nothing before you confirm the plan |
 | [`review-permissions`] | Audit what your agents are allowed to do — risk-rank every grant, then tighten and consolidate it |
 | [`session`] | `pause` any agent session into checkpoints a fresh session can continue from — next step first, settled decisions, open questions, in another repo when the work belongs there — and `resume` one without reopening settled decisions |
 | [`setup-github-repo`] | Set up a GitHub repo with branch protection, a merge backstop, Dependabot, and CI |
@@ -179,6 +180,7 @@ npx skills add repobuddy/agent-changesets
 [`min-release-age`]: ./packages/buddy/skills/min-release-age/SKILL.md
 [`review-api`]: ./packages/buddy/skills/review-api/SKILL.md
 [`review-permissions`]: ./packages/buddy/skills/review-permissions/SKILL.md
+[`scaffold`]: ./packages/buddy/skills/scaffold/SKILL.md
 [`session`]: ./packages/buddy/skills/session/SKILL.md
 [`setup-github-repo`]: ./packages/buddy/skills/setup-github-repo/SKILL.md
 [`website`]: ./packages/buddy/skills/website/SKILL.md

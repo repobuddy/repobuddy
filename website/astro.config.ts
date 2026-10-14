@@ -69,6 +69,7 @@ export default defineConfig({
 									label: 'Repo setup',
 									items: [
 										{ label: 'setup-github-repo', slug: 'skills/setup-github-repo' },
+										{ label: 'scaffold', slug: 'skills/scaffold' },
 										{ label: 'add-badges', slug: 'skills/add-badges' },
 										{ label: 'llms-txt', slug: 'skills/llms-txt' },
 									],

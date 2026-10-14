@@ -1,6 +1,6 @@
 ---
 title: Agent skills
-description: The 18 repobuddy skills for coding agents, grouped by what you want done, with a page for each.
+description: The 19 repobuddy skills for coding agents, grouped by what you want done, with a page for each.
 ---
 
 The [`repobuddy` package](/repobuddy/repobuddy/) is an agent plugin as well as a CLI. The plugin ships agent skills:
@@ -16,6 +16,7 @@ Skills that need a deterministic step run a bundled script. See [Skill scripts](
 | Skill | Use it to |
 | --- | --- |
 | [`setup-github-repo`](/repobuddy/skills/setup-github-repo/) | Apply merge settings, Dependabot, a branch ruleset, a merge backstop, and starter CI workflows with `gh` |
+| [`scaffold`](/repobuddy/skills/scaffold/) | Create a new repository or package from a scaffold recipe a plugin ships |
 | [`add-badges`](/repobuddy/skills/add-badges/) | Add or fix the status badge row in a readme |
 | [`llms-txt`](/repobuddy/skills/llms-txt/) | Publish a generated `llms.txt` with a CI drift check |
 
