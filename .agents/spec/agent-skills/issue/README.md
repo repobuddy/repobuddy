@@ -22,8 +22,9 @@ rename is breaking and ships with a major changeset.
 
 **The skill owns the workflow; a capabilities reference owns the tracker.** The tracker's commands
 live in `project-tracker.capabilities.<tracker>`, found by listing that name prefix. This unit ships
-`project-tracker.capabilities.github` and nothing else. Until GitLab's reference ships, `issue` keeps
-a short GitLab fallback inline; Bitbucket is dropped because its native tracker is gone.
+`project-tracker.capabilities.github` and `project-tracker.capabilities.gitlab`, and loads the one for
+the `origin` host from its own folder when nothing installed matches; Bitbucket is dropped because its
+native tracker is gone.
 
 **Templates and level checks are references.** The body template for each category is
 `repobuddy.work-template.<category>`, and the checks that say an item is too big or too small are the
@@ -61,7 +62,8 @@ label, and a task gets a label only if the repository has `task`.
 - Minimum `gh` is 2.98.0. `--type`, `--parent`, and `--add-sub-issue` arrived in 2.94.0 (2026-06-10);
   the duplicate search's `--search-type hybrid` arrived in 2.98.0. Checked against 2.102.0.
 - `--type` on a repository without issue types was **tested** (a private user-owned scratch repo, 2026-10-11): `gh issue create --type Bug` creates the issue untyped, then exits 1 with `type "Bug" not found; available types:`. The reference reads `issueTypes` first, never passes `--type` when it is null, and checks for a stray issue after any failed create. A missing `--label` fails with `could not add label` and creates nothing.
-- Live-tested on GitHub: bug, feature, and task with `--type` on an org repo (#809 to #811), and the label path on a user-owned repo. GitLab is untested: `glab` is not installed and no GitLab host is authenticated here.
+- Live-tested on GitHub: bug, feature, and task with `--type` on an org repo (#809 to #811), and the label path on a user-owned repo. GitLab is untested: `glab` is not installed and no GitLab host is authenticated here. Its reference
+  follows GitLab's documentation and marks each call *(untested)*; the Free and Premium runs are owed (#806).
 
 ## Use Cases
 
@@ -90,7 +92,7 @@ use cases 1–5 and drawn in the Control Flow:
 6. **The reporter does not confirm.** Nothing is created.
 7. **The item is a security vulnerability.** The skill points to the private channel and creates nothing.
 8. **The host has no tracker set up** (Bitbucket or anything else). The skill says so and creates nothing.
-9. **The item is the wrong size.** The confirmation suggests another level; the issue is still filed at this one if the reporter does not change it. Variants: the repo has no issue types (label instead of type), the host is GitLab (fallback commands).
+9. **The item is the wrong size.** The confirmation suggests another level; the issue is still filed at this one if the reporter does not change it. Variants: the repo has no issue types (label instead of type), the host is GitLab (labels, through the bundled GitLab reference).
 10. **The category is unclear.** The skill asks for it before gathering anything else.
 11. **More than one capabilities reference matches the host.** The skill asks which to use and loads neither until answered.
 12. **`gh` is older than 2.98.0 or logged out.** The skill says what to upgrade or run, and creates nothing.
@@ -122,11 +124,11 @@ graph TD
     RP -->|Yes| D[Load the pinned reference]
     RT -->|No| C{Host of the origin remote}
     C -->|other host| F[Say no tracker is set up<br/>and stop]
-    C -->|gitlab| E[Use the GitLab fallback commands]
+    C -->|gitlab| R
     C -->|github.com| R{How many capabilities<br/>references match the host?}
     R -->|Two or more| R2[Ask which to use and wait]
     R -->|One| D
-    R -->|None found or command cannot run| R3[Read the bundled GitHub reference]
+    R -->|None found or command cannot run| R3[Read the bundled reference<br/>for the host]
     R2 --> D
     R3 --> D
     D --> V{Is the contract version<br/>one the skill knows?}
@@ -134,7 +136,6 @@ graph TD
     V -->|Yes| T{Does the tool pass the<br/>reference's Detect checks?}
     T -->|No| Y[Say what to upgrade or run<br/>and stop]
     T -->|Yes| G[Gather title, description<br/>and for a bug the environment]
-    E --> G
     G --> H{Search twice:<br/>does the reporter confirm a hit?}
     H -->|Yes| I[Give the existing URL and stop]
     H -->|No| J{Does the item fit<br/>one issue?}
@@ -160,7 +161,7 @@ graph TD
     U -->|No| U3[Add nothing]
 ```
 
-The GitLab fallback creates with a label and has no type branch, so `N` applies to the GitHub path. A routed tracker other than GitHub meets `N` through its own reference's `Kinds` and `Create` sections, which stand where this graph says type or label. The `X` check follows the
+A tracker other than GitHub, GitLab included, meets `N` through its own reference's `Kinds` and `Create` sections, which stand where this graph says type or label. The `X` check follows the
 reference's `Create` section, which lists the newest issues before any retry.
 
 ## Scenario map
@@ -189,7 +190,7 @@ reference's `Create` section, which lists the newest issues before any retry.
 | `O` / `Q` (body) | the same task, with a request that cites a commit SHA and an internal tracker address | `keeps a commit SHA and an internal tracker address out of a public issue body` |
 | `O` / `Q` (body) | the same task | `leaves bug-only sections out of a task body` |
 | `—` (artifact) | the shipped skill and its reference copies | `ships a Validate section whose mechanical assertions pass` |
-| `RT → C (No)`, `C → E (gitlab)` | no routing exists, origin is gitlab.com and no GitLab reference exists | `files on GitLab through the fallback` |
+| `RT → C (No)`, `C → R (gitlab)`, `R → R3` | no routing exists, origin is gitlab.com and no GitLab reference is installed | `files on GitLab through the bundled GitLab reference` |
 
 ### Extensions 5–14 — the paths that do not file
 

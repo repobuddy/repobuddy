@@ -69,6 +69,7 @@ export default defineConfig({
 									label: 'Repo setup',
 									items: [
 										{ label: 'setup-github-repo', slug: 'skills/setup-github-repo' },
+										{ label: 'scaffold', slug: 'skills/scaffold' },
 										{ label: 'add-badges', slug: 'skills/add-badges' },
 										{ label: 'llms-txt', slug: 'skills/llms-txt' },
 									],
@@ -95,6 +96,7 @@ export default defineConfig({
 									label: 'Issues and questions',
 									items: [
 										{ label: 'epic', slug: 'skills/epic' },
+										{ label: 'initiative', slug: 'skills/initiative' },
 										{ label: 'issue', slug: 'skills/issue' },
 										{ label: 'project-tracker', slug: 'skills/project-tracker' },
 										{ label: 'to-question', slug: 'skills/to-question' },
