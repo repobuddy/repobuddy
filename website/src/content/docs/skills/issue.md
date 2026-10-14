@@ -18,7 +18,7 @@ Run `/issue`, or ask in plain words. It takes no arguments.
 
 ## What it does
 
-1. Finds the tracker. With a `project-tracker.routing` (see [`project-tracker`](/repobuddy/skills/project-tracker/)), it files on the tracker routed for the category, and stops if the route's reference is missing or ambiguous or no route matches. Without one, it loads the capabilities for the `origin` host: GitHub (`gh` 2.98.0 or later) ships with the skill; GitLab (`glab`) uses a built-in fallback, and the report ends with a suggestion to run `project-tracker`.
+1. Finds the tracker. With a `project-tracker.routing` (see [`project-tracker`](/repobuddy/skills/project-tracker/)), it files on the tracker routed for the category, and stops if the route's reference is missing or ambiguous or no route matches. Without one, it loads the capabilities for the `origin` host: GitHub (`gh` 2.98.0 or later) and GitLab (`glab`, not yet tested against a GitLab instance) ship with the skill, and the report ends with a suggestion to run `project-tracker`.
 2. Asks only for what you have not said: title, category (bug, feature, or task), description, and for a bug the steps and expected vs actual behavior.
 3. For a bug, reads OS, runtime, package manager, and package versions from your machine instead of asking.
 4. Searches for duplicates at least twice with different keywords. If you confirm a match, it stops and gives you that issue's URL.

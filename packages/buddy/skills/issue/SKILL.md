@@ -34,11 +34,11 @@ A tracker's operations live in a capabilities reference named `project-tracker.c
 
 1. Look for a routing: `reference show project-tracker.routing`. When the command finds none, there is no routing; go to Trackers step 3. When the command cannot run, read `.agents/references/project-tracker.routing.md` directly: absent means no routing (go to Trackers step 3); present means a routing exists whose pins cannot be resolved, so name the first matching pin, say the `reference` command cannot run, suggest running `project-tracker` check once it can, and stop. Its format is in `project-tracker.contract` (the `Routing` section).
 2. With a routing, take the first `Routes` row that matches the issue level and the category. No row matches: name the pair, suggest running `project-tracker` change, and stop. Run `reference show <pin> --format json` on the row's pin. It finds nothing, or says the bare name is held by more than one plugin: name the pin and the problem, suggest running `project-tracker` check, and stop. Otherwise load that reference and go to Trackers step 6; skip the host steps, since the routing replaces them.
-3. Read the host of `git remote get-url origin`. A host that is neither `github.com` nor GitLab (including Bitbucket, whose native tracker is gone): say that no tracker is set up for it, and stop. Do not file anywhere else.
+3. Read the host of `git remote get-url origin`. A host that is neither `github.com` nor GitLab (`gitlab.com`, or a host `glab auth status --hostname <host>` accepts), including Bitbucket, whose native tracker is gone: say that no tracker is set up for it, and stop. Do not file anywhere else.
 4. List what is installed: run `reference search project-tracker.capabilities` with the `reference` skill in the `cyber-agent-harness` plugin. Keep only hits whose `match` is `prefix`, which may carry a `<plugin>/` qualifier; drop fuzzier matches.
-5. Load the one whose `Detect` section matches the host. Two matches, or a name that is ambiguous between plugins: report both qualified names, ask which to pin, and load neither until answered. When the command cannot run, or nothing is left after step 4 drops the fuzzier names, and the host is `github.com`, load `project-tracker.capabilities.github` from this skill's `references/` folder. A GitLab host with no GitLab reference: use the **GitLab fallback** at the end of this file.
+5. Load the one whose `Detect` section matches the host. Two matches, or a name that is ambiguous between plugins: report both qualified names, ask which to pin, and load neither until answered. When the command cannot run, or nothing is left after step 4 drops the fuzzier names, load the bundled reference for the host from this skill's `references/` folder: `project-tracker.capabilities.github` for `github.com`, `project-tracker.capabilities.gitlab` for GitLab.
 6. Read `contract:` in the loaded reference's frontmatter. When it is missing, or is not a contract version `project-tracker.contract` declares, name the tracker and the version, and stop.
-7. Run the reference's `Detect` checks. For GitHub they need `gh` 2.98.0 or later and a logged-in `gh`; when it is older or logged out, say what to upgrade or run, and stop.
+7. Run the reference's `Detect` checks. For GitHub they need `gh` 2.98.0 or later and a logged-in `gh`; for GitLab, a `glab` logged in to the host. When the tool is missing, older, or logged out, say what to install, upgrade, or run, and stop.
 
 Where the reference marks an operation unsupported: with no `Search`, the user confirms there is no duplicate; with no native `Link`, put the link in the body.
 
@@ -63,7 +63,7 @@ If the user confirms a match, stop. Give the existing issue's URL and suggest a 
 
 ### 4. Confirm
 
-Run the tracker's `Kinds` operation (the GitLab fallback has none) so the type or label is known. Summarize what will be created: title, category, key points of the description, the type or label the tracker will use, and any environment details. Ask for confirmation. Do not proceed without it.
+Run the tracker's `Kinds` operation so the type or label is known. Summarize what will be created: title, category, key points of the description, the type or label the tracker will use, and any environment details. Ask for confirmation. Do not proceed without it.
 
 ### 5. Create
 
@@ -71,7 +71,7 @@ Run the tracker's `Create` operation with the category `Kinds` mapped to. Write 
 
 If a create command fails, check for an issue it left behind before retrying (the reference says how). When one is there, do not retry: give its URL as the new issue in the Report step. When none is, say nothing was filed before any retry.
 
-Keep the body free of internal file names, commit SHAs, and implementation details unless the user asks. If the tracker is public (the `Visibility` in its `Tracker` section; for GitHub and the GitLab fallback, the repository's), keep out anything from a private tracker (its titles, URLs, or customer details).
+Keep the body free of internal file names, commit SHAs, and implementation details unless the user asks. If the tracker is public (the `Visibility` in its `Tracker` section; for GitHub and GitLab, the repository's), keep out anything from a private tracker (its titles, URLs, or customer details).
 
 ### 6. Report
 
@@ -80,10 +80,6 @@ Give the URL of the new issue. When the tracker was found without a routing (Tra
 ## Level check
 
 Read the issue level's `Too big` and `Too small` sections in `repobuddy.work-levels`. When the item meets them, say so in the confirmation. For an item that is too big, suggest an epic (the `epic` skill when it is installed; otherwise one parent issue with child issues); for one that is too small, suggest not tracking it. Only suggest; file at this level if the user does not change it.
-
-## GitLab fallback
-
-For a GitLab remote with no capabilities reference: `glab` must be installed and logged in (run `init-buddy` when installed, else tell the user). Search with `glab issue list --all --search "<keywords>"`. Check labels with `glab label list`; use `bug` for a bug and `feature` for a feature, a task takes `task` only if listed, and omit `--label` when the label is not listed. Create with `glab issue create --title "<title>" --description "$(cat <body-file>)" --label "<label>"`, with the body written to a file first.
 
 ## What NOT to Do
 
@@ -99,7 +95,7 @@ For a GitLab remote with no capabilities reference: `glab` must be installed and
 - [ ] Every copy in this skill's `references/` equals the file of the same name in `packages/buddy/references/` (`node scripts/sync-skill-references.mjs --check`)
 - [ ] The levels, the contract, and the category's template were loaded, and the capabilities reference's `contract:` was checked
 - [ ] The request was checked for a security vulnerability before any step ran
-- [ ] The tracker's capabilities were loaded (the pinned one when a routing exists), or the GitLab fallback applied
+- [ ] The tracker's capabilities were loaded (the pinned one when a routing exists)
 - [ ] With a routing, no host detection ran, and a missing or ambiguous pin or an unmatched route stopped the skill before any search
 - [ ] At least two searches with different keywords ran before any create command
 - [ ] No create command ran without the user's confirmation of the summary

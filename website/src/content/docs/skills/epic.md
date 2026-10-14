@@ -19,7 +19,7 @@ Run `/epic`, or ask in plain words. It has three modes: create, promote, and dem
 ## What it does
 
 1. **Create** asks for the outcome and how you will know it is done before it names any child. It lists what is still unknown and makes each unknown a `Spike:` child, proposes children in your priority order, searches for duplicates of the epic and each child, and files everything after you confirm the whole plan. Children are filed through [`issue`](/repobuddy/skills/issue/) when it is installed.
-2. **Promote** turns an issue into an epic in place where the tracker allows: on GitHub it adds the `epic` label and keeps the number; on Asana the task gains subtasks. The issue's acceptance criteria move into a first child.
+2. **Promote** turns an issue into an epic in place where the tracker allows: on GitHub it adds the `epic` label and keeps the number; on Asana the task gains subtasks; on GitLab Free it adds the `epic` label, and on Premium it promotes the issue to a new group epic. The issue's acceptance criteria move into a first child.
 3. **Demote** quotes the initiative's metric and warns that an epic drops it, then asks about each child epic: keep it attached or detach it.
 4. **Moves.** When the routing keeps epics on another tracker, it creates the epic there, links the two, and closes the source as moved or keeps it open as a mirror, as the routing's `Moves` table says.
 

@@ -220,13 +220,14 @@ Feature: issue — file one bug, feature, or task on the tracker
     And the create command has no --type option
 
   @behavior
-  Scenario: files on GitLab through the fallback
+  Scenario: files on GitLab through the bundled GitLab reference
     Given the project has no project-tracker.routing
     And the origin remote is gitlab.com
     And no GitLab capabilities reference is installed
-    And the repo has the label bug
+    And the project has the label bug
     When the user confirms a bug
-    Then issue runs glab issue create with --label bug
+    Then issue reads references/project-tracker.capabilities.gitlab.md in its own folder
+    And it creates the issue through glab api with the label bug
 
   # ── Use case 5 — file to the routed tracker ──
 

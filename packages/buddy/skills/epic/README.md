@@ -12,7 +12,7 @@ Plans an epic and files it with its child issues on your tracker. It also turns 
 ## What it does
 
 - **Create** asks for the outcome and how you will know it is done before it names any child. It lists what is still unknown and makes each one a spike child, proposes child issues in your priority order, searches for duplicates, and files the epic and its children after you confirm the whole plan.
-- **Promote** keeps the issue in place as the epic where the tracker allows (on GitHub it adds the `epic` label; on Asana the task gains subtasks), and moves its acceptance criteria into a first child.
+- **Promote** keeps the issue in place as the epic where the tracker allows (on GitHub it adds the `epic` label; on Asana the task gains subtasks; on GitLab Free it adds the `epic` label, and on Premium it promotes the issue to a new group epic), and moves its acceptance criteria into a first child.
 - **Demote** shows the initiative's metric and warns that an epic drops it, then asks about each child epic: keep it attached or detach it.
 - **Moves.** When the routing from [`project-tracker`](../project-tracker/README.md) puts epics on another tracker, it creates the epic there, links the two, and closes the source as moved or keeps it open as a mirror, as the routing says.
 
@@ -27,7 +27,7 @@ How a level change happens on each tracker (in place or a new item, what the chi
 
 ## Requirements
 
-The tracker's CLI: `gh` 2.98.0 or later for GitHub, logged in; the `cyber-asana` plugin for Asana. [`issue`](../issue/README.md) is used to file the children when it is installed.
+The tracker's CLI: `gh` 2.98.0 or later for GitHub, logged in; `glab` for GitLab, logged in (GitLab's calls are not yet tested on a real instance); the `cyber-asana` plugin for Asana. [`issue`](../issue/README.md) is used to file the children when it is installed.
 
 ## How to invoke
 
