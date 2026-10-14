@@ -7,10 +7,10 @@ contract: 1
 ## Tracker
 
 - Name: `gitlab`
-- Visibility: public for a `public` project; private for an `internal` or `private` one (an internal project is open to every signed-in user of the instance, so it is not public). Read it with `glab api "projects/<project-enc>" --jq .visibility`.
+- Visibility: public for a `public` project; private for an `internal` or `private` one (an internal project is open to every signed-in user of the instance, so it is not public). Read it with `glab api "projects/<project-enc>" | jq -r .visibility`.
 - Levels held: issue on every tier; epic on every tier (a group epic on Premium and Ultimate, an issue labelled `epic` on Free); initiative on Ultimate only.
 - Categories held: bug, feature, task, as labels.
-- Needs `glab`, logged in to the host. Check with `glab --version` and `glab auth status --hostname <host>`. Every call goes through `glab api` (REST and GraphQL); glab's `work-items` command is experimental, so it is not used. Epics as work items need GitLab 18.1 or later.
+- Needs `glab`, logged in to the host. Check with `glab --version` and `glab auth status --hostname <host>`. Every call goes through `glab api` (REST and GraphQL); glab's `work-items` command is experimental, so it is not used. `glab api` has no `--jq` flag, so its output is piped to `jq`, which must be installed (`jq --version`). Epics as work items need GitLab 18.1 or later.
 - Untested: no command in this reference has run against a GitLab instance. They follow GitLab's documentation. Each one marked *(untested)* must be checked on a Free and a Premium instance before it is relied on; until then, show the user the command and its output, and stop on any error instead of improvising.
 
 Placeholders used below: `<host>` is the remote's host; `<project>` is the project's full path (`group/sub/project`) and `<project-enc>` the same with each `/` written `%2F`; `<group>` is the project's parent group full path and `<group-enc>` its encoded form; `<iid>` is the number shown in the URL. Pass `--hostname <host>` on every `glab api` call outside the repository's own directory.
@@ -19,15 +19,15 @@ Placeholders used below: `<host>` is the remote's host; `<project>` is the proje
 
 - The `origin` remote host is `gitlab.com`, or `glab auth status --hostname <host>` succeeds for a self-managed host: `git remote get-url origin`. *(untested)*
 - `glab auth status --hostname <host>` succeeds. When `glab` is missing or logged out, run the `init-buddy` skill if it is installed; otherwise tell the user to install `glab` and run `glab auth login --hostname <host>`.
-- The project is `<project>` from the remote. The group is `glab api "projects/<project-enc>" --jq .namespace.full_path`; when `.namespace.kind` is `user`, the project has no group, so it has no group epics and counts as Free for the epic level. *(untested)*
-- The tier: `glab api "namespaces/<group-enc>" --jq .plan` gives `free`, `premium`, or `ultimate` (a trial may print another name, and the field may be missing on some instances). When it is missing or not one of those three, read the work item types (Kinds) instead: an `Epic` type that is listed and `enabled` means Premium or better. Child epics need Ultimate, and only `plan` tells Premium from Ultimate; when it cannot be read, treat the tier as Premium. *(untested)*
+- The project is `<project>` from the remote. The group is `glab api "projects/<project-enc>" | jq -r .namespace.full_path`; when `.namespace.kind` is `user`, the project has no group, so it has no group epics and counts as Free for the epic level. *(untested)*
+- The tier: `glab api "namespaces/<group-enc>" | jq -r .plan` gives `free`, `premium`, or `ultimate` (a trial may print another name, and the field may be missing on some instances). When it is missing or not one of those three, read the work item types (Kinds) instead: an `Epic` type that is listed and `enabled` means Premium or better. Child epics need Ultimate, and only `plan` tells Premium from Ultimate; when it cannot be read, treat the tier as Premium. *(untested)*
 
 ## Kinds
 
 Read the labels the project can use, its own and its groups':
 
 ```bash
-glab api "projects/<project-enc>/labels?include_ancestor_groups=true&per_page=100" --jq '.[].name'
+glab api "projects/<project-enc>/labels?include_ancestor_groups=true&per_page=100" | jq -r '.[].name'
 ```
 
 - The label carries the category. Bug is the first of `bug`, `type::bug` that exists; feature is the first of `feature`, `enhancement`, `type::feature`; task is the first of `task`, `type::task`, `type::maintenance`. When none exists, create the item without a category label and say so. *(untested)*
@@ -38,27 +38,29 @@ glab api "projects/<project-enc>/labels?include_ancestor_groups=true&per_page=10
 
 ```bash
 glab api graphql -f query='{namespace(fullPath:"<group or project>"){workItemTypes{nodes{id name enabled}}}}' \
-  --jq '.data.namespace.workItemTypes.nodes[] | select(.enabled != false) | "\(.name) \(.id)"'
+  | jq -r '.data.namespace.workItemTypes.nodes[] | select(.enabled != false) | "\(.name) \(.id)"'
 glab api graphql -f query='{group(fullPath:"<group>"){labels(searchTerm:"<label>",includeAncestorGroups:true){nodes{id title}}}}' \
-  --jq '.data.group.labels.nodes[] | "\(.title) \(.id)"'
+  | jq -r '.data.group.labels.nodes[] | "\(.title) \(.id)"'
+glab api graphql -f query='{project(fullPath:"<project>"){labels(searchTerm:"<label>",includeAncestorGroups:true){nodes{id title}}}}' \
+  | jq -r '.data.project.labels.nodes[] | "\(.title) \(.id)"'
 ```
 
-An epic takes only group labels; a project label cannot go on it.
+An epic takes only group labels, so read its label ids with the `group` query; a project label cannot go on it. A task takes the project's labels and its groups', so read them with the `project` query; it is the only one that works for a project in a user namespace.
 
 ## Search
 
 Run at least two passes over issues, open and closed:
 
 ```bash
-glab api "projects/<project-enc>/issues?state=all&in=title,description&per_page=10&search=<url-encoded keywords>" \
-  --jq '.[] | {iid, title, state, web_url}'
+glab api "projects/<project-enc>/issues?state=all&per_page=10&search=<url-encoded keywords>" \
+  | jq -r '.[] | {iid, title, state, web_url}'
 ```
 
 On Premium and Ultimate, also search the group's epics *(untested)*:
 
 ```bash
 glab api graphql -f query='{namespace(fullPath:"<group>"){workItems(search:"<keywords>",types:[EPIC],state:all,first:10){nodes{iid title state webUrl}}}}' \
-  --jq '.data.namespace.workItems.nodes[]'
+  | jq -r '.data.namespace.workItems.nodes[]'
 ```
 
 Use the full title for the first pass and the core noun and verb for the second. Each hit is an iid, title, state (`opened` reads as open, `closed` as closed), and URL. *(untested)*
@@ -72,7 +74,7 @@ An issue, or an epic on Free *(untested)*:
 ```bash
 glab api --method POST "projects/<project-enc>/issues" \
   -f title="<title>" -F description=@<file> -f labels="<category label>[,epic|,initiative]" \
-  --jq '{iid, web_url}'
+  | jq -r '{iid, web_url}'
 ```
 
 - For an epic on Free, add the `epic` label. Free has no initiative.
@@ -88,20 +90,20 @@ jq -n --arg path "<group for an epic, project for a task>" --arg title "<title>"
   variables: {input: ({namespacePath: $path, title: $title, workItemTypeId: $type,
     descriptionWidget: {description: $body}, labelsWidget: {labelIds: $labels}}
     + (if $parent == "" then {} else {hierarchyWidget: {parentId: $parent}} end))}}' > <request.json>
-glab api graphql --input <request.json> --jq '.data.workItemCreate'
+glab api graphql --input <request.json> | jq -r '.data.workItemCreate'
 ```
 
 - For an initiative (Ultimate), the type is `Epic` and the labels include `initiative`'s group label id.
 - A parent epic on Premium takes issues only; a child epic needs Ultimate.
 - The call prints the new item's `iid` and `webUrl`; a non-empty `errors` is a failure.
-- When a create exits non-zero or returns `errors`, list the newest items before any retry: `glab api "projects/<project-enc>/issues?state=all&order_by=created_at&per_page=3" --jq '.[] | {iid, title, web_url}'`, or the group's newest epics with the Search query and `sort:CREATED_DESC`. A GraphQL error after the item was written can leave it behind.
+- When a create exits non-zero or returns `errors`, list the newest items before any retry: `glab api "projects/<project-enc>/issues?state=all&order_by=created_at&per_page=3" | jq -r '.[] | {iid, title, web_url}'`, or the group's newest epics with the Search query and `sort:CREATED_DESC`. A GraphQL error after the item was written can leave it behind.
 
 ## Link
 
 Writes use the work item's global ID. Read it from an iid *(untested)*:
 
 ```bash
-glab api graphql -f query='{namespace(fullPath:"<project or group>"){workItem(iid:"<iid>"){id}}}' --jq .data.namespace.workItem.id
+glab api graphql -f query='{namespace(fullPath:"<project or group>"){workItem(iid:"<iid>"){id}}}' | jq -r .data.namespace.workItem.id
 ```
 
 - Child of (Premium and Ultimate: an issue under an epic; Ultimate: an epic under an epic; every tier: a task under an issue). Set the parent on the child *(untested)*:
@@ -142,7 +144,7 @@ Rewrite a body from a file: an issue with `glab api --method PUT "projects/<proj
 | epic → issue | Premium, Ultimate | new item: GitLab has no epic-to-issue conversion. Create an issue in the project the user names with the epic's title and description, relate it to each open child, then close the epic as moved *(untested)* | child issues are detached (`parentId:null`) and related to the new issue; never closed |
 | initiative → epic | Ultimate | in place: remove the `initiative` label (`removeLabelIds`); rewrite the body to drop the `Metric` section *(untested)* | kept, on Ultimate an epic may hold epics, unless the user asks to detach one (`parentId:null`); a child is never closed |
 
-Limits: 5000 children per epic, epics nested 7 levels (Ultimate). The level label must exist: `glab api "projects/<project-enc>/labels?include_ancestor_groups=true&search=<label>" --jq '.[].name'` for an issue's, `groups/<group-enc>/labels?search=<label>` for an epic's. When it does not, ask before creating it: `glab api --method POST "projects/<project-enc>/labels" -f name=<label> -f color=#6699cc` (on Free), or `groups/<group-enc>/labels` for an epic's. *(untested)* Before a promote, list the issue's tasks and the epic's children so the user sees every item the change touches.
+Limits: 5000 children per epic, epics nested 7 levels (Ultimate). The level label must exist: `glab api "projects/<project-enc>/labels?include_ancestor_groups=true&search=<label>" | jq -r '.[].name'` for an issue's, `groups/<group-enc>/labels?search=<label>` for an epic's. When it does not, ask before creating it: `glab api --method POST "projects/<project-enc>/labels" -f name=<label> -f color=#6699cc` (on Free), or `groups/<group-enc>/labels` for an epic's. *(untested)* Before a promote, list the issue's tasks and the epic's children so the user sees every item the change touches.
 
 ## Close
 
@@ -156,7 +158,10 @@ glab api --method PUT "projects/<project-enc>/issues/<iid>" -f state_event=close
 An epic on Premium and Ultimate *(untested)*:
 
 ```bash
-glab api graphql -f query='mutation{createNote(input:{noteableId:"<epic id>",body:"<reason>"}){errors}}'
+jq -n --arg id "<epic id>" --rawfile body <comment file> '{
+  query: "mutation($input: CreateNoteInput!){createNote(input:$input){errors}}",
+  variables: {input: {noteableId: $id, body: $body}}}' > <request.json>
+glab api graphql --input <request.json> | jq -r '.data.createNote.errors'
 glab api graphql -f query='mutation{workItemUpdate(input:{id:"<epic id>",stateEvent:CLOSE}){errors}}'
 ```
 
