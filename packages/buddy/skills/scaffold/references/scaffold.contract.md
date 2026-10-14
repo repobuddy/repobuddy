@@ -18,7 +18,7 @@ A recipe has these `##` sections, in this order. Heading text is API.
 
 | Section | Holds | Writes |
 |---|---|---|
-| `Recipe` | Bullets: `Name`, `Produces` (one sentence on what exists afterward), `Hosts` (the hosting platforms it supports, such as `github` or `gitlab`), `Prerequisites` (each tool, its minimum version, how to check it) | no |
+| `Recipe` | Bullets: `Name`, `Produces` (one sentence on what exists afterward), `Hosts` (the hosting platforms it supports, such as `github` or `gitlab`), `Prerequisites` (each tool, its minimum version, how to check it), and optionally `Order` (see Order of work) | no |
 | `Inputs` | What the skill asks the user before writing: for each, a name, how to validate it, and a default when there is one | no |
 | `Files` | The files to create or copy, each with its path and its source (inline content, a path in the recipe's own plugin, or another repository), and what to substitute from `Inputs` | yes |
 | `Config` | Settings the recipe pins or overrides after the files exist: versions, registries, CI runner and resource settings, ignore rules, and why each differs from the default | yes |
@@ -33,7 +33,7 @@ A section the recipe does not need starts with the line `**Unsupported.**`, then
 
 ## Order of work
 
-The skill runs the recipe in this order: `Recipe`, `Inputs`, the host setup for the chosen host, `Files`, `Config`, `Verify`, `Post`. A recipe that needs another order says so in its `Recipe` section, and the skill follows it only for steps the recipe names.
+The skill runs the recipe in this order: `Recipe`, `Inputs`, `host setup` (the host skill for the chosen host), `Files`, `Config`, `Verify`, `Post`. A recipe that needs another order adds an `Order` bullet to its `Recipe` section that lists the steps after `Recipe`, each once, by these names: `Inputs`, `host setup`, `Files`, `Config`, `Verify`, `Post`. For example, `Order: Inputs, Files, host setup, Config, Verify, Post` writes the files before the host is set up. `Recipe` always runs first, since `Order` is in it. The skill follows `Order` when it is present and the order above when it is not. When `Order` leaves out a step, repeats one, or names one that is not listed here, the skill stops before any write and says which.
 
 ## Overrides
 
