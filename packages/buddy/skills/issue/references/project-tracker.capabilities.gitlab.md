@@ -158,7 +158,10 @@ glab api --method PUT "projects/<project-enc>/issues/<iid>" -f state_event=close
 An epic on Premium and Ultimate *(untested)*:
 
 ```bash
-glab api graphql -f query='mutation{createNote(input:{noteableId:"<epic id>",body:"<reason>"}){errors}}'
+jq -n --arg id "<epic id>" --rawfile body <comment file> '{
+  query: "mutation($input: CreateNoteInput!){createNote(input:$input){errors}}",
+  variables: {input: {noteableId: $id, body: $body}}}' > <request.json>
+glab api graphql --input <request.json> | jq -r '.data.createNote.errors'
 glab api graphql -f query='mutation{workItemUpdate(input:{id:"<epic id>",stateEvent:CLOSE}){errors}}'
 ```
 
