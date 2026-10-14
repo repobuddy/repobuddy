@@ -41,9 +41,11 @@ glab api graphql -f query='{namespace(fullPath:"<group or project>"){workItemTyp
   | jq -r '.data.namespace.workItemTypes.nodes[] | select(.enabled != false) | "\(.name) \(.id)"'
 glab api graphql -f query='{group(fullPath:"<group>"){labels(searchTerm:"<label>",includeAncestorGroups:true){nodes{id title}}}}' \
   | jq -r '.data.group.labels.nodes[] | "\(.title) \(.id)"'
+glab api graphql -f query='{project(fullPath:"<project>"){labels(searchTerm:"<label>",includeAncestorGroups:true){nodes{id title}}}}' \
+  | jq -r '.data.project.labels.nodes[] | "\(.title) \(.id)"'
 ```
 
-An epic takes only group labels; a project label cannot go on it.
+An epic takes only group labels, so read its label ids with the `group` query; a project label cannot go on it. A task takes the project's labels and its groups', so read them with the `project` query; it is the only one that works for a project in a user namespace.
 
 ## Search
 
