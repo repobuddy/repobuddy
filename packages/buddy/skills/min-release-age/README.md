@@ -60,7 +60,7 @@ A config change with a lift marker plus the updated lockfile (and, on the first 
 | Provider | Job | Script | Also needed |
 |---|---|---|---|
 | GitHub Actions | `.github/workflows/min-release-age.yml` | `.github/scripts/` | optional token secret |
-| GitLab CI | `.gitlab/ci/min-release-age.yml`, included from `.gitlab-ci.yml` | `ci/` | pipeline schedule with `MIN_RELEASE_AGE=restore`, and a token or job-token push access |
+| GitLab CI | `.gitlab/ci/min-release-age.yml`, included from `.gitlab-ci.yml` | `ci/` by default; Setup CI asks for the path and the runner image | pipeline schedule with `MIN_RELEASE_AGE=restore`, and a token or job-token push access |
 | Bitbucket Pipelines | `custom: min-release-age` in `bitbucket-pipelines.yml` | `ci/` | schedule in repository settings, repository access token |
 | Azure Pipelines | `.azure-pipelines/min-release-age.yml` | `ci/` | pipeline registration, build-service permissions |
 | Forgejo / Gitea | `.forgejo/workflows/` or `.gitea/workflows/` | `.forgejo/scripts/` or `.gitea/scripts/` | optional token secret |
