@@ -29,7 +29,7 @@ The skill confirms with the user before any section marked as writing.
 
 ## Unsupported
 
-A section the recipe does not need starts with the line `**Unsupported.**`, then one sentence saying why. A section that is absent counts as unsupported. A `Hosts` value the user's host is missing from stops the skill before any write.
+A section the recipe does not need starts with the line `**Unsupported.**`, then one sentence saying why. A section that is absent counts as unsupported. When the user's host is not listed in `Hosts`, the skill stops before any write.
 
 ## Order of work
 
