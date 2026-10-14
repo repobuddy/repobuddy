@@ -95,6 +95,7 @@ export default defineConfig({
 									label: 'Issues and questions',
 									items: [
 										{ label: 'epic', slug: 'skills/epic' },
+										{ label: 'initiative', slug: 'skills/initiative' },
 										{ label: 'issue', slug: 'skills/issue' },
 										{ label: 'project-tracker', slug: 'skills/project-tracker' },
 										{ label: 'to-question', slug: 'skills/to-question' },
