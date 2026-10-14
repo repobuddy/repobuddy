@@ -68,12 +68,12 @@ gh issue create --repo <owner>/<repo> --title "<title>" --body-file <file> \
 
 ## Retype
 
-A level change on GitHub is in place: the item keeps its number, URL, comments, and type. Only the label changes, so the item stays in this repository; a level the routing puts on another tracker is a move, not a retype.
+A level change on GitHub is in place, except epic → initiative: the item keeps its number, URL, comments, and type. Only the label changes, so the item stays in this repository; a level the routing puts on another tracker is a move, not a retype. Epic → initiative makes a new parent, because an initiative's body is a goal and a metric, not an outcome.
 
 | Change | Steps | Open children |
 |---|---|---|
 | issue → epic | `gh issue edit <n> --add-label epic`; rewrite the body with `gh issue edit <n> --body-file <file>` when the skill moves its acceptance criteria into a child; then link the children | n/a: an issue has none |
-| epic → initiative | swap the label: `--remove-label epic --add-label initiative` | kept as sub-issues; they are the initiative's epics |
+| epic → initiative | a new item: run `Create` with `--label initiative`, then `gh issue edit <initiative> --add-sub-issue <epic>`; the epic keeps its label, body, and number | stay under the epic; the epic becomes the initiative's first epic |
 | epic → issue | `gh issue edit <n> --remove-label epic` | kept as sub-issues unless the user asks to detach them; a child is never closed |
 | initiative → epic | swap the label back: `--remove-label initiative --add-label epic`; rewrite the body with `gh issue edit <n> --body-file <file>` to drop the `Metric` section | kept as sub-issues unless the user asks to detach one (`--remove-sub-issue`); a child is never closed |
 
