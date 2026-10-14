@@ -1,0 +1,27 @@
+.changeset/scaffold-skill.md
+  s_f8d01d8d5f64d1::t_779033fd956e01 1-5
+packages/buddy/references/scaffold.contract.md
+  s_f8d01d8d5f64d1::t_de009441e2666f 1-40
+packages/buddy/skills/scaffold/README.md
+  s_f8d01d8d5f64d1::t_286cc56c2607cd 1-28
+packages/buddy/skills/scaffold/SKILL.md
+  s_f8d01d8d5f64d1::t_324965a9620124 1-55
+packages/buddy/skills/scaffold/references/scaffold.contract.md
+  s_f8d01d8d5f64d1::t_0d433c9d0bd082 1-40
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "083f5d491abbf1af49a6a4c2023aa159430cd452",
+  "prompts": {},
+  "sessions": {
+    "s_f8d01d8d5f64d1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e2465d4c-290c-48e2-8b4f-d65808860b1a",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "unional <homawong@gmail.com>"
+    }
+  }
+}
