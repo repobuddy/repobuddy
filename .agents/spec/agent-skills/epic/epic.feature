@@ -71,6 +71,15 @@ Feature: epic — plan an epic and its children, and move work into the epic lev
     And #51 is not closed
 
   @behavior
+  Scenario: breaks down a shell epic instead of filing a second one
+    Given epic #60 on GitHub has an Outcome section and no children, filed as a shell under an initiative
+    And the search finds #60 and the user says it is the epic
+    When epic confirms and files the plan
+    Then it creates no new epic
+    And each new child is created with #60 as its parent
+    And #60 stays under its initiative
+
+  @behavior
   Scenario: writes nothing when the user declines the plan
     Given epic has shown the epic and three children for confirmation
     When the user declines

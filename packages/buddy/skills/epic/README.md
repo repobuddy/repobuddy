@@ -7,6 +7,7 @@ Plans an epic and files it with its child issues on your tracker. It also turns 
 - "break this project into an epic with child issues"
 - "this issue is bigger than we thought, make it an epic"
 - "promote #42 to an epic"
+- "break down the shell epic #60 from our initiative"
 - "demote this initiative to an epic, we dropped the metric"
 
 ## What it does

@@ -10,6 +10,7 @@ description: Plan an epic and its child issues, or turn an issue or an initiativ
 - "break this project into an epic with child issues"
 - "this issue is bigger than we thought, make it an epic"
 - "promote #42 to an epic"
+- "break down the shell epic #60 from our initiative"
 - "demote this initiative to an epic, we dropped the metric"
 
 ## Invoke
