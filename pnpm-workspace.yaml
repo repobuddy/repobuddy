@@ -40,8 +40,6 @@ minimumReleaseAgeExclude:
   - '@mocktomata/*'
   - '@repobuddy/*'
   - '@unional/*'
-  # min-release-age: lift @clibuilder/plugins@0.2.0 until 2026-10-14T02:00:00Z
-  - '@clibuilder/plugins@0.2.0'
 
 packages:
   - examples/*
