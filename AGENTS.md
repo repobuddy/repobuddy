@@ -31,7 +31,7 @@ pnpm verify:ci    # same, concurrency=1
 pnpm cs           # add a changeset
 npx cyber-skills@0.4.3 skill validate-private
 npx cyber-skills@0.4.3 skill repair-private   # after editing .agents/skills/
-npx cyber-skills@0.4.3 audit validate         # before a PR touching packages/buddy/skills/; no CI runs it
+npx cyber-skills@0.4.3 audit validate --root packages/buddy   # before a PR touching packages/buddy/skills/; no CI runs it
 ```
 
 ## Scope
