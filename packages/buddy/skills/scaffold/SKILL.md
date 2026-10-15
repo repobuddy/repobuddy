@@ -30,11 +30,11 @@ Pick the mode from the request. With none clear, ask.
 ### Scaffold
 
 1. Run **List**. Pick the recipe that matches the request; when more than one fits or none does, ask. When two plugins ship the same name, list both and ask which.
-2. Read the whole recipe with `reference show <name>`. Check every `Prerequisites` entry; stop and say what is missing.
+2. Read the whole recipe with `reference show <name>`. Check every `Prerequisites` entry; stop and say what is missing. When the `Recipe` section has an `Order` bullet, check it as `scaffold.contract` says and stop on a bad one; steps 3 and 5 to 8 then run in that order, and step 4 still comes before the first step that writes.
 3. Ask each `Inputs` entry, validating as the recipe says. Ask where the project goes and which host it uses; stop when the host is not in the recipe's `Hosts`.
 4. Show what will be created: the `Files`, the `Config` changes, and the `Post` steps, in plain words. Ask for confirmation. When declined, write nothing and say so.
 5. Run the host skill for the chosen host when one is installed (`setup-github-repo` for `github`); for a host with no skill, tell the user its basic settings are theirs to do and continue only when they say so.
-6. Apply `Files`, then `Config`, in the recipe's order. Never overwrite an existing file without asking.
+6. Apply `Files`, then `Config`, unless `Order` puts them otherwise. Never overwrite an existing file without asking.
 7. Run `Verify`. Report each result as it is; do not call the scaffold done while a check fails.
 8. Offer `Post` one step at a time and run only the steps the user accepts, since each touches a service outside the repository.
 
@@ -51,5 +51,6 @@ Pick the mode from the request. With none clear, ask.
 - [ ] The description in the frontmatter is at most 120 characters, and `name` equals the directory name
 - [ ] Every copy in this skill's `references/` equals the file of the same name in `packages/buddy/references/` (`node scripts/sync-skill-references.mjs --check`)
 - [ ] Recipes were listed by the `scaffold.recipe` prefix and only `match: prefix` hits were kept
+- [ ] The steps ran in the recipe's `Order` when it has one, and in the contract's default order otherwise
 - [ ] Nothing was written before the user confirmed the plan
 - [ ] `Verify` ran, and every failure was reported
