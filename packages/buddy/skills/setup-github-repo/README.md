@@ -61,5 +61,5 @@ npx skills add repobuddy/repobuddy --skill setup-github-repo
 ```
 
 A skill installed with `skills add` comes from git and has no built `scripts/` folder. It runs its
-scripts through `npx -y repobuddy@3.0.0` instead, which needs network access. The plugin install
+scripts through `npx -y repobuddy@3.1.0` instead, which needs network access. The plugin install
 ships the scripts with the skill.

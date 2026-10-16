@@ -42,14 +42,14 @@ SKILL_DIR=$(npx skills@1.7.2 path setup-github-repo 2>/dev/null || echo "$HOME/.
 if [ -f "$SKILL_DIR/scripts/detect-state.mjs" ]; then
   ACK=$(node "$SKILL_DIR/scripts/detect-state.mjs")
 else
-  ACK=$(npx -y repobuddy@3.0.0 detect-state)
+  ACK=$(npx -y repobuddy@3.1.0 detect-state)
 fi
 STATE=$(printf '%s' "$ACK" | jq -r .artifact)
 printf '%s\n' "$ACK"
 ```
 
 The script ships in the `repobuddy` npm package. If `scripts/detect-state.mjs` is missing (the skill
-was installed from git) or cannot be run, use `npx -y repobuddy@3.0.0 detect-state` with the same
+was installed from git) or cannot be run, use `npx -y repobuddy@3.1.0 detect-state` with the same
 arguments.
 
 The script writes the state artifact **outside the repo tree** — under the OS temp dir, at the
@@ -304,12 +304,12 @@ SKILL_DIR=$(npx skills@1.7.2 path setup-github-repo 2>/dev/null || echo "$HOME/.
 if [ -f "$SKILL_DIR/scripts/scaffold-workflows.mjs" ]; then
   node "$SKILL_DIR/scripts/scaffold-workflows.mjs" --state "$STATE" --yes
 else
-  npx -y repobuddy@3.0.0 scaffold-workflows --state "$STATE" --yes
+  npx -y repobuddy@3.1.0 scaffold-workflows --state "$STATE" --yes
 fi
 ```
 
 The script ships in the `repobuddy` npm package. If `scripts/scaffold-workflows.mjs` is missing (the
-skill was installed from git) or cannot be run, use `npx -y repobuddy@3.0.0 scaffold-workflows` with
+skill was installed from git) or cannot be run, use `npx -y repobuddy@3.1.0 scaffold-workflows` with
 the same arguments.
 
 Use `--yes` for agent runs (non-interactive). Omit `--yes` for human runs — the script prompts on stderr. Read JSON stdout for `created` and `skipped`; add `--verbose` for progress on stderr.

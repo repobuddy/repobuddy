@@ -1,5 +1,30 @@
 # repobuddy
 
+## 3.1.0
+
+### Minor Changes
+
+- bac3b5e: New skill `epic` plans an epic and files it with its child issues: it settles the outcome and done-when first, makes each unknown a spike child, orders the children by your priority, searches for duplicates, and files after one confirmation. It also promotes an issue to an epic (in place where the tracker allows, with the issue's acceptance criteria moved into a first child) and demotes an initiative to an epic (warning that the metric is dropped and asking about each child epic). When the routing from `project-tracker` puts epics on another tracker, the change becomes a move: the epic is created there, the two are linked, and the source is closed as moved or kept as a mirror. How a level changes comes from each tracker's `Retype` section; the skill always confirms before writing, lists every child it touches, never closes a child as a duplicate, and never moves a private tracker's details into a public one.
+- a9963b0: Ship `project-tracker.capabilities.gitlab`, GitLab's capabilities reference, and bundle it with the `issue` skill in place of the inline GitLab fallback. It works through `glab api`: issues on every tier, group epics as work items on Premium and Ultimate (18.1 or later), an issue labelled `epic` with tasks on Free, and initiatives as labelled epics on Ultimate. Its calls follow GitLab's documentation and have not yet run against a GitLab instance; each is marked untested.
+  
+  The `epic` skill bundles it too. Its `Retype` covers the body rewrites, detaching a child, and checking for and creating a missing level label after the user says yes, and its `Link` attaches an issue from outside the epic's group by its URL.
+- 1edebd4: `min-release-age` Setup CI for GitLab asks for the runner image and the script path instead of hardcoding `node:22` and `ci/min-release-age.mjs`. `status --json` now reads `ci.script` (and, for GitLab, `ci.image`) back from an installed job, so a moved script or a mirrored image is reported correctly and kept on a re-run.
+- 4626f2c: New skill `initiative` sets up an initiative: it settles the goal and one metric (measure, baseline, target, source) before naming any epic, writes an unknown baseline as `unmeasured` and plans measuring it as the first epic, and files the epics as shells (title, owner, one-line outcome, no child issues) for `epic` to break down later. Without a measure and a target it suggests an epic instead. It also promotes an epic to an initiative by creating the initiative as a new parent, with the epic unchanged as its first shell. Trackers resolve through the `project-tracker` routing; the skill confirms before writing, never closes or breaks down an epic, and never puts a private tracker's details into a public one.
+- d59217a: New skill `scaffold` creates a repository or package from a scaffold recipe. A plugin ships a recipe as `scaffold.recipe.<name>`, following the new `scaffold.contract` reference that repobuddy owns (sections `Recipe`, `Inputs`, `Files`, `Config`, `Verify`, and `Post`). The skill lists the installed recipes, checks each one's contract version, asks the recipe's inputs, shows the plan, and writes nothing until you confirm. It runs the host's setup skill first, then applies the recipe, runs its checks, and offers each step after the first push one at a time.
+
+### Patch Changes
+
+- 4626f2c: `epic` breaks down a shell epic (one with an outcome and no children, as `initiative` files them): when the duplicate search finds it and you say it is the epic, Create uses it as the epic and files only its children, instead of stopping.
+- 4626f2c: `project-tracker.capabilities.github` and `project-tracker.capabilities.gitlab` now make epic → initiative a new parent instead of a label change: the initiative is created (labelled `initiative`) and the epic is attached as its first child, keeping its label, body, number, and children. An initiative's body is a goal and a metric, not an epic's outcome, and the epic's issues were never the initiative's epics.
+- bac3b5e: `project-tracker.capabilities.github` now says, in `Retype`, how to rewrite an issue's body when it becomes an epic, how to detach a child and drop the `Metric` section when an initiative becomes an epic, and how to check for and create the level label; `Kinds` allows creating that one label after the user says yes. `Link` says a child in another repository attaches by its URL and to read the parent's count before attaching.
+- fe1c09d: Fix `project-tracker.capabilities.gitlab`: `glab api` has no `--jq` flag, so every call now pipes its output to `jq`, which the reference lists as a prerequisite. The project issue search drops `in=title,description`, which the project issues endpoint does not document; `search` already matches the title and description.
+  
+  Its `Kinds` section also reads a task's label ids from the project, with ancestor groups included, as well as an epic's from the group. A task takes project labels, and a project in a user namespace has no group to query.
+  
+  Closing an epic on Premium and Ultimate now reads the comment from a file, as the other writes do, so a quote in the reason no longer breaks the GraphQL call.
+- 0b71ba9: `scaffold.contract` gives a recipe an optional `Order` bullet in its `Recipe` section to run its steps in another order, and the `scaffold` skill follows it. The `Unsupported` rule on `Hosts` now reads plainly: a host not listed in `Hosts` stops the skill.
+- cf7e741: `setup-github-repo`: use the current `gh repo edit` merge flags (`--enable-squash-merge`, `--enable-rebase-merge`), verify the settings through the REST API, drop the `"integration_id": null` that made the ruleset API reject required checks, and have the release job grant `actions: write` so the secretless release workflow can approve the Version Packages PR's parked runs under a no-bypass merge backstop.
+
 ## 3.0.0
 
 ### Major Changes
