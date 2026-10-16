@@ -243,8 +243,8 @@ importers:
   packages/buddy:
     dependencies:
       args-minus:
-        specifier: 0.2.0
-        version: 0.2.0
+        specifier: 0.2.1
+        version: 0.2.1
     devDependencies:
       '@clibuilder/plugins':
         specifier: 0.2.0
@@ -4441,6 +4441,10 @@ packages:
 
   args-minus@0.2.0:
     resolution: {integrity: sha512-WnIUyzhO4me3xx841rxfCU2C/PMpD+M1MraKb8hF2aGY4xS67bSV2EhpmegLlFM0UV11+hV9uHPbNHnH7ypL0w==}
+    engines: {node: '>=20'}
+
+  args-minus@0.2.1:
+    resolution: {integrity: sha512-ijdDYmXdl+XomAeOnIst6re1U4ezqaP7vnS1raonj7PaxKMi4he37ZBK7nndlc6Ii/DLomsm16CnhaNCKr8Riw==}
     engines: {node: '>=20'}
 
   argue-cli@3.2.0:
@@ -11176,6 +11180,8 @@ snapshots:
   argparse@2.0.1: {}
 
   args-minus@0.2.0: {}
+
+  args-minus@0.2.1: {}
 
   argue-cli@3.2.0: {}
 
