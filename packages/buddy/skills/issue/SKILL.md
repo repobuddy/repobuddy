@@ -75,7 +75,7 @@ Keep the body free of internal file names, commit SHAs, and implementation detai
 
 ### 6. Report
 
-Give the URL of the new issue. When the tracker was found without a routing (Trackers step 3 onward), end with one line suggesting the `project-tracker` skill to set one up; when a routing chose the tracker, add nothing.
+Give the URL of the new issue. When a routing chose the tracker, add nothing. When the tracker was found without a routing (Trackers step 3 onward), end with one line that offers the draft instead of naming the skill, for example: "Save GitHub as the tracker for all work in this repo? (y)". Offer it only when the `project-tracker` set-up draft would route all work to the tracker just used (it is the only kept tracker that matches, with no conflicting signal); otherwise end with one line suggesting `project-tracker`. A yes hands the draft to `project-tracker` set-up, which writes the routing after that yes; a no or no answer writes nothing. Ask once per filing session: after the offer has been made, a later filing in the same session adds no line.
 
 ## Level check
 
@@ -101,3 +101,4 @@ Read the issue level's `Too big` and `Too small` sections in `repobuddy.work-lev
 - [ ] No create command ran without the user's confirmation of the summary
 - [ ] The body of a task or feature carries no bug-only section; a public issue carries no private-tracker detail
 - [ ] The URL of the new issue, or of the existing duplicate, was returned
+- [ ] Without a routing, the closing line offered the draft at most once per session, and nothing was written without a yes
