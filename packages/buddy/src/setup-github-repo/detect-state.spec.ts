@@ -61,14 +61,16 @@ describe('detectState', () => {
 		const exec = fakeExec({
 			nameWithOwner: 'octo/repo',
 			defaultBranchRef: 'main',
+			// The list endpoint omits `conditions`; only the per-ruleset endpoint returns them.
+			'repos/octo/repo/rulesets/7': JSON.stringify({
+				id: 7,
+				name: 'default-branch-protection',
+				target: 'branch',
+				enforcement: 'active',
+				conditions: { ref_name: { include: ['~DEFAULT_BRANCH'] } },
+			}),
 			'repos/octo/repo/rulesets': JSON.stringify([
-				{
-					id: 7,
-					name: 'default-branch-protection',
-					target: 'branch',
-					enforcement: 'active',
-					conditions: { ref_name: { include: ['~DEFAULT_BRANCH'] } },
-				},
+				{ id: 7, name: 'default-branch-protection', target: 'branch', enforcement: 'active' },
 			]),
 			'rules/branches/main': JSON.stringify([{ type: 'merge_queue', parameters: {} }]),
 			'repos/octo/repo': JSON.stringify({

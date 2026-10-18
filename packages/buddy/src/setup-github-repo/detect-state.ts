@@ -286,10 +286,11 @@ export function detectState(options: DetectStateOptions = {}): DetectStateResult
 	const repoSettings = runJson<RepoSettings>(exec, `gh api repos/${nameWithOwner}`) ?? ({} as RepoSettings)
 
 	const rulesets = runJson<Ruleset[]>(exec, `gh api repos/${nameWithOwner}/rulesets`) ?? []
-	const defaultBranchRuleset = rulesets.find(
-		(r) =>
-			r.target === 'branch' && r.enforcement === 'active' && JSON.stringify(r.conditions)?.includes('~DEFAULT_BRANCH'),
-	)
+	// The list endpoint omits `conditions`, so each active branch ruleset is fetched by id to read them.
+	const defaultBranchRuleset = rulesets
+		.filter((r) => r.target === 'branch' && r.enforcement === 'active')
+		.map((r) => runJson<Ruleset>(exec, `gh api repos/${nameWithOwner}/rulesets/${r.id}`))
+		.find((r) => JSON.stringify(r?.conditions)?.includes('~DEFAULT_BRANCH'))
 
 	const reportedRules = runJson<BranchRule[]>(
 		exec,
