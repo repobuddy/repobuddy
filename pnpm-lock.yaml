@@ -286,8 +286,8 @@ importers:
         specifier: ^7.0.0
         version: 7.0.2
       universal-plugin:
-        specifier: ^0.14.0
-        version: 0.14.0(typescript@7.0.2)
+        specifier: ^0.15.0
+        version: 0.15.0(clibuilder@12.0.0(js-yaml@4.3.2))
 
   packages/jest:
     dependencies:
@@ -7502,8 +7502,8 @@ packages:
   unist-util-visit@5.1.0:
     resolution: {integrity: sha512-m+vIdyeCOpdr/QeQCu2EzxX/ohgS8KbnPDgFni4dQsfSCtpz8UqDyY5GjRru8PDKuYn7Fq19j1CQ+nJSsGKOzg==}
 
-  universal-plugin@0.14.0:
-    resolution: {integrity: sha512-+2kSU4mpWFyiFdNTz7TYX1Nj+Y9mOZzxpwSxPNX0QFblRKw6VmAUCx3RNSzfxe+tj8t9o74rc8RDLWx4nDS2+g==}
+  universal-plugin@0.15.0:
+    resolution: {integrity: sha512-5cfC/O73/bjxfhAFxLHPWMWghGfRTiAweOCbkNvqyg7UKpbqShAhfCEdcdULQxCL6Pm88S6svGypeqNirzkwPw==}
     engines: {node: '>=22'}
     hasBin: true
 
@@ -14879,16 +14879,16 @@ snapshots:
       unist-util-is: 6.0.1
       unist-util-visit-parents: 6.0.2
 
-  universal-plugin@0.14.0(typescript@7.0.2):
+  universal-plugin@0.15.0(clibuilder@12.0.0(js-yaml@4.3.2)):
     dependencies:
-      '@cyberuni/agent-harness': 0.6.0(typescript@7.0.2)
+      '@cyberuni/agent-harness': 0.7.0(clibuilder@12.0.0(js-yaml@4.3.2))
       '@repobuddy/upx': 0.2.0
       '@toon-format/toon': 4.1.1
       commander: 15.0.0
       rolldown: 1.2.13
       semver: 7.8.5
     transitivePeerDependencies:
-      - typescript
+      - clibuilder
 
   unpartial@1.0.7: {}
 
