@@ -140,15 +140,23 @@ The allow pattern matches `--auto-complete true --bypass-policy true`, so write 
 | | |
 |---|---|
 | Entry | a prose rule in `autoMode.allow` in `~/.claude/settings.json` (template below). Not a `permissions.allow` entry. |
-| Instead of | relying on the merge command in `permissions.allow`, which auto mode's classifier still overrides |
+| Instead of | a merge command in `permissions.allow`. A matching allow rule resolves before the classifier runs, so the classifier never sees that merge: neither its "Merge Without Review" block nor this rule's conditions apply, and the bypass guard rests on the deny list alone. |
 | Risk | The agent can merge a PR or MR that no person approved, in any repo the rule names. |
 | Guard | The rule text names the hosts, the owners, and the conditions, and the deny list holds each host's bypass entries. |
 
 Offer this only when the user runs Claude Code in auto mode (`permissions.defaultMode` is `"auto"`, or
 they start sessions in it) and wants the agent to merge itself, for example an orchestrator merging the
-PRs its worker sessions open. In auto mode a classifier reviews each action after the permission rules.
-Its built-in "Merge Without Review" block stops a merge of a PR with no approving review, even when
-`permissions.allow` lists the command. Its exceptions are plain-language rules under `autoMode.allow`.
+PRs its worker sessions open. In auto mode, Claude Code checks the permission rules first: an action
+that matches an allow, ask, or deny rule resolves there, and only the rest reaches the classifier
+([decision order](https://code.claude.com/docs/en/permission-modes#how-auto-mode-evaluates-actions)).
+The classifier's built-in "Merge Without Review" block (`claude auto-mode defaults --label 'Merge
+Without Review'`) stops a merge of a PR that no person approved. Its exceptions are plain-language
+rules under `autoMode.allow`.
+
+So keep the merge command out of `permissions.allow` and write this rule instead. If
+`permissions.allow` already lists a host's merge command (`Bash(gh pr merge *)`), say that the entry
+skips the classifier and this rule, and point to `review-permissions` to remove it. The queued-merge
+entry above is the exception: its guard is the host's required check, not the classifier.
 
 **User scope only.** The classifier reads `autoMode` from `~/.claude/settings.json` (and managed
 settings), never from `.claude/settings.json` or `.claude/settings.local.json`, so that a repo cannot
