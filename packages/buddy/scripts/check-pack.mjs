@@ -27,6 +27,9 @@ const SCRIPTS = [
 	{ path: 'skills/init-buddy/scripts/detect-env.mjs', args: ['--json', '--host', 'github'], exit: 0 },
 	// Reads hook JSON from stdin; with none (empty stdin) it prints nothing and exits 0.
 	{ path: 'skills/init-buddy/scripts/gh-api-guard.mjs', args: [], exit: 0 },
+	// Committed bundles compiled by `plugin build`; they reject bad usage before reading anything.
+	{ path: 'skills/init-buddy/scripts/auto-mode.mjs', args: ['no-such-command'], exit: 2 },
+	{ path: 'skills/init-buddy/scripts/permission-candidates.mjs', args: ['--bogus'], exit: 2 },
 	// These reject bad usage before shelling out to `gh`, so they run without a git remote or auth.
 	{ path: 'skills/setup-github-repo/scripts/detect-state.mjs', args: ['--dir'], exit: 1 },
 	{ path: 'skills/setup-github-repo/scripts/scaffold-workflows.mjs', args: ['no-such-command'], exit: 1 },

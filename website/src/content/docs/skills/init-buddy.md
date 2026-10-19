@@ -59,6 +59,9 @@ running them. To audit an existing allow list, use [`review-permissions`](/repob
   [Skill scripts](/repobuddy/cli/skill-scripts/).
 - Network access and a package manager to install the CLIs.
 - The `gh-api-guard` hook has no `npx` fallback: install the plugin or copy the script from the npm package.
+- `auto-mode.mjs` (read, discover, word, and write the auto-mode settings) and `permission-candidates.mjs` (the allow
+  and deny candidates) are committed with the skill, so a git install has them. `auto-mode.mjs discover` needs `gh`
+  logged in to GitHub.
 
 ## Example
 
