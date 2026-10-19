@@ -24,6 +24,7 @@
 import { existsSync, readFileSync } from 'node:fs'
 import { homedir, platform } from 'node:os'
 import { join, resolve } from 'node:path'
+import { templateMarkers } from '../permissions/template-text.js'
 
 const USAGE = 'usage: node scripts/scan-permissions.mjs [projectDir] [--json] [--all-scopes] [--mode <mode>]\n'
 const argv = process.argv.slice(2)
@@ -768,20 +769,6 @@ function droppedInAutoMode(rule: Rule) {
 	return null
 }
 
-/**
- * Words that mark an entry as a template nobody filled in. They are tested on the entry with its
- * code spans removed, and an angle placeholder inside a path or URL (`~/code/<repo>`) is syntax,
- * not a blank.
- */
-const TEMPLATE_TEXT = [
-	/\{[A-Z][A-Z0-9_]*[,}]/,
-	/(?<![/\w])<[a-z][a-z -]*>(?![/\w])/,
-	/\b(TODO|TBD)\b/,
-	/\bsay so here\b/i,
-	/\bfill (this |it )?in\b/i,
-	/\breplace (this|with)\b/i,
-]
-
 function analyzeAutoMode() {
 	const userBlocks = autoModeBlocks.filter((b) => b.src.scope === 'user' || b.src.scope === 'enterprise')
 	for (const { src } of autoModeBlocks) {
@@ -814,8 +801,7 @@ function analyzeAutoMode() {
 			if (!Array.isArray(list)) continue
 			for (const entry of list) {
 				if (typeof entry !== 'string' || entry === '$defaults') continue
-				const prose = entry.replace(/`[^`]*`/g, '')
-				if (!TEMPLATE_TEXT.some((re) => re.test(prose))) continue
+				if (!templateMarkers(entry).length) continue
 				addFinding(
 					'low',
 					'automode-template-text',

@@ -4,6 +4,34 @@ globalThis.__SKILL_SCRIPT__ = {"package":"repobuddy","bin":"repobuddy","version"
 import { existsSync, readFileSync } from "node:fs";
 import { homedir, platform } from "node:os";
 import { join, resolve } from "node:path";
+//#region src/permissions/template-text.ts
+/**
+* Words that mark an `autoMode` entry as a template nobody filled in. They are tested on the entry
+* with its code spans removed, and an angle placeholder inside a path or URL (`~/code/<repo>`) is
+* syntax, not a blank.
+*
+* Shared by `review-permissions`' scanner and `init-buddy`'s `auto-mode` script, so both skills
+* flag the same entries.
+*/
+const TEMPLATE_TEXT = [
+	/\{[A-Z][A-Z0-9_]*[,}]/,
+	/(?<![/\w])<[a-z][a-z -]*>(?![/\w])/,
+	/\b(TODO|TBD)\b/,
+	/\bsay so here\b/i,
+	/\bfill (this |it )?in\b/i,
+	/\breplace (this|with)\b/i
+];
+/** The template text found in an entry, or an empty array when it reads as filled in. */
+function templateMarkers(entry) {
+	const prose = entry.replace(/`[^`]*`/g, "");
+	const found = [];
+	for (const re of TEMPLATE_TEXT) {
+		const m = re.exec(prose);
+		if (m) found.push(m[0]);
+	}
+	return found;
+}
+//#endregion
 //#region src/skills/scan-permissions.ts
 /**
 * Collect and assess the permissions a user has granted to their agent harnesses.
@@ -697,19 +725,6 @@ function droppedInAutoMode(rule) {
 	if (/^(npm|pnpm|yarn|bun)\s+run\s*[*:]+$/.test(arg)) return "a package-manager run command";
 	return null;
 }
-/**
-* Words that mark an entry as a template nobody filled in. They are tested on the entry with its
-* code spans removed, and an angle placeholder inside a path or URL (`~/code/<repo>`) is syntax,
-* not a blank.
-*/
-const TEMPLATE_TEXT = [
-	/\{[A-Z][A-Z0-9_]*[,}]/,
-	/(?<![/\w])<[a-z][a-z -]*>(?![/\w])/,
-	/\b(TODO|TBD)\b/,
-	/\bsay so here\b/i,
-	/\bfill (this |it )?in\b/i,
-	/\breplace (this|with)\b/i
-];
 function analyzeAutoMode() {
 	const userBlocks = autoModeBlocks.filter((b) => b.src.scope === "user" || b.src.scope === "enterprise");
 	for (const { src } of autoModeBlocks) {
@@ -728,8 +743,7 @@ function analyzeAutoMode() {
 			if (!Array.isArray(list)) continue;
 			for (const entry of list) {
 				if (typeof entry !== "string" || entry === "$defaults") continue;
-				const prose = entry.replace(/`[^`]*`/g, "");
-				if (!TEMPLATE_TEXT.some((re) => re.test(prose))) continue;
+				if (!templateMarkers(entry).length) continue;
 				addFinding("low", "automode-template-text", `\`autoMode.${key}\` entry still holds template text: "${entry.length > 80 ? `${entry.slice(0, 77)}...` : entry}"`, "The classifier reads the entry as written, placeholders and instructions included, so it tells the classifier nothing about your setup.", where, "Fill it in, or remove it (`init-buddy` drafts environment entries from `gh`).");
 			}
 		}
