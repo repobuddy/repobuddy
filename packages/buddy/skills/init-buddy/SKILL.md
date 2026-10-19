@@ -128,9 +128,11 @@ already has, use the `review-permissions` skill instead. This step only adds a s
        Offer it only when the host's settings require a check or pipeline; with none, it merges at once.
        Not for Gitea, Forgejo, or Bitbucket, whose CLIs cannot queue a merge.
      - Merges in auto mode: an `autoMode.allow` rule in `~/.claude/settings.json`, because auto
-       mode's classifier blocks a merge of an unreviewed PR even when `permissions.allow` lists the
-       command. User scope only; the rule names each detected host's merge commands, its owners, the
-       conditions, and the bypass forms it excludes, with that host's bypass deny entries.
+       mode's classifier blocks a merge of an unreviewed PR. Not a merge command in
+       `permissions.allow`: a matching allow rule resolves before the classifier, so the classifier
+       never judges the merge. User scope only; the rule names each detected host's merge commands,
+       its owners, the conditions, and the bypass forms it excludes, with that host's bypass deny
+       entries.
      - Raw API reads: `gh api` and `glab api` through a read-only token for the session, or the
        `gh-api-guard` hook this skill ships, which allows GET and GraphQL queries and asks for
        everything else

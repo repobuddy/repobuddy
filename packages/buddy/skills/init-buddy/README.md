@@ -75,7 +75,8 @@ Gets a machine ready to work with a repository's git host. It detects the OS and
      `az repos pr … --bypass-policy`, or `glab mr merge --auto-merge=false` (GitLab has no bypass
      flag, so the immediate merge is the form to stop).
    - **Merges in auto mode**: in auto mode, a classifier blocks a merge of a PR with no approving
-     review, even when your allow list has the command. The skill offers a plain-language rule for
+     review. A merge command in your allow list is not the fix: an allow rule that matches resolves
+     before the classifier, so nothing checks the merge's conditions. The skill offers a plain-language rule for
      `autoMode.allow` in `~/.claude/settings.json` (the classifier ignores project settings). The rule
      names every detected host's merge command, the owners you name on each host (GitHub users and
      organizations, GitLab groups, Azure DevOps organizations or projects, Gitea and Forgejo
