@@ -15,7 +15,7 @@ The project's ubiquitous language. Every load-bearing term defined once, in plai
 | **Delivery** | Getting rendered text to the platform. `to-question` hands off at the clipboard; it never posts. |
 | **Section template** | The fixed content shape `to-question` composes into: Context → Use Cases → Problem → Options → Questions (+ optional Research). |
 | **Handoff sink** | Where a composed artifact is left for the user. Today: a file at `/tmp/question.md` plus the system clipboard. |
-| **Routing skill** | A skill whose body routes a request to one of several modes, each with its own steps. Named after its noun, bare (`session`, `epic`); a single-procedure skill keeps a verb-noun name. See ADR 0002. |
+| **Routing skill** | A skill whose body routes a request to one of several modes, each with its own steps. Named after its noun, bare (`checkpoint`, `epic`); a single-procedure skill keeps a verb-noun name. See ADR 0002. |
 | **Category** | Why a piece of tracked work exists: bug, feature, or task. Independent of **level**. |
 | **Level** | How much structure a piece of tracked work needs: **issue**, **epic**, or **initiative**. Each level is defined by checks a team can override, not by size words. See ADR 0003. |
 | **Issue** | The base level: one deliverable, one owner, ships in one or a few PRs within an iteration. Done when it ships. Asana calls it a task. Owner: the `issue` skill (formerly `file-issue`). |

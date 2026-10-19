@@ -25,7 +25,7 @@
 | [`review-api`] | Review a library's public API for consistency and completeness against its own conventions — drift, sibling-justified gaps, docs vs exports |
 | [`scaffold`] | Create a new repository or package from a recipe a plugin ships — lists the installed recipes, asks the recipe's inputs, runs the host's setup skill, and writes nothing before you confirm the plan |
 | [`review-permissions`] | Audit what your agents are allowed to do — risk-rank every grant, then tighten and consolidate it |
-| [`session`] | `pause` any agent session into checkpoints a fresh session can continue from — next step first, settled decisions, open questions, in another repo when the work belongs there — and `resume` one without reopening settled decisions |
+| [`checkpoint`] | `create` checkpoints from any agent session that a fresh session can continue from — next step first, settled decisions, open questions, in another repo when the work belongs there — and `resume` one without reopening settled decisions |
 | [`setup-github-repo`] | Set up a GitHub repo with branch protection, a merge backstop, Dependabot, and CI |
 | [`website`] | Work on a repo's docs website — `init` adds an Astro/Starlight site to a monorepo; `deploy` publishes a static site to GitHub, GitLab, or Codeberg Pages, Bitbucket, or Azure Static Web Apps |
 | [`to-question`] | Word a question for Slack, Jira, Linear, Asana, GitHub, GitLab, Bugzilla, Redmine, Trac, or email — checks the markup before you paste |
@@ -181,7 +181,7 @@ npx skills add repobuddy/agent-changesets
 [`review-api`]: ./packages/buddy/skills/review-api/SKILL.md
 [`review-permissions`]: ./packages/buddy/skills/review-permissions/SKILL.md
 [`scaffold`]: ./packages/buddy/skills/scaffold/SKILL.md
-[`session`]: ./packages/buddy/skills/session/SKILL.md
+[`checkpoint`]: ./packages/buddy/skills/checkpoint/SKILL.md
 [`setup-github-repo`]: ./packages/buddy/skills/setup-github-repo/SKILL.md
 [`website`]: ./packages/buddy/skills/website/SKILL.md
 [`to-question`]: ./packages/buddy/skills/to-question/SKILL.md

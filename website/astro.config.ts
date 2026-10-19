@@ -106,7 +106,7 @@ export default defineConfig({
 									label: 'Agent setup and sessions',
 									items: [
 										{ label: 'init-buddy', slug: 'skills/init-buddy' },
-										{ label: 'session', slug: 'skills/session' },
+										{ label: 'checkpoint', slug: 'skills/checkpoint' },
 									],
 								},
 							],

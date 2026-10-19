@@ -1,4 +1,4 @@
-# `session pause`: pause a session into checkpoints
+# `checkpoint create`: pause a session into checkpoints
 
 Arguments: `[what the next session should focus on] [--commit]`.
 
@@ -8,7 +8,7 @@ continue, nothing to relitigate.* A session often holds more than one thread of 
 topic first: finished work gets no checkpoint, and each live topic can get its own. A topic can belong
 to another repo than the one this session runs in; its checkpoint then goes to that repo.
 
-`session resume` is the matching reader, but each checkpoint must stand on its own. A session that only
+`checkpoint resume` is the matching reader, but each checkpoint must stand on its own. A session that only
 opens the file has to be able to continue.
 
 ## Procedure
@@ -148,8 +148,8 @@ opens the file has to be able to continue.
     [Claude Code](harness/claude-code.md), [Codex](harness/codex.md),
     [Gemini CLI](harness/gemini.md), [Copilot CLI](harness/copilot.md),
     [Cursor](harness/cursor.md). For any other harness, give the fresh-session form: `cd <repo-root>`,
-    then start the harness with a prompt that runs `session resume <slug>`. For a checkpoint that fell
-    back to `~/.agents/repobuddy/checkpoints/`, give its path instead, to pass to `session resume` from
+    then start the harness with a prompt that runs `checkpoint resume <slug>`. For a checkpoint that fell
+    back to `~/.agents/repobuddy/checkpoints/`, give its path instead, to pass to `checkpoint resume` from
     a session in the home repo.
 
 ## Checkpoint format
@@ -234,7 +234,7 @@ appears only in a checkpoint kept as one over several topics.
   it by path or URL and don't paste it.
 - **Not buried.** The next action comes first. If a reader has to hunt for where to start, the pause
   failed.
-- **Not self-referential.** Don't tell the reader to "run `session resume`" or explain how to resume.
+- **Not self-referential.** Don't tell the reader to "run `checkpoint resume`" or explain how to resume.
   Whoever opens the file is already past that point. Open `## NEXT` with the work itself.
 - **Not final-sounding.** A pause is resumable. Keep the open questions and the live frontier explicit;
   don't smooth them into a summary that hides where to begin.
