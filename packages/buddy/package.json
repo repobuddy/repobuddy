@@ -71,7 +71,7 @@
 		"rimraf": "^6.0.1",
 		"tsdown": "^0.23.0",
 		"typescript": "^7.0.0",
-		"universal-plugin": "^0.14.0"
+		"universal-plugin": "^0.15.0"
 	},
 	"dependencies": {
 		"args-minus": "0.2.0"
