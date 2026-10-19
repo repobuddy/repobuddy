@@ -102,6 +102,17 @@ already has, use the `review-permissions` skill instead. This step only adds a s
 2. **Build the candidates in four tiers.** Use only commands that exist on this machine and in this
    repo. Read each package script before offering it; a script is only as safe as what it runs.
 
+   For Claude Code, the script lists the safe and good-to-have entries and the deny groups, filtered
+   to the detected hosts, the package managers on PATH, this repo's scripts, and the entries the user
+   already has (`alreadyPresent`):
+
+   ```bash
+   node <this-skill-dir>/scripts/permission-candidates.mjs --project <repo> [--host <kind>]...
+   ```
+
+   It reads hosts from the git remotes; pass `--host` for a self-hosted one. The tiers below say why
+   each entry is in its tier. For Cursor and Codex, translate its entries to their syntax.
+
    - **Safe:** read-only, so allow it anywhere. For Claude Code, leave out commands in its built-in
      read-only set (`ls`, `cat`, `grep`, read-only `git`), which runs without a prompt in every mode;
      host CLI reads such as `gh pr view` are not in it.
@@ -157,7 +168,8 @@ already has, use the `review-permissions` skill instead. This step only adds a s
    | Forgejo | `fj pr view`, `fj issue view`, `fj repo view`, `fj whoami` |
    | Azure DevOps | `az repos pr list`, `az repos pr show`, `az pipelines runs list`, `az pipelines runs show`, `az account show` |
 
-   For `tea` and `fj`, check each subcommand against the CLI's `--help` before you offer it. Their
+   `permission-candidates.mjs` emits this table; a test keeps the two in step. For `tea` and `fj`,
+   check each subcommand against the CLI's `--help` before you offer it. Their
    commands change between releases. Never offer a bare `az *`, because `az` controls the whole Azure
    account.
 
@@ -205,7 +217,8 @@ if the user declines. The candidates and what each one misses are in
    reworded command gets past them. `Read(...)` denies do not stop a script from reading the file; the
    sandbox or a hook does. Deny beats allow. The reference has the details and the mode behavior.
 2. **Show the candidates** by group: force push, bypass merge, repo delete, API delete, recursive
-   delete, publish, Changesets publish, and secrets, with only the detected hosts' entries in each. Give one line per entry on what it blocks. Leave out entries the user
+   delete, publish, Changesets publish, and secrets, with only the detected hosts' entries in each.
+   They are the `deny` groups from `permission-candidates.mjs`. Give one line per entry on what it blocks. Leave out entries the user
    already has.
 3. **Let the user pick** groups or single entries, and the scope. Suggest user scope for the secrets
    group.
@@ -221,19 +234,21 @@ the rubric, the discovery commands, and the rule templates.
 
 1. **Say how the pieces fit.** Permission rules resolve before the classifier, auto mode drops broad
    allow rules, ask still prompts, deny still blocks, and `autoMode` is read from user settings only.
-2. **Read what is there** with `claude auto-mode config`. Flag template text left in an entry, and
-   `autoMode` in a project settings file, where it is ignored.
-3. **Discover the environment** with `gh`: the namespaces the user owns or administers, and each one's
-   visibility. Ask for branch protection, toolchain, release path, host containment, and local
-   services, with what this repo shows as the draft.
-4. **Draft the entries.** One Source control entry holds the namespace list; every other entry and
-   rule refers to it as "my namespaces".
+2. **Read what is there** with `scripts/auto-mode.mjs check`. Flag template text left in an entry,
+   and `autoMode` in a project settings file, where it is ignored.
+3. **Discover the environment** with `auto-mode.mjs discover`: the namespaces the user owns or
+   administers, each one's visibility, and this repo's branch rules and release signals. Ask for
+   branch protection, toolchain, release path, host containment, and local services, with what it
+   found as the draft.
+4. **Draft the entries** with `auto-mode.mjs render`. One Source control entry holds the namespace
+   list; every other entry and rule refers to it as "my namespaces".
 5. **Offer `autoMode.allow` rules** only where the defaults are too strict for this user: the merge
    rule from the [advanced tier](references/advanced-tier.md#merges-in-auto-mode-automodeallow), the
    queued-merge rule, and the force-push rule for `--force-with-lease`.
 6. **Explain each line** as explicit or default, with the rubric's row.
-7. **Write only what was approved** to `~/.claude/settings.json`: show the diff, append, keep
-   `"$defaults"`, then confirm with `claude auto-mode config`.
+7. **Write only what was approved** with `auto-mode.mjs apply`: it shows the change first, then on
+   `--write` appends to `~/.claude/settings.json`, keeps `"$defaults"`, writes the rules' deny entries
+   with them, and with `--verify` confirms with `claude auto-mode config`.
 
 ## Record the setup
 

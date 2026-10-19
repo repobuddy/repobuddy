@@ -37,7 +37,9 @@ Gets a machine ready to work with a repository's git host. It detects the OS and
    If one is active, it shows you and asks whether you still want the CLI.
 5. **Installs the CLI** with the option that fits your machine. It prefers the vendor's official package, shows the commands first, and asks you to run `sudo` commands yourself when they need a password.
 6. **Walks you through login.** Logins are interactive, so it gives you the command to run (`! gh auth login`), then checks the result.
-7. **Proposes an allow list** for Claude Code, Cursor CLI, or Codex CLI, in four tiers:
+7. **Proposes an allow list** for Claude Code, Cursor CLI, or Codex CLI, in four tiers. The
+   candidate entries come from `scripts/permission-candidates.mjs`, filtered to your hosts, the package
+   managers you have, this repo's scripts, and the entries you already have:
 
    | Tier | What goes in it | Examples |
    |---|---|---|
@@ -154,6 +156,10 @@ Gets a machine ready to work with a repository's git host. It detects the OS and
    `claude auto-mode config`. When you join a new organization, run it again to refresh the namespace
    entry.
 
+   The script `scripts/auto-mode.mjs` does the mechanical parts, so they come out the same every run:
+   `check` reads what is set, `discover` asks `gh`, `render` words the entries and rules, and `apply`
+   writes them (only with `--write`, after you approve the change it printed).
+
 10. **Records the setup.** In a repo, it writes `.agents/repobuddy/init-buddy.json` with the date, the
    hosts it set up, and whether you declined. The file is kept out of git through `.git/info/exclude`,
    because setup differs per clone and machine. If your global instructions have no reminder yet, it
@@ -214,7 +220,9 @@ the skill alone:
 npx skills add repobuddy/repobuddy --skill init-buddy
 ```
 
-A skill installed with `skills add` comes from git and has no built `scripts/` folder. It runs its
-script through `npx -y repobuddy@3.0.0` instead, which needs network access. The plugin install
+A skill installed with `skills add` comes from git. The `auto-mode.mjs` and
+`permission-candidates.mjs` scripts are committed, so they are there. `detect-env.mjs` is built only
+for the npm package, so the skill runs it through `npx -y repobuddy@3.0.0` instead, which needs
+network access. The plugin install
 ships the script with the skill. The `gh-api-guard` hook has no `npx` fallback, because a hook runs on every
 `gh api` or `glab api` call; install the plugin, or copy the script out of the npm package, to use it.

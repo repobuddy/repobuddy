@@ -21,7 +21,9 @@
 			"!.github/scripts/min-release-age.mjs",
 			// Compiled by `plugin build` from packages/buddy/src/skills/; committed, never edited.
 			"!packages/buddy/skills/to-question/scripts",
-			"!packages/buddy/skills/review-permissions/scripts"
+			"!packages/buddy/skills/review-permissions/scripts",
+			"!packages/buddy/skills/init-buddy/scripts/auto-mode.mjs",
+			"!packages/buddy/skills/init-buddy/scripts/permission-candidates.mjs"
 		]
 	},
 	"formatter": {

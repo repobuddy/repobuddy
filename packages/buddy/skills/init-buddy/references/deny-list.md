@@ -28,6 +28,10 @@ Tell the user these four things before they pick. Do not soften them.
 
 ## Entries (Claude Code)
 
+`scripts/permission-candidates.mjs` emits these entries, filtered to the detected hosts, the package
+managers on PATH, and whether the repo uses Changesets. A test keeps it and this table in step: change
+an entry in both.
+
 | Group | Entries | Note |
 |---|---|---|
 | Force push | `Bash(git push --force *)`, `Bash(git push -f *)`, `Bash(git push * --force)`, `Bash(git push * --force *)`, `Bash(git push * -f)`, `Bash(git push * -f *)`, `Bash(git push * +*)` | Blocks a plain `--force` or `-f` before, between, or after the arguments, and a `+refspec` such as `git push origin +main`. The space before each `*` keeps `--force-with-lease` and `--force-if-includes` allowed: they refuse to overwrite commits the agent has not seen, and they are how it updates a rebased PR branch. A rule that leaves a `*` at the end also matches the bare flag (`git push --force`) only when that `*` is its only wildcard, so a flag at the end of the command needs the `* --force` and `* -f` forms. A prefix rule cannot tell `main` from a feature branch: `main` is protected by the forge's branch rules and, in auto mode, by the classifier. A combined flag (`-uf`) still gets past. An existing `Bash(git push --force*)` already blocks these and the lease push too; this skill only appends, so leave it, and point the user to `review-permissions`, which flags it for the swap |
