@@ -41,8 +41,12 @@ Gets a machine ready to work with a repository's git host. It detects the OS and
    | Tier | What goes in it | Examples |
    |---|---|---|
    | Safe | read-only commands | `git status`, `gh pr view`, `glab mr list`, the repo's `test` and `lint` scripts |
-   | Good to have | local writes that git can undo | `git add`, `git commit`, `git mv`, format scripts |
+   | Good to have | local writes that git can undo | `git add`, `git commit`, `git mv`, `git stash push` and `apply`, format scripts |
    | Ask every time | remote, destructive, or open-ended commands, never proposed | `git push`, `gh pr merge`, `gh api`, `npx`, `git stash drop` |
+
+   The stash is split by subcommand. `git stash *` would also admit `drop`, `clear`, and `pop` on a
+   stash stack every worktree shares, so the skill offers `push`, `list`, `show`, and `apply`, and
+   `git config --global rebase.autoStash true` so most rebases need no stash.
    | Advanced (opt-in, Claude Code only) | a riskier entry, offered only when you ask, and written only together with its guard | `gh pr merge --auto`, `glab mr merge --auto-merge`, or `az repos pr update --auto-complete true` when the host requires a check or pipeline; `gh api` and `glab api` reads through a read-only token or the `gh-api-guard` hook |
 
    You pick the entries. Each one goes where its safety comes from. Entries that are safe in any repo
@@ -103,7 +107,8 @@ Gets a machine ready to work with a repository's git host. It detects the OS and
    (`--force-with-lease` stays allowed, so the agent can update a rebased branch),
    each detected host's merge bypass (`gh pr merge --admin`, `az repos pr … --bypass-policy`, a Gitea
    `force_merge`), repo delete (`gh`, `glab`, `az`, `tea`, `fj`), API DELETE requests (`gh api`,
-   `glab api`, `tea api`), `rm -rf` and its variants, package publish, and reading secrets (`.env*`,
+   `glab api`, `tea api`), `rm -rf` and its variants, package publish (including `changeset publish`
+   run through `pnpm`, `npx`, or `yarn`, which `Bash(changeset publish*)` alone misses), and reading secrets (`.env*`,
    `~/.ssh`, `~/.aws`, `~/.npmrc`, and each host CLI's login file). You pick
    the groups or entries. It only appends; it never removes or loosens a deny entry you already have.
 

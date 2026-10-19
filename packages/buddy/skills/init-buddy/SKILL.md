@@ -101,12 +101,18 @@ already has, use the `review-permissions` skill instead. This step only adds a s
    repo. Read each package script before offering it; a script is only as safe as what it runs.
 
    - **Safe:** read-only, so allow it anywhere.
-     - git: `git status`, `git diff`, `git log`, `git show`, `git branch`, `git stash list`
+     - git: `git status`, `git diff`, `git log`, `git show`, `git branch`, `git stash list *`,
+       `git stash show *`
      - the host CLI's read commands, from the table below
      - the repo's check scripts that only read (`test`, `lint`, `check`, `typecheck`), run through
        its package manager (`pnpm test *`, `npm run lint *`)
    - **Good to have:** writes, but stays local and can be undone. Say the condition with each one.
-     - `git add *`, `git mv *`, `git stash push *`: the change stays in the working tree or index
+     - `git add *`, `git mv *`: the change stays in the working tree or index
+     - `git stash push *` and `git stash apply *`: the stash keeps the change, and `apply` leaves the
+       entry in place. Never offer `git stash *`, which also admits `drop`, `clear`, and `pop`, on a
+       stash stack that every worktree of the repo shares. Offer
+       `git config --global rebase.autoStash true` with them, so a rebase stashes and restores on its
+       own and most rebases need no stash. It changes the user's global git config: show it and ask
      - `git commit *`: recoverable until pushed. It also covers `--no-verify` and `--amend`, so offer it
        only where commit hooks are not the user's last check
      - format or fix scripts (`pnpm format *`, `pnpm check:fix *`): they rewrite files, which git can restore
@@ -117,7 +123,8 @@ already has, use the `review-permissions` skill instead. This step only adds a s
      - raw API access: `gh api *`, `glab api *`, `tea api *`, `az devops invoke`, and `az rest` can send
        any POST, PATCH, or DELETE the credential allows
      - commands that run code chosen at call time: `npx`, `pnpm dlx`, `bash -c`, `node -e`
-     - destructive local commands: `git stash drop`, `git stash clear`, `git reset --hard`, `git clean`
+     - destructive local commands: `git stash drop`, `git stash clear`, `git stash pop` (it drops the
+       entry, which may be another worktree's), `git reset --hard`, `git clean`
      - any bare wildcard such as `Bash(git *)` or `Bash(gh *)`
    - **Advanced (opt-in):** offer only when the user asks, and only for Claude Code. Each entry names
      its risk and comes with the guard that makes it acceptable. Read
@@ -193,7 +200,7 @@ if the user declines. The candidates and what each one misses are in
    reworded command gets past them. `Read(...)` denies do not stop a script from reading the file; the
    sandbox or a hook does. Deny beats allow. The reference has the details and the mode behavior.
 2. **Show the candidates** by group: force push, bypass merge, repo delete, API delete, recursive
-   delete, publish, and secrets, with only the detected hosts' entries in each. Give one line per entry on what it blocks. Leave out entries the user
+   delete, publish, Changesets publish, and secrets, with only the detected hosts' entries in each. Give one line per entry on what it blocks. Leave out entries the user
    already has.
 3. **Let the user pick** groups or single entries, and the scope. Suggest user scope for the secrets
    group.
