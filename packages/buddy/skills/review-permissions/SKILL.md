@@ -13,7 +13,7 @@ This skill **reads and recommends**. It never widens a grant, and it never edits
 
 | Harness | Files (user scope first) | Carries |
 | --- | --- | --- |
-| Claude Code | `~/.claude/settings.json`, `<repo>/.claude/settings.json`, `<repo>/.claude/settings.local.json`, `/etc/claude-code/managed-settings.json` | `permissions.allow/deny/ask`, `defaultMode`, `additionalDirectories`, hooks, MCP servers |
+| Claude Code | `~/.claude/settings.json`, `<repo>/.claude/settings.json`, `<repo>/.claude/settings.local.json`, `/etc/claude-code/managed-settings.json` | `permissions.allow/deny/ask`, `defaultMode`, `additionalDirectories`, `autoMode`, hooks, MCP servers |
 | Cursor CLI | `~/.cursor/cli-config.json`, `<repo>/.cursor/cli.json` | `permissions.allow/deny`, `approvalMode`, `sandbox` |
 | Codex CLI | `~/.codex/config.toml` | `approval_policy`, `sandbox_mode`, `sandbox_workspace_write`, `[projects.*] trust_level`, MCP servers |
 | Copilot CLI | `~/.copilot/config.json` | tool allow/deny, trusted folders |
@@ -32,6 +32,8 @@ A harness the scanner does not know is not a harness with no permissions. If the
 
    `<this-skill-dir>` is the directory holding this SKILL.md, **not** the current working directory — a bare `scripts/…` path resolves against wherever you happen to be. Drop `--json` for the readable form; add `--all-scopes` to include enterprise-managed files.
 
+   Ask first whether the user runs Claude Code in auto mode. If they do and no settings file sets `permissions.defaultMode` to `"auto"` (they switch with Shift+Tab or start with `--permission-mode auto`), add `--mode auto`, so the scanner runs its auto-mode pass.
+
    The scanner reports `findings` (risk-ranked), `consolidation` (duplicates, subsumed rules, merge and scope candidates), `inventory` (every rule it parsed) and `notes` (files it could not read). Read the **inventory too** — the scanner grades by pattern and knows nothing about this repo, so its silence is not a clearance.
 
 2. **Re-judge every finding against the repo.** The scanner supplies the catalog; you supply the context. A `pnpm build` grant is only as safe as `package.json`'s build script, and a rule naming a script that no longer exists is dead weight to delete. Check what allowed commands actually run before you defend or condemn them.
@@ -44,11 +46,18 @@ A harness the scanner does not know is not a harness with no permissions. If the
    - **Hooks and MCP servers.** Both run code outside the allowlist's reach — hooks fire around tool calls with no prompt, and a server-wide MCP grant covers tools that server has not shipped yet.
    - **Staleness.** A grant added for one afternoon's task that has been live ever since.
 
-4. **Rank.** Sort by what the grant *permits*, not by how it was worded, and state the worst plausible outcome for anything high or critical.
+4. **Place rules by mode.** The same rule does different work in different modes. In Claude Code's auto mode ([decision order](https://code.claude.com/docs/en/permission-modes#how-auto-mode-evaluates-actions), [auto mode config](https://code.claude.com/docs/en/auto-mode-config)):
+   - **A matching allow rule resolves before the classifier.** An allow entry for an outward-facing command (push, merge, `gh api`, `gh workflow run`, release, publish, deploy) swaps the classifier's check of repo, branch, and PR for a text match (`auto-outward-allow`). Recommend removing it from `allow`: the classifier then judges the command, an `ask` rule gets a person every time, and an `autoMode.allow` rule makes an exception (`init-buddy` drafts them). For a merge command, say that the built-in "Merge Without Review" block and any `autoMode.allow` merge rule never see it, so a bypass such as `--admin` is stopped only by the deny list.
+   - **Broad rules are dropped while auto mode is active**: `Bash(*)`, wildcarded interpreters, package-manager run commands, `Agent`, and `Monitor` (`auto-dropped-allow`). They return in other modes, so judge them for those.
+   - **`autoMode` is read only from user and managed settings.** A block in a project file does nothing (`automode-ignored`). A `soft_deny` or `hard_deny` list without `"$defaults"` discards the built-in rules (`automode-no-defaults`). An entry with template text left in it tells the classifier nothing (`automode-template-text`).
 
-5. **Report** in the shape below.
+   In every other mode an outward-facing allow rule is ranked as the risk catalog says, and the prompt it skips was the only check.
 
-6. **Propose the change as a diff.** Show the exact edited file content, say which scope each rule should live at, and ask before writing. If the user approves, apply the edits and re-run the scanner to confirm the result.
+5. **Rank.** Sort by what the grant *permits*, not by how it was worded, and state the worst plausible outcome for anything high or critical.
+
+6. **Report** in the shape below.
+
+7. **Propose the change as a diff.** Show the exact edited file content, say which scope each rule should live at, and ask before writing. If the user approves, apply the edits and re-run the scanner to confirm the result.
 
 ## Consolidation rules
 

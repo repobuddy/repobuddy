@@ -32,6 +32,11 @@ If you want fewer prompts rather than tighter permissions, that is a different r
 
 Modes, sandboxes, trusted folders, writable roots, hooks, and MCP servers count as permissions too.
 
+In Claude Code's auto mode, a matching allow rule resolves before the classifier. When `defaultMode` is `auto`, or you
+pass `--mode auto`, the review flags allow rules for outward-facing commands (push, merge, `gh api`, release, publish),
+broad rules auto mode drops, `autoMode` blocks in project files where they are ignored, `soft_deny` or `hard_deny` lists
+without `"$defaults"`, and template text left in an `autoMode` entry.
+
 ## What it produces
 
 - Risks ranked critical through info. Blanket modes and disabled sandboxes rank above single rules.
@@ -46,7 +51,7 @@ is reachable.
 Node.js. The scanner is committed with the skill, so a git install has it:
 
 ```sh
-node ./scripts/scan-permissions.mjs [<repo>] [--json] [--all-scopes]
+node ./scripts/scan-permissions.mjs [<repo>] [--json] [--all-scopes] [--mode auto]
 ```
 
 Paths are relative to the skill directory. It only reads, and exits 0 whenever the scan succeeded.

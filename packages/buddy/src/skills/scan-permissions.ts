@@ -2,7 +2,7 @@
 /**
  * Collect and assess the permissions a user has granted to their agent harnesses.
  *
- *   node scripts/scan-permissions.mjs [projectDir] [--json] [--all-scopes]
+ *   node scripts/scan-permissions.mjs [projectDir] [--json] [--all-scopes] [--mode <mode>]
  *
  * Reads the permission-bearing config files of every harness it can find — Claude Code,
  * Cursor CLI, Codex CLI, Copilot CLI, Gemini CLI, OpenCode — at user, project, local and
@@ -11,6 +11,10 @@
  *   findings       risk-ranked grants, blanket modes, and scope-hygiene problems
  *   consolidation  duplicates, rules subsumed by a broader rule, and merge candidates
  *   inventory      every rule it parsed, so the agent can reason about what it did not flag
+ *
+ * `--mode auto` says the user runs Claude Code in auto mode even where no settings file sets
+ * `defaultMode`. In auto mode the scan also checks the `autoMode` block and flags allow rules
+ * that skip the classifier.
  *
  * Exit 0 always when the scan itself succeeded — findings are data, not failure. Exit 2 on
  * bad usage. The risk levels are a first pass by pattern; they are deliberately conservative
@@ -21,13 +25,26 @@ import { existsSync, readFileSync } from 'node:fs'
 import { homedir, platform } from 'node:os'
 import { join, resolve } from 'node:path'
 
+const USAGE = 'usage: node scripts/scan-permissions.mjs [projectDir] [--json] [--all-scopes] [--mode <mode>]\n'
 const argv = process.argv.slice(2)
 const asJson = argv.includes('--json')
 const allScopes = argv.includes('--all-scopes')
-const positional = argv.filter((a) => !a.startsWith('--'))
+let modeFlag: string | undefined
+const positional: string[] = []
+for (let i = 0; i < argv.length; i++) {
+	const a = argv[i]!
+	if (a === '--mode') {
+		modeFlag = argv[++i]
+		if (!modeFlag) {
+			process.stderr.write(USAGE)
+			process.exit(2)
+		}
+	} else if (a.startsWith('--mode=')) modeFlag = a.slice('--mode='.length)
+	else if (!a.startsWith('--')) positional.push(a)
+}
 
 if (positional.length > 1) {
-	process.stderr.write('usage: node scripts/scan-permissions.mjs [projectDir] [--json] [--all-scopes]\n')
+	process.stderr.write(USAGE)
 	process.exit(2)
 }
 
@@ -90,6 +107,9 @@ const rules: Rule[] = [] // { harness, scope, file, effect: allow|deny|ask, tool
 const findings: Finding[] = [] // { level, code, title, detail, where, fix }
 const notes = []
 const scanned = []
+/** Claude Code auto mode: set by a `defaultMode` of `auto` in any settings file, or `--mode auto`. */
+let autoModeSeen = modeFlag === 'auto'
+const autoModeBlocks: { src: Source; block: Cfg }[] = []
 
 const LEVELS = ['critical', 'high', 'medium', 'low', 'info']
 const rank = (l: string) => LEVELS.indexOf(l)
@@ -206,6 +226,8 @@ const extractors: Record<string, (src: Source, cfg: Cfg) => void> = {
 		extractPermissionsBlock(src, p)
 		const where = `${src.harness} ${src.scope} (${src.file})`
 		if (p.defaultMode) assessMode('defaultMode', p.defaultMode, where)
+		if (p.defaultMode === 'auto') autoModeSeen = true
+		if (cfg.autoMode && typeof cfg.autoMode === 'object') autoModeBlocks.push({ src, block: cfg.autoMode })
 		for (const dir of p.additionalDirectories ?? []) assessExtraDir(dir, where)
 		if (cfg.enableAllProjectMcpServers === true)
 			addFinding(
@@ -455,6 +477,12 @@ const COMMAND_RISK: [RegExp, string, string][] = [
 		'rewrites published history, but refuses to overwrite commits the pusher has not seen',
 	],
 	[/\bgit\s+(reset\s+--hard|clean\b|checkout\s+--\s|restore\b)/, 'high', 'discards uncommitted work irrecoverably'],
+	[/\bgit\s+stash\s+(drop|clear|pop)\b/, 'high', 'discards stashed work, on a stash stack every worktree shares'],
+	[
+		/^\s*git\s+stash\s*[*:]*\s*$/,
+		'medium',
+		'admits `drop`, `clear`, and `pop` on a stash stack every worktree of the repo shares; grant `push`, `list`, `show`, and `apply` instead',
+	],
 	[
 		/\b(gh|glab)\s+(repo\s+delete|release|pr\s+merge|workflow\s+run|secret|auth)/,
 		'high',
@@ -716,6 +744,143 @@ function analyzeDenyBaseline() {
 		)
 }
 
+// ── auto mode (Claude Code) ───────────────────────────────────────────────────
+// Sources: https://code.claude.com/docs/en/permission-modes#how-auto-mode-evaluates-actions and
+// https://code.claude.com/docs/en/auto-mode-config. A matching allow rule resolves before the
+// classifier, auto mode drops broad allow rules while it is active, and the classifier reads
+// `autoMode` only from user settings, managed settings, and `--settings`.
+
+/** Commands that act on a remote or reach other people. */
+const OUTWARD =
+	/\bgit\s+push\b|\b(gh\s+pr\s+merge|glab\s+mr\s+merge|tea\s+pulls\s+merge|fj\s+pr\s+merge|az\s+repos\s+pr\s+update)\b|\b(gh|glab|tea)\s+api\b|\bgh\s+workflow\s+run\b|\b(gh|glab)\s+release\b|\b(npm|pnpm|yarn|bun)\s+(\S+\s+)?publish\b|\bchangeset\s+publish\b|\bdeploy\b/
+const MERGE = /\b(gh\s+pr\s+merge|glab\s+mr\s+merge|tea\s+pulls\s+merge|fj\s+pr\s+merge|az\s+repos\s+pr\s+update)\b/
+/** A whole host or git CLI behind one wildcard covers its push, merge, and API commands too. */
+const OUTWARD_CLI = /^\s*(git|gh|glab|tea|fj|az)\s*[*:]+\s*$/
+
+/** The broad rules the docs say auto mode drops, or null when the rule stays in effect. */
+function droppedInAutoMode(rule: Rule) {
+	if (rule.tool === 'Agent' || rule.tool === 'Monitor') return `\`${rule.tool}\` allow rules`
+	if (rule.tool !== 'Bash' && rule.tool !== 'PowerShell') return null
+	const arg = rule.arg.trim()
+	if (arg === '' || /^\*+$/.test(arg)) return `blanket \`${rule.tool}(*)\``
+	if (/^(python3?|node|ruby|perl|php|deno|bash|sh|zsh)\s*[*:]+$/.test(arg)) return 'a wildcarded interpreter'
+	if (/^(npm|pnpm|yarn|bun)\s+run\s*[*:]+$/.test(arg)) return 'a package-manager run command'
+	return null
+}
+
+/**
+ * Words that mark an entry as a template nobody filled in. They are tested on the entry with its
+ * code spans removed, and an angle placeholder inside a path or URL (`~/code/<repo>`) is syntax,
+ * not a blank.
+ */
+const TEMPLATE_TEXT = [
+	/\{[A-Z][A-Z0-9_]*[,}]/,
+	/(?<![/\w])<[a-z][a-z -]*>(?![/\w])/,
+	/\b(TODO|TBD)\b/,
+	/\bsay so here\b/i,
+	/\bfill (this |it )?in\b/i,
+	/\breplace (this|with)\b/i,
+]
+
+function analyzeAutoMode() {
+	const userBlocks = autoModeBlocks.filter((b) => b.src.scope === 'user' || b.src.scope === 'enterprise')
+	for (const { src } of autoModeBlocks) {
+		if (src.scope !== 'project' && src.scope !== 'local') continue
+		addFinding(
+			'medium',
+			'automode-ignored',
+			'An `autoMode` block sits in a project settings file, where the classifier ignores it',
+			'Claude Code reads `autoMode` only from `~/.claude/settings.json`, managed settings, and `--settings`, so a repo cannot grant itself exceptions. None of these entries reach the classifier.',
+			`${src.harness} ${src.scope} (${src.file})`,
+			'Move the entries you want to `~/.claude/settings.json` and delete the block here.',
+		)
+	}
+	for (const { src, block } of userBlocks) {
+		const where = `${src.harness} ${src.scope} (${src.file})`
+		for (const key of ['soft_deny', 'hard_deny']) {
+			const list = block[key]
+			if (!Array.isArray(list) || list.includes('$defaults')) continue
+			addFinding(
+				'high',
+				'automode-no-defaults',
+				`\`autoMode.${key}\` replaces the built-in rules`,
+				`A \`${key}\` list without \`"$defaults"\` discards every built-in ${key === 'soft_deny' ? 'soft block, including force push, `curl | bash`, production deploys, and auto-mode bypass' : 'hard block, including data exfiltration'}.`,
+				where,
+				`Add \`"$defaults"\` to \`autoMode.${key}\`, unless you copied every built-in rule in on purpose (\`claude auto-mode defaults\` prints them).`,
+			)
+		}
+		for (const key of ['environment', 'allow']) {
+			const list = block[key]
+			if (!Array.isArray(list)) continue
+			for (const entry of list) {
+				if (typeof entry !== 'string' || entry === '$defaults') continue
+				const prose = entry.replace(/`[^`]*`/g, '')
+				if (!TEMPLATE_TEXT.some((re) => re.test(prose))) continue
+				addFinding(
+					'low',
+					'automode-template-text',
+					`\`autoMode.${key}\` entry still holds template text: "${entry.length > 80 ? `${entry.slice(0, 77)}...` : entry}"`,
+					'The classifier reads the entry as written, placeholders and instructions included, so it tells the classifier nothing about your setup.',
+					where,
+					'Fill it in, or remove it (`init-buddy` drafts environment entries from `gh`).',
+				)
+			}
+		}
+	}
+
+	if (!autoModeSeen) {
+		if (userBlocks.length)
+			addFinding(
+				'info',
+				'automode-mode-unknown',
+				'`autoMode` is configured, but no settings file sets `defaultMode` to `auto`',
+				'If you start sessions in auto mode (`--permission-mode auto`, or Shift+Tab), allow rules for outward-facing commands skip its classifier.',
+				userBlocks.map(({ src }) => `${src.harness} ${src.scope} (${src.file})`).join(', '),
+				'Re-run with `--mode auto` to check them.',
+			)
+		return
+	}
+
+	const classifyAllShell = userBlocks.some(({ block }) => block.classifyAllShell === true)
+	const shellAllows = rules.filter((r) => r.harness === 'claude-code' && r.effect === 'allow')
+	if (classifyAllShell)
+		addFinding(
+			'info',
+			'automode-classify-all-shell',
+			'`autoMode.classifyAllShell` suspends every Bash and PowerShell allow rule in auto mode',
+			'The classifier judges every shell command, so the shell allow rules apply only in other modes.',
+			userBlocks.map(({ src }) => `${src.harness} ${src.scope} (${src.file})`).join(', '),
+			'Nothing to change. Each shell command now costs a classifier call.',
+		)
+
+	for (const rule of shellAllows) {
+		const where = `${rule.harness} ${rule.scope} (${rule.file})`
+		const dropped = droppedInAutoMode(rule)
+		if (dropped) {
+			addFinding(
+				'info',
+				'auto-dropped-allow',
+				`\`${rule.raw}\` has no effect in auto mode`,
+				`Auto mode drops ${dropped} while it is active, and restores it when the session leaves auto mode.`,
+				where,
+				'Keep it only if you need it in other modes.',
+			)
+			continue
+		}
+		if (classifyAllShell || (rule.tool !== 'Bash' && rule.tool !== 'PowerShell')) continue
+		if (!OUTWARD.test(rule.arg) && !OUTWARD_CLI.test(rule.arg)) continue
+		const merge = MERGE.test(rule.arg) || OUTWARD_CLI.test(rule.arg)
+		addFinding(
+			'medium',
+			'auto-outward-allow',
+			`\`${rule.raw}\` skips the auto-mode classifier`,
+			`A matching allow rule resolves before the classifier, so this outward-facing command runs on a text match, without the classifier's check of which repo, branch, or PR it touches.${merge ? ' For a merge, the built-in Merge Without Review block and any `autoMode.allow` merge rule never see it, and a bypass flag such as `--admin` is stopped only by the deny list.' : ''}`,
+			where,
+			'Remove it from `permissions.allow` and leave the command to the classifier. Add it to `permissions.ask` if you want a person every time, or an `autoMode.allow` rule for an exception (`init-buddy` drafts them).',
+		)
+	}
+}
+
 // ── run ───────────────────────────────────────────────────────────────────────
 
 for (const src of SOURCES) {
@@ -758,6 +923,7 @@ for (const rule of rules) {
 
 analyzeConsolidation()
 analyzeDenyBaseline()
+analyzeAutoMode()
 
 findings.sort((a, b) => rank(a.level) - rank(b.level))
 

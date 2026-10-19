@@ -24,6 +24,16 @@ Allowlists grow by accident. Every "always allow" click adds a line, nothing eve
 
 Modes and sandboxes count as permissions too, so `defaultMode`, `approval_policy`, `sandbox_mode`, `approvalMode`, `autoAccept`, trusted folders, writable roots, hooks, and MCP servers are all in scope — an allowlist means nothing underneath a mode that skips the check.
 
+## Auto mode
+
+In Claude Code's auto mode, a matching allow rule resolves before the classifier, so the review places each rule by mode. With `defaultMode: "auto"` in a settings file, or `--mode auto` when you switch to it by hand, it also flags:
+
+- allow rules for outward-facing commands (push, merge, `gh api`, `gh workflow run`, release, publish), which skip the classifier's check of repo, branch, and PR; it suggests leaving them to the classifier, or an `ask` rule if you want a person every time
+- broad rules auto mode drops while it is active (`Bash(*)`, `Bash(python*)`, `npm run *`, `Agent`, `Monitor`)
+- an `autoMode` block in a project settings file, where the classifier ignores it
+- a `soft_deny` or `hard_deny` list without `"$defaults"`, which discards the built-in rules
+- template text left in an `autoMode.environment` or `autoMode.allow` entry
+
 ## Running the scanner yourself
 
 ```bash
@@ -31,6 +41,7 @@ Modes and sandboxes count as permissions too, so `defaultMode`, `approval_policy
 node ./scripts/scan-permissions.mjs                 # readable report for the current repo
 node ./scripts/scan-permissions.mjs <repo> --json   # parseable: findings, consolidation, inventory
 node ./scripts/scan-permissions.mjs --all-scopes    # include enterprise-managed files
+node ./scripts/scan-permissions.mjs --mode auto      # you run Claude Code in auto mode
 ```
 
 It reads only; it never writes a config file. Exit code is 0 whenever the scan itself succeeded — findings are data, not failure.
