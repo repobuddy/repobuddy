@@ -1,6 +1,6 @@
 ---
 name: init-buddy
-description: "Use this skill when setting up gh, glab, or another git host CLI here, when one is missing or logged out, or when seeding a harness allow or deny list for it."
+description: "Use this skill when installing or logging in a git host CLI (gh, glab), or seeding its allow, deny, or auto-mode rules."
 argument-hint: "[github|gitlab|bitbucket|azure|gitea|forgejo[=hostname]]"
 ---
 
@@ -18,6 +18,8 @@ for the read-only commands the agent runs most, and a deny list for the commands
 - The user asks whether their machine is ready to work with a git host
 - "Stop asking me before every `gh pr view`": set up a starting allow list
 - "Never let the agent force push or publish": set up a deny list
+- "I run Claude Code in auto mode": write its environment and rules
+- "I joined a new org": refresh the auto-mode environment
 - The global reminder says this repo has no `.agents/repobuddy/init-buddy.json` marker
 
 ## Detect
@@ -100,7 +102,9 @@ already has, use the `review-permissions` skill instead. This step only adds a s
 2. **Build the candidates in four tiers.** Use only commands that exist on this machine and in this
    repo. Read each package script before offering it; a script is only as safe as what it runs.
 
-   - **Safe:** read-only, so allow it anywhere.
+   - **Safe:** read-only, so allow it anywhere. For Claude Code, leave out commands in its built-in
+     read-only set (`ls`, `cat`, `grep`, read-only `git`), which runs without a prompt in every mode;
+     host CLI reads such as `gh pr view` are not in it.
      - git: `git status`, `git diff`, `git log`, `git show`, `git branch`, `git stash list *`,
        `git stash show *`
      - the host CLI's read commands, from the table below
@@ -158,7 +162,8 @@ already has, use the `review-permissions` skill instead. This step only adds a s
    account.
 
 3. **Show the tiers.** Show safe, good to have, and ask-every-time. Add advanced only if the user
-   asked for it. List every candidate as entry, tier, and a one-line reason. Leave out entries
+   asked for it. For a Claude Code user in auto mode, say that an allow entry skips the classifier, so
+   outward-facing commands stay out of it; the [auto-mode step](#set-up-auto-mode) places them. List every candidate as entry, tier, and a one-line reason. Leave out entries
    the user already has. If an existing entry is broader or riskier than the tiers allow, point to
    `review-permissions`. Do not change it here.
 
@@ -206,6 +211,29 @@ if the user declines. The candidates and what each one misses are in
    group.
 4. **Append only.** Show the diff and ask before you write. Never remove, reorder, or loosen an existing
    deny entry, and never turn a deny into an ask or an allow. Read the file back and parse it after writing.
+
+## Set up auto mode
+
+Claude Code only. Offer this when the user runs it in auto mode (`permissions.defaultMode` is `"auto"`, or they
+start sessions in it), asks about it, or joined a new organization since the last run. It is optional;
+skip it if the user declines. Read [references/auto-mode.md](references/auto-mode.md) first: it has
+the rubric, the discovery commands, and the rule templates.
+
+1. **Say how the pieces fit.** Permission rules resolve before the classifier, auto mode drops broad
+   allow rules, ask still prompts, deny still blocks, and `autoMode` is read from user settings only.
+2. **Read what is there** with `claude auto-mode config`. Flag template text left in an entry, and
+   `autoMode` in a project settings file, where it is ignored.
+3. **Discover the environment** with `gh`: the namespaces the user owns or administers, and each one's
+   visibility. Ask for branch protection, toolchain, release path, host containment, and local
+   services, with what this repo shows as the draft.
+4. **Draft the entries.** One Source control entry holds the namespace list; every other entry and
+   rule refers to it as "my namespaces".
+5. **Offer `autoMode.allow` rules** only where the defaults are too strict for this user: the merge
+   rule from the [advanced tier](references/advanced-tier.md#merges-in-auto-mode-automodeallow), the
+   queued-merge rule, and the force-push rule for `--force-with-lease`.
+6. **Explain each line** as explicit or default, with the rubric's row.
+7. **Write only what was approved** to `~/.claude/settings.json`: show the diff, append, keep
+   `"$defaults"`, then confirm with `claude auto-mode config`.
 
 ## Record the setup
 
@@ -275,7 +303,8 @@ List them only. Never run them.
 ## Out of scope
 
 - Installing, enabling, or editing MCP servers
-- Editing harness config beyond the allow entries, deny entries, and `gh-api-guard` hook the user approved
+- Editing harness config beyond the allow entries, deny entries, `autoMode` entries, and `gh-api-guard`
+  hook the user approved
 - Writing to a global instruction file. The reminder line is handed over, never written
 - Auditing or tightening an existing allow list (that is `review-permissions`)
 - Storing, printing, or moving tokens
@@ -291,6 +320,7 @@ List them only. Never run them.
 - Atlassian remote MCP server: https://github.com/atlassian/atlassian-mcp-server
 - Claude Code permissions: https://code.claude.com/docs/en/permissions
 - Claude Code permission modes: https://code.claude.com/docs/en/permission-modes
+- Claude Code auto mode config: https://code.claude.com/docs/en/auto-mode-config
 - Claude Code hooks: https://code.claude.com/docs/en/hooks
 - Cursor hooks: https://cursor.com/docs/agent/hooks
 - Codex hooks: https://developers.openai.com/codex/hooks
