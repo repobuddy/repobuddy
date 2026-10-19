@@ -99,6 +99,14 @@ describe('check', () => {
 		expect(r.sourceControl).toBe('Source control: the GitHub organization acme')
 	})
 
+	it('exits 1 on a settings file that is not JSON', async () => {
+		const home = tempDir()
+		mkdirSync(join(home, '.claude'))
+		writeFileSync(join(home, '.claude', 'settings.json'), '{ not json')
+		await expect(main(['check', '--project', tempDir(), '--home', home])).rejects.toThrow('exit 1')
+		expect(stderr.join('')).toMatch(/could not parse/)
+	})
+
 	it('works with no settings at all', async () => {
 		const r = await run(['check', '--project', tempDir(), '--home', tempDir()])
 		expect(r.settingsExists).toBe(false)
@@ -189,6 +197,39 @@ describe('discover', () => {
 		expect(r.errors[0]).toMatch(/read:org/)
 		expect(r.branch).toBeNull()
 		expect(r.refresh.missing).toBeNull()
+	})
+
+	it('reads classic branch protection, and says when it cannot', async () => {
+		const view = 'repo view --json nameWithOwner,defaultBranchRef --jq [.nameWithOwner, .defaultBranchRef.name] | @tsv'
+		const base = {
+			'api user --jq .login': 'octo-dev\n',
+			'api --paginate user/memberships/orgs --jq .[] | [.organization.login, .role, .state] | @tsv': '',
+			[repoList('octo-dev')]: { stderr: 'HTTP 502' },
+			[view]: 'octo-dev/site\tmain\n',
+			'api repos/octo-dev/site/rules/branches/main': '[]',
+		}
+		fakeGh({
+			...base,
+			'api repos/octo-dev/site/branches/main/protection': JSON.stringify({
+				required_status_checks: { contexts: ['ci'], checks: [{ context: 'ci' }, { context: 'lint' }] },
+				required_pull_request_reviews: { required_approving_review_count: 1 },
+				allow_force_pushes: { enabled: false },
+			}),
+		})
+		const r = await run(['discover', '--project', tempDir(), '--home', tempDir()])
+		expect(r.branch).toMatchObject({
+			requiredChecks: ['ci', 'lint'],
+			requiredReviews: 1,
+			forcePushBlocked: true,
+			classicProtection: 'present',
+		})
+		expect(r.namespaces[0].visibility).toBeUndefined()
+		expect(r.errors[0]).toMatch(/gh repo list octo-dev failed/)
+
+		stdout = []
+		fakeGh({ ...base, 'api repos/octo-dev/site/branches/main/protection': { stderr: 'gh: Forbidden (HTTP 403)' } })
+		const forbidden = await run(['discover', '--project', tempDir(), '--home', tempDir()])
+		expect(forbidden.branch.classicProtection).toBe('unreadable')
 	})
 
 	it('exits 1 when gh is not logged in', async () => {

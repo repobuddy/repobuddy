@@ -453,7 +453,9 @@ function apply(entries, home, write, verify) {
 			["environment", back.autoMode?.environment],
 			["allow", back.autoMode?.allow],
 			["deny", back.permissions?.deny]
-		]) if ([...added[key], ...replaced.filter((r) => r.list === key).map((r) => r.new)].some((item) => !list?.includes(item))) throw new RunError(`${file} lost ${key} entries on write`);
+		]) if ([...added[key], ...replaced.filter((r) => r.list === key).map((r) => r.new)].some((item) => !list?.includes(item)))
+ /* istanbul ignore next -- defensive read-back: a write that drops entries cannot be staged in a test */
+		throw new RunError(`${file} lost ${key} entries on write`);
 		wrote = true;
 	}
 	if (verify && wrote) {
