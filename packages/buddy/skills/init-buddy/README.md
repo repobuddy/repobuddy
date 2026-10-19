@@ -1,6 +1,6 @@
 # init-buddy
 
-Gets a machine ready to work with a repository's git host. It detects the OS and package managers, checks the host's CLI, and finds any MCP server already configured for the host. Then it installs and logs in the CLI you want. Last, it offers a starting allow list so your agent harness stops prompting for the read-only commands it runs most, and a deny list for the commands it should never run.
+Gets a machine ready to work with a repository's git host. It detects the OS and package managers, checks the host's CLI, and finds any MCP server already configured for the host. Then it installs and logs in the CLI you want. Last, it offers a starting allow list so your agent harness stops prompting for the read-only commands it runs most, a deny list for the commands it should never run, and, for Claude Code in auto mode, the environment and rules its classifier reads.
 
 ## When to use
 
@@ -10,6 +10,7 @@ Gets a machine ready to work with a repository's git host. It detects the OS and
 - "is my machine ready to work with Azure DevOps?"
 - "stop asking me before every `gh pr view`"
 - "never let the agent force push or publish"
+- "I run Claude Code in auto mode" / "I joined a new org"
 
 ## What it does
 
@@ -129,7 +130,31 @@ Gets a machine ready to work with a repository's git host. It detects the OS and
    command (`git push origin --force`) cannot be expressed. Codex has no read-deny rule; its sandbox
    decides what a command can read.
 
-9. **Records the setup.** In a repo, it writes `.agents/repobuddy/init-buddy.json` with the date, the
+9. **Sets up auto mode (Claude Code only).** If you run Claude Code in auto mode, it explains how
+   the pieces fit: allow, ask, and deny rules resolve before the classifier, auto mode drops broad
+   allow rules such as `Bash(*)`, and `autoMode` is read only from `~/.claude/settings.json` (and
+   managed settings), never from a project file. Then it:
+
+   - reads your effective config with `claude auto-mode config`, and flags template text left in an
+     entry (`{COMPANY_NAME}`, `<owners>`, "say so here") and `autoMode` blocks in project files, where
+     they are ignored
+   - asks `gh` which namespaces you own or administer (`gh api user/memberships/orgs`) and each one's
+     visibility (`gh repo list`), and asks you for branch protection, toolchain, release path, host
+     containment, and local services
+   - drafts `autoMode.environment` entries, with the namespace list in one entry that the others call
+     "my namespaces"
+   - offers `autoMode.allow` rules where the defaults are too strict for you: the merge rule, a
+     queued-merge rule for repos that require checks, and a `--force-with-lease` rule for a
+     non-default branch
+   - keeps outward-facing commands (push, merge, `gh api`, `gh workflow run`, release) out of your
+     allow list, because an allow entry skips the classifier
+   - says for each line whether it is written explicitly or left to the defaults, and why
+
+   It shows the diff, appends to `~/.claude/settings.json`, and checks the result with
+   `claude auto-mode config`. When you join a new organization, run it again to refresh the namespace
+   entry.
+
+10. **Records the setup.** In a repo, it writes `.agents/repobuddy/init-buddy.json` with the date, the
    hosts it set up, and whether you declined. The file is kept out of git through `.git/info/exclude`,
    because setup differs per clone and machine. If your global instructions have no reminder yet, it
    gives you one line for `~/.agents/AGENTS.md`, limited to the owners you name, for you to add
@@ -137,7 +162,7 @@ Gets a machine ready to work with a repository's git host. It detects the OS and
    never runs it unasked. A repo where you declined stays quiet. Your harness reads that file only if
    its own user-level file loads it (on Claude Code, `~/.claude/CLAUDE.md`).
 
-10. **Lists the next setup skills.** It ends with the other installed skills that set up a repo, one line
+11. **Lists the next setup skills.** It ends with the other installed skills that set up a repo, one line
    each, grouped by what they touch. It lists them; it never runs them. It leaves out itself and any
    skill already set up here. On a GitHub repo, the `setup-github-repo` line mentions its merge backstop,
    which tests every merge, including one an agent runs, against the latest default branch.
@@ -169,7 +194,7 @@ metadata:
 - It never asks you to paste a token into the chat.
 - It does not install, enable, or edit MCP servers, and does not change repository settings.
 - It never writes to your global instruction file. The reminder line is handed to you to add.
-- It only adds allow and deny entries you approved. It never removes an entry or a deny rule, and never adds a remote or destructive command unless you name it and confirm it. An advanced entry is written only with its guard. To audit the allow list you already have, use [`review-permissions`](https://github.com/repobuddy/repobuddy/blob/main/packages/buddy/skills/review-permissions/README.md).
+- It only adds allow, deny, and `autoMode` entries you approved. It never removes an entry or a deny rule, and never adds a remote or destructive command unless you name it and confirm it. An advanced entry is written only with its guard. To audit the allow list you already have, use [`review-permissions`](https://github.com/repobuddy/repobuddy/blob/main/packages/buddy/skills/review-permissions/README.md).
 - It does not run `curl | sh` installers beyond the ones it lists by name. The one listed, Microsoft's Azure CLI script for Debian/Ubuntu, is shown to you before it runs.
 
 ## How to invoke
@@ -178,7 +203,7 @@ Ask for it directly, or run `/init-buddy [github|gitlab|bitbucket|azure|gitea|fo
 
 ## What it produces
 
-An installed, logged-in CLI for each host you chose, a summary of the environment and of the MCP servers already available, and, if you accepted, the allow and deny entries (and the `gh-api-guard` hook) you approved, written to the scope you picked, a local setup marker for the repo, and a reminder line for you to add to `~/.agents/AGENTS.md`.
+An installed, logged-in CLI for each host you chose, a summary of the environment and of the MCP servers already available, and, if you accepted, the allow and deny entries (and the `gh-api-guard` hook) you approved, written to the scope you picked, the `autoMode` entries you approved in `~/.claude/settings.json`, a local setup marker for the repo, and a reminder line for you to add to `~/.agents/AGENTS.md`.
 
 ## Install
 
