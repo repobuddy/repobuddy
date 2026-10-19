@@ -97,3 +97,135 @@ describe('scan-permissions.mjs force-push handling', () => {
 		expect(report.findings.some((f) => f.code === 'deny-overmatch')).toBe(false)
 	})
 })
+
+type Settings = Record<string, unknown>
+
+/** Scan a throwaway project with Claude Code settings at user, project, and local scope. */
+function scanScopes(files: { user?: Settings; project?: Settings; local?: Settings }, args: string[] = []): Report {
+	const root = mkdtempSync(join(tmpdir(), 'review-permissions-'))
+	dirs.push(root)
+	const home = join(root, 'home')
+	const project = join(root, 'project')
+	mkdirSync(join(home, '.claude'), { recursive: true })
+	mkdirSync(join(project, '.claude'), { recursive: true })
+	if (files.user) writeFileSync(join(home, '.claude', 'settings.json'), JSON.stringify(files.user))
+	if (files.project) writeFileSync(join(project, '.claude', 'settings.json'), JSON.stringify(files.project))
+	if (files.local) writeFileSync(join(project, '.claude', 'settings.local.json'), JSON.stringify(files.local))
+	const r = spawnSync('node', [SCANNER, project, '--json', ...args], {
+		encoding: 'utf8',
+		env: { ...process.env, HOME: home, USERPROFILE: home },
+	})
+	expect(r.status).toBe(0)
+	return JSON.parse(r.stdout)
+}
+
+const codes = (report: Report, code: string) => report.findings.filter((f) => f.code === code)
+
+describe('scan-permissions.mjs auto mode', () => {
+	const outward = [
+		'Bash(git push *)',
+		'Bash(gh pr merge *)',
+		'Bash(gh api *)',
+		'Bash(gh workflow run *)',
+		'Bash(gh release create *)',
+		'Bash(pnpm publish *)',
+		'Bash(pnpm changeset publish *)',
+		'Bash(gh *)',
+	]
+
+	it('flags outward-facing allow rules when defaultMode is auto', () => {
+		const report = scanScopes({
+			user: { permissions: { defaultMode: 'auto', allow: [...outward, 'Bash(git add *)', 'Bash(gh pr view *)'] } },
+		})
+		const flagged = codes(report, 'auto-outward-allow').map((f) => f.title)
+		for (const raw of outward) expect(flagged.some((t) => t.includes(raw))).toBe(true)
+		expect(flagged.some((t) => t.includes('git add'))).toBe(false)
+		expect(flagged.some((t) => t.includes('gh pr view'))).toBe(false)
+	})
+
+	it('says a merge allow rule hides the merge from the classifier', () => {
+		const report = scanScopes({ user: { permissions: { defaultMode: 'auto', allow: ['Bash(gh pr merge *)'] } } })
+		const [merge] = codes(report, 'auto-outward-allow')
+		expect(merge?.fix).toContain('permissions.ask')
+		expect(JSON.stringify(merge)).toContain('Merge Without Review')
+	})
+
+	it('flags outward-facing allow rules when --mode auto is passed', () => {
+		const report = scanScopes({ user: { permissions: { allow: ['Bash(git push *)'] } } }, ['--mode', 'auto'])
+		expect(codes(report, 'auto-outward-allow')).toHaveLength(1)
+		const eq = scanScopes({ user: { permissions: { allow: ['Bash(git push *)'] } } }, ['--mode=auto'])
+		expect(codes(eq, 'auto-outward-allow')).toHaveLength(1)
+	})
+
+	it('does not flag outward-facing allow rules outside auto mode', () => {
+		const report = scanScopes({ user: { permissions: { allow: ['Bash(git push *)'] } } })
+		expect(codes(report, 'auto-outward-allow')).toHaveLength(0)
+	})
+
+	it('notes that classifyAllShell suspends the shell allow rules instead', () => {
+		const report = scanScopes({
+			user: { permissions: { defaultMode: 'auto', allow: ['Bash(git push *)'] }, autoMode: { classifyAllShell: true } },
+		})
+		expect(codes(report, 'auto-outward-allow')).toHaveLength(0)
+		expect(codes(report, 'automode-classify-all-shell')).toHaveLength(1)
+	})
+
+	it('names the broad rules auto mode drops', () => {
+		const report = scanScopes({
+			user: {
+				permissions: {
+					defaultMode: 'auto',
+					allow: ['Bash(*)', 'Bash(python*)', 'Bash(npm run *)', 'Agent', 'Monitor', 'Bash(npm test)'],
+				},
+			},
+		})
+		const dropped = codes(report, 'auto-dropped-allow').map((f) => f.title)
+		expect(dropped).toHaveLength(5)
+		expect(dropped.some((t) => t.includes('npm test'))).toBe(false)
+	})
+
+	it('flags an autoMode block in project settings, where the classifier ignores it', () => {
+		const report = scanScopes({
+			project: { autoMode: { allow: ['$defaults', 'anything'] } },
+			local: { autoMode: { environment: ['Source control: acme'] } },
+		})
+		expect(codes(report, 'automode-ignored')).toHaveLength(2)
+	})
+
+	it('flags soft_deny or hard_deny lists that drop the built-in rules', () => {
+		const report = scanScopes({
+			user: { autoMode: { soft_deny: ['Never touch prod'], hard_deny: ['$defaults', 'x'], environment: ['y'] } },
+		})
+		const dropped = codes(report, 'automode-no-defaults')
+		expect(dropped).toHaveLength(1)
+		expect(dropped[0]?.title).toContain('soft_deny')
+		expect(dropped[0]?.level).toBe('high')
+	})
+
+	it('flags template text left in an environment or allow entry', () => {
+		const report = scanScopes({
+			user: {
+				autoMode: {
+					environment: [
+						'$defaults',
+						'Organization: {COMPANY_NAME}',
+						'Host containment: if it runs in a container, say so here',
+						'Source control: the GitHub organization acme',
+					],
+					allow: [
+						'$defaults',
+						'Merging in a repo owned by <owners>',
+						'Checkouts live at `~/code/<namespace>/<repo>`, and app settings at https://github.com/organizations/<org>/settings',
+					],
+				},
+			},
+		})
+		expect(codes(report, 'automode-template-text')).toHaveLength(3)
+	})
+
+	it('flags a git stash wildcard, which admits drop and clear', () => {
+		const report = scan({ allow: ['Bash(git stash *)', 'Bash(git stash push *)'] })
+		expect(levelOf(report, 'Bash(git stash *)')).toBe('medium')
+		expect(levelOf(report, 'Bash(git stash push *)')).toBe('low')
+	})
+})
