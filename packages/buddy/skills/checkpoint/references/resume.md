@@ -1,10 +1,10 @@
-# `session resume`: resume a session from its checkpoint
+# `checkpoint resume`: resume a session from its checkpoint
 
 Arguments: `[checkpoint slug or path | repo path]`.
 
-Pick up work that `session pause` checkpointed: find the checkpoint, reload its context, and continue
+Pick up work that `checkpoint create` checkpointed: find the checkpoint, reload its context, and continue
 from its `## NEXT` without going back over what it records as settled. The checkpoint may have been
-paused from a session in another repo: `session pause` writes each topic to its home repo, so a topic
+paused from a session in another repo: `checkpoint create` writes each topic to its home repo, so a topic
 that drifted in elsewhere is already here.
 
 ## Procedure
@@ -36,7 +36,7 @@ that drifted in elsewhere is already here.
    [Claude Code](harness/claude-code.md), [Codex](harness/codex.md),
    [Gemini CLI](harness/gemini.md), [Copilot CLI](harness/copilot.md),
    [Cursor](harness/cursor.md). For any other harness, give the fresh-session form: `cd <repo-root>`,
-   then start the harness with a prompt that runs `session resume <slug>`.
+   then start the harness with a prompt that runs `checkpoint resume <slug>`.
 
    **If none is paused** but one has `status: resumed`, the session that resumed it may have ended
    without pausing again. Name it and ask before opening it.
@@ -88,5 +88,5 @@ that drifted in elsewhere is already here.
 8. **Delete it when the work is done.** A checkpoint is a handoff, not a record. Once its goal is met,
    move anything worth keeping into a commit message, an ADR or an issue, then delete the file. Use
    `git rm` if it was committed, and commit the deletion along with the work's final unit. If the
-   session ends before the goal is met, run `session pause` to rewrite `## NEXT` instead of leaving a
+   session ends before the goal is met, run `checkpoint create` to rewrite `## NEXT` instead of leaving a
    stale one behind.

@@ -17,7 +17,7 @@ One unit per shipped skill.
 | [work-references](./work-references/README.md) | The level checks, body templates, and tracker contract the level skills load by name |
 
 Skills present in `skills/` with no unit here are **not yet backfilled** — `agent-readiness`,
-`init-buddy`, `min-release-age`, `session`, `setup-github-repo`, `setup-npm-trusted-publishing`, `website`. They are a
+`init-buddy`, `min-release-age`, `checkpoint`, `setup-github-repo`, `setup-npm-trusted-publishing`, `website`. They are a
 standing worklist, not a claim that they are unspecified by design.
 
 `merge-dep-prs` is **partially** backfilled: its unit specifies the merge gate and nothing else. The

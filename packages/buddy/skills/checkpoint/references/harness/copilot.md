@@ -12,7 +12,7 @@ Give the user these lines to type in this session, then stop:
 ```
 /cd <repo-root>
 /env
-/session resume <slug>
+/checkpoint resume <slug>
 ```
 
 `/env` lists the instructions and skills that are loaded. If they still come from the previous repo,
@@ -24,7 +24,7 @@ fallback.
 Start a fresh session in the repo:
 
 ```sh
-copilot -C <repo-root> -i "/session resume <slug>"
+copilot -C <repo-root> -i "/checkpoint resume <slug>"
 ```
 
 `-C DIRECTORY` changes the working directory before doing anything else. `-i PROMPT` starts an interactive

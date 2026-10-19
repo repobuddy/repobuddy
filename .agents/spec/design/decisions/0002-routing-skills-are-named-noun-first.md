@@ -5,7 +5,7 @@
 
 ## Decision
 
-A **routing skill** is named after the noun it manages, bare: `session`, `issue`, `epic`. A routing
+A **routing skill** is named after the noun it manages, bare: `checkpoint`, `issue`, `epic`. A routing
 skill is one whose body routes a request to one of several modes, such as create, promote, or
 demote, each with its own steps.
 
@@ -14,7 +14,7 @@ A skill that runs a single procedure keeps a verb-noun name: `review-api`, `add-
 
 ## Why
 
-- **The modes outgrow any one verb.** `session` already covers pausing and resuming; it replaced two
+- **The modes outgrow any one verb.** `checkpoint` already covers creating and resuming; it replaced two
   verb-named skills (`pause-session`, `resume-session`). An `epic` skill plans, promotes, and
   demotes. A verb name would describe one mode and mislead about the rest.
 - **New modes become rows, not skills.** Adding "close" or "re-parent" to `issue` adds a row to its

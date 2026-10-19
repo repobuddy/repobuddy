@@ -58,7 +58,7 @@ Skills that need a deterministic step run a bundled script. See [Skill scripts](
 | Skill | Use it to |
 | --- | --- |
 | [`init-buddy`](/repobuddy/skills/init-buddy/) | Install and log in the git host CLI, and seed a harness allow and deny list |
-| [`session`](/repobuddy/skills/session/) | Pause work into checkpoints and resume them in a fresh session |
+| [`checkpoint`](/repobuddy/skills/checkpoint/) | Pause work into checkpoints and resume them in a fresh session |
 
 ## Which harnesses
 

@@ -1,6 +1,6 @@
-# session
+# checkpoint
 
-Hand work between agent sessions. `pause` writes a checkpoint per topic that a fresh session can pick
+Hand work between agent sessions. `create` writes a checkpoint per topic that a fresh session can pick
 up without going back over settled ground; `resume` picks one up and continues from its next step. A
 topic that drifted into another repo is checkpointed in that repo, ready for a session started there.
 
@@ -17,16 +17,16 @@ topic that drifted into another repo is checkpointed in that repo, ready for a s
 ## Usage
 
 ```
-/session pause [what the next session should focus on] [--commit]
-/session resume [checkpoint slug or path | repo path]
-/session help
+/checkpoint create [what the next session should focus on] [--commit]
+/checkpoint resume [checkpoint slug or path | repo path]
+/checkpoint help
 ```
 
-Natural phrasing routes too: "let's stop here" pauses, "pick up the auth refactor" resumes. A bare
-`/session` shows the help. The name differs from the `/resume` built into Claude Code, Codex, Copilot
+Natural phrasing routes too: "let's stop here" creates a checkpoint, "pick up the auth refactor" resumes. A bare
+`/checkpoint` shows the help. The name differs from the `/resume` built into Claude Code, Codex, Copilot
 CLI and Gemini CLI, so it doesn't collide with it.
 
-## `pause`
+## `create`
 
 1. Lists every request you made in the session, in order, including the ones it hasn't started, then
    sorts them into topics: independent threads such as a bug fix, a side refactor or a research
@@ -82,18 +82,18 @@ which checkpoints into the mission's plan brief instead.
 5. Deletes the checkpoint once the work is done, not when it resumes. On resume it only marks the file
    `status: resumed`, so if the resumed session dies before pausing again, the state is still there.
 
-Give it another repo's path instead (`/session resume ../other-repo`) and it lists that repo's paused
+Give it another repo's path instead (`/checkpoint resume ../other-repo`) and it lists that repo's paused
 checkpoints, lets you pick, and hands back what to type to resume there. It never runs `cd` itself,
 because a shell `cd` leaves the session on this repo's working directory, instructions, skills and
 permissions.
 
 | Harness | Moves the live session? | Hand-off |
 | --- | --- | --- |
-| Claude Code | Yes: `/cd` (v2.1.246+) | `/cd <repo>` then `/session resume <slug>`; fresh `claude` session as fallback |
-| Codex CLI | Yes: `/cd` (0.150.0+) | `/cd <repo>` then `$session resume <slug>`; `codex -C <repo>` as fallback |
-| Copilot CLI | Partly: `/cd` changes directory, but no instruction reload is documented | `/cd <repo>`, check `/env`, then `/session resume <slug>`; `copilot -C <repo> -i` as fallback |
+| Claude Code | Yes: `/cd` (v2.1.246+) | `/cd <repo>` then `/checkpoint resume <slug>`; fresh `claude` session as fallback |
+| Codex CLI | Yes: `/cd` (0.150.0+) | `/cd <repo>` then `$checkpoint resume <slug>`; `codex -C <repo>` as fallback |
+| Copilot CLI | Partly: `/cd` changes directory, but no instruction reload is documented | `/cd <repo>`, check `/env`, then `/checkpoint resume <slug>`; `copilot -C <repo> -i` as fallback |
 | Gemini CLI | No (`/directory add` only adds a directory) | `cd <repo> && gemini -i "…"` |
-| Cursor | No | `cd <repo> && agent "/session resume <slug>"`, or open the folder in the editor |
+| Cursor | No | `cd <repo> && agent "/checkpoint resume <slug>"`, or open the folder in the editor |
 
 After an in-session move, the previous repo's conversation stays in context. Start a fresh session
 instead if that conversation is long or unrelated. Each harness's exact lines, caveats and sources are
@@ -112,5 +112,5 @@ side.
 ## Install
 
 ```sh
-npx skills add repobuddy/repobuddy --skill session
+npx skills add repobuddy/repobuddy --skill checkpoint
 ```

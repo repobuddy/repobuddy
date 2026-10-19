@@ -1,11 +1,11 @@
 ---
-title: session
+title: checkpoint
 description: Pause agent work into per-topic checkpoints and resume them in a fresh session, in this repo or another.
 ---
 
-`session` hands work between agent sessions. `pause` writes a checkpoint per live topic that a cold session can continue
-from. `resume` picks one up and continues from its next step. It replaces the earlier `pause-session` and
-`resume-session` skills, which were removed with no aliases.
+`checkpoint` hands work between agent sessions. `create` writes a checkpoint per live topic that a cold session can
+continue from. `resume` picks one up and continues from its next step. It was named `session` before 4.0, and replaced
+the earlier `pause-session` and `resume-session` skills. The old names were removed with no aliases.
 
 ## When to use
 
@@ -17,14 +17,14 @@ from. `resume` picks one up and continues from its next step. It replaces the ea
 ## Invoke
 
 ```
-/session pause [what the next session should focus on] [--commit]
-/session resume [checkpoint slug | path | repo path]
-/session help
+/checkpoint create [what the next session should focus on] [--commit]
+/checkpoint resume [checkpoint slug | path | repo path]
+/checkpoint help
 ```
 
-Natural phrasing routes too: "let's stop here" pauses, "pick up the auth refactor" resumes. A bare `/session` shows help.
+Natural phrasing routes too: "let's stop here" creates a checkpoint, "pick up the auth refactor" resumes. A bare `/checkpoint` shows help.
 
-### pause
+### create
 
 - Sorts the session's requests into topics and skips finished work.
 - With several live topics, asks whether to write one checkpoint per topic or one for all, and recommends one. With a
@@ -58,7 +58,7 @@ session started in the repo. Exact lines are in the skill's `references/harness/
 ## Example
 
 ```
-/session pause the flaky login test --commit
+/checkpoint create the flaky login test --commit
 ```
 
-More detail: [skill README](https://github.com/repobuddy/repobuddy/tree/main/packages/buddy/skills/session).
+More detail: [skill README](https://github.com/repobuddy/repobuddy/tree/main/packages/buddy/skills/checkpoint).
