@@ -504,6 +504,7 @@ export function apply(entries: Json, home: string, write: boolean, verify: boole
 					(item) => !list?.includes(item),
 				)
 			)
+				/* istanbul ignore next -- defensive read-back: a write that drops entries cannot be staged in a test */
 				throw new RunError(`${file} lost ${key} entries on write`)
 		wrote = true
 	}

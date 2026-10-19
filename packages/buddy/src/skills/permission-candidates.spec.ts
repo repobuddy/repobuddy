@@ -82,6 +82,11 @@ test('maps https, azure, and codeberg remotes; ignores unknown hosts', async () 
 	assert.deepEqual((await run(['--project', other, '--home', tmp('h')])).hosts, [])
 })
 
+test('a directory that is not a git repo has no hosts', async () => {
+	const r = await run(['--project', tmp('plain'), '--home', tmp('home')])
+	expect(r.hosts).toEqual([])
+})
+
 test('--host repeats and overrides the remote', async () => {
 	const dir = project({ remote: 'git@github.com:acme/widgets.git' })
 	const r = await run(['--project', dir, '--home', tmp('h'), '--host', 'gitlab', '--host', 'gitea'])
