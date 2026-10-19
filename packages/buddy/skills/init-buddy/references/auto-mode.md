@@ -78,8 +78,9 @@ classifier check which PR it is.
    `permissions` keys.
 3. **Look for template text** in the user's own `environment` and `allow` entries: braces such as
    `{COMPANY_NAME}`, angle placeholders such as `<owners>`, `TODO` or `TBD`, and instructions addressed
-   to the reader, such as "say so here", "fill in", or "replace with". Show each entry that has some,
-   say which words are template text, and offer to fill it in from the next step.
+   to the reader, such as "say so here", "fill in", or "replace with". A placeholder inside a code span
+   or a path (`~/code/<repo>`) is syntax, not a blank. Show each entry that has some, say which words
+   are template text, and offer to fill it in from the next step.
 4. **Look for `autoMode` in project settings** (`.claude/settings.json`, `.claude/settings.local.json`).
    Say it is ignored there, and offer to move it to `~/.claude/settings.json`.
 
