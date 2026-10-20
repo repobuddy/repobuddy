@@ -286,8 +286,8 @@ importers:
         specifier: ^7.0.0
         version: 7.0.2
       universal-plugin:
-        specifier: ^0.15.0
-        version: 0.15.0(clibuilder@12.0.0(js-yaml@4.3.2))
+        specifier: ^0.16.0
+        version: 0.16.0(clibuilder@12.0.0(js-yaml@4.3.2))
 
   packages/jest:
     dependencies:
@@ -7502,8 +7502,8 @@ packages:
   unist-util-visit@5.1.0:
     resolution: {integrity: sha512-m+vIdyeCOpdr/QeQCu2EzxX/ohgS8KbnPDgFni4dQsfSCtpz8UqDyY5GjRru8PDKuYn7Fq19j1CQ+nJSsGKOzg==}
 
-  universal-plugin@0.15.0:
-    resolution: {integrity: sha512-5cfC/O73/bjxfhAFxLHPWMWghGfRTiAweOCbkNvqyg7UKpbqShAhfCEdcdULQxCL6Pm88S6svGypeqNirzkwPw==}
+  universal-plugin@0.16.0:
+    resolution: {integrity: sha512-57m57Y3DfwBu2D2XmRdyMgwqEQveD05KEVZ9OKJ0znesXod8xM37vwwHJrgY7rJX5L40y4Ridy/q5ts2PxbpuQ==}
     engines: {node: '>=22'}
     hasBin: true
 
@@ -14879,7 +14879,7 @@ snapshots:
       unist-util-is: 6.0.1
       unist-util-visit-parents: 6.0.2
 
-  universal-plugin@0.15.0(clibuilder@12.0.0(js-yaml@4.3.2)):
+  universal-plugin@0.16.0(clibuilder@12.0.0(js-yaml@4.3.2)):
     dependencies:
       '@cyberuni/agent-harness': 0.7.0(clibuilder@12.0.0(js-yaml@4.3.2))
       '@repobuddy/upx': 0.2.0
