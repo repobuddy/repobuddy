@@ -249,9 +249,6 @@ importers:
       '@clibuilder/plugins':
         specifier: 0.2.0
         version: 0.2.0(clibuilder@12.0.0(js-yaml@4.3.2))
-      '@cyberuni/agent-harness':
-        specifier: ^0.7.0
-        version: 0.7.0(clibuilder@12.0.0(js-yaml@4.3.2))
       '@jest/globals':
         specifier: ^30.0.0
         version: 30.4.1(supports-color@8.1.1)
@@ -267,6 +264,9 @@ importers:
       cross-env:
         specifier: ^10.1.0
         version: 10.1.0
+      cyber-agentkit:
+        specifier: ^1.0.0
+        version: 1.0.0(clibuilder@12.0.0(js-yaml@4.3.2))
       cyber-mux:
         specifier: ^0.10.0
         version: 0.10.0(js-yaml@4.3.2)
@@ -4847,6 +4847,16 @@ packages:
 
   csstype@3.2.3:
     resolution: {integrity: sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==}
+
+  cyber-agentkit@1.0.0:
+    resolution: {integrity: sha512-95fpujPJiR4hvt6klML0tEUwrlmHZ4s4XDaSZHnmyyGsZgWiHARpfr+RSWX2oiVwQtJRbELRsuIL0k/z51kWjw==}
+    engines: {node: '>=22'}
+    hasBin: true
+    peerDependencies:
+      clibuilder: ^12.0.0
+    peerDependenciesMeta:
+      clibuilder:
+        optional: true
 
   cyber-mux@0.10.0:
     resolution: {integrity: sha512-QnBnenL1hfOhL7mXGpRcg54N6wQNpFAbJGceHYIgSAFJkTKgwejZZKIyXT58C/KDiwB4/0rFjkOff94Veqr8fw==}
@@ -11679,6 +11689,10 @@ snapshots:
       rrweb-cssom: 0.8.0
 
   csstype@3.2.3: {}
+
+  cyber-agentkit@1.0.0(clibuilder@12.0.0(js-yaml@4.3.2)):
+    optionalDependencies:
+      clibuilder: 12.0.0(js-yaml@4.3.2)
 
   cyber-mux@0.10.0(js-yaml@4.3.2):
     dependencies:

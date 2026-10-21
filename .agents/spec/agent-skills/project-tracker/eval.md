@@ -29,6 +29,6 @@ Most scenarios assert that a file was or was not written, or that a command ran 
 narrated transcript cannot show that no file was written, so the passes of the decline, show, check,
 no-routing, and no-capabilities scenarios are unproven by the judge. The resolver behavior the
 scenarios rely on (search tagging, qualified names, the ambiguity and missing errors, `where`) was
-tested by hand against `@cyberuni/agent-harness` with a scratch project; the proof run on a fixture, not
+tested by hand against `cyber-agentkit` with a scratch project; the proof run on a fixture, not
 an eval, shows the written routing and the check output. `writes the routing only after the user confirms the summary` states the confirmation in its Given, so it cannot catch a skill that writes before asking; `writes nothing when the user declines the summary` carries that. `ships a Validate section...` is a static
 check of files.

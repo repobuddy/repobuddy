@@ -3,7 +3,7 @@
  * Keeps each skill's `references/` copies equal to the canonical references in
  * `packages/buddy/references/`.
  *
- * The canonical file is the one agent-harness resolves for a plugin. Skills CLI installs copy only
+ * The canonical file is the one cyber-agentkit resolves for a plugin. Skills CLI installs copy only
  * a skill's own folder, so a skill also carries a copy, which the `reference` skill reads when the
  * command cannot run. A skill carries a copy of every canonical reference its `SKILL.md` names in
  * backticks. The copies are generated; edit the canonical file, then run

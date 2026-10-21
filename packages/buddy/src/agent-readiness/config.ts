@@ -1,6 +1,6 @@
 /**
  * Reads readiness's tunables from the reference `repobuddy.readiness`, resolved by
- * `@cyberuni/agent-harness` across the managed, project (`.agents/references/`), user
+ * `cyber-agentkit` across the managed, project (`.agents/references/`), user
  * (`~/.agents/references/`), and plugin tiers. The skill ships the default copy as its plugin layer; a
  * repo overrides the `## Weights` section with `merge: merge-sections` in
  * `.agents/references/repobuddy.readiness.md`. Weights order fixes and area scores, never gates or the
@@ -12,7 +12,7 @@
 
 import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { loadReference } from '@cyberuni/agent-harness'
+import { loadReference } from 'cyber-agentkit'
 import { AREA_WEIGHTS, type WeightedArea, type Weights } from './score.js'
 
 export const REFERENCE = 'repobuddy.readiness'
@@ -104,10 +104,13 @@ export async function readConfig(dir: string, options: ConfigOptions = {}): Prom
 	const warnings: string[] = []
 	let weights: Partial<Weights> = {}
 	if (resolved.status === 'found' && resolved.content !== undefined) {
-		weights = parseWeightsSection(resolved.content, resolved.path ?? REFERENCE)
+		weights = parseWeightsSection(
+			resolved.content,
+			resolved.trace.contributions[resolved.trace.contributions.length - 1]?.path ?? REFERENCE,
+		)
 	}
 	if (existsSync(join(dir, LEGACY_WEIGHTS_FILE))) {
-		if (resolved.layers.some((layer) => layer.tier === 'project')) {
+		if (resolved.trace.layers.some((layer) => layer.tier === 'project' && layer.outcome !== 'missing')) {
 			warnings.push(`${LEGACY_WEIGHTS_FILE} is ignored: ${OVERRIDE_FILE} overrides the weights. Delete it.`)
 		} else {
 			const legacy = readLegacy(dir)

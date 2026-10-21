@@ -11,7 +11,7 @@ Use when asked to scaffold a repo, start a new project or package, set up a repo
 
 ## References
 
-Load these with the `reference` skill in the `cyber-agent-harness` plugin:
+Load these with the `reference` skill in the `cyber-agentkit` plugin:
 
 - `scaffold.contract`: the sections a recipe has, the order of work, and which `contract:` versions it knows.
 

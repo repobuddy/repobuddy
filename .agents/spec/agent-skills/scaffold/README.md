@@ -41,7 +41,7 @@ recipe's `Hosts` stops the skill before any write.
 `Post` step touches a service outside the repository and runs only when accepted, and a failing
 `Verify` check is reported as a failure.
 
-**The skill needs the `reference` command** from the `cyber-agent-harness` plugin. Without it no recipe
+**The skill needs the `reference` command** from the `cyber-agentkit` plugin. Without it no recipe
 can be listed or read, so the skill says so and stops.
 
 ### Non-goals

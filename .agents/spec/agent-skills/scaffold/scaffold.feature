@@ -25,7 +25,7 @@ Feature: scaffold — list the installed recipes and apply one after a single co
 
   @behavior
   Scenario: stops when the reference command cannot run
-    Given the reference command from cyber-agent-harness is not installed
+    Given the reference command from cyber-agentkit is not installed
     When the developer asks scaffold to list recipes
     Then it says the reference command is needed
     And it lists no recipe and writes nothing
