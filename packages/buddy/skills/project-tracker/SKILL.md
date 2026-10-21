@@ -11,7 +11,7 @@ Use when asked to set up where issues go, route bugs and features to different t
 
 ## References
 
-Load these with the `reference` skill in the `cyber-agent-harness` plugin:
+Load these with the `reference` skill in the `cyber-agentkit` plugin:
 
 - `project-tracker.contract`: the formats of the `Routes` and `Moves` tables (its `Routing` section), and which `contract:` versions it knows.
 - `project-tracker.routing`: the project's current routing, when it exists.

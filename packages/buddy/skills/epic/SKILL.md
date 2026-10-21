@@ -23,7 +23,7 @@ Pick the mode from the request. With none clear, ask.
 
 ## References
 
-Load these with the `reference` skill in the `cyber-agent-harness` plugin, so a project's own override applies:
+Load these with the `reference` skill in the `cyber-agentkit` plugin, so a project's own override applies:
 
 - Before any mode: `repobuddy.work-levels` (the level checks), `project-tracker.contract` (what a capabilities reference holds, and the routing's format), and `repobuddy.work-template.epic` (the epic's body).
 - For Demote: `repobuddy.work-template.initiative`, to find the initiative's `Metric`.

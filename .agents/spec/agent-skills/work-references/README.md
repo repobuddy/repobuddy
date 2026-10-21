@@ -11,7 +11,7 @@ concept:
 
 The references the level skills (`issue` today; `epic` and `initiative` later) load by name instead
 of carrying the text themselves, so a project can change one section without editing a skill. They
-ship in `packages/buddy/references/`, the plugin tier agent-harness resolves
+ship in `packages/buddy/references/`, the plugin tier cyber-agentkit resolves
 ([ADR 0003](../../design/decisions/0003-split-file-issue-by-level.md), decision 5).
 
 ## Subject

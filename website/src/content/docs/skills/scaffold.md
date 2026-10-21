@@ -20,7 +20,7 @@ Run `/scaffold`, or ask in plain words. It has two modes: list and scaffold.
 1. **List** finds every `scaffold.recipe.<name>` reference and shows what each produces and which hosts it supports. A recipe on a contract version the skill does not know is left out and named.
 2. **Scaffold** reads the chosen recipe, checks its prerequisites, asks its inputs and the host, and shows the plan. After you confirm, it runs the host's setup skill (such as [`setup-github-repo`](/repobuddy/skills/setup-github-repo/)), writes the files and settings, runs the recipe's checks, and offers each step after the first push one at a time.
 
-The recipe format is the `scaffold.contract` reference, which repobuddy owns. A recipe has the sections `Recipe`, `Inputs`, `Files`, `Config`, `Verify`, and `Post`, and declares `contract: 1` in its frontmatter. A recipe that needs the steps in another order, such as writing its files before the host setup, lists them in an optional `Order` bullet. A plugin adds a recipe without any change to the skill. Loading references needs the `reference` skill from the `cyber-agent-harness` plugin.
+The recipe format is the `scaffold.contract` reference, which repobuddy owns. A recipe has the sections `Recipe`, `Inputs`, `Files`, `Config`, `Verify`, and `Post`, and declares `contract: 1` in its frontmatter. A recipe that needs the steps in another order, such as writing its files before the host setup, lists them in an optional `Order` bullet. A plugin adds a recipe without any change to the skill. Loading references needs the `reference` skill from the `cyber-agentkit` plugin.
 
 ## Asks before acting
 

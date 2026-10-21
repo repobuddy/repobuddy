@@ -28,7 +28,7 @@ native tracker is gone.
 
 **Templates and level checks are references.** The body template for each category is
 `repobuddy.work-template.<category>`, and the checks that say an item is too big or too small are the
-issue sections of `repobuddy.work-levels`. The skill loads them by name through agent-harness, so a
+issue sections of `repobuddy.work-levels`. The skill loads them by name through cyber-agentkit, so a
 project overrides one section with `merge-sections`. The capabilities reference declares the
 `contract:` it follows, and the skill stops on a version `project-tracker.contract` does not name. The
 references are specified in [work-references](../work-references/README.md).

@@ -59,7 +59,7 @@ tracker supplies to the level skills.
 
 ### Settled by testing the resolver
 
-Run against `@cyberuni/agent-harness` with a scratch project and three fake provider packages
+Run against `cyber-agentkit` with a scratch project and three fake provider packages
 (2026-10-11):
 
 - `reference search project-tracker.capabilities` returns a tracker one plugin ships by its bare
