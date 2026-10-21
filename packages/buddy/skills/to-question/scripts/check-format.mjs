@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Compiled by `universal-plugin plugin build` from src/skills/check-format.ts. Edit the source, not this file.
-globalThis.__SKILL_SCRIPT__ = {"package":"repobuddy","bin":"repobuddy","version":"3.0.0","entry":"skills/to-question/scripts/check-format.mjs","commands":{}};
+globalThis.__SKILL_SCRIPT__ = {"package":"repobuddy","bin":"repobuddy","version":"4.0.0","entry":"skills/to-question/scripts/check-format.mjs","commands":{}};
 import { existsSync, readFileSync } from "node:fs";
 //#region src/skills/check-format.ts
 /**

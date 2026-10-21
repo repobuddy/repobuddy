@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Compiled by `universal-plugin plugin build` from src/skills/question-path.ts. Edit the source, not this file.
-globalThis.__SKILL_SCRIPT__ = {"package":"repobuddy","bin":"repobuddy","version":"3.0.0","entry":"skills/to-question/scripts/question-path.mjs","commands":{}};
+globalThis.__SKILL_SCRIPT__ = {"package":"repobuddy","bin":"repobuddy","version":"4.0.0","entry":"skills/to-question/scripts/question-path.mjs","commands":{}};
 import { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
