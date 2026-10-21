@@ -29,7 +29,7 @@ node <this-skill-dir>/scripts/min-release-age.mjs restore [--dry-run]
 ```
 
 The script ships in the `repobuddy` npm package. If `scripts/min-release-age.mjs` is missing (the skill
-was installed from git) or cannot be run, use `npx -y repobuddy@3.0.0 release-age <command>` with the
+was installed from git) or cannot be run, use `npx -y repobuddy@4.0.0 release-age <command>` with the
 same arguments.
 
 It detects the package manager from `packageManager`, then from lockfiles. Pass `--pm pnpm|yarn|npm|bun`
