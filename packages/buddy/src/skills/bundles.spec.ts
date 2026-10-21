@@ -1,5 +1,6 @@
 import { spawnSync } from 'node:child_process'
-import { existsSync } from 'node:fs'
+import { existsSync, mkdtempSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it } from '@jest/globals'
 
@@ -7,6 +8,8 @@ const ROOT = join(import.meta.dirname, '..', '..')
 const MIN_RELEASE_AGE = join(ROOT, 'skills', 'min-release-age', 'scripts', 'min-release-age.mjs')
 const DETECT_ENV = join(ROOT, 'skills', 'init-buddy', 'scripts', 'detect-env.mjs')
 const GH_API_GUARD = join(ROOT, 'skills', 'init-buddy', 'scripts', 'gh-api-guard.mjs')
+const AUTO_MODE = join(ROOT, 'skills', 'init-buddy', 'scripts', 'auto-mode.mjs')
+const PERMISSION_CANDIDATES = join(ROOT, 'skills', 'init-buddy', 'scripts', 'permission-candidates.mjs')
 
 describe('built skill bundles', () => {
 	it('min-release-age.mjs runs standalone and rejects bad usage with exit 2', () => {
@@ -47,5 +50,23 @@ describe('built skill bundles', () => {
 		expect(decisionFor('glab api projects/:id')).toBe('allow')
 		expect(decisionFor('glab api -X DELETE projects/:id')).toBe('ask')
 		expect(decisionFor('git status')).toBe('defer')
+	})
+
+	it('auto-mode.mjs runs standalone: renders entries and rejects bad usage with exit 2', () => {
+		const answers = join(mkdtempSync(join(tmpdir(), 'auto-mode-bundle-')), 'answers.json')
+		writeFileSync(answers, JSON.stringify({ namespaces: [{ owner: 'acme', kind: 'org' }] }))
+		const r = spawnSync('node', [AUTO_MODE, 'render', answers], { encoding: 'utf8' })
+		expect(r.status).toBe(0)
+		expect(JSON.parse(r.stdout).environment[0]).toMatch(/^Source control: my namespaces/)
+		expect(spawnSync('node', [AUTO_MODE, 'nope'], { encoding: 'utf8' }).status).toBe(2)
+	})
+
+	it('permission-candidates.mjs runs standalone and prints parseable JSON', () => {
+		const home = mkdtempSync(join(tmpdir(), 'candidates-bundle-'))
+		const r = spawnSync('node', [PERMISSION_CANDIDATES, '--host', 'github', '--project', home, '--home', home], {
+			encoding: 'utf8',
+		})
+		expect(r.status).toBe(0)
+		expect(JSON.parse(r.stdout).hosts).toEqual(['github'])
 	})
 })

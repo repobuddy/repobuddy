@@ -65,7 +65,7 @@ const config: KnipConfig = {
 				'skills/**/scripts/*.{mjs,mts}',
 				// Sources `plugin build` compiles into those scripts (mapped in plugin.json). The
 				// tsdown-built entries are inferred from tsdown.config.ts; these are not.
-				'src/skills/{check-format,question-path,scan-permissions}.ts',
+				'src/skills/{auto-mode,check-format,permission-candidates,question-path,scan-permissions}.ts',
 				...testEntry,
 			],
 			ignoreDependencies: [

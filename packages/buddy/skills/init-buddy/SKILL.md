@@ -1,6 +1,6 @@
 ---
 name: init-buddy
-description: "Use this skill when setting up gh, glab, or another git host CLI here, when one is missing or logged out, or when seeding a harness allow or deny list for it."
+description: "Use this skill when installing or logging in a git host CLI (gh, glab), or seeding its allow, deny, or auto-mode rules."
 argument-hint: "[github|gitlab|bitbucket|azure|gitea|forgejo[=hostname]]"
 ---
 
@@ -18,6 +18,8 @@ for the read-only commands the agent runs most, and a deny list for the commands
 - The user asks whether their machine is ready to work with a git host
 - "Stop asking me before every `gh pr view`": set up a starting allow list
 - "Never let the agent force push or publish": set up a deny list
+- "I run Claude Code in auto mode": write its environment and rules
+- "I joined a new org": refresh the auto-mode environment
 - The global reminder says this repo has no `.agents/repobuddy/init-buddy.json` marker
 
 ## Detect
@@ -100,13 +102,32 @@ already has, use the `review-permissions` skill instead. This step only adds a s
 2. **Build the candidates in four tiers.** Use only commands that exist on this machine and in this
    repo. Read each package script before offering it; a script is only as safe as what it runs.
 
-   - **Safe:** read-only, so allow it anywhere.
-     - git: `git status`, `git diff`, `git log`, `git show`, `git branch`, `git stash list`
+   For Claude Code, the script lists the safe and good-to-have entries and the deny groups, filtered
+   to the detected hosts, the package managers on PATH, this repo's scripts, and the entries the user
+   already has (`alreadyPresent`):
+
+   ```bash
+   node <this-skill-dir>/scripts/permission-candidates.mjs --project <repo> [--host <kind>]...
+   ```
+
+   It reads hosts from the git remotes; pass `--host` for a self-hosted one. The tiers below say why
+   each entry is in its tier. For Cursor and Codex, translate its entries to their syntax.
+
+   - **Safe:** read-only, so allow it anywhere. For Claude Code, leave out commands in its built-in
+     read-only set (`ls`, `cat`, `grep`, read-only `git`), which runs without a prompt in every mode;
+     host CLI reads such as `gh pr view` are not in it.
+     - git: `git status`, `git diff`, `git log`, `git show`, `git branch`, `git stash list *`,
+       `git stash show *`
      - the host CLI's read commands, from the table below
      - the repo's check scripts that only read (`test`, `lint`, `check`, `typecheck`), run through
        its package manager (`pnpm test *`, `npm run lint *`)
    - **Good to have:** writes, but stays local and can be undone. Say the condition with each one.
-     - `git add *`, `git mv *`, `git stash push *`: the change stays in the working tree or index
+     - `git add *`, `git mv *`: the change stays in the working tree or index
+     - `git stash push *` and `git stash apply *`: the stash keeps the change, and `apply` leaves the
+       entry in place. Never offer `git stash *`, which also admits `drop`, `clear`, and `pop`, on a
+       stash stack that every worktree of the repo shares. Offer
+       `git config --global rebase.autoStash true` with them, so a rebase stashes and restores on its
+       own and most rebases need no stash. It changes the user's global git config: show it and ask
      - `git commit *`: recoverable until pushed. It also covers `--no-verify` and `--amend`, so offer it
        only where commit hooks are not the user's last check
      - format or fix scripts (`pnpm format *`, `pnpm check:fix *`): they rewrite files, which git can restore
@@ -117,7 +138,8 @@ already has, use the `review-permissions` skill instead. This step only adds a s
      - raw API access: `gh api *`, `glab api *`, `tea api *`, `az devops invoke`, and `az rest` can send
        any POST, PATCH, or DELETE the credential allows
      - commands that run code chosen at call time: `npx`, `pnpm dlx`, `bash -c`, `node -e`
-     - destructive local commands: `git stash drop`, `git stash clear`, `git reset --hard`, `git clean`
+     - destructive local commands: `git stash drop`, `git stash clear`, `git stash pop` (it drops the
+       entry, which may be another worktree's), `git reset --hard`, `git clean`
      - any bare wildcard such as `Bash(git *)` or `Bash(gh *)`
    - **Advanced (opt-in):** offer only when the user asks, and only for Claude Code. Each entry names
      its risk and comes with the guard that makes it acceptable. Read
@@ -128,9 +150,11 @@ already has, use the `review-permissions` skill instead. This step only adds a s
        Offer it only when the host's settings require a check or pipeline; with none, it merges at once.
        Not for Gitea, Forgejo, or Bitbucket, whose CLIs cannot queue a merge.
      - Merges in auto mode: an `autoMode.allow` rule in `~/.claude/settings.json`, because auto
-       mode's classifier blocks a merge of an unreviewed PR even when `permissions.allow` lists the
-       command. User scope only; the rule names each detected host's merge commands, its owners, the
-       conditions, and the bypass forms it excludes, with that host's bypass deny entries.
+       mode's classifier blocks a merge of an unreviewed PR. Not a merge command in
+       `permissions.allow`: a matching allow rule resolves before the classifier, so the classifier
+       never judges the merge. User scope only; the rule names each detected host's merge commands,
+       its owners, the conditions, and the bypass forms it excludes, with that host's bypass deny
+       entries.
      - Raw API reads: `gh api` and `glab api` through a read-only token for the session, or the
        `gh-api-guard` hook this skill ships, which allows GET and GraphQL queries and asks for
        everything else
@@ -144,12 +168,14 @@ already has, use the `review-permissions` skill instead. This step only adds a s
    | Forgejo | `fj pr view`, `fj issue view`, `fj repo view`, `fj whoami` |
    | Azure DevOps | `az repos pr list`, `az repos pr show`, `az pipelines runs list`, `az pipelines runs show`, `az account show` |
 
-   For `tea` and `fj`, check each subcommand against the CLI's `--help` before you offer it. Their
+   `permission-candidates.mjs` emits this table; a test keeps the two in step. For `tea` and `fj`,
+   check each subcommand against the CLI's `--help` before you offer it. Their
    commands change between releases. Never offer a bare `az *`, because `az` controls the whole Azure
    account.
 
 3. **Show the tiers.** Show safe, good to have, and ask-every-time. Add advanced only if the user
-   asked for it. List every candidate as entry, tier, and a one-line reason. Leave out entries
+   asked for it. For a Claude Code user in auto mode, say that an allow entry skips the classifier, so
+   outward-facing commands stay out of it; the [auto-mode step](#set-up-auto-mode) places them. List every candidate as entry, tier, and a one-line reason. Leave out entries
    the user already has. If an existing entry is broader or riskier than the tiers allow, point to
    `review-permissions`. Do not change it here.
 
@@ -191,12 +217,38 @@ if the user declines. The candidates and what each one misses are in
    reworded command gets past them. `Read(...)` denies do not stop a script from reading the file; the
    sandbox or a hook does. Deny beats allow. The reference has the details and the mode behavior.
 2. **Show the candidates** by group: force push, bypass merge, repo delete, API delete, recursive
-   delete, publish, and secrets, with only the detected hosts' entries in each. Give one line per entry on what it blocks. Leave out entries the user
+   delete, publish, Changesets publish, and secrets, with only the detected hosts' entries in each.
+   They are the `deny` groups from `permission-candidates.mjs`. Give one line per entry on what it blocks. Leave out entries the user
    already has.
 3. **Let the user pick** groups or single entries, and the scope. Suggest user scope for the secrets
    group.
 4. **Append only.** Show the diff and ask before you write. Never remove, reorder, or loosen an existing
    deny entry, and never turn a deny into an ask or an allow. Read the file back and parse it after writing.
+
+## Set up auto mode
+
+Claude Code only. Offer this when the user runs it in auto mode (`permissions.defaultMode` is `"auto"`, or they
+start sessions in it), asks about it, or joined a new organization since the last run. It is optional;
+skip it if the user declines. Read [references/auto-mode.md](references/auto-mode.md) first: it has
+the rubric, the discovery commands, and the rule templates.
+
+1. **Say how the pieces fit.** Permission rules resolve before the classifier, auto mode drops broad
+   allow rules, ask still prompts, deny still blocks, and `autoMode` is read from user settings only.
+2. **Read what is there** with `scripts/auto-mode.mjs check`. Flag template text left in an entry,
+   and `autoMode` in a project settings file, where it is ignored.
+3. **Discover the environment** with `auto-mode.mjs discover`: the namespaces the user owns or
+   administers, each one's visibility, and this repo's branch rules and release signals. Ask for
+   branch protection, toolchain, release path, host containment, and local services, with what it
+   found as the draft.
+4. **Draft the entries** with `auto-mode.mjs render`. One Source control entry holds the namespace
+   list; every other entry and rule refers to it as "my namespaces".
+5. **Offer `autoMode.allow` rules** only where the defaults are too strict for this user: the merge
+   rule from the [advanced tier](references/advanced-tier.md#merges-in-auto-mode-automodeallow), the
+   queued-merge rule, and the force-push rule for `--force-with-lease`.
+6. **Explain each line** as explicit or default, with the rubric's row.
+7. **Write only what was approved** with `auto-mode.mjs apply`: it shows the change first, then on
+   `--write` appends to `~/.claude/settings.json`, keeps `"$defaults"`, writes the rules' deny entries
+   with them, and with `--verify` confirms with `claude auto-mode config`.
 
 ## Record the setup
 
@@ -266,7 +318,8 @@ List them only. Never run them.
 ## Out of scope
 
 - Installing, enabling, or editing MCP servers
-- Editing harness config beyond the allow entries, deny entries, and `gh-api-guard` hook the user approved
+- Editing harness config beyond the allow entries, deny entries, `autoMode` entries, and `gh-api-guard`
+  hook the user approved
 - Writing to a global instruction file. The reminder line is handed over, never written
 - Auditing or tightening an existing allow list (that is `review-permissions`)
 - Storing, printing, or moving tokens
@@ -282,6 +335,7 @@ List them only. Never run them.
 - Atlassian remote MCP server: https://github.com/atlassian/atlassian-mcp-server
 - Claude Code permissions: https://code.claude.com/docs/en/permissions
 - Claude Code permission modes: https://code.claude.com/docs/en/permission-modes
+- Claude Code auto mode config: https://code.claude.com/docs/en/auto-mode-config
 - Claude Code hooks: https://code.claude.com/docs/en/hooks
 - Cursor hooks: https://cursor.com/docs/agent/hooks
 - Codex hooks: https://developers.openai.com/codex/hooks

@@ -33,7 +33,11 @@ With no argument it uses the repo's git remotes. Natural phrasing works too.
 
 - An installed, logged-in CLI per host. Logins are interactive: it gives you the command (such as `! gh auth login`) and checks the result.
 - Allow list entries in tiers (safe, good to have, ask every time, advanced) for Claude Code, Cursor CLI, or Codex CLI, each written to the scope it is safe in.
-- A deny list (force push, merge bypass, repo delete, API DELETE, `rm -rf`, publish, reading secrets). It only appends.
+- A deny list (force push, merge bypass, repo delete, API DELETE, `rm -rf`, publish including `changeset publish`, reading secrets). It only appends.
+- For Claude Code in auto mode, `autoMode.environment` entries drafted from `gh` (the namespaces you own and each one's
+  visibility) and what you tell it, plus optional `autoMode.allow` rules for merges, queued merges, and
+  `--force-with-lease` pushes. They go in `~/.claude/settings.json`, the only file of yours the classifier reads them from.
+  Each rule comes with whether it is written explicitly or left to Claude Code's defaults, and why.
 - Optionally the `gh-api-guard` hook (Claude Code only), copied to `.claude/hooks/` or `~/.claude/hooks/`.
 - `.agents/repobuddy/init-buddy.json` as a local setup marker, excluded through `.git/info/exclude`.
 - A one-line reminder for `~/.agents/AGENTS.md`, which it hands to you and never writes itself.
@@ -55,6 +59,9 @@ running them. To audit an existing allow list, use [`review-permissions`](/repob
   [Skill scripts](/repobuddy/cli/skill-scripts/).
 - Network access and a package manager to install the CLIs.
 - The `gh-api-guard` hook has no `npx` fallback: install the plugin or copy the script from the npm package.
+- `auto-mode.mjs` (read, discover, word, and write the auto-mode settings) and `permission-candidates.mjs` (the allow
+  and deny candidates) are committed with the skill, so a git install has them. `auto-mode.mjs discover` needs `gh`
+  logged in to GitHub.
 
 ## Example
 
