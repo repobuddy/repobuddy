@@ -61,12 +61,12 @@
 	},
 	"devDependencies": {
 		"@clibuilder/plugins": "0.2.0",
-		"@size-limit/preset-small-lib": "~14.2.0",
+		"@size-limit/preset-small-lib": "~14.3.0",
 		"@types/node": "^24.0.0",
 		"@vitest/coverage-v8": "^5.0.0",
 		"npm-run-all2": "^9.0.0",
 		"rimraf": "~6.1.0",
-		"size-limit": "~14.2.0",
+		"size-limit": "~14.3.0",
 		"typescript": "^7.0.0",
 		"vitest": "^5.0.0"
 	}
