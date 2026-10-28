@@ -1,0 +1,25 @@
+.changeset/biome-preset-field.md
+  s_37b5042da6bdb6::t_c392af6d0b9e3d 1-5
+packages/biome/package.json
+  s_37b5042da6bdb6::t_50f63c19c06974 51
+packages/biome/performant.jsonc
+  s_37b5042da6bdb6::t_0f2aad94d486d7 24
+packages/biome/recommended.jsonc
+  s_37b5042da6bdb6::t_6451b2199f2393 26
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "45a48cdd7be75c87a60d46496636b0ab3e06be37",
+  "prompts": {},
+  "sessions": {
+    "s_37b5042da6bdb6": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "74667bc5-16e8-4130-9195-be715cfd366c",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "unional <homawong@gmail.com>"
+    }
+  }
+}
