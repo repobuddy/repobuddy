@@ -23,7 +23,7 @@
 	"linter": {
 		"enabled": true,
 		"rules": {
-			"recommended": true,
+			"preset": "recommended",
 			"complexity": {
 				// There are advantages of using other constructs,
 				// but they should not be reasons to avoid `.forEach()`.
