@@ -1,5 +1,11 @@
 # @repobuddy/biome
 
+## 2.5.2
+
+### Patch Changes
+
+- 96933b4: Include `CHANGELOG.md` in the published package.
+
 ## 2.5.1
 
 ### Patch Changes

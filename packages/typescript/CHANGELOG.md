@@ -1,5 +1,11 @@
 # @repobuddy/typescript
 
+## 2.3.1
+
+### Patch Changes
+
+- 96933b4: Include `CHANGELOG.md` in the published package.
+
 ## 2.3.0
 
 ### Minor Changes

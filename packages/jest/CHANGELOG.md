@@ -1,5 +1,11 @@
 # @unional/jest-presets
 
+## 7.1.3
+
+### Patch Changes
+
+- 96933b4: Include `CHANGELOG.md` in the published package.
+
 ## 7.1.2
 
 ### Patch Changes

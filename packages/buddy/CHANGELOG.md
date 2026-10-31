@@ -1,5 +1,11 @@
 # repobuddy
 
+## 4.0.1
+
+### Patch Changes
+
+- 96933b4: Include `CHANGELOG.md` in the published package.
+
 ## 4.0.0
 
 ### Major Changes
