@@ -65,7 +65,8 @@
 	"files": [
 		"esm",
 		"src",
-		"!**/*.{spec,unit,test,accept,integrate,learning,system,pref,stress}.*"
+		"!**/*.{spec,unit,test,accept,integrate,learning,system,pref,stress}.*",
+		"CHANGELOG.md"
 	],
 	"scripts": {
 		"build": "tsc -p tsconfig.esm.json",

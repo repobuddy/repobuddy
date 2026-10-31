@@ -40,7 +40,8 @@
 		"nodejs",
 		"src",
 		"tsconfig",
-		"!**/*.{spec,unit,test,accept,integrate,learning,system,pref,stress}.*"
+		"!**/*.{spec,unit,test,accept,integrate,learning,system,pref,stress}.*",
+		"CHANGELOG.md"
 	],
 	"scripts": {
 		"build": "run-p build:esm",
