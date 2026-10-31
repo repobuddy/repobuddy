@@ -394,7 +394,8 @@
 		"matchers",
 		"presets",
 		"src",
-		"!**/*.{spec,unit,test,accept,integrate,learning,system,perf,stress}.*"
+		"!**/*.{spec,unit,test,accept,integrate,learning,system,perf,stress}.*",
+		"CHANGELOG.md"
 	],
 	"scripts": {
 		"build": "run-p build:cjs build:esm",
