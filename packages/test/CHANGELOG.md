@@ -1,5 +1,11 @@
 # @repobuddy/test
 
+## 1.1.3
+
+### Patch Changes
+
+- 96933b4: Include `CHANGELOG.md` in the published package.
+
 ## 1.1.2
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @repobuddy/vitest
 
+## 3.0.2
+
+### Patch Changes
+
+- 96933b4: Include `CHANGELOG.md` in the published package.
+- Updated dependencies [96933b4]
+  - @repobuddy/test@1.1.3
+
 ## 3.0.1
 
 ### Patch Changes

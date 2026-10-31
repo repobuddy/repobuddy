@@ -41,7 +41,7 @@ node <this-skill-dir>/scripts/agent-readiness.mjs suggest [--dir <repo>] [--area
 `<this-skill-dir>` is the directory holding this SKILL.md, not the current working directory.
 
 The script ships in the `repobuddy` npm package. If `scripts/agent-readiness.mjs` is missing (the skill
-was installed from git) or cannot be run, use `npx -y repobuddy@4.0.0 agent-readiness score` with the
+was installed from git) or cannot be run, use `npx -y repobuddy@4.0.1 agent-readiness score` with the
 same arguments.
 
 `score` reads files and asks `git` which files are tracked and ignored. It builds, installs, and runs
