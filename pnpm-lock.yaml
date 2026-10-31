@@ -256,8 +256,8 @@ importers:
         specifier: workspace:*
         version: link:../jest
       buddy-agent-harness:
-        specifier: ^0.21.0
-        version: 0.21.0(typescript@7.0.2)
+        specifier: ^0.22.0
+        version: 0.22.0(js-yaml@4.3.2)
       clibuilder:
         specifier: ^12.0.0
         version: 12.0.0(js-yaml@4.3.2)
@@ -1482,20 +1482,6 @@ packages:
     resolution: {integrity: sha512-y7/yvZ2TPAnR9+jnc00klvNNLkJiXFFrQA/hlLCcxA9a2A4zQIOimyFQ9XfwYKiGD1fb5GY8vbKIIgO8d5Tb2A==}
     engines: {node: '>= 20.12.0'}
 
-  '@clibuilder/axi@0.1.0':
-    resolution: {integrity: sha512-axduLxgCRP33iEPv8AGeFY9xDo0z6LH5JwhqpF/JqNmKo99UNI5rmSLduEjCfgIBc7TRwM1jiV0mBFNPKuLabA==}
-    engines: {node: '>= 20.19'}
-    deprecated: Folded into clibuilder 12. Import the value helpers from "clibuilder/axi" and use the output, error and format support built into clibuilder. See https://clibuilder.github.io/clibuilder/guides/upgrade-to-12/
-    peerDependencies:
-      clibuilder: ^11.0.0
-
-  '@clibuilder/axi@0.2.0':
-    resolution: {integrity: sha512-OdQGC+WX7nJKV3Mu78RX7ZeLFi6OKCcokancO63HznGLEvT4Rh7YonmLya92rtXdsVHsJ9Z8AfOZC5LpM33f8A==}
-    engines: {node: '>= 20.19'}
-    deprecated: Folded into clibuilder 12. Import the value helpers from "clibuilder/axi" and use the output, error and format support built into clibuilder. See https://clibuilder.github.io/clibuilder/guides/upgrade-to-12/
-    peerDependencies:
-      clibuilder: ^11.3.3
-
   '@clibuilder/plugins@0.2.0':
     resolution: {integrity: sha512-gzVujPFtDZteHiZJkltrftk8SqpXBzYxUgZ77MMdx9SdsefuHm5QJyHkGlZpJQgPSND9WTRobCyOLxV1HHLecw==}
     engines: {node: '>= 20.19'}
@@ -1618,11 +1604,6 @@ packages:
   '@ctrl/tinycolor@4.2.0':
     resolution: {integrity: sha512-kzyuwOAQnXJNLS9PSyrk0CWk35nWJW/zl/6KvnTBMFK65gm7U1/Z5BqjxeapjZCIhQcM/DsrEmcbRwDyXyXK4A==}
     engines: {node: '>=14'}
-
-  '@cyberuni/agent-harness@0.6.0':
-    resolution: {integrity: sha512-ELy0pcHiRb9vjaVymBIvCQTDaQTOyliVKEx3MdpiDLeaGAYkhBwgCfoIa/ov/hPFxed4gQdYLBv6O3UTNgr78A==}
-    engines: {node: '>=22'}
-    hasBin: true
 
   '@cyberuni/agent-harness@0.7.0':
     resolution: {integrity: sha512-d3I2Z2sg3JeRcOM6LGO2oPA7dGGxAeRzjEihx8SDkAWzXjOLtMf3umApsu7iej5FxsHkXJpiag7+UubbJdDHsA==}
@@ -4673,8 +4654,8 @@ packages:
   bser@2.1.1:
     resolution: {integrity: sha512-gQxTNE/GAfIIrmHLUE3oJyp5FO6HRBfhjnw4/wMmA63ZGDJnWBmgY/lyQBpnDUkGmAhbSe39tx2d/iTOAfglwQ==}
 
-  buddy-agent-harness@0.21.0:
-    resolution: {integrity: sha512-EvHuXrIMToSu4i5dBf35c9WfQk8a5mM5IMp7ETqQBPp0CsWwDr274JE3qUIEYj50uLtV+pS42HIHT+N97DG8Dg==}
+  buddy-agent-harness@0.22.0:
+    resolution: {integrity: sha512-aYxvB2ih+5sK7HBMahi9By9Z/jXthbH1wh+E3J9z6qwDatnj9EHnB6Vcl1nUOPQFfATTvhGCkCzPxeskySubGw==}
     engines: {node: '>=22'}
     hasBin: true
 
@@ -4786,10 +4767,6 @@ packages:
   cli-width@4.1.0:
     resolution: {integrity: sha512-ouuZd4/dm2Sw5Gmqy6bGyNNNe1qt9RpmxveLSO7KcgsTnU7RXfsw+/bukWGo1abgBiMAic068rclZsO4IWmmxQ==}
     engines: {node: '>= 12'}
-
-  clibuilder@11.3.3:
-    resolution: {integrity: sha512-7hgRZA89+5wVrK5A+Ltvj+A2eL8thwQ8c3IE5lZLCWbunkdsnlJQE557UXn2XyD+Zc84a0tlpgD8AzgVUO+eHg==}
-    engines: {node: '>= 20.19'}
 
   clibuilder@12.0.0:
     resolution: {integrity: sha512-k4scud2B6EFqzVmxmTVQMiW4xu9KzxV9+KVIPQVJeJFqg735a0H2iDMGFMIsHQVNdxwLqPjmNiK4CEUU5ZxNfA==}
@@ -6625,10 +6602,6 @@ packages:
     resolution: {integrity: sha512-HJxs9K9AztdIQIAIa/OIazRAUW/L6B9hbQDxO4X07roW3eo9XqZc2ur9bn1StH9CnbbI9EgvejHQX7CBpCF1QA==}
     engines: {node: '>=0.10.0'}
 
-  pad-right@0.2.2:
-    resolution: {integrity: sha512-4cy8M95ioIGolCoMmm2cMntGR1lPLEbOMzOKu8bzjuJP6JpzEMQcDHmh7hHLYGgob+nKe1YHFMaG4V59HQa89g==}
-    engines: {node: '>=0.10.0'}
-
   pagefind@1.5.2:
     resolution: {integrity: sha512-XTUaK0hXMCu2jszWE584JGQT7y284TmMV9l/HX3rnG5uo3rHI/uHU56XTyyyPFjeWEBxECbAi0CaFDJOONtG0Q==}
     hasBin: true
@@ -7389,10 +7362,6 @@ packages:
   tldts@6.1.86:
     resolution: {integrity: sha512-WMi/OQ2axVTf/ykqCQgXiIct+mSQDFdH2fkwhPwgEwvJ1kSzZRiinb0zF2Xb8u4+OqPChmyI6MEu4EezNJz+FQ==}
     hasBin: true
-
-  tmp@0.2.7:
-    resolution: {integrity: sha512-e0votIpp4Uo2AJYSzVHV6xCcawuiez3DzqDAbrTc3YxBkplN6e+dM13ZeIcZnDg/QpSuU2zfZ3rzwY8ukEnaXw==}
-    engines: {node: '>=14.14'}
 
   tmpl@1.0.5:
     resolution: {integrity: sha512-3f0uOEAQwIqGuWW2MVzYg8fV/QNnc/IpuJNG837rLuczAaLVHslWHZQj4IGiEl5Hs3kkbhwL9Ab7Hrsmuj+Smw==}
@@ -8196,9 +8165,6 @@ packages:
   yuku-parser@0.9.5:
     resolution: {integrity: sha512-IBnAdNVMswWbJcM7woPluOudectJzFjJ1N8jVRxP9Uq4CIv5hZdBIcdmtRbFDYF/Ph2j2gVup4YJ4N9mh0jYFA==}
 
-  zod@3.25.76:
-    resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
-
   zod@4.4.3:
     resolution: {integrity: sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ==}
 
@@ -8816,16 +8782,6 @@ snapshots:
       fast-wrap-ansi: 0.2.2
       sisteransi: 1.0.5
 
-  '@clibuilder/axi@0.1.0(clibuilder@11.3.3(typescript@7.0.2))':
-    dependencies:
-      '@toon-format/toon': 4.1.1
-      clibuilder: 11.3.3(typescript@7.0.2)
-
-  '@clibuilder/axi@0.2.0(clibuilder@11.3.3(typescript@7.0.2))':
-    dependencies:
-      '@toon-format/toon': 4.1.1
-      clibuilder: 11.3.3(typescript@7.0.2)
-
   '@clibuilder/plugins@0.2.0(clibuilder@12.0.0(js-yaml@4.3.2))':
     dependencies:
       clibuilder: 12.0.0(js-yaml@4.3.2)
@@ -8973,14 +8929,6 @@ snapshots:
   '@csstools/css-tokenizer@3.0.4': {}
 
   '@ctrl/tinycolor@4.2.0': {}
-
-  '@cyberuni/agent-harness@0.6.0(typescript@7.0.2)':
-    dependencies:
-      '@clibuilder/axi': 0.1.0(clibuilder@11.3.3(typescript@7.0.2))
-      clibuilder: 11.3.3(typescript@7.0.2)
-      yaml: 2.9.0
-    transitivePeerDependencies:
-      - typescript
 
   '@cyberuni/agent-harness@0.7.0(clibuilder@12.0.0(js-yaml@4.3.2))':
     optionalDependencies:
@@ -9704,12 +9652,6 @@ snapshots:
   '@just-func/types@0.6.1(typescript@6.0.3)':
     dependencies:
       type-plus: 8.0.0-beta.12(typescript@6.0.3)
-    transitivePeerDependencies:
-      - typescript
-
-  '@just-func/types@0.6.1(typescript@7.0.2)':
-    dependencies:
-      type-plus: 8.0.0-beta.12(typescript@7.0.2)
     transitivePeerDependencies:
       - typescript
 
@@ -11592,17 +11534,16 @@ snapshots:
     dependencies:
       node-int64: 0.4.0
 
-  buddy-agent-harness@0.21.0(typescript@7.0.2):
+  buddy-agent-harness@0.22.0(js-yaml@4.3.2):
     dependencies:
-      '@clibuilder/axi': 0.2.0(clibuilder@11.3.3(typescript@7.0.2))
-      '@cyberuni/agent-harness': 0.6.0(typescript@7.0.2)
-      clibuilder: 11.3.3(typescript@7.0.2)
+      clibuilder: 12.0.0(js-yaml@4.3.2)
+      cyber-agentkit: 1.0.0(clibuilder@12.0.0(js-yaml@4.3.2))
       jsonc-parser: 3.3.1
       smol-toml: 1.8.0
       toml-eslint-parser: 1.0.3
       yaml: 2.9.0
     transitivePeerDependencies:
-      - typescript
+      - js-yaml
 
   buffer-from@1.1.2: {}
 
@@ -11683,25 +11624,6 @@ snapshots:
   cli-spinners@2.9.2: {}
 
   cli-width@4.1.0: {}
-
-  clibuilder@11.3.3(typescript@7.0.2):
-    dependencies:
-      find-installed-packages: 4.0.1
-      import-meta-resolve: 4.2.0
-      js-yaml: 4.3.2
-      jsonc-parser: 3.3.1
-      pad-right: 0.2.2
-      search-packages: 2.2.3
-      standard-log: 13.3.1(typescript@7.0.2)
-      standard-log-color: 13.3.1(standard-log@13.3.1(typescript@7.0.2))
-      tersify: 4.0.8
-      tmp: 0.2.7
-      tslib: 2.8.1
-      type-plus: 8.0.0-beta.12(typescript@7.0.2)
-      wordwrap: 1.0.0
-      zod: 3.25.76
-    transitivePeerDependencies:
-      - typescript
 
   clibuilder@12.0.0(js-yaml@4.3.2):
     dependencies:
@@ -13928,10 +13850,6 @@ snapshots:
     dependencies:
       repeat-string: 1.6.1
 
-  pad-right@0.2.2:
-    dependencies:
-      repeat-string: 1.6.1
-
   pagefind@1.5.2:
     optionalDependencies:
       '@pagefind/darwin-arm64': 1.5.2
@@ -14595,29 +14513,12 @@ snapshots:
       supports-color: 8.1.1
       unpartial: 1.0.8
 
-  standard-log-color@13.3.1(standard-log@13.3.1(typescript@7.0.2)):
-    dependencies:
-      color-map: 2.0.6
-      standard-log: 13.3.1(typescript@7.0.2)
-      supports-color: 8.1.1
-      unpartial: 1.0.8
-
   standard-log@13.3.1(typescript@6.0.3):
     dependencies:
       '@just-func/types': 0.6.1(typescript@6.0.3)
       iso-error: 7.0.0
       ms: 2.1.3
       type-plus: 8.0.0-beta.12(typescript@6.0.3)
-      unpartial: 1.0.8
-    transitivePeerDependencies:
-      - typescript
-
-  standard-log@13.3.1(typescript@7.0.2):
-    dependencies:
-      '@just-func/types': 0.6.1(typescript@7.0.2)
-      iso-error: 7.0.0
-      ms: 2.1.3
-      type-plus: 8.0.0-beta.12(typescript@7.0.2)
       unpartial: 1.0.8
     transitivePeerDependencies:
       - typescript
@@ -14843,8 +14744,6 @@ snapshots:
   tldts@6.1.86:
     dependencies:
       tldts-core: 6.1.86
-
-  tmp@0.2.7: {}
 
   tmpl@1.0.5: {}
 
@@ -15569,8 +15468,6 @@ snapshots:
       '@yuku-parser/binding-linux-x64-musl': 0.9.5
       '@yuku-parser/binding-win32-arm64': 0.9.5
       '@yuku-parser/binding-win32-x64': 0.9.5
-
-  zod@3.25.76: {}
 
   zod@4.4.3: {}
 
