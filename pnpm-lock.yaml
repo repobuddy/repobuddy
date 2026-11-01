@@ -419,9 +419,6 @@ importers:
 
   packages/typescript:
     dependencies:
-      clibuilder:
-        specifier: ^12.0.0
-        version: 12.0.0(js-yaml@4.3.2)
       dirname-filename-esm:
         specifier: ^1.1.1
         version: 1.1.2
@@ -431,7 +428,7 @@ importers:
     devDependencies:
       '@clibuilder/plugins':
         specifier: 0.2.1
-        version: 0.2.1(clibuilder@12.0.0(js-yaml@4.3.2))
+        version: 0.2.1(clibuilder@12.1.1(js-yaml@4.3.2))
       '@size-limit/preset-small-lib':
         specifier: ~14.3.0
         version: 14.3.0(size-limit@14.3.0)
@@ -441,6 +438,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: ^5.0.0
         version: 5.0.3(@vitest/browser@5.0.3)(vitest@5.0.3)
+      clibuilder:
+        specifier: ^12.1.0
+        version: 12.1.1(js-yaml@4.3.2)
       npm-run-all2:
         specifier: ^9.0.0
         version: 9.0.3
@@ -4539,6 +4539,10 @@ packages:
     resolution: {integrity: sha512-WnIUyzhO4me3xx841rxfCU2C/PMpD+M1MraKb8hF2aGY4xS67bSV2EhpmegLlFM0UV11+hV9uHPbNHnH7ypL0w==}
     engines: {node: '>=20'}
 
+  args-minus@0.2.2:
+    resolution: {integrity: sha512-w5OYbRBOmD9lq2LHK5Y27OzBENtMNcfEurOAohNdlrE6ZfkwqZKXC+2vO5ZghWEDhwxz7pJBjxi3yg9ToqENwQ==}
+    engines: {node: '>=20'}
+
   argue-cli@3.2.0:
     resolution: {integrity: sha512-VipTB0gXgGIFO2Rg9yEVN5wLt2AurJcZqDbgmYSwPwsykhLrQhs240/bfceev4w68lI8JshoOJIk9uW7tFzROw==}
     engines: {node: '>=22'}
@@ -4793,6 +4797,15 @@ packages:
 
   clibuilder@12.0.0:
     resolution: {integrity: sha512-k4scud2B6EFqzVmxmTVQMiW4xu9KzxV9+KVIPQVJeJFqg735a0H2iDMGFMIsHQVNdxwLqPjmNiK4CEUU5ZxNfA==}
+    engines: {node: '>= 20.19'}
+    peerDependencies:
+      js-yaml: ^4.1.0
+    peerDependenciesMeta:
+      js-yaml:
+        optional: true
+
+  clibuilder@12.1.1:
+    resolution: {integrity: sha512-VysAx6kv2wlWSudLjg2yvQC74DIH+sxqQYPZTscOCrswDbcsHqBAotTvGYdEQk5BRx++cWzkwqaa+egFUqAljA==}
     engines: {node: '>= 20.19'}
     peerDependencies:
       js-yaml: ^4.1.0
@@ -8833,6 +8846,13 @@ snapshots:
       import-meta-resolve: 4.2.0
       search-packages: 2.2.3
 
+  '@clibuilder/plugins@0.2.1(clibuilder@12.1.1(js-yaml@4.3.2))':
+    dependencies:
+      clibuilder: 12.1.1(js-yaml@4.3.2)
+      find-installed-packages: 4.0.1
+      import-meta-resolve: 4.2.0
+      search-packages: 2.2.3
+
   '@commitlint/cli@21.2.2(@types/node@24.13.3)(conventional-commits-parser@7.1.2)(typescript@7.0.2)':
     dependencies:
       '@commitlint/config-conventional': 21.2.2
@@ -11338,6 +11358,8 @@ snapshots:
 
   args-minus@0.2.0: {}
 
+  args-minus@0.2.2: {}
+
   argue-cli@3.2.0: {}
 
   aria-query@5.3.0:
@@ -11707,6 +11729,13 @@ snapshots:
     dependencies:
       '@toon-format/toon': 4.1.1
       args-minus: 0.2.0
+    optionalDependencies:
+      js-yaml: 4.3.2
+
+  clibuilder@12.1.1(js-yaml@4.3.2):
+    dependencies:
+      '@toon-format/toon': 4.1.1
+      args-minus: 0.2.2
     optionalDependencies:
       js-yaml: 4.3.2
 
