@@ -72,10 +72,14 @@ export default defineConfig([
 		// runtime-computed specifier. They are correct by design and must stay dynamic;
 		// keeping this output ESM preserves them.
 		//
-		// `args-minus` is the exception to inlining: it is a direct dependency of this package
-		// so that it stays external. A plugin such as `@repobuddy/typescript` builds its
-		// arguments with `t` from its own `clibuilder`, and clibuilder accepts only descriptors
-		// from the same `args-minus` instance. An inlined copy would reject every plugin command.
+		// `args-minus` (clibuilder's argument parser) is inlined too. A plugin such as
+		// `@repobuddy/typescript` builds its arguments with `t` from its own `clibuilder`, so its
+		// descriptors come from a different `args-minus` copy than this bundle's. Since args-minus
+		// 0.2.1 (clibuilder 12.1.0) a descriptor is recognised by a `Symbol.for` brand rather than
+		// by instance, so that works. Both sides need clibuilder 12.1.0 or later: if either copy
+		// is older, every plugin command throws when it runs. So the `clibuilder` range here and
+		// each plugin's `clibuilder` peer range start at `^12.1.0`.
+		//
 		// `jsonc-parser` (reached through clibuilder) resolves to its UMD build via `main`,
 		// and that build's factory calls `require("./impl/format")` and three siblings —
 		// specifiers rolldown cannot analyse. So its `impl/` modules were never inlined, and
