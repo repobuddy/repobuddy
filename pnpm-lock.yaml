@@ -247,8 +247,8 @@ importers:
         version: 0.2.0
     devDependencies:
       '@clibuilder/plugins':
-        specifier: 0.2.0
-        version: 0.2.0(clibuilder@12.0.0(js-yaml@4.3.2))
+        specifier: 0.2.1
+        version: 0.2.1(clibuilder@12.0.0(js-yaml@4.3.2))
       '@jest/globals':
         specifier: ^30.0.0
         version: 30.4.1(supports-color@8.1.1)
@@ -430,8 +430,8 @@ importers:
         version: 10.0.1
     devDependencies:
       '@clibuilder/plugins':
-        specifier: 0.2.0
-        version: 0.2.0(clibuilder@12.0.0(js-yaml@4.3.2))
+        specifier: 0.2.1
+        version: 0.2.1(clibuilder@12.0.0(js-yaml@4.3.2))
       '@size-limit/preset-small-lib':
         specifier: ~14.3.0
         version: 14.3.0(size-limit@14.3.0)
@@ -1496,11 +1496,11 @@ packages:
     peerDependencies:
       clibuilder: ^11.3.3
 
-  '@clibuilder/plugins@0.2.0':
-    resolution: {integrity: sha512-gzVujPFtDZteHiZJkltrftk8SqpXBzYxUgZ77MMdx9SdsefuHm5QJyHkGlZpJQgPSND9WTRobCyOLxV1HHLecw==}
+  '@clibuilder/plugins@0.2.1':
+    resolution: {integrity: sha512-fc2x8aY0HfnkiCBNCXgrI15yrDnu9HqQ3B9DRAgp/ibcvBOFSEEBxUD7BYf4JzNzTWfqMPsNu7DlPhtJFxx5kA==}
     engines: {node: '>= 20.19'}
     peerDependencies:
-      clibuilder: ^12.0.0
+      clibuilder: ^12.1.1
 
   '@commitlint/cli@21.2.2':
     resolution: {integrity: sha512-a+6hQxIxnpdvSvS2apvttPNbEliYsVC3PqFYDiiB2kjbwIsQsj1urvQ4Tkf70pKYozPalKAuRQmm/GHwndduqA==}
@@ -8826,7 +8826,7 @@ snapshots:
       '@toon-format/toon': 4.1.1
       clibuilder: 11.3.3(typescript@7.0.2)
 
-  '@clibuilder/plugins@0.2.0(clibuilder@12.0.0(js-yaml@4.3.2))':
+  '@clibuilder/plugins@0.2.1(clibuilder@12.0.0(js-yaml@4.3.2))':
     dependencies:
       clibuilder: 12.0.0(js-yaml@4.3.2)
       find-installed-packages: 4.0.1
