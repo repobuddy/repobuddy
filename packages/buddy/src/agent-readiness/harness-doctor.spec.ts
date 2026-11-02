@@ -21,6 +21,9 @@ function repo(files: Record<string, string>): string {
 
 const harnessManifest = JSON.stringify({ name: 'buddy-agent-harness', bin: { 'buddy-agent-harness': './bin/cli.mjs' } })
 
+/** Node 26 dropped `--experimental-transform-types`, so only older nodes can run the repo source. */
+const itWithTransformTypes = process.allowedNodeEnvironmentFlags.has('--experimental-transform-types') ? it : it.skip
+
 describe('findHarnessDoctor', () => {
 	it('is undefined when buddy-agent-harness is neither installed nor in the repo', () => {
 		expect(findHarnessDoctor(repo({}))).toBeUndefined()
@@ -58,7 +61,7 @@ describe('findHarnessDoctor', () => {
 	describe('the repo itself', () => {
 		it('runs its own source, which needs no build', () => {
 			const dir = repo({ 'package.json': harnessManifest, 'src/cli.ts': '' })
-			const doctor = findHarnessDoctor(dir)
+			const doctor = findHarnessDoctor(dir, { transformTypes: true })
 			expect(doctor).toMatchObject({ source: 'repo', packageDir: dir })
 			expect(doctor?.args.slice(0, 3)).toEqual(['--experimental-transform-types', '--input-type=module', '-e'])
 			expect(doctor?.args[3]).toContain(JSON.stringify(join(dir, 'src', 'cli.ts')))
@@ -91,7 +94,7 @@ describe('findHarnessDoctor', () => {
 				'packages/buddy-agent-harness/package.json': harnessManifest,
 				'packages/buddy-agent-harness/src/cli.ts': '',
 			})
-			const doctor = findHarnessDoctor(dir)
+			const doctor = findHarnessDoctor(dir, { transformTypes: true })
 			expect(doctor).toMatchObject({ source: 'workspace', packageDir: join(dir, 'packages', 'buddy-agent-harness') })
 			expect(doctor?.args[3]).toContain(JSON.stringify(join(dir, 'packages', 'buddy-agent-harness', 'src', 'cli.ts')))
 		})
@@ -120,25 +123,42 @@ describe('findHarnessDoctor', () => {
 })
 
 describe('runHarnessDoctor', () => {
-	it('runs the repo source, parameter properties included, with doctor arguments after the program name', () => {
+	it('runs the bin with doctor arguments after the program name', () => {
 		const dir = repo({
 			'package.json': harnessManifest,
-			'src/cli.ts': [
-				'class Root {',
-				'\tconstructor(readonly path: string) {}',
-				'}',
-				'export async function run(argv: string[]): Promise<number> {',
-				'\tconst root = new Root(process.cwd()).path',
-				"\tconst ok = argv.length === 7 && argv.slice(2).join(' ') === 'doctor --format json --root ' + root",
-				"\tif (ok) process.stdout.write(JSON.stringify({ findings: '0 problems found' }))",
-				'\treturn ok ? 0 : 1',
-				'}',
+			'bin/cli.mjs': [
+				"const ok = process.argv.slice(2).join(' ') === 'doctor --format json --root ' + process.cwd()",
+				"if (ok) process.stdout.write(JSON.stringify({ findings: '0 problems found' }))",
+				'process.exitCode = ok ? 0 : 1',
 				'',
 			].join('\n'),
 		})
 		const doctor = findHarnessDoctor(dir)
 		expect(doctor && runHarnessDoctor(dir, doctor)).toEqual({ outcome: 'ok', findings: [] })
 	})
+
+	itWithTransformTypes(
+		'runs the repo source, parameter properties included, with doctor arguments after the program name',
+		() => {
+			const dir = repo({
+				'package.json': harnessManifest,
+				'src/cli.ts': [
+					'class Root {',
+					'\tconstructor(readonly path: string) {}',
+					'}',
+					'export async function run(argv: string[]): Promise<number> {',
+					'\tconst root = new Root(process.cwd()).path',
+					"\tconst ok = argv.length === 7 && argv.slice(2).join(' ') === 'doctor --format json --root ' + root",
+					"\tif (ok) process.stdout.write(JSON.stringify({ findings: '0 problems found' }))",
+					'\treturn ok ? 0 : 1',
+					'}',
+					'',
+				].join('\n'),
+			})
+			const doctor = findHarnessDoctor(dir)
+			expect(doctor && runHarnessDoctor(dir, doctor)).toEqual({ outcome: 'ok', findings: [] })
+		},
+	)
 })
 
 describe('readDoctorRun', () => {
