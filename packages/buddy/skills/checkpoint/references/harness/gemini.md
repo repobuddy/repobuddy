@@ -28,6 +28,11 @@ in the new session to check that `checkpoint` is installed and enabled.
   `false` by default. `--include-directories` at startup has the same limits.
 - No minimum version is documented for any of this.
 
+## Resume marker
+
+Unverified: what gemini exposes for a session id and process id has not been checked. Write only `harness`
+and `session` if the id is known, and no `pid` or `started`, so liveness reads as unknown.
+
 ## Sources
 
 - Commands reference (no `/cd`; `/directory add`): https://geminicli.com/docs/reference/commands/

@@ -32,6 +32,11 @@ its description.
 - No minimum version is documented for any of this.
 - `/open` in the CLI opens the repository in the Cursor editor. It does not move the CLI session.
 
+## Resume marker
+
+Unverified: what cursor exposes for a session id and process id has not been checked. Write only `harness`
+and `session` if the id is known, and no `pid` or `started`, so liveness reads as unknown.
+
 ## Sources
 
 - CLI slash commands (no `/cd`): https://cursor.com/docs/cli/reference/slash-commands

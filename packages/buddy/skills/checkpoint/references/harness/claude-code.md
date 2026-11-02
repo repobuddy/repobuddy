@@ -42,6 +42,12 @@ cd <repo-root> && claude "/checkpoint resume <slug>"
 - `/add-dir` is not a substitute. It grants file access to another directory, but most of that
   directory's `.claude/` configuration is not loaded.
 
+## Resume marker
+
+For the `resumed:` block: `harness` is `claude-code`, `session` is `$CLAUDE_CODE_SESSION_ID`, `pid` is
+`$CLAUDE_PID`, and the process name to compare with is `claude` (`/proc/<pid>/comm`). Take `started`
+from `ps -o lstart= -p <pid>`.
+
 ## Sources
 
 - Commands reference, `/cd` and `/add-dir`: https://code.claude.com/docs/en/commands

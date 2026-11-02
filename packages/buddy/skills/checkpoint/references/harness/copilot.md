@@ -44,6 +44,11 @@ slash, in the prompt.
 - `/add-dir PATH` is not a move. It allows file access to the directory and loads its `.github/skills`
   and `.github/agents`, but the session's working directory and instructions stay where they were.
 
+## Resume marker
+
+Unverified: what copilot exposes for a session id and process id has not been checked. Write only `harness`
+and `session` if the id is known, and no `pid` or `started`, so liveness reads as unknown.
+
 ## Sources
 
 - Command reference, `/cwd`/`/cd`, `/add-dir`, `/env`, `/skills reload`, `-C`, `-i`:
