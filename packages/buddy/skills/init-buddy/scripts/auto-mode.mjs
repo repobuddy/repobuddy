@@ -1,5 +1,5 @@
 // Compiled by `universal-plugin plugin build` from src/skills/auto-mode.ts. Edit the source, not this file.
-globalThis.__SKILL_SCRIPT__ = {"package":"repobuddy","bin":"repobuddy","version":"3.0.0","entry":"skills/init-buddy/scripts/auto-mode.mjs","commands":{}};
+globalThis.__SKILL_SCRIPT__ = {"package":"repobuddy","bin":"repobuddy","version":"4.0.1","entry":"skills/init-buddy/scripts/auto-mode.mjs","commands":{}};
 import { spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
