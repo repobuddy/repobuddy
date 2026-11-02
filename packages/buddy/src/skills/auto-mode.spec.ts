@@ -404,6 +404,25 @@ process.stdout.write(JSON.stringify({ environment: s.autoMode.environment, allow
 		expect(r.verified).toBe(true)
 	})
 
+	it('reports verify as failed, with the change, when claude prints something other than JSON', async () => {
+		const bin = tempDir()
+		writeFileSync(join(bin, 'claude'), '#!/usr/bin/env node\nprocess.stdout.write("Update available\\n{}")\n')
+		chmodSync(join(bin, 'claude'), 0o755)
+		process.env['PATH'] = `${bin}${delimiter}${originalPath}`
+		const r = await run([
+			'apply',
+			entriesFile({ environment: ['Source control: acme'] }),
+			'--home',
+			tempDir(),
+			'--write',
+			'--verify',
+		])
+		expect(r.wrote).toBe(true)
+		expect(r.verified).toBe(false)
+		expect(r.after.autoMode.environment).toEqual(['$defaults', 'Source control: acme'])
+		expect(r.notes.join(' ')).toContain('did not print a JSON object')
+	})
+
 	it('rejects entries that are not string arrays, and a settings file that is not an object', async () => {
 		await expect(main(['apply', entriesFile({ allow: [1] }), '--home', tempDir()])).rejects.toThrow('exit 1')
 		await expect(main(['apply', entriesFile({ replace: [{ old: 'a' }] }), '--home', tempDir()])).rejects.toThrow(

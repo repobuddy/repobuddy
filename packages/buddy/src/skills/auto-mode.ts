@@ -512,12 +512,19 @@ export function apply(entries: Json, home: string, write: boolean, verify: boole
 		const r = spawnSync('claude', ['auto-mode', 'config'], { encoding: 'utf8', env: { ...process.env, HOME: home } })
 		if (r.error || r.status !== 0) notes.push('`claude auto-mode config` did not run; check the entries by hand')
 		else {
-			const config = JSON.parse(r.stdout)
-			verified = (['environment', 'allow'] as const).every((key) =>
-				[...added[key]!, ...replaced.filter((r) => r.list === key).map((r) => r.new)].every((item) =>
-					config[key]?.includes(item),
-				),
-			)
+			let config: Json = null
+			try {
+				config = JSON.parse(r.stdout)
+			} catch {}
+			if (!config || typeof config !== 'object') {
+				verified = false
+				notes.push('`claude auto-mode config` did not print a JSON object; check the entries by hand')
+			} else
+				verified = (['environment', 'allow'] as const).every((key) =>
+					[...added[key]!, ...replaced.filter((r) => r.list === key).map((r) => r.new)].every((item) =>
+						config[key]?.includes(item),
+					),
+				)
 		}
 	}
 	if (notFound.length) notes.push(`not replaced, no such entry: ${notFound.join(' | ')}`)
