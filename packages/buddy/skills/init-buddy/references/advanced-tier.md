@@ -183,7 +183,7 @@ host's row:
 and for a self-hosted instance its hostname (`the GitLab group acme/platform on git.corp.example`). The
 suggestion commands can propose candidates, but the user decides. Never widen the list from a repo's
 remotes alone, and never let an owner on one host stand for the same name on another. When the user's
-`autoMode.environment` has the Source control entry from the [auto-mode step](auto-mode.md#step-3-write-the-entries),
+`autoMode.environment` has the Source control entry from the [auto-mode step](auto-mode.md#step-3-draft-the-entries),
 write "in a repo in my namespaces" in place of the owner list, so the list lives in one entry.
 
 The entry, with the placeholders filled in from the rows:
