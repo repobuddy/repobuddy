@@ -22,6 +22,7 @@ import { execFileSync } from 'node:child_process'
 import { accessSync, constants, readFileSync, statSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { delimiter, join, resolve } from 'node:path'
+import { FORCE_PUSH_DENY, GITHUB_ADMIN_MERGE_DENY } from '../permissions/deny-entries.js'
 
 export type Host = 'github' | 'gitlab' | 'azure' | 'gitea' | 'forgejo'
 export type Manager = 'pnpm' | 'npm' | 'yarn' | 'bun'
@@ -95,15 +96,6 @@ const GOOD_TO_HAVE_GIT: Candidate[] = [
 const FIX_SCRIPTS = ['format', 'check:fix', 'lint:fix']
 
 // deny-list.md, Entries (Claude Code).
-const FORCE_PUSH = [
-	'Bash(git push --force *)',
-	'Bash(git push -f *)',
-	'Bash(git push * --force)',
-	'Bash(git push * --force *)',
-	'Bash(git push * -f)',
-	'Bash(git push * -f *)',
-	'Bash(git push * +*)',
-]
 const FORCE_PUSH_NOTE =
 	'Blocks a plain --force or -f before, between, or after the arguments, and a +refspec; --force-with-lease stays allowed'
 
@@ -111,7 +103,7 @@ const BYPASS_MERGE: { host: Host; group: string; entries: string[]; note: string
 	{
 		host: 'github',
 		group: 'Bypass merge: GitHub',
-		entries: ['Bash(gh pr merge --admin*)', 'Bash(gh pr merge * --admin*)'],
+		entries: GITHUB_ADMIN_MERGE_DENY,
 		note: 'Blocks merging past the required checks with --admin',
 	},
 	{
@@ -360,7 +352,7 @@ export function candidates(opts: { project: string; home: string; hosts: Host[] 
 	const mk = (entries: string[], reason: string): Candidate[] => entries.map((entry) => ({ entry, reason }))
 
 	const deny: { group: string; entries: Candidate[] }[] = [
-		{ group: 'Force push', entries: mk(FORCE_PUSH, FORCE_PUSH_NOTE) },
+		{ group: 'Force push', entries: mk(FORCE_PUSH_DENY, FORCE_PUSH_NOTE) },
 	]
 	for (const b of BYPASS_MERGE)
 		if (hosts.includes(b.host)) deny.push({ group: b.group, entries: mk(b.entries, b.note) })

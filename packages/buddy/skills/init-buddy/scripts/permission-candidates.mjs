@@ -4,6 +4,27 @@ import { execFileSync } from "node:child_process";
 import { accessSync, constants, readFileSync, statSync } from "node:fs";
 import { homedir } from "node:os";
 import { delimiter, join, resolve } from "node:path";
+//#region src/permissions/deny-entries.ts
+/**
+* Deny entries from `skills/init-buddy/references/deny-list.md` (Entries, Claude Code) that more than
+* one script writes.
+*
+* Shared by `init-buddy`'s `permission-candidates` script, which proposes the deny list, and its
+* `auto-mode` script, which writes the entries each `autoMode.allow` rule needs beside it.
+*/
+/** A plain `--force` or `-f` before, between, or after the arguments, and a `+refspec`. */
+const FORCE_PUSH_DENY = [
+	"Bash(git push --force *)",
+	"Bash(git push -f *)",
+	"Bash(git push * --force)",
+	"Bash(git push * --force *)",
+	"Bash(git push * -f)",
+	"Bash(git push * -f *)",
+	"Bash(git push * +*)"
+];
+/** `gh pr merge --admin`, which merges past the required checks. */
+const GITHUB_ADMIN_MERGE_DENY = ["Bash(gh pr merge --admin*)", "Bash(gh pr merge * --admin*)"];
+//#endregion
 //#region src/skills/permission-candidates.ts
 const HOSTS = [
 	"github",
@@ -89,21 +110,12 @@ const FIX_SCRIPTS = [
 	"check:fix",
 	"lint:fix"
 ];
-const FORCE_PUSH = [
-	"Bash(git push --force *)",
-	"Bash(git push -f *)",
-	"Bash(git push * --force)",
-	"Bash(git push * --force *)",
-	"Bash(git push * -f)",
-	"Bash(git push * -f *)",
-	"Bash(git push * +*)"
-];
 const FORCE_PUSH_NOTE = "Blocks a plain --force or -f before, between, or after the arguments, and a +refspec; --force-with-lease stays allowed";
 const BYPASS_MERGE = [
 	{
 		host: "github",
 		group: "Bypass merge: GitHub",
-		entries: ["Bash(gh pr merge --admin*)", "Bash(gh pr merge * --admin*)"],
+		entries: GITHUB_ADMIN_MERGE_DENY,
 		note: "Blocks merging past the required checks with --admin"
 	},
 	{
@@ -339,7 +351,7 @@ function candidates(opts) {
 	}));
 	const deny = [{
 		group: "Force push",
-		entries: mk(FORCE_PUSH, FORCE_PUSH_NOTE)
+		entries: mk(FORCE_PUSH_DENY, FORCE_PUSH_NOTE)
 	}];
 	for (const b of BYPASS_MERGE) if (hosts.includes(b.host)) deny.push({
 		group: b.group,

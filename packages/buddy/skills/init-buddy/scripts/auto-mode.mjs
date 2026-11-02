@@ -4,6 +4,27 @@ import { spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { dirname, join, resolve } from "node:path";
+//#region src/permissions/deny-entries.ts
+/**
+* Deny entries from `skills/init-buddy/references/deny-list.md` (Entries, Claude Code) that more than
+* one script writes.
+*
+* Shared by `init-buddy`'s `permission-candidates` script, which proposes the deny list, and its
+* `auto-mode` script, which writes the entries each `autoMode.allow` rule needs beside it.
+*/
+/** A plain `--force` or `-f` before, between, or after the arguments, and a `+refspec`. */
+const FORCE_PUSH_DENY = [
+	"Bash(git push --force *)",
+	"Bash(git push -f *)",
+	"Bash(git push * --force)",
+	"Bash(git push * --force *)",
+	"Bash(git push * -f)",
+	"Bash(git push * -f *)",
+	"Bash(git push * +*)"
+];
+/** `gh pr merge --admin`, which merges past the required checks. */
+const GITHUB_ADMIN_MERGE_DENY = ["Bash(gh pr merge --admin*)", "Bash(gh pr merge * --admin*)"];
+//#endregion
 //#region src/permissions/template-text.ts
 /**
 * Words that mark an `autoMode` entry as a template nobody filled in. They are tested on the entry
@@ -335,28 +356,19 @@ const labelled = (label, text) => {
 	const t = text.trim();
 	return t.toLowerCase().startsWith(`${label.toLowerCase()}:`) ? t : `${label}: ${t}`;
 };
-const ADMIN_DENY = ["Bash(gh pr merge --admin*)", "Bash(gh pr merge * --admin*)"];
 /** The GitHub rules from references/advanced-tier.md and references/auto-mode.md, owners as "my namespaces". */
 const RULES = {
 	merge: {
 		text: "Merging a pull or merge request (`gh pr merge`, or adding it to the merge queue) without an approving review, for a pull or merge request the agent opened or was asked to work on, in a repo in my namespaces, when the agent has confirmed first-hand that it has no merge conflict, every required check or pipeline is green, and no review requests changes or is left unresolved. Bypassing branch protection, branch policies, or required checks (`gh pr merge --admin`), merging while checks or pipelines are red or pending, merging any other pull or merge request, or merging in a repo owned by anyone else is still not covered.",
-		deny: ADMIN_DENY
+		deny: GITHUB_ADMIN_MERGE_DENY
 	},
 	queuedMerge: {
 		text: "Queuing a pull request to merge once its checks pass (`gh pr merge --auto`, or adding it to the merge queue), for a pull request the agent opened or was asked to work on, in a repo in my namespaces whose base branch requires status checks, while those checks are still pending: the forge merges only after the required checks pass. `gh pr merge --admin`, queuing in a repo whose base branch requires no check, and changing branch protection are still not covered.",
-		deny: ADMIN_DENY
+		deny: GITHUB_ADMIN_MERGE_DENY
 	},
 	forceWithLease: {
 		text: "Force-pushing with `--force-with-lease` or `--force-if-includes` to a non-default branch of a repo in my namespaces, to update a branch after a rebase or amend. A plain `--force` or `-f`, a `+refspec`, and a force-push to the default branch, a release branch, or a branch someone else pushed to are still not covered.",
-		deny: [
-			"Bash(git push --force *)",
-			"Bash(git push -f *)",
-			"Bash(git push * --force)",
-			"Bash(git push * --force *)",
-			"Bash(git push * -f)",
-			"Bash(git push * -f *)",
-			"Bash(git push * +*)"
-		]
+		deny: FORCE_PUSH_DENY
 	}
 };
 function render(answers) {

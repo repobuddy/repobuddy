@@ -486,6 +486,14 @@ describe('rule texts', () => {
 		expect(doc).toContain(RULES.forceWithLease.text)
 	})
 
+	it('write deny entries from the Entries table of references/deny-list.md', () => {
+		const table = readFileSync(join(refs, 'deny-list.md'), 'utf8')
+			.split('## Entries (Claude Code)')[1]!
+			.split('\n## ')[0]!
+		const documented = new Set([...table.matchAll(/`(Bash\([^`]+\))`/g)].map((m) => m[1]))
+		for (const rule of Object.values(RULES)) for (const entry of rule.deny) expect(documented).toContain(entry)
+	})
+
 	it('match the GitHub merge rule in references/advanced-tier.md, with the owners as "my namespaces"', () => {
 		const doc = readFileSync(join(refs, 'advanced-tier.md'), 'utf8')
 		const example = /^"(Merging a pull or merge request \(`gh pr merge`.*)"$/m.exec(doc)?.[1]

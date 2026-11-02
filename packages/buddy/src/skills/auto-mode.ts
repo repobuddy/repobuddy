@@ -27,6 +27,7 @@ import { spawnSync } from 'node:child_process'
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
+import { FORCE_PUSH_DENY, GITHUB_ADMIN_MERGE_DENY } from '../permissions/deny-entries.js'
 import { templateMarkers } from '../permissions/template-text.js'
 
 const USAGE = `usage: auto-mode.mjs check    [--project <dir>] [--home <dir>]
@@ -379,26 +380,15 @@ const labelled = (label: string, text: unknown) => {
 	return t.toLowerCase().startsWith(`${label.toLowerCase()}:`) ? t : `${label}: ${t}`
 }
 
-const ADMIN_DENY = ['Bash(gh pr merge --admin*)', 'Bash(gh pr merge * --admin*)']
-const FORCE_PUSH_DENY = [
-	'Bash(git push --force *)',
-	'Bash(git push -f *)',
-	'Bash(git push * --force)',
-	'Bash(git push * --force *)',
-	'Bash(git push * -f)',
-	'Bash(git push * -f *)',
-	'Bash(git push * +*)',
-]
-
 /** The GitHub rules from references/advanced-tier.md and references/auto-mode.md, owners as "my namespaces". */
 export const RULES = {
 	merge: {
 		text: 'Merging a pull or merge request (`gh pr merge`, or adding it to the merge queue) without an approving review, for a pull or merge request the agent opened or was asked to work on, in a repo in my namespaces, when the agent has confirmed first-hand that it has no merge conflict, every required check or pipeline is green, and no review requests changes or is left unresolved. Bypassing branch protection, branch policies, or required checks (`gh pr merge --admin`), merging while checks or pipelines are red or pending, merging any other pull or merge request, or merging in a repo owned by anyone else is still not covered.',
-		deny: ADMIN_DENY,
+		deny: GITHUB_ADMIN_MERGE_DENY,
 	},
 	queuedMerge: {
 		text: 'Queuing a pull request to merge once its checks pass (`gh pr merge --auto`, or adding it to the merge queue), for a pull request the agent opened or was asked to work on, in a repo in my namespaces whose base branch requires status checks, while those checks are still pending: the forge merges only after the required checks pass. `gh pr merge --admin`, queuing in a repo whose base branch requires no check, and changing branch protection are still not covered.',
-		deny: ADMIN_DENY,
+		deny: GITHUB_ADMIN_MERGE_DENY,
 	},
 	forceWithLease: {
 		text: 'Force-pushing with `--force-with-lease` or `--force-if-includes` to a non-default branch of a repo in my namespaces, to update a branch after a rebase or amend. A plain `--force` or `-f`, a `+refspec`, and a force-push to the default branch, a release branch, or a branch someone else pushed to are still not covered.',
