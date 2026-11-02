@@ -713,8 +713,39 @@ function analyzeDenyBaseline() {
 /** Commands that act on a remote or reach other people. */
 const OUTWARD = /\bgit\s+push\b|\b(gh\s+pr\s+merge|glab\s+mr\s+merge|tea\s+pulls\s+merge|fj\s+pr\s+merge|az\s+repos\s+pr\s+update)\b|\b(gh|glab|tea)\s+api\b|\bgh\s+workflow\s+run\b|\b(gh|glab)\s+release\b|\b(npm|pnpm|yarn|bun)\s+(\S+\s+)?publish\b|\bchangeset\s+publish\b|\bdeploy\b/;
 const MERGE = /\b(gh\s+pr\s+merge|glab\s+mr\s+merge|tea\s+pulls\s+merge|fj\s+pr\s+merge|az\s+repos\s+pr\s+update)\b/;
-/** A whole host or git CLI behind one wildcard covers its push, merge, and API commands too. */
-const OUTWARD_CLI = /^\s*(git|gh|glab|tea|fj|az)\s*[*:]+\s*$/;
+/** One command of each outward kind, to test whether a wildcard rule such as `gh pr *` admits it. */
+const OUTWARD_SAMPLES = [
+	"git push origin main",
+	"gh pr merge 1",
+	"glab mr merge 1",
+	"tea pulls merge 1",
+	"fj pr merge 1",
+	"az repos pr update --id 1 --status completed",
+	"gh api repos/o/r",
+	"glab api projects",
+	"tea api repos",
+	"gh workflow run ci.yml",
+	"gh release create v1",
+	"glab release create v1",
+	"npm publish",
+	"pnpm publish",
+	"yarn publish",
+	"yarn npm publish",
+	"bun publish",
+	"changeset publish",
+	"pnpm changeset publish"
+];
+/** The commands a Claude Code shell pattern matches: `*` is any text, and a legacy trailing `:*` a prefix. */
+function patternRegex(arg) {
+	const body = arg.trim().replace(/:\*$/, " *").split("*").map((part) => part.replace(/[.+?^${}()|[\]\\]/g, "\\$&")).join(".*");
+	return new RegExp(`^${body.replace(/ \.\*$/, "( .*)?")}$`);
+}
+/** Whether an allow pattern names an outward command or admits one through a wildcard. */
+function admits(arg, named) {
+	if (named.test(arg)) return true;
+	const re = patternRegex(arg);
+	return OUTWARD_SAMPLES.some((cmd) => named.test(cmd) && re.test(cmd));
+}
 /** The broad rules the docs say auto mode drops, or null when the rule stays in effect. */
 function droppedInAutoMode(rule) {
 	if (rule.tool === "Agent" || rule.tool === "Monitor") return `\`${rule.tool}\` allow rules`;
@@ -763,8 +794,8 @@ function analyzeAutoMode() {
 			continue;
 		}
 		if (classifyAllShell || rule.tool !== "Bash" && rule.tool !== "PowerShell") continue;
-		if (!OUTWARD.test(rule.arg) && !OUTWARD_CLI.test(rule.arg)) continue;
-		const merge = MERGE.test(rule.arg) || OUTWARD_CLI.test(rule.arg);
+		if (!admits(rule.arg, OUTWARD)) continue;
+		const merge = admits(rule.arg, MERGE);
 		addFinding("medium", "auto-outward-allow", `\`${rule.raw}\` skips the auto-mode classifier`, `A matching allow rule resolves before the classifier, so this outward-facing command runs on a text match, without the classifier's check of which repo, branch, or PR it touches.${merge ? " For a merge, the built-in Merge Without Review block and any `autoMode.allow` merge rule never see it, and a bypass flag such as `--admin` is stopped only by the deny list." : ""}`, where, "Remove it from `permissions.allow` and leave the command to the classifier. Add it to `permissions.ask` if you want a person every time, or an `autoMode.allow` rule for an exception (`init-buddy` drafts them).");
 	}
 }

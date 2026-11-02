@@ -143,6 +143,22 @@ describe('scan-permissions.mjs auto mode', () => {
 		expect(flagged.some((t) => t.includes('gh pr view'))).toBe(false)
 	})
 
+	it('flags a subcommand-group wildcard that admits an outward command', () => {
+		const groups = ['Bash(gh pr *)', 'Bash(glab mr *)', 'Bash(gh workflow *)', 'Bash(gh:*)', 'Bash(pnpm *)']
+		const report = scanScopes({
+			user: {
+				permissions: {
+					defaultMode: 'auto',
+					allow: [...groups, 'Bash(gh pr view *)', 'Bash(gh workflow list *)', 'Bash(pnpm test *)'],
+				},
+			},
+		})
+		const flagged = codes(report, 'auto-outward-allow')
+		expect(flagged.map((f) => f.title.split('`')[1]).sort()).toEqual([...groups].sort())
+		const merges = flagged.filter((f) => JSON.stringify(f).includes('Merge Without Review'))
+		expect(merges.map((f) => f.title.split('`')[1]).sort()).toEqual(['Bash(gh pr *)', 'Bash(gh:*)', 'Bash(glab mr *)'])
+	})
+
 	it('says a merge allow rule hides the merge from the classifier', () => {
 		const report = scanScopes({ user: { permissions: { defaultMode: 'auto', allow: ['Bash(gh pr merge *)'] } } })
 		const [merge] = codes(report, 'auto-outward-allow')
