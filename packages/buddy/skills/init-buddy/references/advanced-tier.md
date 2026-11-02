@@ -51,6 +51,8 @@ For every host:
   apply in a repo that requires nothing, where it merges at once.
 - **Deny beats allow.** The allow pattern also matches a command that adds the bypass flag, so the deny
   entry is what stops it. Never write the allow entry without it.
+- **Not for Claude Code in auto mode.** There, offer the [queued-merge rule](auto-mode.md#queued-merge)
+  in `autoMode.allow` instead (see [merges in auto mode](#merges-in-auto-mode-automodeallow)).
 
 ### GitHub: `gh pr merge --auto`
 
@@ -140,15 +142,25 @@ The allow pattern matches `--auto-complete true --bypass-policy true`, so write 
 | | |
 |---|---|
 | Entry | a prose rule in `autoMode.allow` in `~/.claude/settings.json` (template below). Not a `permissions.allow` entry. |
-| Instead of | relying on the merge command in `permissions.allow`, which auto mode's classifier still overrides |
-| Risk | The agent can merge a PR or MR that no person approved, in any repo the rule names. |
+| Instead of | a merge command in `permissions.allow`. A matching allow rule resolves before the classifier runs, so the classifier never sees that merge: neither its "Merge Without Review" block nor this rule's conditions apply, and the bypass guard rests on the deny list alone. |
+| Risk | The agent can merge a PR or MR that no person approved, among those it opened or was asked to work on, in any repo the rule names. |
 | Guard | The rule text names the hosts, the owners, and the conditions, and the deny list holds each host's bypass entries. |
 
 Offer this only when the user runs Claude Code in auto mode (`permissions.defaultMode` is `"auto"`, or
 they start sessions in it) and wants the agent to merge itself, for example an orchestrator merging the
-PRs its worker sessions open. In auto mode a classifier reviews each action after the permission rules.
-Its built-in "Merge Without Review" block stops a merge of a PR with no approving review, even when
-`permissions.allow` lists the command. Its exceptions are plain-language rules under `autoMode.allow`.
+PRs its worker sessions open. In auto mode, Claude Code checks the permission rules first: an action
+that matches an allow, ask, or deny rule resolves there, and only the rest reaches the classifier
+([decision order](https://code.claude.com/docs/en/permission-modes#how-auto-mode-evaluates-actions)).
+The classifier's built-in "Merge Without Review" block (`claude auto-mode defaults --label 'Merge
+Without Review'`) stops a merge of a PR that no person approved. Its exceptions are plain-language
+rules under `autoMode.allow`.
+
+So keep the merge command out of `permissions.allow` and write this rule instead. If
+`permissions.allow` already lists a host's merge command (`Bash(gh pr merge *)`), say that the entry
+skips the classifier and this rule, and point to `review-permissions` to remove it. The same holds for
+the [queued-merge entry](#queued-merge) (`Bash(gh pr merge --auto *)`): in auto mode, keep it out of
+`permissions.allow` and offer the [queued-merge rule](auto-mode.md#queued-merge) instead. An allow
+entry skips the classifier's built-in block on `--auto` for a PR the agent is not working on.
 
 **User scope only.** The classifier reads `autoMode` from `~/.claude/settings.json` (and managed
 settings), never from `.claude/settings.json` or `.claude/settings.local.json`, so that a repo cannot
@@ -170,12 +182,14 @@ host's row:
 **Ask for the owners, per host.** The rule must name, for each host, the owners whose repos it covers,
 and for a self-hosted instance its hostname (`the GitLab group acme/platform on git.corp.example`). The
 suggestion commands can propose candidates, but the user decides. Never widen the list from a repo's
-remotes alone, and never let an owner on one host stand for the same name on another.
+remotes alone, and never let an owner on one host stand for the same name on another. When the user's
+`autoMode.environment` has the Source control entry from the [auto-mode step](auto-mode.md#step-3-draft-the-entries),
+write "in a repo in my namespaces" in place of the owner list, so the list lives in one entry.
 
 The entry, with the placeholders filled in from the rows:
 
 ```text
-Merging a pull or merge request (<merge commands>) without an approving review, in a repo owned by <owners>, when the agent has confirmed first-hand that it has no merge conflict, every required check or pipeline is green, and no review requests changes or is left unresolved. Bypassing branch protection, branch policies, or required checks (<bypass forms>), merging while checks or pipelines are red or pending, or merging in a repo owned by anyone else is still not covered.
+Merging a pull or merge request (<merge commands>) without an approving review, for a pull or merge request the agent opened or was asked to work on, in a repo owned by <owners>, when the agent has confirmed first-hand that it has no merge conflict, every required check or pipeline is green, and no review requests changes or is left unresolved. Bypassing branch protection, branch policies, or required checks (<bypass forms>), merging while checks or pipelines are red or pending, merging any other pull or merge request, or merging in a repo owned by anyone else is still not covered.
 ```
 
 - `<merge commands>`: every detected host's merge commands, each tagged with its host when there is
@@ -187,7 +201,7 @@ Merging a pull or merge request (<merge commands>) without an approving review, 
 For a GitHub-only user, the filled entry reads:
 
 ```json
-"Merging a pull or merge request (`gh pr merge`, or adding it to the merge queue) without an approving review, in a repo owned by the GitHub organizations acme and unional, when the agent has confirmed first-hand that it has no merge conflict, every required check or pipeline is green, and no review requests changes or is left unresolved. Bypassing branch protection, branch policies, or required checks (`gh pr merge --admin`), merging while checks or pipelines are red or pending, or merging in a repo owned by anyone else is still not covered."
+"Merging a pull or merge request (`gh pr merge`, or adding it to the merge queue) without an approving review, for a pull or merge request the agent opened or was asked to work on, in a repo owned by the GitHub organizations acme and unional, when the agent has confirmed first-hand that it has no merge conflict, every required check or pipeline is green, and no review requests changes or is left unresolved. Bypassing branch protection, branch policies, or required checks (`gh pr merge --admin`), merging while checks or pipelines are red or pending, merging any other pull or merge request, or merging in a repo owned by anyone else is still not covered."
 ```
 
 Write it:
