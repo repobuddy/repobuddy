@@ -2,7 +2,7 @@
 Feature: epic — plan an epic and its children, and move work into the epic level
 
   The skill settles an epic's outcome before its children, files the epic and each child after one
-  confirmation, and changes an issue or an initiative into an epic in place or by a move between
+  confirmation (or without one, when the user owns every tracker the plan writes to), and changes an issue or an initiative into an epic in place or by a move between
   trackers. How a level changes comes from the tracker's capabilities reference; the guards do not.
 
   @trigger
@@ -81,9 +81,58 @@ Feature: epic — plan an epic and its children, and move work into the epic lev
 
   @behavior
   Scenario: writes nothing when the user declines the plan
-    Given epic has shown the epic and three children for confirmation
+    Given the user does not own the GitHub repository
+    And epic has shown the epic and three children for confirmation
     When the user declines
     Then epic runs no create, edit, link, or close command
+
+  @behavior
+  Scenario: files the plan without waiting on a tracker the user owns
+    Given gh repo view reports viewerPermission ADMIN for the GitHub repository
+    And the routing puts the epic and every child on that repository
+    And the repository has an epic label
+    And the epic fits the epic level, and no search hit is the epic or a child
+    When epic shows the plan with the epic and three children
+    Then it creates the epic and the three children in the same turn, without waiting for a reply
+    And it reports the epic's URL and each child's URL
+
+  @behavior
+  Scenario: asks before filing the plan on a tracker the user does not own
+    Given gh repo view reports viewerPermission WRITE for the GitHub repository
+    And no search hit is the epic or a child
+    When epic shows the plan with the epic and three children
+    Then it asks once for the whole plan
+    And it runs no create command before the user answers
+
+  @behavior
+  Scenario Outline: asks before filing the plan when a tracker's ownership is unknown
+    Given <ownership_state>
+    And no search hit is the epic or a child
+    When epic shows the plan
+    Then it asks once for the whole plan
+    And it runs no create command before the user answers
+
+    Examples:
+      | ownership_state                                                                                              |
+      | gh repo view --json viewerPermission exits 1 for the GitHub repository                                       |
+      | the epic is on a GitHub repository the user owns and the routing puts task children on a reference with no Ownership section |
+
+  @behavior
+  Scenario: still asks about a duplicate hit on a tracker the user owns
+    Given gh repo view reports viewerPermission ADMIN for the GitHub repository
+    And the breakdown has a child titled "Add the refund webhook"
+    And the search finds open issue #51 "Refund webhook"
+    When epic runs its duplicate search
+    Then it shows #51 and asks whether it is the epic or a child
+    And it runs no create command before the user answers
+
+  @behavior
+  Scenario: still confirms a promote on a tracker the user owns
+    Given gh repo view reports viewerPermission ADMIN for the GitHub repository
+    And issue #42 on that repository has a Done when section with three criteria
+    When the user asks epic to promote #42
+    Then epic shows the retype and every child it will create, and waits for a yes
+    And it runs no gh issue edit or create command before the user answers
 
   @behavior
   Scenario: creates a missing level label only on a yes

@@ -173,3 +173,16 @@ Done closes without a comment, or with one the user asks for. Not planned commen
 - `https://<host>/<project>/-/issues/<iid>` and `https://<host>/<project>/-/work_items/<iid>` parse to project and iid.
 - `https://<host>/groups/<group>/-/epics/<iid>` and `https://<host>/groups/<group>/-/work_items/<iid>` parse to group and iid. GitLab redirects the older `/epics/` and `/issues/` forms to `/work_items/`.
 - The item ref's `id` is `<project>#<iid>` for an issue or task and `<group>&<iid>` for an epic.
+
+## Ownership
+
+Read the logged-in user's id, then that user's access level on the project, counting access inherited from its groups *(untested)*:
+
+```bash
+glab api user | jq -r .id
+glab api "projects/<project-enc>/members/all/<user id>" | jq -r .access_level
+```
+
+- `50` (Owner) or `40` (Maintainer) is `owned`. The owner of a project in a user namespace is its Owner.
+- A lower level (`30` Developer and below) is `not owned`, and so is a `404 Not found` from the members call: the user is not a member.
+- Any other error means unknown.

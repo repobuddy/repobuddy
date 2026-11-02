@@ -35,7 +35,7 @@ Keep every section of the epic template, in order; write `None` under one you ha
 
 These hold on every tracker and cannot be changed by a capabilities reference or a team override:
 
-- **Confirm before any write.** Show everything that will be created, retyped, linked, or closed, and wait for a yes. A capabilities section marked as writing in `project-tracker.contract` never runs before it.
+- **Confirm before any write.** Show everything that will be created, retyped, linked, or closed, and wait for a yes. A capabilities section marked as writing in `project-tracker.contract` never runs before it. The one exception is Create on trackers the user owns (Create step 7): the plan is shown and filed without waiting. Promote, Demote, and a move always wait for a yes, because they retype, rewrite, or close an item that already exists.
 - **List every child the change touches**, by title and URL, with what happens to each.
 - **Never close a child as a duplicate.** An existing item that matches a planned child is attached, not closed.
 - **Never drop a child silently.** Every child ends kept, re-parented, detached, or closed as not planned, and the report says which.
@@ -55,7 +55,7 @@ A tracker's operations live in a capabilities reference named `project-tracker.c
 7. Run its `Detect` checks; when a tool is missing, old, or logged out, say what to install, upgrade, or run, and stop.
 8. Check that the tracker holds the level (`Levels held` in its `Tracker` section). When it does not, say so and stop; do not file the epic as a plain issue.
 
-Where the reference marks an operation `**Unsupported.**`: with no `Search`, the user confirms there is no duplicate; with no native `Link`, put the link in the body of the child, naming the parent; with no `Retype` for the change, create at the new level, link, and close the old item as moved after confirmation.
+Where the reference marks an operation `**Unsupported.**`: with no `Search`, the user confirms there is no duplicate; with no native `Link`, put the link in the body of the child, naming the parent; with no `Retype` for the change, create at the new level, link, and close the old item as moved after confirmation; with no `Ownership`, the ownership is unknown, so Create asks.
 
 ## Create
 
@@ -65,7 +65,10 @@ Where the reference marks an operation `**Unsupported.**`: with no `Search`, the
 4. **Break it down.** Propose child issues, each independently shippable with one owner, each with a title, a category, and a one-line done-when. Run each through the issue level's `Too big` check; a child that meets it is split or named as a spike. Ask for the owner's priority and order the children by it. Then try one setup other than the default (another tracker for some category, or a team that overrides a step) against the breakdown, and add a child when that setup needs one.
 5. **Trackers.** Resolve the epic's tracker, and each child's. A child on another tracker than the epic cannot be a native child; it is linked in its body and listed in the epic's body, by title, or as tracked internally when the epic is public and the child's tracker private.
 6. **Search for duplicates.** Run the epic tracker's `Search` at least twice for the epic (the full title, then the core noun and verb), and once for each child on that child's tracker. Show each hit (title, state, URL, level). A hit the user says is the epic: when it is an epic with no children (a **shell**, as `initiative` files them), break it down: it is the epic, step 8 creates nothing and leaves its body, and step 1 starts from its `Outcome`. Otherwise stop and offer Promote (an issue) or Demote (an initiative) on it. A hit the user says is a child: attach it instead of creating it.
-7. **Confirm.** Run each tracker's `Kinds`, and the level-label check its `Retype` Limits give, when it gives one. Show the epic (title, category, outcome, non-goals, done-when, tracker, and the level label or field it uses), each child in order (title, category, spike or not, tracker, created or attached), and, on its own line, any level label that is missing and will be created. Ask once for the whole plan. Do not create anything without it; a missing label is created, with the reference's command, only on a yes to that line.
+7. **Show the plan, and confirm unless the user owns every tracker.** Run each tracker's `Kinds`, and the level-label check its `Retype` Limits give, when it gives one. Show the epic (title, category, outcome, non-goals, done-when, tracker, and the level label or field it uses), each child in order (title, category, spike or not, tracker, created or attached), and, on its own line, any level label that is missing and will be created. Then run `Ownership` on every tracker the plan writes to (its format is in `project-tracker.contract`).
+
+- **Every one answers `owned`**, the level check in step 2 found nothing, and no level label is missing: show the plan and go to step 8 in the same turn. Do not wait for a reply.
+- **Otherwise** (a tracker answers `not owned` or its ownership is unknown, the level check found the epic too big or too small, or a level label is missing): ask once for the whole plan. Do not create anything without it; a missing label is created, with the reference's command, only on a yes to that line.
 8. **Create the epic.** Run its tracker's `Create` at level epic, with the body written to a file from `repobuddy.work-template.epic`. Under `Child Issues`, list the planned children by title, as the Guards allow; the tracker's native link carries their numbers.
 9. **Create the children.** Create each child, in order, through the `issue` skill when it is installed, passing the title, category, body, tracker, and the epic as parent, and saying the search and the confirmation are done; otherwise run the child tracker's `Create` with its template reference (`repobuddy.work-template.<category>`) and the epic as parent. Attach each existing match with the `Link` section. After a failed create, follow the Guards before the next child.
 10. **Read back.** Read the epic's tree with the `Link` section and compare the count with the plan. Report any child that is missing.
@@ -106,7 +109,7 @@ A level change crosses trackers when the routing puts the epic level on another 
 
 ## What NOT to Do
 
-- Do not write before the confirmation, or touch a child the confirmation did not list
+- Do not write before the confirmation, except a Create whose every tracker answered `owned` with no level finding and no missing label; do not touch a child the plan did not list
 - Do not file a child before the outcome and done-when are settled, or guess an unknown into a child
 - Do not close a child as a duplicate, or drop one without saying where it went
 - Do not invent labels, types, or fields: use only those the tracker has, and create a level label only on a yes
@@ -121,7 +124,7 @@ A level change crosses trackers when the routing puts the epic level on another 
 - [ ] The level checks, the contract, and the epic template were loaded, and each capabilities reference's `contract:` was checked
 - [ ] With a routing, every tracker came from a route, and a missing or ambiguous pin or an unmatched route stopped the skill before any search
 - [ ] Create asked for the outcome and done-when before naming a child, and each unknown became a spike
-- [ ] No write ran without the user's confirmation, and the confirmation listed every child the change touched
+- [ ] The plan was shown before any write and listed every child the change touched; a write ran without the user's confirmation only in Create, when every tracker it wrote to answered `owned`, the level check found nothing, and no level label was missing
 - [ ] No child was closed as a duplicate, and the report says what happened to every child
 - [ ] A move from a private tracker to a public one stopped, and a public item names a private one only as tracked internally
 - [ ] The URL of the epic and of each child was returned

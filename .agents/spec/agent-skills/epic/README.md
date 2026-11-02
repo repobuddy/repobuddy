@@ -21,7 +21,8 @@ decision 2). It has three modes:
 
 - **Create**: an epic and its child issues. The outcome and done-when come first, then the non-goals,
   a gap audit that turns each unknown into a **spike** child, a breakdown ordered by the owner's
-  priority, a duplicate search, one confirmation for the whole plan, and the filing.
+  priority, a duplicate search, one confirmation for the whole plan, and the filing. When the person
+  owns every tracker the plan writes to, the plan is shown and filed without the confirmation turn.
 - **A shell** that `initiative` filed (an epic with an outcome and no children) is broken down by
   Create: found by the duplicate search, it becomes the epic, and only its children are created.
 - **Promote** (issue → epic): the issue stays in place as the epic where the tracker allows, and its
@@ -35,12 +36,23 @@ level change (ADR 0003), so `epic` says which skill and stops.
 **How a level changes is the tracker's; the guards are the skill's** (ADR 0003, decision 7). Each
 capabilities reference's `Retype` section says, per change, whether it is in place or a new item, what
 happens to open children, and the limits; a team overrides that section with `merge-sections`. The
-skill keeps five guards no reference or team can change: confirm before any write; list every child
+skill keeps five guards no reference or team can change: confirm before any write (except Create on
+trackers the person owns); list every child
 the change touches; never close a child as a duplicate; never drop a child without saying where it
 went; never put a private tracker's details into a public one. A sixth, from the `issue` spec: check
 for a stray item after a failed create before any retry. Where a reference is silent or marks
 `Retype` unsupported, the skill creates at the new level, links, and closes the old item as moved
 after confirmation.
+
+**Create on the person's own trackers files without a confirmation turn**, as `issue` does. Each
+capabilities reference's optional `Ownership` section answers `owned` or `not owned` (GitHub:
+`viewerPermission` is `ADMIN`; GitLab: Maintainer or Owner). When every tracker the plan writes to
+answers `owned`, the epic level check found nothing, and no level label is missing, the skill shows
+the plan and files it in the same turn. Anything else asks once for the whole plan, as before: a
+tracker that is not owned, or whose ownership is unknown (no section, as for Asana, or a failed
+command). A duplicate hit is still asked about. Promote, Demote, and moves always confirm, owned or
+not, because they retype, rewrite, or close an item that already exists; a create adds only new items
+and attaches the existing ones the person named in the search.
 
 **A level change may cross trackers** (decision 9). When the routing puts the epic level on another
 tracker than the source item, the skill creates the epic there, links the two, and closes the source
@@ -103,7 +115,7 @@ affected by a move.
 1. **A security vulnerability.** The skill points to the private channel and stops.
 2. **The routing does not resolve** (a missing or ambiguous pin, no matching route). The skill names it, suggests `project-tracker`, and stops.
 3. **The tracker does not hold the level.** The skill says so and stops; it does not file a plain issue.
-4. **The user declines the confirmation.** Nothing is written.
+4. **The user declines the confirmation.** Nothing is written. In Create, the confirmation is asked only when a tracker the plan writes to is not owned or its ownership is unknown, the level check found something, or a level label is missing.
 5. **A level check fails.** The skill suggests the other level and continues only on the user's word.
 6. **An unknown in the scope.** It becomes a spike child, ordered before the children that depend on it.
 7. **A duplicate search hit.** A hit for a child is attached, not created; a hit for the epic offers Promote or Demote on it, or, when it is a shell epic with no children, becomes the epic Create breaks down.
@@ -147,7 +159,9 @@ graph TD
     X -->|Another tracker| V{Private source,<br/>public target?}
     V -->|Yes| V1[Stop: private details never go public]
     V -->|No| K
-    K --> N{Does the user confirm?}
+    K --> O{Create, every tracker owned,<br/>no level finding, no missing label?}
+    O -->|Yes| W
+    O -->|No| N{Does the user confirm?}
     N -->|No| N1[Write nothing]
     N -->|Yes| W[Write: create or retype, or move<br/>then children; check strays on failure]
     W --> Y[Read back the tree; report every URL<br/>and what happened to each child]
@@ -166,7 +180,12 @@ graph TD
 | `R0 → R1 (No)` | the tracker's reference does not hold initiative | `stops demoting on a tracker that holds no initiative` |
 | `S` | a search hit the user says is a child | `attaches an existing item instead of filing a duplicate child` |
 | `S` | a search hit the user says is the epic, a shell with no children | `breaks down a shell epic instead of filing a second one` |
-| `N → N1 (No)` | the plan shown and declined | `writes nothing when the user declines the plan` |
+| `N → N1 (No)` | the user does not own the tracker; the plan shown and declined | `writes nothing when the user declines the plan` |
+| `O → W (Yes)` | viewerPermission is ADMIN, the label exists, no search hit | `files the plan without waiting on a tracker the user owns` |
+| `O → N (No)` | viewerPermission is WRITE | `asks before filing the plan on a tracker the user does not own` |
+| `O → N (No)` | the ownership command fails, or a child's tracker has no Ownership section | `asks before filing the plan when a tracker's ownership is unknown` |
+| `S` (owned) | viewerPermission is ADMIN and the search finds a likely child | `still asks about a duplicate hit on a tracker the user owns` |
+| `O → N (No)` (Promote) | viewerPermission is ADMIN and the user asks to promote an issue | `still confirms a promote on a tracker the user owns` |
 | `N → W (Yes)` | the GitHub repo lacks the `epic` label | `creates a missing level label only on a yes` |
 | `W` | a child create fails and leaves an issue behind | `checks for a stray child before filing the next one` |
 | `P → P2`, `X → K` | an issue on GitHub, epics routed to GitHub | `promotes an issue in place and moves its criteria into a first child` |

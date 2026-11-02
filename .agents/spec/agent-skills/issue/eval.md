@@ -45,14 +45,17 @@ been measured against a judge's noise (cSEM); that needs a non-author run, so tr
 
 A judged run reads a narrated transcript. These scenarios assert that a command ran, did not run,
 or was passed a flag: `creates only after the summary is confirmed`, `creates nothing when the user
-declines`, `stops at a confirmed duplicate`, `does not file a vulnerability publicly`, `refuses a host
+declines`, `files directly on a tracker the user owns`, `asks before filing on a tracker the user does not own`, `asks before filing when the tracker's ownership is unknown`, `still asks about a duplicate hit on a tracker the user owns`, `asks about an oversized item even on a tracker the user owns`, `stops at a confirmed duplicate`, `does not file a vulnerability publicly`, `refuses a host
 with no tracker set up`, `maps each category to the tracker's type`, `falls back to labels`, `omits the
 label when the repo does not have it`, `stops with an upgrade message`, `reads the bundled GitHub
 reference`, `writes the body from the template reference`, `follows a project override of the level
 checks`, `stops on a capabilities reference whose contract version it does not know`, `does not retry a failed create that left an issue behind`, `lists the newest issues after a failed create that left nothing behind`, `reads the bundled GitHub reference when the reference search finds no match`, and the five use case 4 scenarios, and the use case 5 scenarios that assert which reference was loaded or that no search and no create ran (`stops when no route matches the category`, `stops when a route's pin does not resolve to one reference`, `stops when a routing exists and the reference command cannot run`). A transcript cannot show that nothing was created or which flags a command took, so treat
 their passes as unproven. `creates only after the summary is confirmed` states the confirmation in its
 Given, so it cannot catch a skill that skips confirmation; `creates nothing when the user declines`
-carries that. The same limit is recorded for `to-question`. `ships a Validate section...` is a static
+and the three ownership scenarios that ask carry that. `files directly on a tracker the user owns`
+asserts that no confirmation turn happened, which a transcript shows only as the absence of a
+question. The GitHub `viewerPermission` answers were tried by hand (`ADMIN` on a user-owned and an
+organization repository the user runs, `READ` on another owner's); GitLab's `Ownership` is untested. The same limit is recorded for `to-question`. `ships a Validate section...` is a static
 check of files, not simulated behavior. Real filing is verified by hand on a throwaway issue that is
 closed at once, never by an eval.
 

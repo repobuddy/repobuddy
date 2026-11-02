@@ -23,8 +23,11 @@ A capabilities reference has these `##` sections, in this order. Heading text is
 | `Retype` | How an item changes level, for each of issue → epic, epic → initiative, epic → issue, and initiative → epic: in place or a new item, what happens to open children, and the limits | yes |
 | `Close` | How to close an item with a reason: done, not planned, or moved | yes |
 | `Url` | How to print an item's URL and parse one | no |
+| `Ownership` | Optional. How to tell whether the logged-in user owns the tracker's scope (the repository or project `Detect` resolved): the command, and which of its answers mean `owned` and `not owned` | no |
 
-A skill confirms with the user before any section marked as writing.
+A skill confirms with the user before any section marked as writing. The one exception is a create that the skill's own workflow lets run without a confirmation turn because `Ownership` answered `owned`. A skill with no such rule always confirms.
+
+`Ownership` answers `owned` or `not owned`. A missing or `**Unsupported.**` `Ownership` section, or a result the section does not map to either answer, a failed command included, means the ownership is unknown. A skill treats unknown as `not owned`.
 
 ## Unsupported
 

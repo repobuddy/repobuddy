@@ -16,7 +16,8 @@ for an existing one, invents labels the repository does not have, and puts the w
 in the body.
 
 `issue` files **one item of tracked work**: a **bug**, a **feature**, or a **task**. It gathers the
-details, searches for a duplicate, confirms with the person, creates the item, and reports the URL.
+details, searches for a duplicate, shows a summary, creates the item, and reports the URL. It waits
+for the person's yes before creating, unless the person owns the tracker.
 It replaces `file-issue` ([ADR 0003](../../design/decisions/0003-split-file-issue-by-level.md)); the
 rename is breaking and ships with a major changeset.
 
@@ -41,9 +42,19 @@ guesses: a pin that resolves to nothing or to two plugins, or a level and catego
 stops the skill with the problem named. Without a routing it behaves as before, and its report ends
 with one line suggesting `project-tracker`. The table format is in `project-tracker.contract`.
 
+**The person's own tracker files without a confirmation turn.** The capabilities reference's
+optional `Ownership` section answers `owned` or `not owned` for the tracker's scope (GitHub:
+`viewerPermission` is `ADMIN`, which covers a user-owned repository and an organization's repository
+the person administers; GitLab: Maintainer or Owner access). On `owned`, the skill shows the summary
+and creates in the same turn. On `not owned`, or when the answer is unknown (no section, as for Asana
+or an older reference, or a failed command), it asks as before. Only the create confirmation changes:
+the security check still runs first, a duplicate hit is still asked about, and a level finding (too
+big or too small) still stops for the person's word, because filing it silently would bury the
+suggestion.
+
 **Category and level are separate.** Category (bug, feature, task) says why the work exists. This
 skill creates at the issue level only. When an item looks too big or too small, it suggests another
-level in the confirmation and files at this one unless the person changes it. It does not promote or
+level in the summary, asks, and files at this one unless the person changes it. It does not promote or
 demote.
 
 **What the tracker does with the category.** On GitHub the issue type carries it (`Bug`, `Feature`,
@@ -89,7 +100,7 @@ shape the body and the confirmation.
 use cases 1–5 and drawn in the Control Flow:
 
 5. **A duplicate exists.** The reporter confirms a search hit is the same issue: nothing is created; the existing URL is given.
-6. **The reporter does not confirm.** Nothing is created.
+6. **The reporter does not confirm.** Nothing is created. The skill asks only when the tracker's `Ownership` does not answer `owned`, or the item is the wrong size.
 7. **The item is a security vulnerability.** The skill points to the private channel and creates nothing.
 8. **The host has no tracker set up** (Bitbucket or anything else). The skill says so and creates nothing.
 9. **The item is the wrong size.** The confirmation suggests another level; the issue is still filed at this one if the reporter does not change it. Variants: the repo has no issue types (label instead of type), the host is GitLab (labels, through the bundled GitLab reference).
@@ -140,7 +151,9 @@ graph TD
     H -->|Yes| I[Give the existing URL and stop]
     H -->|No| J{Does the item fit<br/>one issue?}
     J -->|Too big or too small| K[Add a level suggestion<br/>to the summary]
-    J -->|Fits| L{Does the reporter<br/>confirm the summary?}
+    J -->|Fits| OW{Does the tracker's Ownership<br/>answer owned?}
+    OW -->|Yes| BP
+    OW -->|No, or unknown| L{Does the reporter<br/>confirm the summary?}
     K --> L
     L -->|No| M[Create nothing and stop]
     L -->|Yes| BP{Is the tracker public?}
@@ -183,8 +196,11 @@ reference's `Create` section, which lists the newest issues before any retry.
 | `T → G (Yes)` | a request that wants new behavior | `writes a feature body with the need and use cases, and no bug sections` |
 | `N → P (No)` | the repo has no enhancement label | `omits the label when the repo does not have it` |
 | `H → J (No)` | the first search returns hits that are not the reporter's issue | `searches at least twice and shows each hit before creating` |
-| `J → L (Fits)` | one deliverable with one owner | `adds no level suggestion to an item that fits one issue` |
-| `L → BP (Yes)` | the reporter has confirmed the summary | `creates only after the summary is confirmed` |
+| `J → OW (Fits)` | one deliverable with one owner | `adds no level suggestion to an item that fits one issue` |
+| `OW → BP (Yes)` | viewerPermission is ADMIN, no search hit, the item fits | `files directly on a tracker the user owns` |
+| `OW → L (No, or unknown)` | viewerPermission is WRITE | `asks before filing on a tracker the user does not own` |
+| `OW → L (No, or unknown)` | the ownership command fails, or the reference has no Ownership section | `asks before filing when the tracker's ownership is unknown` |
+| `L → BP (Yes)` | the user does not own the tracker and has confirmed the summary | `creates only after the summary is confirmed` |
 | `N → P (No)` | issueTypes is null and the repo has bug and enhancement labels | `falls back to labels on a repo without issue types` |
 | `O` / `Q` (body) | a confirmed task "migrate the build to tsdown" in a public repo | `writes a task body whose end state and scope can be checked` |
 | `O` / `Q` (body) | the same task, with a request that cites a commit SHA and an internal tracker address | `keeps a commit SHA and an internal tracker address out of a public issue body` |
@@ -201,6 +217,8 @@ reference's `Create` section, which lists the newest issues before any retry.
 | `W → W2 (No)` | a request that says only "file this" | `asks for the category when the request does not give one` |
 | `W2 → RT` | the same request, in a project with a routing that sends bugs elsewhere | `asks for the category before choosing a route` |
 | `H → I (Yes)` | a search hit the reporter confirms is the same issue | `stops at a confirmed duplicate` |
+| `H` (owned) | viewerPermission is ADMIN and the search returns a hit | `still asks about a duplicate hit on a tracker the user owns` |
+| `K → L` (owned) | viewerPermission is ADMIN and the item covers five shippable features | `asks about an oversized item even on a tracker the user owns` |
 | `L → M (No)` | the reporter declines the summary | `creates nothing when the user declines` |
 | `B → Z (Yes)` | the report describes an unauthenticated remote code execution | `does not file a vulnerability publicly` |
 | `RT → C (No)`, `C → F (other host)` | no routing exists, origin is bitbucket.org | `refuses a host with no tracker set up` |
@@ -218,7 +236,7 @@ A handed-over finding enters at `G`, and the typed scenarios' Givens do not pin 
 |---|---|---|
 | `G → H` | a finding handed over by `agent-readiness` | `searches for duplicates before filing a finding a sibling skill hands over` |
 | `H → I (Yes)` | the same, with a hit the user confirms | `stops at a confirmed duplicate of a finding a sibling skill hands over` |
-| `L → BP (Yes)` / `L → M (No)` | the same, no hit is the user's issue | `creates a finding a sibling skill hands over only when the user confirms the summary` |
+| `L → BP (Yes)` / `L → M (No)` | the same, no hit is the user's issue, and the user does not own the tracker | `creates a finding a sibling skill hands over only when the user confirms the summary` |
 | `B → W (No)` | an ordinary finding from `agent-readiness` | `files an ordinary finding from a sibling skill instead of treating it as a vulnerability` |
 | `B → Z (Yes)` | a finding that leaks a token | `does not file a security finding from a sibling skill publicly` |
 
