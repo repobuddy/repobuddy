@@ -52,7 +52,8 @@ that drifted in elsewhere is already here.
    - On a different branch: say so, and ask before switching, because switching branches can disturb
      the user's work.
    - The branch has moved past `commit`: read `git log <commit>..HEAD --oneline` and check whether
-     the new commits already did the `## NEXT` step or changed a settled decision.
+     the new commits already did the `## NEXT` step or changed a settled decision. If they already
+     met the goal, ask whether to delete the checkpoint (step 7) instead of continuing.
    - Its `depends-on` names a checkpoint that still exists: that topic isn't done yet. Say so, and
      ask whether to resume that one first.
    - Any `## Not in git` item that is missing here, such as uncommitted changes from another machine
@@ -81,6 +82,7 @@ that drifted in elsewhere is already here.
 7. **Delete it when the work is done, not before.** A checkpoint is a handoff, not a record, but
    until the goal is met it is what survives if this session dies. Once the goal is met, move
    anything worth keeping into a commit message, an ADR or an issue, then delete the file. Use
-   `git rm` if it was committed, and commit the deletion along with the work's final unit. If the
-   session ends before the goal is met, run `checkpoint create` to rewrite `## NEXT` instead of leaving a
-   stale one behind.
+   `git rm` if it was committed, and commit the deletion along with the work's final unit. Age is no
+   reason to delete one: an old checkpoint can still be a legitimate pause. If the session ends before
+   the goal is met, run `checkpoint create`, which writes back to this checkpoint and rewrites its
+   `## NEXT`, instead of leaving a stale one behind.

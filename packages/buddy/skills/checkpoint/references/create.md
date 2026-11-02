@@ -23,12 +23,26 @@ opens the file has to be able to continue.
    `## NEXT`, and its own files. A thread that can't start until another finishes is still its own
    topic; record the order (step 6) instead of merging the two.
 
+   Then match each topic to the checkpoint it may already have, so a pause updates that file instead
+   of writing a second one:
+   - **By origin first.** If this session resumed checkpoint X, the topic it continued is X's topic,
+     and writes back to X under X's slug.
+   - **Otherwise by goal.** Before naming the topics, list the existing checkpoints in the folder of
+     each topic's home repo (step 5) and reuse the slug of the one whose `## Goal` matches. When the
+     match is unclear, ask. With no one to ask, give the topic a new slug and say so in the report.
+   - **On a split.** When a matched topic has split in two, the part that continues the old `## Goal`
+     keeps the slug, and the new part gets a new one.
+
 2. **Drop finished and extra work.** A topic that is done (committed, merged, answered, or abandoned
-   on purpose) gets no checkpoint and no history. Where a live topic builds on it, cite it in one line
+   on purpose) gets no checkpoint and no history. If it matched a checkpoint in step 1, delete that
+   file (`git rm` if it was committed), so it doesn't linger or hold up a checkpoint whose
+   `depends-on` names it. Delete only for that reason: an old checkpoint can still be a legitimate
+   pause, so age alone never is one. Where a live topic builds on the finished one, cite it in one line
    under `## Touched` (the commit sha or PR). Drop tangents that left nothing to do. Summarize only
    where a cold reader needs the gist to continue, never as a play-by-play of the session.
 
-   If no topic has work left, write nothing: say so in the report and stop.
+   If no topic has work left, write nothing: skip to step 9 for any deletion to commit, then report
+   and stop.
 
 3. **Hand SDD mission topics to their own pair.** If a live topic is an SDD mission (an
    `.agents/plans/*.plan.md` whose todos are `in_progress` and this work is one of them) and the
@@ -71,8 +85,7 @@ opens the file has to be able to continue.
      `~/.agents/repobuddy/checkpoints/<slug>.md`.
 
    `<slug>` is a short kebab-case name for the topic (`flaky-login-test`, `auth-refactor`), not a
-   timestamp. If a checkpoint for the same topic already exists in that folder, update it rather than
-   creating a second one.
+   timestamp. A topic matched in step 1 keeps its checkpoint's slug, and step 6 merges into that file.
 
    **Read the repo state from the home repo.** Take `branch` and `commit` from the home repo
    (`git -C <home repo root> branch --show-current` and `rev-parse --short HEAD`), take `## Not in git`
@@ -95,6 +108,12 @@ opens the file has to be able to continue.
      is done, list that topic's slug in `depends-on`, and say what it waits for in `## NEXT`. Leave
      the field out when the topics are independent. The dependency is met once the slug's checkpoint
      is gone, because a checkpoint is deleted when its work is done.
+
+   **Merge into a matched checkpoint; don't overwrite it.** A full rewrite drops what this session
+   never touched. Read the file first and keep `created`, the settled decisions and the dead ends; a
+   dead end stays unless this session reopened it with evidence. Rewrite `## NEXT`,
+   `## Remaining steps`, `## Not in git`, `branch`, `commit` and `updated` from the current state, add
+   this session's new decisions, dead ends and open questions, and drop the questions it answered.
 
    Fill each checkpoint from what the session holds, so the cold reader gets it without rediscovery:
    - **Keep the user's words.** Under `## Goal`, quote the user's latest instruction for the topic
@@ -121,11 +140,14 @@ opens the file has to be able to continue.
    because a note from a debugging session should not land on a feature branch by accident. With
    `--commit`, stage only the checkpoint files with `git add -f <path>...` (the folder is excluded, so
    a plain `git add` skips them) and commit them together as `docs: checkpoint <slug>[, <slug>...]`,
-   so they follow the branch to another machine or another person.
+   so they follow the branch to another machine or another person. A deletion staged with `git rm` in
+   step 2 goes into the same commit, or, with nothing else to commit, into its own as
+   `docs: drop checkpoint <slug>[, <slug>...]`. Without `--commit`, that deletion stays staged.
 
    `--commit` covers only checkpoints written to the current repo. A checkpoint written to another
-   repo (or to `~/.agents/repobuddy/checkpoints/`) stays uncommitted: committing there would put a
-   note on a branch in a repo this session was not asked to change. The report says so.
+   repo (or to `~/.agents/repobuddy/checkpoints/`), or deleted there, stays uncommitted: committing
+   there would put a note on a branch in a repo this session was not asked to change. The report says
+   so.
 
    Before committing, check the redaction mechanically, since prose alone misses a path:
 
@@ -136,11 +158,13 @@ opens the file has to be able to continue.
    Rewrite every real hit as a repo-relative path or a description, and don't commit until the check
    comes back clean. A match on a common word that happens to equal the username is not a leak.
 
-10. **Report.** List every checkpoint written, each with its path, its `## NEXT` line and its
-    `depends-on`, and say whether they were committed. Then list the topics skipped as done, one line
-    each with the commit or PR that finished them, and any live topic left out by the focus or handed
-    to `pause-mission`. If the split was decided without asking, say which option was taken and why. If
-    there are uncommitted changes, say that they won't travel with an uncommitted checkpoint.
+10. **Report.** List every checkpoint written, each with its path, whether it is new or updated, its
+    `## NEXT` line and its `depends-on`, and say whether they were committed. Then list the topics
+    skipped as done, one line each with the commit or PR that finished them and the checkpoint deleted
+    for it, if any, and any live topic left out by the focus or handed to `pause-mission`. If the split
+    was decided without asking, say which option was taken and why. If a topic got a new slug because
+    its match to an existing checkpoint was unclear, name both. If there are uncommitted changes, say
+    that they won't travel with an uncommitted checkpoint.
 
     For each checkpoint written to another repo, name that repo and say it was left uncommitted, then
     give the line the user types to resume it there. Load only the reference for the current harness

@@ -26,7 +26,10 @@ Natural phrasing routes too: "let's stop here" creates a checkpoint, "pick up th
 
 ### create
 
-- Sorts the session's requests into topics and skips finished work.
+- Sorts the session's requests into topics and skips finished work, deleting a finished or abandoned topic's old
+  checkpoint. Age alone never deletes one.
+- Matches each topic to its existing checkpoint (the one this session resumed, or one with the same goal) and merges
+  into it, keeping its settled decisions and dead ends.
 - With several live topics, asks whether to write one checkpoint per topic or one for all, and recommends one. With a
   focus argument it checkpoints only that topic.
 - Writes `.agents/repobuddy/checkpoints/<slug>.md` at the root of the topic's home repo, with the next action first. A
@@ -40,7 +43,8 @@ Natural phrasing routes too: "let's stop here" creates a checkpoint, "pick up th
 ### resume
 
 - Finds the checkpoint (one you name, the only one, or a newest-first list to choose from). Warns when `repo:` names
-  another repo, then flags a different branch, new commits, and state that was not in git.
+  another repo, then flags a different branch, new commits, and state that was not in git. If the new commits already
+  met the goal, it asks whether to delete the checkpoint.
 - Reloads the working method and settled decisions, avoids retrying listed dead ends, and runs the next step.
 - Keeps the checkpoint until the work is done, then deletes it.
 - Given another repo's path, it lists that repo's checkpoints and gives the line to start a session there. It never runs `cd`.
