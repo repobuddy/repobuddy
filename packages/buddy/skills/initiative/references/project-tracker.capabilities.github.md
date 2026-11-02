@@ -91,3 +91,13 @@ Done is `completed`. Not planned and moved are `not planned`; for moved, comment
 
 - `gh issue create` and `gh issue view <n> --json url --jq .url` print the URL.
 - `https://github.com/<owner>/<repo>/issues/<n>` parses to repository and number.
+
+## Ownership
+
+```bash
+gh repo view <owner>/<repo> --json viewerPermission --jq .viewerPermission
+```
+
+- `ADMIN` is `owned`. The owner of a user-owned repository always has `ADMIN` on it, and so does a person who administers an organization's repository. Tested: `ADMIN` on a user-owned and an organization-owned repository the user runs, `READ` on another owner's public repository.
+- `MAINTAIN`, `WRITE`, `TRIAGE`, `READ`, or an empty value is `not owned`.
+- A non-zero exit (the repository cannot be found, or `gh` is logged out) means unknown.
