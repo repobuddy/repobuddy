@@ -4,6 +4,7 @@ import { chmodSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from '
 import { tmpdir } from 'node:os'
 import { delimiter, dirname, join } from 'node:path'
 import { afterEach, beforeEach, expect, jest, test } from '@jest/globals'
+import { droppedInAutoMode } from '../permissions/auto-mode-drops.js'
 import { main, type Result } from './permission-candidates.js'
 
 const tmp = (p: string) => mkdtempSync(join(tmpdir(), `perm-cand-${p}-`))
@@ -132,6 +133,24 @@ test('npm uses `npm test` and `npm run <script>`; manager falls back to the lock
 		['Bash(npm test *)', 'Bash(npm run check *)'],
 	)
 	assert.ok(r.allow.goodToHave.some((c) => c.entry === 'Bash(npm run lint:fix *)'))
+})
+
+test('no allow candidate is a rule Claude Code drops in auto mode', async () => {
+	const scripts = Object.fromEntries(
+		['test', 'lint', 'check', 'typecheck', 'format', 'check:fix', 'lint:fix'].map((s) => [s, 'x']),
+	)
+	const hosts = ['github', 'gitlab', 'gitea', 'forgejo', 'azure'].flatMap((h) => ['--host', h])
+	for (const manager of ['npm', 'pnpm', 'yarn', 'bun']) {
+		const dir = project({ pkg: { packageManager: `${manager}@1.0.0`, scripts } })
+		const r = await run(['--project', dir, '--home', tmp('h'), ...hosts])
+		assert.equal(r.packageManager, manager)
+		const allow = [...r.allow.safe, ...r.allow.goodToHave].map((c) => c.entry)
+		assert.ok(allow.length > 7)
+		for (const entry of allow) {
+			const m = /^(\w+)(?:\((.*)\))?$/.exec(entry)!
+			assert.equal(droppedInAutoMode(m[1]!, m[2] ?? ''), null, `${entry} is dropped in auto mode`)
+		}
+	}
 })
 
 test('no package manager means no script entries', async () => {
