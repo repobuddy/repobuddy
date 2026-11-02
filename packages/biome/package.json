@@ -1,6 +1,6 @@
 {
 	"name": "@repobuddy/biome",
-	"version": "2.5.1",
+	"version": "2.5.2",
 	"description": "Your biome buddy",
 	"keywords": [
 		"repobuddy",
@@ -35,7 +35,8 @@
 	},
 	"files": [
 		"performant.jsonc",
-		"recommended.jsonc"
+		"recommended.jsonc",
+		"CHANGELOG.md"
 	],
 	"scripts": {
 		"check:preset": "biome lint tests/recommended --config-path=tests/.config/recommended --error-on-warnings && biome lint tests/performant --config-path=tests/.config/performant --error-on-warnings",

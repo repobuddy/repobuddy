@@ -23,7 +23,8 @@ topic that drifted into another repo is checkpointed in that repo, ready for a s
 ```
 
 Natural phrasing routes too: "let's stop here" creates a checkpoint, "pick up the auth refactor" resumes. A bare
-`/checkpoint` shows the help. The name differs from the `/resume` built into Claude Code, Codex, Copilot
+`/checkpoint` runs `create` when the repo has no checkpoint yet, since there is nothing to resume, and
+shows the help when it has some. The name differs from the `/resume` built into Claude Code, Codex, Copilot
 CLI and Gemini CLI, so it doesn't collide with it.
 
 ## `create`
@@ -31,9 +32,13 @@ CLI and Gemini CLI, so it doesn't collide with it.
 1. Lists every request you made in the session, in order, including the ones it hasn't started, then
    sorts them into topics: independent threads such as a bug fix, a side refactor or a research
    question. Threads that share a goal or the same files stay one topic.
-2. Skips work that is done. A committed fix or an answered question gets no checkpoint, only a
-   one-line commit or PR reference where live work builds on it. Tangents with nothing left to do are
-   dropped.
+   Each topic is matched to the checkpoint it may already have: the one this session resumed, or one
+   whose goal matches (it asks when unclear). A matched topic keeps that slug; when a topic split, the
+   part that continues the old goal keeps it.
+2. Skips work that is done. A committed fix, an answered question or a topic you abandoned gets no
+   checkpoint, only a one-line commit or PR reference where live work builds on it, and its old
+   checkpoint, if it had one, is deleted. Age alone never deletes a checkpoint. Tangents with nothing
+   left to do are dropped.
 3. When more than one topic has work left, shows each one with its slug and next step and asks
    whether to write one checkpoint per topic or keep them in one, with a recommendation. With one live
    topic it doesn't ask. With a focus argument it checkpoints only that topic and names the others it
@@ -42,7 +47,9 @@ CLI and Gemini CLI, so it doesn't collide with it.
    **home repo**, the repo its work changes. That is usually the current repo; for a topic about
    another repo, the checkpoint goes into that repo, with its branch, commit and paths taken from
    there and a `repo:` field naming it. If that repo isn't on disk, it asks where it is (or, with no
-   one to ask, falls back to `~/.agents/repobuddy/checkpoints/` and says so).
+   one to ask, falls back to `~/.agents/repobuddy/checkpoints/` and says so). An existing checkpoint
+   is merged, not overwritten: its settled decisions and dead ends stay, and the next step, remaining
+   steps, branch, commit and uncommitted state are rewritten.
 
    The next action comes first, followed by the goal with your latest instruction quoted word for
    word, the remaining steps (carried over from the harness's todo list), settled decisions (your
@@ -69,20 +76,21 @@ which checkpoints into the mission's plan brief instead.
 ## `resume`
 
 1. Finds the checkpoint in `.agents/repobuddy/checkpoints/`, including one a session in another repo
-   paused here. It uses the one you named, or the only paused one. When several are paused, it lists
+   paused here. It uses the one you named, or the only one there. When there are several, it lists
    them newest first, with title, branch and next step, and asks, even if one matches your current
    branch. A checkpoint that waits on another topic is marked `waits on <slug>`.
 2. Checks the checkpoint against the repo. It says so first if the checkpoint's `repo:` names another
    repo, then flags a different branch, commits that landed since the pause, and state from
-   `## Not in git` that isn't here.
+   `## Not in git` that isn't here. If the new commits already met the goal, it asks whether to delete
+   the checkpoint instead of continuing.
 3. Reloads the working method and the settled decisions, reads the dead ends so it doesn't retry a
    failed approach without new evidence, and raises any open question that blocks the next step.
 4. Runs the next step, then the remaining steps, toward your quoted instruction, and keeps the
    checkpoint current as decisions are made.
-5. Deletes the checkpoint once the work is done, not when it resumes. On resume it only marks the file
-   `status: resumed`, so if the resumed session dies before pausing again, the state is still there.
+5. Deletes the checkpoint once the work is done, not when it resumes, so if the resumed session dies
+   before pausing again, the state is still there.
 
-Give it another repo's path instead (`/checkpoint resume ../other-repo`) and it lists that repo's paused
+Give it another repo's path instead (`/checkpoint resume ../other-repo`) and it lists that repo's
 checkpoints, lets you pick, and hands back what to type to resume there. It never runs `cd` itself,
 because a shell `cd` leaves the session on this repo's working directory, instructions, skills and
 permissions.

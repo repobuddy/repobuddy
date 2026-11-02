@@ -1,6 +1,6 @@
 {
 	"name": "@repobuddy/typescript",
-	"version": "2.3.0",
+	"version": "2.3.1",
 	"description": "Your TypeScript buddy",
 	"keywords": [
 		"repobuddy",
@@ -40,7 +40,8 @@
 		"nodejs",
 		"src",
 		"tsconfig",
-		"!**/*.{spec,unit,test,accept,integrate,learning,system,pref,stress}.*"
+		"!**/*.{spec,unit,test,accept,integrate,learning,system,pref,stress}.*",
+		"CHANGELOG.md"
 	],
 	"scripts": {
 		"build": "run-p build:esm",
@@ -55,19 +56,22 @@
 		"verify": "npm-run-all -p build coverage -p size"
 	},
 	"dependencies": {
-		"clibuilder": "^12.0.0",
 		"dirname-filename-esm": "^1.1.1",
 		"execa": "^10.0.0"
 	},
 	"devDependencies": {
-		"@clibuilder/plugins": "0.2.0",
+		"@clibuilder/plugins": "0.2.1",
 		"@size-limit/preset-small-lib": "~14.3.0",
 		"@types/node": "^24.0.0",
 		"@vitest/coverage-v8": "^5.0.0",
+		"clibuilder": "^12.1.0",
 		"npm-run-all2": "^9.0.0",
 		"rimraf": "~6.1.0",
 		"size-limit": "~14.3.0",
 		"typescript": "^7.0.0",
 		"vitest": "^5.0.0"
+	},
+	"peerDependencies": {
+		"clibuilder": "^12.1.0"
 	}
 }

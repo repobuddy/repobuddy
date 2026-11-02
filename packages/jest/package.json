@@ -1,6 +1,6 @@
 {
 	"name": "@repobuddy/jest",
-	"version": "7.1.2",
+	"version": "7.1.3",
 	"description": "Your jest buddy",
 	"keywords": [
 		"jest",
@@ -394,7 +394,8 @@
 		"matchers",
 		"presets",
 		"src",
-		"!**/*.{spec,unit,test,accept,integrate,learning,system,perf,stress}.*"
+		"!**/*.{spec,unit,test,accept,integrate,learning,system,perf,stress}.*",
+		"CHANGELOG.md"
 	],
 	"scripts": {
 		"build": "run-p build:cjs build:esm",

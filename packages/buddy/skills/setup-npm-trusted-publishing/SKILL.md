@@ -47,13 +47,13 @@ SKILL_DIR=$(npx skills@1.7.2 path setup-npm-trusted-publishing 2>/dev/null || ec
 if [ -f "$SKILL_DIR/scripts/npm-trust.mjs" ]; then
   RUN="node $SKILL_DIR/scripts/npm-trust.mjs"
 else
-  RUN="npx -y repobuddy@4.0.0 npm-trust"
+  RUN="npx -y repobuddy@4.0.1 npm-trust"
 fi
 $RUN plan --org <login> --verbose
 ```
 
 The script ships in the `repobuddy` npm package. If `scripts/npm-trust.mjs` is missing (the skill was
-installed from git) or cannot be run, use `npx -y repobuddy@4.0.0 npm-trust <command>` with the same
+installed from git) or cannot be run, use `npx -y repobuddy@4.0.1 npm-trust <command>` with the same
 arguments.
 
 Writes `.github/npm-trust-plan.json` and prints a JSON ack. **Do not parse stdout for the plan** — read the artifact:
