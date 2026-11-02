@@ -26,7 +26,7 @@ If the category is unclear from the request, ask, before the Trackers steps: a r
 Load these with the `reference` skill in the `cyber-agentkit` plugin, so a project's own override applies:
 
 - Before step 1: `repobuddy.work-levels` (the level checks) and `project-tracker.contract` (what a capabilities reference holds).
-- When the category is known: the template reference for it, from the table above. Keep every section it has, in order; write `None` under one you have nothing for. For a task, never leave `Done when` or `Out of scope` as `None`: propose a check and a boundary from the request, and show them in the confirmation. A section a team adds or rewords is part of the template. Its headings are the only fixed part: a team may reword the text under them or add a section.
+- When the category is known: the template reference for it, from the table above. Keep every section it has, in order; write `None` under one you have nothing for. For a task, never leave `Done when` or `Out of scope` as `None`: propose a check and a boundary from the request, and show them in the summary. A section a team adds or rewords is part of the template. Its headings are the only fixed part: a team may reword the text under them or add a section.
 
 ## Trackers
 
@@ -40,7 +40,7 @@ A tracker's operations live in a capabilities reference named `project-tracker.c
 6. Read `contract:` in the loaded reference's frontmatter. When it is missing, or is not a contract version `project-tracker.contract` declares, name the tracker and the version, and stop.
 7. Run the reference's `Detect` checks. For GitHub they need `gh` 2.98.0 or later and a logged-in `gh`; for GitLab, a `glab` logged in to the host. When the tool is missing, older, or logged out, say what to install, upgrade, or run, and stop.
 
-Where the reference marks an operation unsupported: with no `Search`, the user confirms there is no duplicate; with no native `Link`, put the link in the body.
+Where the reference marks an operation unsupported: with no `Search`, the user confirms there is no duplicate; with no native `Link`, put the link in the body; with no `Ownership`, ask for confirmation before creating.
 
 ## Steps
 
@@ -61,9 +61,15 @@ Run the tracker's `Search` operation at least twice with different keywords (the
 
 If the user confirms a match, stop. Give the existing issue's URL and suggest a comment or reaction there. Do not create a duplicate.
 
-### 4. Confirm
+### 4. Summarize, and confirm unless the user owns the tracker
 
-Run the tracker's `Kinds` operation so the type or label is known. Summarize what will be created: title, category, key points of the description, the type or label the tracker will use, and any environment details. Ask for confirmation. Do not proceed without it.
+Run the tracker's `Kinds` operation so the type or label is known. Summarize what will be created: title, category, key points of the description, the type or label the tracker will use, and any environment details.
+
+Then run the tracker's `Ownership` operation (its format is in `project-tracker.contract`):
+
+- **`owned`**, and the level check found nothing: show the summary and go to step 5 in the same turn. Do not wait for a reply.
+- **`owned`**, and the level check found the item too big or too small: show the summary with the suggestion and ask, as for a tracker the user does not own.
+- **`not owned`**, or unknown (no `Ownership` section, a section marked unsupported, a failed command, or an answer the section does not map): ask for confirmation. Do not proceed without it.
 
 ### 5. Create
 
@@ -79,12 +85,12 @@ Give the URL of the new issue. When a routing chose the tracker, add nothing. Wh
 
 ## Level check
 
-Read the issue level's `Too big` and `Too small` sections in `repobuddy.work-levels`. When the item meets them, say so in the confirmation. For an item that is too big, suggest an epic (the `epic` skill when it is installed; otherwise one parent issue with child issues); for one that is too small, suggest not tracking it. Only suggest; file at this level if the user does not change it.
+Read the issue level's `Too big` and `Too small` sections in `repobuddy.work-levels`. When the item meets them, say so in the summary and ask before creating, even on a tracker the user owns. For an item that is too big, suggest an epic (the `epic` skill when it is installed; otherwise one parent issue with child issues); for one that is too small, suggest not tracking it. Only suggest; file at this level if the user does not change it.
 
 ## What NOT to Do
 
 - Do not create an issue without checking for duplicates first
-- Do not skip the confirmation step
+- Do not create without the user's confirmation unless the tracker's `Ownership` answered `owned` and the level check found nothing; unknown ownership asks
 - Do not invent labels or issue types: use only those the repository has
 - Do not file an epic or initiative here, or a security vulnerability publicly
 - Do not close, retype, or move an existing item
@@ -98,7 +104,7 @@ Read the issue level's `Too big` and `Too small` sections in `repobuddy.work-lev
 - [ ] The tracker's capabilities were loaded (the pinned one when a routing exists)
 - [ ] With a routing, no host detection ran, and a missing or ambiguous pin or an unmatched route stopped the skill before any search
 - [ ] At least two searches with different keywords ran before any create command
-- [ ] No create command ran without the user's confirmation of the summary
+- [ ] The summary was shown before any create command, and a create without the user's confirmation ran only when `Ownership` answered `owned` and the level check found nothing
 - [ ] The body of a task or feature carries no bug-only section; a public issue carries no private-tracker detail
 - [ ] The URL of the new issue, or of the existing duplicate, was returned
 - [ ] Without a routing, the closing line offered the draft at most once per session, and nothing was written without a yes

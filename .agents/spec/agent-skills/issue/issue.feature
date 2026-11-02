@@ -1,9 +1,10 @@
 @frozen
 Feature: issue — file one bug, feature, or task on the tracker
 
-  The skill gathers the details, searches for an existing issue, confirms with the user, creates
-  the issue through the tracker's capabilities reference, and reports the URL. It files at the
-  issue level only and never creates a duplicate.
+  The skill gathers the details, searches for an existing issue, shows a summary, creates the
+  issue through the tracker's capabilities reference, and reports the URL. It waits for the user's
+  yes before creating unless the user owns the tracker. It files at the issue level only and never
+  creates a duplicate.
 
   # ── Use cases 1–4 — file an item ──
 
@@ -71,8 +72,41 @@ Feature: issue — file one bug, feature, or task on the tracker
     Then the confirmation contains no suggestion to file at another level
 
   @behavior
+  Scenario: files directly on a tracker the user owns
+    Given the origin remote is github.com
+    And gh repo view reports viewerPermission ADMIN for the repo
+    And no search hit is the user's issue
+    And the user asks for one issue about a retry limit that one person can ship in one pull request
+    When issue shows the summary
+    Then it creates the issue in the same turn, without waiting for a reply
+    And it reports the new issue's URL
+
+  @behavior
+  Scenario: asks before filing on a tracker the user does not own
+    Given the origin remote is github.com
+    And gh repo view reports viewerPermission WRITE for the repo
+    And no search hit is the user's issue
+    When issue shows the summary
+    Then it asks the user to confirm
+    And it runs no create command before the user answers
+
+  @behavior
+  Scenario Outline: asks before filing when the tracker's ownership is unknown
+    Given <ownership_state>
+    And no search hit is the user's issue
+    When issue shows the summary
+    Then it asks the user to confirm
+    And it runs no create command before the user answers
+
+    Examples:
+      | ownership_state                                                                              |
+      | the origin remote is github.com and gh repo view --json viewerPermission exits 1              |
+      | a routing pins a capabilities reference whose contract is 1 and that has no Ownership section |
+
+  @behavior
   Scenario: creates only after the summary is confirmed
-    Given no search hit is the user's issue
+    Given the user does not own the tracker
+    And no search hit is the user's issue
     And issue has shown the summary
     When the user says "yes, file it"
     Then issue creates the issue
@@ -359,8 +393,27 @@ Feature: issue — file one bug, feature, or task on the tracker
     And it creates nothing
 
   @behavior
+  Scenario: still asks about a duplicate hit on a tracker the user owns
+    Given the origin remote is github.com
+    And gh repo view reports viewerPermission ADMIN for the repo
+    And the search returns an open issue titled "Cache serves stale entries after restart"
+    When issue runs its duplicate check
+    Then it shows the hit and asks whether it is the same issue
+    And it runs no create command before the user answers
+
+  @behavior
+  Scenario: asks about an oversized item even on a tracker the user owns
+    Given the origin remote is github.com
+    And gh repo view reports viewerPermission ADMIN for the repo
+    And the user asks for one issue covering five independently shippable features
+    When issue shows the summary
+    Then it says the item looks too big for one issue and suggests an epic
+    And it runs no create command before the user answers
+
+  @behavior
   Scenario: creates nothing when the user declines
-    Given no search hit is the user's issue
+    Given the user does not own the tracker
+    And no search hit is the user's issue
     And issue has shown the summary
     When the user says "no, hold off"
     Then issue runs no create command
@@ -436,6 +489,7 @@ Feature: issue — file one bug, feature, or task on the tracker
   @behavior
   Scenario Outline: creates a finding a sibling skill hands over only when the user confirms the summary
     Given agent-readiness offers to file its finding "no CONTRIBUTING.md in the repo" and the user accepts
+    And the user does not own the tracker
     And no search hit is the user's issue
     And issue has shown the summary
     When the user says "<answer>"
