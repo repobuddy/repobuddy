@@ -434,6 +434,11 @@ describe('rule texts', () => {
 	// The references show these rules to the user; the script writes them. Keep them identical.
 	const refs = join(import.meta.dirname, '..', '..', 'skills', 'init-buddy', 'references')
 
+	it('limit both merge rules to a PR the agent opened or was asked to work on', () => {
+		for (const rule of [RULES.merge, RULES.queuedMerge])
+			expect(rule.text).toMatch(/for a pull (or merge )?request the agent opened or was asked to work on/)
+	})
+
 	it('match the templates in references/auto-mode.md', () => {
 		const doc = readFileSync(join(refs, 'auto-mode.md'), 'utf8')
 		expect(doc).toContain(RULES.queuedMerge.text)

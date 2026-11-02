@@ -383,7 +383,7 @@ const FORCE_PUSH_DENY = [
 /** The GitHub rules from references/advanced-tier.md and references/auto-mode.md, owners as "my namespaces". */
 export const RULES = {
 	merge: {
-		text: 'Merging a pull or merge request (`gh pr merge`, or adding it to the merge queue) without an approving review, in a repo in my namespaces, when the agent has confirmed first-hand that it has no merge conflict, every required check or pipeline is green, and no review requests changes or is left unresolved. Bypassing branch protection, branch policies, or required checks (`gh pr merge --admin`), merging while checks or pipelines are red or pending, or merging in a repo owned by anyone else is still not covered.',
+		text: 'Merging a pull or merge request (`gh pr merge`, or adding it to the merge queue) without an approving review, for a pull or merge request the agent opened or was asked to work on, in a repo in my namespaces, when the agent has confirmed first-hand that it has no merge conflict, every required check or pipeline is green, and no review requests changes or is left unresolved. Bypassing branch protection, branch policies, or required checks (`gh pr merge --admin`), merging while checks or pipelines are red or pending, merging any other pull or merge request, or merging in a repo owned by anyone else is still not covered.',
 		deny: ADMIN_DENY,
 	},
 	queuedMerge: {

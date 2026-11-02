@@ -143,7 +143,7 @@ The allow pattern matches `--auto-complete true --bypass-policy true`, so write 
 |---|---|
 | Entry | a prose rule in `autoMode.allow` in `~/.claude/settings.json` (template below). Not a `permissions.allow` entry. |
 | Instead of | a merge command in `permissions.allow`. A matching allow rule resolves before the classifier runs, so the classifier never sees that merge: neither its "Merge Without Review" block nor this rule's conditions apply, and the bypass guard rests on the deny list alone. |
-| Risk | The agent can merge a PR or MR that no person approved, in any repo the rule names. |
+| Risk | The agent can merge a PR or MR that no person approved, among those it opened or was asked to work on, in any repo the rule names. |
 | Guard | The rule text names the hosts, the owners, and the conditions, and the deny list holds each host's bypass entries. |
 
 Offer this only when the user runs Claude Code in auto mode (`permissions.defaultMode` is `"auto"`, or
@@ -189,7 +189,7 @@ write "in a repo in my namespaces" in place of the owner list, so the list lives
 The entry, with the placeholders filled in from the rows:
 
 ```text
-Merging a pull or merge request (<merge commands>) without an approving review, in a repo owned by <owners>, when the agent has confirmed first-hand that it has no merge conflict, every required check or pipeline is green, and no review requests changes or is left unresolved. Bypassing branch protection, branch policies, or required checks (<bypass forms>), merging while checks or pipelines are red or pending, or merging in a repo owned by anyone else is still not covered.
+Merging a pull or merge request (<merge commands>) without an approving review, for a pull or merge request the agent opened or was asked to work on, in a repo owned by <owners>, when the agent has confirmed first-hand that it has no merge conflict, every required check or pipeline is green, and no review requests changes or is left unresolved. Bypassing branch protection, branch policies, or required checks (<bypass forms>), merging while checks or pipelines are red or pending, merging any other pull or merge request, or merging in a repo owned by anyone else is still not covered.
 ```
 
 - `<merge commands>`: every detected host's merge commands, each tagged with its host when there is
@@ -201,7 +201,7 @@ Merging a pull or merge request (<merge commands>) without an approving review, 
 For a GitHub-only user, the filled entry reads:
 
 ```json
-"Merging a pull or merge request (`gh pr merge`, or adding it to the merge queue) without an approving review, in a repo owned by the GitHub organizations acme and unional, when the agent has confirmed first-hand that it has no merge conflict, every required check or pipeline is green, and no review requests changes or is left unresolved. Bypassing branch protection, branch policies, or required checks (`gh pr merge --admin`), merging while checks or pipelines are red or pending, or merging in a repo owned by anyone else is still not covered."
+"Merging a pull or merge request (`gh pr merge`, or adding it to the merge queue) without an approving review, for a pull or merge request the agent opened or was asked to work on, in a repo owned by the GitHub organizations acme and unional, when the agent has confirmed first-hand that it has no merge conflict, every required check or pipeline is green, and no review requests changes or is left unresolved. Bypassing branch protection, branch policies, or required checks (`gh pr merge --admin`), merging while checks or pipelines are red or pending, merging any other pull or merge request, or merging in a repo owned by anyone else is still not covered."
 ```
 
 Write it:
