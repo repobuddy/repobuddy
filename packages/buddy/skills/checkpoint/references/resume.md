@@ -16,15 +16,15 @@ that drifted in elsewhere is already here.
    that matches:
    1. The user gave a checkpoint path or slug: open that one.
    2. The user gave the path of another repo: go to step 1a.
-   3. Exactly one checkpoint has `status: paused`: open it.
-   4. More than one has `status: paused`: list only those, newest `updated` first, each with its
-      title, branch and `## NEXT` line, and ask which one to resume. Ask even when one of them
+   3. Exactly one checkpoint exists: open it.
+   4. More than one exists: list them, newest `updated` first, each with its title, branch,
+      `updated` date and `## NEXT` line, and ask which one to resume. Ask even when one of them
       matches the current branch; a branch match is a hint to mention, not a choice to make. Mark
       a checkpoint whose `depends-on` names a checkpoint that still exists as `waits on <slug>`.
 
-   **1a. Another repo.** List that repo's paused checkpoints (root from
+   **1a. Another repo.** List that repo's checkpoints (root from
    `git -C <repo-path> rev-parse --show-toplevel`) the same way and let the user pick, even if only
-   one is paused. Then hand back what the user types to resume there, and stop. Never `cd` there
+   one exists. Then hand back what the user types to resume there, and stop. Never `cd` there
    yourself and continue: a shell `cd` leaves the harness on this repo's working directory,
    AGENTS.md, skills and permissions.
 
@@ -37,9 +37,6 @@ that drifted in elsewhere is already here.
    [Gemini CLI](harness/gemini.md), [Copilot CLI](harness/copilot.md),
    [Cursor](harness/cursor.md). For any other harness, give the fresh-session form: `cd <repo-root>`,
    then start the harness with a prompt that runs `checkpoint resume <slug>`.
-
-   **If none is paused** but one has `status: resumed`, the session that resumed it may have ended
-   without pausing again. Name it and ask before opening it.
 
    **If there is no checkpoint** but an `.agents/plans/*.plan.md` has todos `in_progress`, the work is
    an SDD mission. Use `resume-mission` if it is available, or read that plan's `## NEXT` yourself.
@@ -61,11 +58,7 @@ that drifted in elsewhere is already here.
    - Any `## Not in git` item that is missing here, such as uncommitted changes from another machine
      or a process that is no longer running: name it before going on.
 
-3. **Mark it resumed, don't delete it.** Set `status: resumed` and update `updated`. The file stays
-   until the goal is met: deleting it now would lose the state if this session dies before it pauses
-   again.
-
-4. **Reload the working method and the settled decisions.** Treat `## Settled decisions` as settled.
+3. **Reload the working method and the settled decisions.** Treat `## Settled decisions` as settled.
    Reopen one only on new evidence, and say that you are reopening it and why. Follow
    `## Working method` instead of working out the conventions again. Load the skills that
    `## Suggested skills` names when you reach the step that needs them.
@@ -74,19 +67,20 @@ that drifted in elsewhere is already here.
    evidence or the condition it names, and say so when you do. A settled decision whose reason is
    "user said" is the user's own call: reopen it only by asking the user.
 
-5. **Surface the open questions that block the next action.** If an item in `## Open questions` has
+4. **Surface the open questions that block the next action.** If an item in `## Open questions` has
    to be answered before `## NEXT` can run, raise it before going further. Don't guess past it.
 
-6. **Do the `## NEXT` action, then keep going** through `## Remaining steps`, in order, toward the
+5. **Do the `## NEXT` action, then keep going** through `## Remaining steps`, in order, toward the
    instruction quoted under `## Goal`. Read only the context each action needs: the files and
    references in `## Touched` that it uses, not all of them. Work in the checkpoint's rhythm,
    committing each coherent unit as the repo's conventions require.
 
-7. **Keep the checkpoint current while it exists.** When a decision is settled or a question
+6. **Keep the checkpoint current while it exists.** When a decision is settled or a question
    resolved, update the checkpoint, so that an interruption leaves a resumable file behind.
 
-8. **Delete it when the work is done.** A checkpoint is a handoff, not a record. Once its goal is met,
-   move anything worth keeping into a commit message, an ADR or an issue, then delete the file. Use
+7. **Delete it when the work is done, not before.** A checkpoint is a handoff, not a record, but
+   until the goal is met it is what survives if this session dies. Once the goal is met, move
+   anything worth keeping into a commit message, an ADR or an issue, then delete the file. Use
    `git rm` if it was committed, and commit the deletion along with the work's final unit. If the
    session ends before the goal is met, run `checkpoint create` to rewrite `## NEXT` instead of leaving a
    stale one behind.

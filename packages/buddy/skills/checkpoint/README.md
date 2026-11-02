@@ -70,7 +70,7 @@ which checkpoints into the mission's plan brief instead.
 ## `resume`
 
 1. Finds the checkpoint in `.agents/repobuddy/checkpoints/`, including one a session in another repo
-   paused here. It uses the one you named, or the only paused one. When several are paused, it lists
+   paused here. It uses the one you named, or the only one there. When there are several, it lists
    them newest first, with title, branch and next step, and asks, even if one matches your current
    branch. A checkpoint that waits on another topic is marked `waits on <slug>`.
 2. Checks the checkpoint against the repo. It says so first if the checkpoint's `repo:` names another
@@ -80,10 +80,10 @@ which checkpoints into the mission's plan brief instead.
    failed approach without new evidence, and raises any open question that blocks the next step.
 4. Runs the next step, then the remaining steps, toward your quoted instruction, and keeps the
    checkpoint current as decisions are made.
-5. Deletes the checkpoint once the work is done, not when it resumes. On resume it only marks the file
-   `status: resumed`, so if the resumed session dies before pausing again, the state is still there.
+5. Deletes the checkpoint once the work is done, not when it resumes, so if the resumed session dies
+   before pausing again, the state is still there.
 
-Give it another repo's path instead (`/checkpoint resume ../other-repo`) and it lists that repo's paused
+Give it another repo's path instead (`/checkpoint resume ../other-repo`) and it lists that repo's
 checkpoints, lets you pick, and hands back what to type to resume there. It never runs `cd` itself,
 because a shell `cd` leaves the session on this repo's working directory, instructions, skills and
 permissions.

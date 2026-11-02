@@ -156,7 +156,6 @@ opens the file has to be able to continue.
 
 ```markdown
 ---
-status: paused
 focus: <the topic this checkpoint covers, or "whole frontier">
 depends-on: [<slug of a topic that must finish first>]   # omit when independent
 repo: <home repo's root folder name or origin owner/name; never an absolute path; omit when there is no repo>
