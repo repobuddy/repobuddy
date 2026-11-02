@@ -51,6 +51,8 @@ For every host:
   apply in a repo that requires nothing, where it merges at once.
 - **Deny beats allow.** The allow pattern also matches a command that adds the bypass flag, so the deny
   entry is what stops it. Never write the allow entry without it.
+- **Not for Claude Code in auto mode.** There, offer the [queued-merge rule](auto-mode.md#queued-merge)
+  in `autoMode.allow` instead (see [merges in auto mode](#merges-in-auto-mode-automodeallow)).
 
 ### GitHub: `gh pr merge --auto`
 
@@ -155,8 +157,10 @@ rules under `autoMode.allow`.
 
 So keep the merge command out of `permissions.allow` and write this rule instead. If
 `permissions.allow` already lists a host's merge command (`Bash(gh pr merge *)`), say that the entry
-skips the classifier and this rule, and point to `review-permissions` to remove it. The queued-merge
-entry above is the exception: its guard is the host's required check, not the classifier.
+skips the classifier and this rule, and point to `review-permissions` to remove it. The same holds for
+the [queued-merge entry](#queued-merge) (`Bash(gh pr merge --auto *)`): in auto mode, keep it out of
+`permissions.allow` and offer the [queued-merge rule](auto-mode.md#queued-merge) instead. An allow
+entry skips the classifier's built-in block on `--auto` for a PR the agent is not working on.
 
 **User scope only.** The classifier reads `autoMode` from `~/.claude/settings.json` (and managed
 settings), never from `.claude/settings.json` or `.claude/settings.local.json`, so that a repo cannot
