@@ -153,8 +153,8 @@ Gets a machine ready to work with a repository's git host. It detects the OS and
    - says for each line whether it is written explicitly or left to the defaults, and why
 
    It shows the diff, appends to `~/.claude/settings.json`, and checks the result with
-   `claude auto-mode config`. When you join a new organization, run it again to refresh the namespace
-   entry.
+   `claude auto-mode config`. When you join a new organization, or make a repo public or private, run
+   it again to refresh the namespace and visibility entries.
 
    The script `scripts/auto-mode.mjs` does the mechanical parts, so they come out the same every run:
    `check` reads what is set, `discover` asks `gh`, `render` words the entries and rules, and `apply`

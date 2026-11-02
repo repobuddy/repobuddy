@@ -176,27 +176,33 @@ interface Visibility {
 	summary: 'public' | 'private' | 'mixed' | 'empty'
 	public: string[]
 	private: string[]
+	/** `gh repo list` stopped at REPO_LIMIT, so the lists are incomplete. */
+	truncated?: true
 }
 
+const REPO_LIMIT = 1000
+
 function visibilityOf(owner: string): Visibility {
+	// Ask for one more than the limit: getting it back is how a cut-off list shows.
 	const r = gh([
 		'repo',
 		'list',
 		owner,
 		'--limit',
-		'1000',
+		String(REPO_LIMIT + 1),
 		'--json',
 		'name,visibility',
 		'--jq',
 		'.[] | [.name, .visibility] | @tsv',
 	])
 	if (!r.ok) throw new RunError(`gh repo list ${owner} failed: ${r.stderr.trim()}`)
-	const rows = tsv(r.stdout)
+	const all = tsv(r.stdout)
+	const rows = all.slice(0, REPO_LIMIT)
 	// `INTERNAL` repos are visible to the whole enterprise, not the public: treat them as private.
 	const pub = rows.filter(([, v]) => v === 'PUBLIC').map(([name]) => name!)
 	const priv = rows.filter(([, v]) => v !== 'PUBLIC').map(([name]) => name!)
 	const summary = !rows.length ? 'empty' : !priv.length ? 'public' : !pub.length ? 'private' : 'mixed'
-	return { summary, public: pub, private: priv }
+	return { summary, public: pub, private: priv, ...(all.length > REPO_LIMIT ? { truncated: true as const } : {}) }
 }
 
 function branchRules(project: string) {
@@ -312,6 +318,10 @@ export function discover(project: string, home: string) {
 		if (ns.state !== 'active') continue
 		try {
 			ns.visibility = visibilityOf(ns.owner)
+			if (ns.visibility.truncated)
+				errors.push(
+					`${ns.owner} has more than ${REPO_LIMIT} repos, so its visibility lists are incomplete; the visibility entry leaves it out`,
+				)
 		} catch (e) {
 			errors.push((e as Error).message)
 		}
@@ -354,7 +364,7 @@ function sourceControlEntry(namespaces: { owner: string; kind: string }[]) {
 function visibilityEntry(namespaces: { owner: string; visibility?: Visibility }[]) {
 	const clauses: string[] = []
 	for (const { owner, visibility: v } of namespaces) {
-		if (!v || v.summary === 'empty') continue
+		if (!v || v.summary === 'empty' || v.truncated) continue
 		if (v.summary === 'public' || v.summary === 'private') clauses.push(`every repo in ${owner} is ${v.summary}`)
 		else if (v.private.length <= v.public.length)
 			clauses.push(`in ${owner}, ${repos(v.private)} private and the rest are public`)

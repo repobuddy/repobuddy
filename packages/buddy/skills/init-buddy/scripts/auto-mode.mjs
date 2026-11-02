@@ -168,26 +168,29 @@ function gh(args, cwd) {
 	};
 }
 const tsv = (text) => text.split("\n").filter((line) => line.trim()).map((line) => line.split("	"));
+const REPO_LIMIT = 1e3;
 function visibilityOf(owner) {
 	const r = gh([
 		"repo",
 		"list",
 		owner,
 		"--limit",
-		"1000",
+		String(1001),
 		"--json",
 		"name,visibility",
 		"--jq",
 		".[] | [.name, .visibility] | @tsv"
 	]);
 	if (!r.ok) throw new RunError(`gh repo list ${owner} failed: ${r.stderr.trim()}`);
-	const rows = tsv(r.stdout);
+	const all = tsv(r.stdout);
+	const rows = all.slice(0, REPO_LIMIT);
 	const pub = rows.filter(([, v]) => v === "PUBLIC").map(([name]) => name);
 	const priv = rows.filter(([, v]) => v !== "PUBLIC").map(([name]) => name);
 	return {
 		summary: !rows.length ? "empty" : !priv.length ? "public" : !pub.length ? "private" : "mixed",
 		public: pub,
-		private: priv
+		private: priv,
+		...all.length > REPO_LIMIT ? { truncated: true } : {}
 	};
 }
 function branchRules(project) {
@@ -290,6 +293,7 @@ function discover(project, home) {
 		if (ns.state !== "active") continue;
 		try {
 			ns.visibility = visibilityOf(ns.owner);
+			if (ns.visibility.truncated) errors.push(`${ns.owner} has more than ${REPO_LIMIT} repos, so its visibility lists are incomplete; the visibility entry leaves it out`);
 		} catch (e) {
 			errors.push(e.message);
 		}
@@ -319,7 +323,7 @@ function sourceControlEntry(namespaces) {
 function visibilityEntry(namespaces) {
 	const clauses = [];
 	for (const { owner, visibility: v } of namespaces) {
-		if (!v || v.summary === "empty") continue;
+		if (!v || v.summary === "empty" || v.truncated) continue;
 		if (v.summary === "public" || v.summary === "private") clauses.push(`every repo in ${owner} is ${v.summary}`);
 		else if (v.private.length <= v.public.length) clauses.push(`in ${owner}, ${repos(v.private)} private and the rest are public`);
 		else clauses.push(`in ${owner}, ${repos(v.public)} public and the rest are private`);

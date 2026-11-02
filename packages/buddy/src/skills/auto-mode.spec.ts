@@ -117,7 +117,7 @@ describe('check', () => {
 
 describe('discover', () => {
 	const repoList = (owner: string) =>
-		`repo list ${owner} --limit 1000 --json name,visibility --jq .[] | [.name, .visibility] | @tsv`
+		`repo list ${owner} --limit 1001 --json name,visibility --jq .[] | [.name, .visibility] | @tsv`
 
 	it('proposes the account and admin orgs, summarizes visibility, and reads branch rules and repo signals', async () => {
 		fakeGh({
@@ -197,6 +197,28 @@ describe('discover', () => {
 		expect(r.errors[0]).toMatch(/read:org/)
 		expect(r.branch).toBeNull()
 		expect(r.refresh.missing).toBeNull()
+	})
+
+	it('says when the repo list is cut off, and leaves that namespace out of the visibility entry', async () => {
+		const many = Array.from({ length: 1001 }, (_, i) => `r${i}\t${i ? 'PUBLIC' : 'PRIVATE'}`).join('\n')
+		fakeGh({
+			'api user --jq .login': 'octo-dev\n',
+			'api --paginate user/memberships/orgs --jq .[] | [.organization.login, .role, .state] | @tsv':
+				'acme\tadmin\tactive\n',
+			[repoList('octo-dev')]: 'site\tPUBLIC\n',
+			[repoList('acme')]: `${many}\n`,
+			'repo view --json nameWithOwner,defaultBranchRef --jq [.nameWithOwner, .defaultBranchRef.name] | @tsv': {
+				stderr: 'no repo',
+			},
+		})
+		const r = await run(['discover', '--project', tempDir(), '--home', tempDir()])
+		expect(r.namespaces[0].visibility.truncated).toBeUndefined()
+		expect(r.namespaces[1].visibility.truncated).toBe(true)
+		expect(r.namespaces[1].visibility.public).toHaveLength(999)
+		expect(r.errors.join(' ')).toMatch(/acme has more than 1000 repos/)
+		expect(render({ namespaces: r.namespaces }).environment[1]).toBe(
+			'Repository visibility: in my namespaces, every repo in octo-dev is public.',
+		)
 	})
 
 	it('reads classic branch protection, and says when it cannot', async () => {

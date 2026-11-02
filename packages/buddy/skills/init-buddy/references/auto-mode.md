@@ -117,6 +117,10 @@ organizations. On other hosts, use the suggestion command in the
 
 **Visibility.** Each namespace's `visibility.summary` is `public`, `private`, `mixed`, or `empty`,
 with the repo names on each side. `INTERNAL` repos count as private. Show the summary, not the lists.
+`truncated: true` means the namespace has more than 1000 repos and `gh repo list` stopped there:
+`render` leaves that namespace out of the visibility entry, and an `errors` line says so. Tell the
+user, and ask them to describe its visibility if it matters. The entry is a snapshot, so it goes stale
+when a repo changes visibility ([Refresh](#refresh)).
 
 **The rest:**
 
@@ -226,8 +230,10 @@ user owns.
 
 ## Refresh
 
-When the user joins a new organization or creates one, run `discover`. `refresh.missing` lists the
-proposed namespaces the Source control entry does not name. Offer to rewrite that entry and the
-visibility entry: `render` with the full namespace list, and show the old and new text side by side.
+When the user joins a new organization or creates one, or a repo in their namespaces changes
+visibility (a private repo made public, or the reverse), run `discover`. `refresh.missing` lists the
+proposed namespaces the Source control entry does not name; a visibility change shows only when you
+compare the rendered visibility entry with the one in `autoMode.environment`. Offer to rewrite the
+entries that differ: `render` with the full namespace list, and show the old and new text side by side.
 On approval, write them with `apply`, using `"replace": [{ "old": "<old entry>", "new": "<new entry>" }]`
 in `entries.json`, which swaps each entry in place. Rules that say "my namespaces" need no change.

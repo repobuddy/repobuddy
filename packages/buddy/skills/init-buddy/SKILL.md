@@ -19,7 +19,7 @@ for the read-only commands the agent runs most, and a deny list for the commands
 - "Stop asking me before every `gh pr view`": set up a starting allow list
 - "Never let the agent force push or publish": set up a deny list
 - "I run Claude Code in auto mode": write its environment and rules
-- "I joined a new org": refresh the auto-mode environment
+- "I joined a new org" or "I made a repo public": refresh the auto-mode environment
 - The global reminder says this repo has no `.agents/repobuddy/init-buddy.json` marker
 
 ## Detect
@@ -228,7 +228,7 @@ if the user declines. The candidates and what each one misses are in
 ## Set up auto mode
 
 Claude Code only. Offer this when the user runs it in auto mode (`permissions.defaultMode` is `"auto"`, or they
-start sessions in it), asks about it, or joined a new organization since the last run. It is optional;
+start sessions in it), asks about it, or joined a new organization or changed a repo's visibility since the last run. It is optional;
 skip it if the user declines. Read [references/auto-mode.md](references/auto-mode.md) first: it has
 the rubric, the discovery commands, and the rule templates.
 
