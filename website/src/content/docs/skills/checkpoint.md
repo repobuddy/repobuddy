@@ -42,7 +42,7 @@ Natural phrasing routes too: "let's stop here" creates a checkpoint, "pick up th
 - Finds the checkpoint (one you name, the only one, or a newest-first list to choose from). Warns when `repo:` names
   another repo, then flags a different branch, new commits, and state that was not in git.
 - Reloads the working method and settled decisions, avoids retrying listed dead ends, and runs the next step.
-- Marks the file `status: resumed`. It deletes the checkpoint only when the work is done.
+- Keeps the checkpoint until the work is done, then deletes it.
 - Given another repo's path, it lists that repo's checkpoints and gives the line to start a session there. It never runs `cd`.
 
 ## Hands off to

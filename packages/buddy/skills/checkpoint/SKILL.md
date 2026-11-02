@@ -15,7 +15,7 @@ the request, then loads that subcommand's instructions and follows them. It does
 | Subcommand | Use it when | Instructions |
 |---|---|---|
 | `create [focus] [--commit]` | The user wants to stop and pick the work up later, in another session, harness, machine, or repo | [references/create.md](references/create.md) |
-| `resume [slug\|path\|repo]` | The user wants to continue work a checkpoint holds, or to see another repo's paused work | [references/resume.md](references/resume.md) |
+| `resume [slug\|path\|repo]` | The user wants to continue work a checkpoint holds, or to see another repo's checkpoints | [references/resume.md](references/resume.md) |
 | `help` | The user asks what the skill does, or invokes it bare in a repo that already has checkpoints | the **Help** section below |
 
 ## Routing
@@ -53,5 +53,5 @@ ones written to the current repo.
 
 **Another repo.** When a session in one repo drifts into work on another, `create` writes that topic's
 checkpoint into the other repo and gives the line to type to resume it from a session there.
-`resume <path to the other repo>` lists that repo's paused checkpoints and hands back the line to
+`resume <path to the other repo>` lists that repo's checkpoints and hands back the line to
 move there.
