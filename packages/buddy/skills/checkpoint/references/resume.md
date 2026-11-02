@@ -21,6 +21,9 @@ that drifted in elsewhere is already here.
       `updated` date and `## NEXT` line, and ask which one to resume. Ask even when one of them
       matches the current branch; a branch match is a hint to mention, not a choice to make. Mark
       a checkpoint whose `depends-on` names a checkpoint that still exists as `waits on <slug>`.
+      Annotate each checkpoint that carries a `resumed:` block with its liveness answer (see
+      **Resume marker**). The marker only annotates: never hide, skip or block a checkpoint because
+      of it.
 
    **1a. Another repo.** List that repo's checkpoints (root from
    `git -C <repo-path> rev-parse --show-toplevel`) the same way and let the user pick, even if only
@@ -58,6 +61,38 @@ that drifted in elsewhere is already here.
      ask whether to resume that one first.
    - Any `## Not in git` item that is missing here, such as uncommitted changes from another machine
      or a process that is no longer running: name it before going on.
+
+   Once the checks pass and the user has agreed to go on, **write the marker**: add this block to the
+   front matter (replacing an older one) and remember its `at`, so `create` can tell whether another
+   session resumed the file since:
+
+   ```yaml
+   resumed:
+     at: 2026-11-02T10:15:00Z      # UTC, now
+     harness: claude-code
+     session: <harness session id>
+     pid: <harness process id>
+     started: <that process's start time, from ps -o lstart= -p <pid>>
+   ```
+
+   Take `session` and `pid` from the harness reference. Where the harness exposes no PID, write only
+   `harness` and `session`; that reads as unknown. Write no hostname, username or machine id. On a
+   committed checkpoint, commit the marker with the first unit of work, not in a separate commit.
+
+   **Resume marker.** A `resumed:` block in the front matter says a session resumed the file and has
+   not paused it since. Work out one of three answers for it:
+   - **alive:** the PID exists, its process is that harness, and its start time matches. Show "open in
+     session `<session>`" and ask before opening it.
+   - **dead:** the PID is gone, or its start time or harness does not match. Open it without asking.
+   - **unknown:** anything that cannot be checked, such as no `pid` or `started`, an unknown harness
+     process name, or a PID check that fails. List it with the warning "resumed `<age>` ago, not
+     paused since: it may be open in another session, or that session ended", and ask before opening
+     it. Never treat unknown as dead.
+
+   Check the process with `ps -o lstart= -p <pid>` (compare with `started`) and the harness's process
+   name from its [harness reference](harness/claude-code.md). If the committed version of the file
+   carries the block (`git show HEAD:<path>` contains `resumed:`), it may have come from another
+   machine, such as a cloud agent: answer unknown and skip the PID check.
 
 3. **Reload the working method and the settled decisions.** Treat `## Settled decisions` as settled.
    Reopen one only on new evidence, and say that you are reopening it and why. Follow

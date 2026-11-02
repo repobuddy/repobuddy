@@ -47,6 +47,10 @@ runs `create` in a git repo that has no checkpoint yet, and shows help in a repo
   another repo, then flags a different branch, new commits, and state that was not in git. If the new commits already
   met the goal, it asks whether to delete the checkpoint.
 - Reloads the working method and settled decisions, avoids retrying listed dead ends, and runs the next step.
+- Writes a `resumed:` marker (time, harness, session id, process id, start time) into the checkpoint. The list warns
+  about a marked checkpoint and checks whether its process is alive; it asks before opening one that is alive or
+  can't be checked, and never hides it. `create` removes the marker, and warns if another session resumed the file
+  meanwhile.
 - Keeps the checkpoint until the work is done, then deletes it.
 - Given another repo's path, it lists that repo's checkpoints and gives the line to start a session there. It never runs `cd`.
 

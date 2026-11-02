@@ -112,7 +112,11 @@ opens the file has to be able to continue.
 
    **Merge into a matched checkpoint; don't overwrite it.** A full rewrite drops what this session
    never touched. Read the file first and keep `created`, the settled decisions and the dead ends; a
-   dead end stays unless this session reopened it with evidence. Rewrite `## NEXT`,
+   dead end stays unless this session reopened it with evidence. If the file has a `resumed:` block,
+   compare its `at` with the one this session wrote on resume. If they differ, or this session wrote
+   none, warn that another session resumed the file in the meantime, and ask before overwriting; with
+   no one to ask, merge and say so in the report. Then remove the block: a paused file is not resumed.
+   Rewrite `## NEXT`,
    `## Remaining steps`, `## Not in git`, `branch`, `commit` and `updated` from the current state, add
    this session's new decisions, dead ends and open questions, and drop the questions it answered.
 
@@ -189,6 +193,12 @@ branch: <home repo's current branch, or none>
 commit: <home repo's short HEAD sha at pause time, or none>
 created: <ISO date>
 updated: <ISO date>
+resumed:                        # optional; written only by `resume`, removed by `create`
+  at: <UTC timestamp>
+  harness: <harness name>
+  session: <harness session id>
+  pid: <harness process id>     # omit where the harness exposes none
+  started: <that process's start time>
 ---
 
 # <Title of the work>

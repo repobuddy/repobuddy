@@ -41,6 +41,11 @@ isn't picked up, use plain text instead: `"Use the checkpoint skill to resume <s
 - `--add-dir` is not a move. It grants write access to another directory alongside the main workspace,
   and nothing in the docs says it loads that directory's AGENTS.md.
 
+## Resume marker
+
+Unverified: what codex exposes for a session id and process id has not been checked. Write only `harness`
+and `session` if the id is known, and no `pid` or `started`, so liveness reads as unknown.
+
 ## Sources
 
 - Pull request "Add working-directory commands to the TUI" (merged 2026-08-16):

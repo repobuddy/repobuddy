@@ -87,7 +87,11 @@ which checkpoints into the mission's plan brief instead.
    failed approach without new evidence, and raises any open question that blocks the next step.
 4. Runs the next step, then the remaining steps, toward your quoted instruction, and keeps the
    checkpoint current as decisions are made.
-5. Deletes the checkpoint once the work is done, not when it resumes, so if the resumed session dies
+5. Writes a `resumed:` marker (time, harness, session id, process id and start time) into the checkpoint.
+   The list warns about a marked checkpoint, checking whether its process is still alive, and asks
+   before opening one that is alive or can't be checked. The marker never hides a checkpoint. `create`
+   removes it on the next pause, and warns first if another session resumed the file in the meantime.
+6. Deletes the checkpoint once the work is done, not when it resumes, so if the resumed session dies
    before pausing again, the state is still there.
 
 Give it another repo's path instead (`/checkpoint resume ../other-repo`) and it lists that repo's
