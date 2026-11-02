@@ -29,7 +29,7 @@ Modes and sandboxes count as permissions too, so `defaultMode`, `approval_policy
 In Claude Code's auto mode, a matching allow rule resolves before the classifier, so the review places each rule by mode. With `defaultMode: "auto"` in a settings file, or `--mode auto` when you switch to it by hand, it also flags:
 
 - allow rules for outward-facing commands (push, merge, `gh api`, `gh workflow run`, release, publish), or a wildcard such as `gh pr *` that admits one, which skip the classifier's check of repo, branch, and PR; it suggests leaving them to the classifier, or an `ask` rule if you want a person every time
-- broad rules auto mode drops while it is active (`Bash(*)`, `Bash(python*)`, `npm run *`, `Agent`, `Monitor`)
+- broad rules auto mode drops while it is active (`Bash(*)`, `Bash(python*)`, `npm run *`, `npx *`, `Agent`, `Monitor`); a rule that names a script, such as `pnpm test *`, stays
 - an `autoMode` block in a project settings file, where the classifier ignores it
 - a `soft_deny` or `hard_deny` list without `"$defaults"`, which discards the built-in rules
 - template text left in an `autoMode.environment` or `autoMode.allow` entry

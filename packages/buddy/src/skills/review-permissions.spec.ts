@@ -186,6 +186,34 @@ describe('scan-permissions.mjs auto mode', () => {
 		expect(codes(report, 'automode-classify-all-shell')).toHaveLength(1)
 	})
 
+	// Observed with Claude Code 2.1.316: `claude -p --permission-mode auto --debug-file <log>` logs
+	// "Ignoring dangerous permission <rule> ... (bypasses classifier)" for each rule it drops.
+	const observedDropped = [
+		...['Bash(*)', 'PowerShell(*)', 'Agent', 'Monitor'],
+		...['npm run', 'npm run *', 'npm run*', 'npm run:*', 'pnpm run', 'pnpm run *', 'pnpm run:*'],
+		...['yarn run', 'yarn run *', 'bun run', 'bun run *', 'npx', 'npx *', 'bunx', 'bunx *'],
+		...['python', 'python*', 'python3', 'python3*', 'python3 *', 'node', 'node*', 'node:*', 'node *'],
+		...['ruby *', 'perl *', 'php *', 'deno *', 'tsx *', 'bash *', 'sh *', 'zsh *'],
+		...['python -c *', 'node -e *', 'ruby -e *', 'perl -e *', 'bash -c *', 'sh -c *', 'zsh -c *'],
+		...['eval *', 'exec *', 'env *', 'xargs *', 'sudo *'],
+	].map((r) => (/^[A-Z]/.test(r) ? r : `Bash(${r})`))
+	const observedKept = [
+		...['pnpm test *', 'pnpm test', 'pnpm lint *', 'pnpm check:fix *', 'npm test', 'npm test *', 'yarn test *'],
+		...['npm run test', 'npm run test *', 'npm run lint *', 'pnpm run test', 'pnpm run test *', 'bun run lint *'],
+		...['pnpm -r run *', 'pnpm --filter * run *', 'npm run-script *', 'npm start', 'pnpm start *', 'pnpm dev *'],
+		...['pnpm *', 'npm *', 'yarn *', 'bun *', 'pnpm', 'npm', 'yarn', 'bun'],
+		...['pnpm exec *', 'pnpm dlx *', 'npm exec *', 'yarn dlx *', 'pnpx *', 'bun x *', 'uvx *', 'pipx run *'],
+		...['deno run *', 'uv run *', 'poetry run *', 'make *', 'cargo run *', 'go run *', 'pwsh *', 'powershell *'],
+	].map((r) => `Bash(${r})`)
+
+	it('flags exactly the allow rules Claude Code drops in auto mode', () => {
+		const report = scanScopes({
+			user: { permissions: { defaultMode: 'auto', allow: [...observedDropped, ...observedKept] } },
+		})
+		const dropped = codes(report, 'auto-dropped-allow').map((f) => f.title.split('`')[1])
+		expect(dropped.sort()).toEqual([...observedDropped].sort())
+	})
+
 	it('names the broad rules auto mode drops', () => {
 		const report = scanScopes({
 			user: {

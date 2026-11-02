@@ -31,9 +31,12 @@ Tell the user these points before anything is written. Do not soften them.
    with a few listed exceptions such as writes to protected paths. Only the rest reaches the
    classifier ([decision order](https://code.claude.com/docs/en/permission-modes#how-auto-mode-evaluates-actions)).
    So an allow entry replaces the classifier's judgment for every command it matches.
-2. **Auto mode drops broad allow rules** while it is active: `Bash(*)`, wildcarded interpreters such as
-   `Bash(python*)`, package-manager run commands, and `Agent` and `Monitor` rules. Narrow rules such as
-   `Bash(npm test)` stay. The dropped rules return when the session leaves auto mode.
+2. **Auto mode drops broad allow rules** while it is active: `Bash(*)`, `Agent` and `Monitor` rules,
+   and a shell rule that admits any arguments to a package-manager runner (`npm run *`, `pnpm run *`,
+   `npx *`), an interpreter (`python*`, `node *`, `bash -c *`), or a command that runs another (`env *`,
+   `sudo *`). A rule that names a script stays, so the script entries this skill offers
+   (`Bash(pnpm test *)`, `Bash(npm run lint *)`) still apply in auto mode, and skip the classifier like
+   any allow rule. The dropped rules return when the session leaves auto mode.
 3. **Ask still prompts and deny still blocks.** An ask rule that matches a command's content, such as
    `Bash(git push *)`, prompts even in auto mode. A deny rule blocks in every mode.
 4. **`autoMode` lives in user settings only.** The classifier reads it from `~/.claude/settings.json`,

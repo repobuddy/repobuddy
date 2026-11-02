@@ -24,6 +24,7 @@
 import { existsSync, readFileSync } from 'node:fs'
 import { homedir, platform } from 'node:os'
 import { join, resolve } from 'node:path'
+import { droppedInAutoMode } from '../permissions/auto-mode-drops.js'
 import { templateMarkers } from '../permissions/template-text.js'
 
 const USAGE = 'usage: node scripts/scan-permissions.mjs [projectDir] [--json] [--all-scopes] [--mode <mode>]\n'
@@ -749,8 +750,8 @@ function analyzeDenyBaseline() {
 // ── auto mode (Claude Code) ───────────────────────────────────────────────────
 // Sources: https://code.claude.com/docs/en/permission-modes#how-auto-mode-evaluates-actions and
 // https://code.claude.com/docs/en/auto-mode-config. A matching allow rule resolves before the
-// classifier, auto mode drops broad allow rules while it is active, and the classifier reads
-// `autoMode` only from user settings, managed settings, and `--settings`.
+// classifier, auto mode drops broad allow rules while it is active (which ones: auto-mode-drops.ts),
+// and the classifier reads `autoMode` only from user settings, managed settings, and `--settings`.
 
 /** Commands that act on a remote or reach other people. */
 const OUTWARD =
@@ -796,17 +797,6 @@ function admits(arg: string, named: RegExp) {
 	if (named.test(arg)) return true
 	const re = patternRegex(arg)
 	return OUTWARD_SAMPLES.some((cmd) => named.test(cmd) && re.test(cmd))
-}
-
-/** The broad rules the docs say auto mode drops, or null when the rule stays in effect. */
-function droppedInAutoMode(rule: Rule) {
-	if (rule.tool === 'Agent' || rule.tool === 'Monitor') return `\`${rule.tool}\` allow rules`
-	if (rule.tool !== 'Bash' && rule.tool !== 'PowerShell') return null
-	const arg = rule.arg.trim()
-	if (arg === '' || /^\*+$/.test(arg)) return `blanket \`${rule.tool}(*)\``
-	if (/^(python3?|node|ruby|perl|php|deno|bash|sh|zsh)\s*[*:]+$/.test(arg)) return 'a wildcarded interpreter'
-	if (/^(npm|pnpm|yarn|bun)\s+run\s*[*:]+$/.test(arg)) return 'a package-manager run command'
-	return null
 }
 
 function analyzeAutoMode() {
@@ -881,7 +871,7 @@ function analyzeAutoMode() {
 
 	for (const rule of shellAllows) {
 		const where = `${rule.harness} ${rule.scope} (${rule.file})`
-		const dropped = droppedInAutoMode(rule)
+		const dropped = droppedInAutoMode(rule.tool, rule.arg)
 		if (dropped) {
 			addFinding(
 				'info',

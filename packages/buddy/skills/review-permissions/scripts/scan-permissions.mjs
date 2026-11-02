@@ -4,6 +4,66 @@ globalThis.__SKILL_SCRIPT__ = {"package":"repobuddy","bin":"repobuddy","version"
 import { existsSync, readFileSync } from "node:fs";
 import { homedir, platform } from "node:os";
 import { join, resolve } from "node:path";
+//#region src/permissions/auto-mode-drops.ts
+/**
+* The allow rules Claude Code drops while auto mode is active, as observed with Claude Code 2.1.316:
+* a session started with `--permission-mode auto` logs "Ignoring dangerous permission <rule> ...
+* (bypasses classifier)" for each one, from any settings file. A shell rule is dropped when its
+* pattern, minus a trailing wildcard (`*`, ` *`, or `:*`), is exactly one of the prefixes below. A
+* narrower rule stays: `Bash(pnpm test *)`, `Bash(npm run test *)`, `Bash(pnpm *)`, `Bash(pnpm exec *)`.
+*
+* Shared by `review-permissions`' scanner, which reports these rules, and the `init-buddy` tests,
+* which keep its candidates out of the list.
+*/
+const DROPPED = [
+	["a package-manager run command", [
+		"npm run",
+		"pnpm run",
+		"yarn run",
+		"bun run",
+		"npx",
+		"bunx"
+	]],
+	["an interpreter", [
+		"python",
+		"python3",
+		"node",
+		"ruby",
+		"perl",
+		"php",
+		"deno",
+		"tsx",
+		"bash",
+		"sh",
+		"zsh"
+	]],
+	["an inline-code interpreter", [
+		"python -c",
+		"node -e",
+		"ruby -e",
+		"perl -e",
+		"bash -c",
+		"sh -c",
+		"zsh -c"
+	]],
+	["a command that runs another command", [
+		"eval",
+		"exec",
+		"env",
+		"xargs",
+		"sudo"
+	]]
+];
+/** What kind of dropped rule this is, or null when the rule stays in effect in auto mode. */
+function droppedInAutoMode(tool, arg) {
+	if (tool === "Agent" || tool === "Monitor") return `\`${tool}\` allow rules`;
+	if (tool !== "Bash" && tool !== "PowerShell") return null;
+	const prefix = arg.trim().replace(/(:\*|\*+)$/, "").trim().replace(/\s+/g, " ");
+	if (prefix === "") return `blanket \`${tool}(*)\``;
+	if (tool !== "Bash") return null;
+	return DROPPED.find(([, prefixes]) => prefixes.includes(prefix))?.[0] ?? null;
+}
+//#endregion
 //#region src/permissions/template-text.ts
 /**
 * Words that mark an `autoMode` entry as a template nobody filled in. They are tested on the entry
@@ -746,16 +806,6 @@ function admits(arg, named) {
 	const re = patternRegex(arg);
 	return OUTWARD_SAMPLES.some((cmd) => named.test(cmd) && re.test(cmd));
 }
-/** The broad rules the docs say auto mode drops, or null when the rule stays in effect. */
-function droppedInAutoMode(rule) {
-	if (rule.tool === "Agent" || rule.tool === "Monitor") return `\`${rule.tool}\` allow rules`;
-	if (rule.tool !== "Bash" && rule.tool !== "PowerShell") return null;
-	const arg = rule.arg.trim();
-	if (arg === "" || /^\*+$/.test(arg)) return `blanket \`${rule.tool}(*)\``;
-	if (/^(python3?|node|ruby|perl|php|deno|bash|sh|zsh)\s*[*:]+$/.test(arg)) return "a wildcarded interpreter";
-	if (/^(npm|pnpm|yarn|bun)\s+run\s*[*:]+$/.test(arg)) return "a package-manager run command";
-	return null;
-}
 function analyzeAutoMode() {
 	const userBlocks = autoModeBlocks.filter((b) => b.src.scope === "user" || b.src.scope === "enterprise");
 	for (const { src } of autoModeBlocks) {
@@ -788,7 +838,7 @@ function analyzeAutoMode() {
 	if (classifyAllShell) addFinding("info", "automode-classify-all-shell", "`autoMode.classifyAllShell` suspends every Bash and PowerShell allow rule in auto mode", "The classifier judges every shell command, so the shell allow rules apply only in other modes.", userBlocks.map(({ src }) => `${src.harness} ${src.scope} (${src.file})`).join(", "), "Nothing to change. Each shell command now costs a classifier call.");
 	for (const rule of shellAllows) {
 		const where = `${rule.harness} ${rule.scope} (${rule.file})`;
-		const dropped = droppedInAutoMode(rule);
+		const dropped = droppedInAutoMode(rule.tool, rule.arg);
 		if (dropped) {
 			addFinding("info", "auto-dropped-allow", `\`${rule.raw}\` has no effect in auto mode`, `Auto mode drops ${dropped} while it is active, and restores it when the session leaves auto mode.`, where, "Keep it only if you need it in other modes.");
 			continue;
