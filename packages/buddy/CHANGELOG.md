@@ -1,5 +1,25 @@
 # repobuddy
 
+## 4.1.0
+
+### Minor Changes
+
+- 90882dd: `checkpoint`: a bare `/checkpoint` now runs `create` when the repo has no checkpoint yet, since there is nothing to resume. With checkpoints present, or outside a git repo, it still shows the help.
+- 0aae91d: `epic`: in Create mode, when the user owns every tracker the plan writes to, the skill shows the plan and files the epic and its children without waiting for a yes. It still asks when a tracker is not owned or its ownership is unknown, about a duplicate hit, about an epic that looks too big or too small, and before creating a missing level label. Promote, Demote, and moves between trackers always confirm, because they change or close items that already exist.
+- 86436b5: `init-buddy` sets up Claude Code auto mode. It drafts `autoMode.environment` from `gh` (the namespaces you own or administer, and each one's visibility) and your answers, keeps the namespace list in one entry the others refer to, flags template text left in an entry, and offers `autoMode.allow` rules for queued merges and `--force-with-lease` pushes beside the merge rule. Each line says whether it is written explicitly or left to Claude Code's defaults, and outward-facing commands stay out of the allow list, because an allow entry skips the classifier. Run it again after joining an organization or changing a repo's visibility to refresh those entries.
+- 86436b5: `init-buddy` runs two scripts for its permission steps, so they come out the same every run. `scripts/permission-candidates.mjs` lists the allow and deny candidates for the detected hosts, the package managers on PATH, the repo's scripts, and whether it uses Changesets, leaving out entries the user already has. `scripts/auto-mode.mjs` covers the auto-mode step: `check` reads the current settings and flags template text, `discover` asks `gh` for the user's namespaces, their visibility, and the repo's branch rules, `render` words the environment entries and `autoMode.allow` rules, and `apply` appends them to `~/.claude/settings.json` with their deny entries, only on `--write`. Both scripts are committed with the skill, so a git install has them.
+- 0aae91d: `issue`: on a tracker the user owns (the capabilities reference's `Ownership` answers owned), the skill shows the summary and files the issue without waiting for a yes. It still asks when the user does not own the tracker, when ownership is unknown, about a duplicate hit, and about an item that looks too big or too small.
+- 86436b5: `review-permissions` places rules by permission mode. With `defaultMode: "auto"`, or `--mode auto` on the scanner, it flags allow rules for outward-facing commands (push, merge, `gh api`, `gh workflow run`, release, publish), including a wildcard such as `gh pr *` that admits one, which skip the auto-mode classifier; broad rules auto mode drops; an `autoMode` block in a project settings file, where the classifier ignores it; `soft_deny` or `hard_deny` lists without `"$defaults"`; and template text left in an `autoMode` entry. The scanner also ranks a `git stash *` allow rule as medium, because it admits `drop` and `clear` on a stash stack every worktree shares.
+- 0aae91d: `project-tracker.contract`: a capabilities reference may add an optional `Ownership` section that says whether the logged-in user owns the tracker's scope. The GitHub reference reads `viewerPermission` (`ADMIN` is owned); the GitLab reference reads the user's access level (Maintainer or Owner is owned). The contract stays at version 1.
+
+### Patch Changes
+
+- 3521468: Bundle `args-minus` into the CLI instead of installing it as a dependency. The CLI now inlines clibuilder 12.1, whose argument descriptors work across separate copies, so plugins no longer need to share its `args-minus` instance.
+- 7e9ba53: `checkpoint`: drop the `status` field. A checkpoint that exists is live work and is deleted when done, so `resume` now lists every checkpoint instead of only the `paused` ones, and no longer rewrites the file on resume. A checkpoint whose resumed session died is no longer hidden from the list.
+- c711863: `checkpoint create` now matches each topic to its existing checkpoint, first the one the session resumed, then one with the same goal, and merges into it instead of overwriting its settled decisions and dead ends. A finished or abandoned topic's old checkpoint is deleted. `checkpoint resume` asks whether to delete a checkpoint whose goal the new commits already met. Age alone never deletes a checkpoint.
+- 86436b5: `init-buddy`: a merge command in `permissions.allow` skips the auto-mode classifier, so the auto-mode merge rule now says to keep it out of the allow list.
+- 86436b5: `init-buddy`: the allow list splits the stash grant into `push`, `list`, `show`, and `apply`, and offers `rebase.autoStash`, because `git stash *` also admits `drop` and `clear` on a stack every worktree shares. The deny list adds the `changeset publish` forms run through a package manager, which `Bash(changeset publish*)` alone misses.
+
 ## 4.0.1
 
 ### Patch Changes
