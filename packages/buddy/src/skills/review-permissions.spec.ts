@@ -228,4 +228,11 @@ describe('scan-permissions.mjs auto mode', () => {
 		expect(levelOf(report, 'Bash(git stash *)')).toBe('medium')
 		expect(levelOf(report, 'Bash(git stash push *)')).toBe('low')
 	})
+
+	it('does not flag the exact git stash, which only pushes', () => {
+		const report = scan({ allow: ['Bash(git stash)', 'Bash(git stash:*)', 'Bash(git stash*)'] })
+		expect(levelOf(report, 'Bash(git stash)')).toBe('low')
+		expect(levelOf(report, 'Bash(git stash:*)')).toBe('medium')
+		expect(levelOf(report, 'Bash(git stash*)')).toBe('medium')
+	})
 })

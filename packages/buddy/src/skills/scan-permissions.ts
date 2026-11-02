@@ -480,7 +480,8 @@ const COMMAND_RISK: [RegExp, string, string][] = [
 	[/\bgit\s+(reset\s+--hard|clean\b|checkout\s+--\s|restore\b)/, 'high', 'discards uncommitted work irrecoverably'],
 	[/\bgit\s+stash\s+(drop|clear|pop)\b/, 'high', 'discards stashed work, on a stash stack every worktree shares'],
 	[
-		/^\s*git\s+stash\s*[*:]*\s*$/,
+		// A wildcard only: the exact `git stash` runs `git stash push`.
+		/^\s*git\s+stash\s*:?\s*\*+\s*$/,
 		'medium',
 		'admits `drop`, `clear`, and `pop` on a stash stack every worktree of the repo shares; grant `push`, `list`, `show`, and `apply` instead',
 	],

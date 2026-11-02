@@ -455,7 +455,7 @@ const COMMAND_RISK = [
 		"discards stashed work, on a stash stack every worktree shares"
 	],
 	[
-		/^\s*git\s+stash\s*[*:]*\s*$/,
+		/^\s*git\s+stash\s*:?\s*\*+\s*$/,
 		"medium",
 		"admits `drop`, `clear`, and `pop` on a stash stack every worktree of the repo shares; grant `push`, `list`, `show`, and `apply` instead"
 	],
