@@ -25,7 +25,7 @@ consumers, checks what each resolves, and records an explicit decision: hold, or
 
 ## What it produces or changes
 
-- Merged dependency PRs that cleared the gate.
+- Merged dependency PRs that cleared the gate. Where the repo has a merge queue, GitHub's or Mergify's, they go through it.
 - Fixes pushed to PRs that failed CI (ignored build scripts, Turbo `pipeline` to `tasks`, new lint rules, TypeScript majors, ESM resolution, workflows that will not re-trigger).
 - A changeset where the repo needs one.
 - Closed PRs that the base branch already superseded.
