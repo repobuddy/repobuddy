@@ -40,6 +40,8 @@ minimumReleaseAgeExclude:
   - '@mocktomata/*'
   - '@repobuddy/*'
   - '@unional/*'
+  # Council-authorized soak exemption for cyber-agentkit 2.0.0; remove after 2026-11-05T04:01Z.
+  - cyber-agentkit@2.0.0
 
 packages:
   - examples/*
