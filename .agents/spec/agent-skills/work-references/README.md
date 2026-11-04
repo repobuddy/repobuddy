@@ -45,9 +45,9 @@ the interface does not load. The script and `verify` own that rule; no scenario 
 The GitHub capabilities reference belongs to the [issue](../issue/README.md) unit, which names it.
 
 **Interface versions.** `project-tracker.capabilities.interface` is the `project-tracker.capabilities` interface, version 1;
-it was `project-tracker.contract`, which now ships only as a stub naming the new reference. An
-interface document's `aliases` are older interface ids, not older reference names, so the old name
-cannot be an alias. A capabilities reference declares `implements: project-tracker.capabilities@1`,
+it was `project-tracker.contract`, which the interface lists in its `aliases`, so
+`reference load project-tracker.contract` still loads it, with a `reference-renamed` warning
+(cyber-agentkit 2.1 lets a `many` interface keep the name of the plain reference it replaces). A capabilities reference declares `implements: project-tracker.capabilities@1`,
 which `reference check` verifies against the interface's sections, with `Tracker` and `Detect`
 required; repobuddy's references also keep `contract: 1` for skills older than the interface. A skill
 reads `implements`, or `contract` when there is none, and stops on a missing or unknown value. Adding a section or an optional field keeps

@@ -80,9 +80,11 @@ describe('project-tracker.capabilities.interface', () => {
 		}
 	})
 
-	it('keeps project-tracker.contract as a stub that names the new reference', async () => {
+	it('still loads under its old name, project-tracker.contract, with a reference-renamed warning', async () => {
 		const resolved = await loadReference('project-tracker.contract', { ...base, plugin })
+		const current = await loadReference(name, { ...base, plugin })
 		expect(resolved.status).toBe('found')
-		expect(resolved.content).toContain('`project-tracker.capabilities.interface`')
+		expect(resolved.content).toBe(current.content)
+		expect(resolved.warnings.map(({ code }) => code)).toEqual(['reference-renamed'])
 	})
 })

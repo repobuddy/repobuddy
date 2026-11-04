@@ -1,6 +1,7 @@
 ---
 description: The interface a project-tracker.capabilities.<tracker> reference implements, the version skills check, and the format of project-tracker.routing.
 tags: [project-tracker, interface]
+aliases: [project-tracker.contract]
 interface:
   cardinality: many
   version: 1
@@ -19,7 +20,7 @@ interface:
 
 ## Version
 
-This is the `project-tracker.capabilities` interface, version **1**. It was named `project-tracker.contract` before. A capabilities reference is named `project-tracker.capabilities.<tracker>` and declares the version it follows in its frontmatter as `implements: project-tracker.capabilities@1`. A reference written before the interface declares `contract: 1` instead; repobuddy's own references declare both, so skills older than the interface still read them. A skill reads the version from `implements`, or from `contract` when there is no `implements`, loads a reference with version 1, and stops on any other value or on none, saying which tracker and which version. A change that adds a section or an optional field keeps the number; a change that renames or removes a section, or changes the item ref, raises it.
+This is the `project-tracker.capabilities` interface, version **1**. It was named `project-tracker.contract` before, and that name still loads it, with a `reference-renamed` warning. A capabilities reference is named `project-tracker.capabilities.<tracker>` and declares the version it follows in its frontmatter as `implements: project-tracker.capabilities@1`. A reference written before the interface declares `contract: 1` instead; repobuddy's own references declare both, so skills older than the interface still read them. A skill reads the version from `implements`, or from `contract` when there is no `implements`, loads a reference with version 1, and stops on any other value or on none, saying which tracker and which version. A change that adds a section or an optional field keeps the number; a change that renames or removes a section, or changes the item ref, raises it.
 
 `reference check project-tracker.capabilities.<tracker>` verifies a reference that declares `implements` against this interface: its sections, their order, and that `Tracker` and `Detect` are present and not `**Unsupported.**`.
 
