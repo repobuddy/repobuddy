@@ -16,6 +16,8 @@ Load these with the `reference` skill in the `cyber-agentkit` plugin:
 - `project-tracker.capabilities.interface`: the formats of the `Routes` and `Moves` tables (its `Routing` section), and which versions it knows. When `project-tracker.capabilities.interface` does not load, read `references/project-tracker.capabilities.interface.md` in this skill's folder instead: it is the same interface, bundled for an install without the repobuddy plugin.
 - `project-tracker.routing`: the project's current routing, when it exists.
 
+When a load warns `reference-legacy-format` or `reference-renamed`, a file is in a cyber-agentkit 1 form or under an old name: run `reference migrate` with the `reference` skill in the `cyber-agentkit` plugin, show the user its plan, and run it again with `--write` only on their yes. Then go on with the reference as loaded.
+
 When the `reference` command cannot run, say it is needed and stop: nothing can be listed or read, so write nothing.
 
 ## Modes

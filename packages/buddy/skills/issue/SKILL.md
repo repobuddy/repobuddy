@@ -28,6 +28,8 @@ Load these with the `reference` skill in the `cyber-agentkit` plugin, so a proje
 - Before step 1: `repobuddy.work-levels` (the level checks) and `project-tracker.capabilities.interface` (what a capabilities reference holds). When `project-tracker.capabilities.interface` does not load, read `references/project-tracker.capabilities.interface.md` in this skill's folder instead: it is the same interface, bundled for an install without the repobuddy plugin.
 - When the category is known: the template reference for it, from the table above. Keep every section it has, in order; write `None` under one you have nothing for. For a task, never leave `Done when` or `Out of scope` as `None`: propose a check and a boundary from the request, and show them in the summary. A section a team adds or rewords is part of the template. Its headings are the only fixed part: a team may reword the text under them or add a section.
 
+When a load warns `reference-legacy-format` or `reference-renamed`, a file is in a cyber-agentkit 1 form or under an old name: run `reference migrate` with the `reference` skill in the `cyber-agentkit` plugin, show the user its plan, and run it again with `--write` only on their yes. Then go on with the reference as loaded.
+
 ## Trackers
 
 A tracker's operations live in a capabilities reference named `project-tracker.capabilities.<tracker>`. This skill owns the workflow; the reference owns the commands.

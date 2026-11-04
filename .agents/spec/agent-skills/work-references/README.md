@@ -47,7 +47,7 @@ The GitHub capabilities reference belongs to the [issue](../issue/README.md) uni
 **Interface versions.** `project-tracker.capabilities.interface` is the `project-tracker.capabilities` interface, version 1;
 it was `project-tracker.contract`, which the interface lists in its `aliases`, so
 `reference load project-tracker.contract` still loads it, with a `reference-renamed` warning
-(cyber-agentkit 2.1 lets a `many` interface keep the name of the plain reference it replaces). A capabilities reference declares `implements: project-tracker.capabilities@1`,
+(cyber-agentkit 2.1 lets a `many` interface keep the name of the plain reference it replaces). The same `aliases` drive `reference migrate`, which renames a repository's or a user's `project-tracker.contract` file to the interface's name, so repobuddy ships no `_renames.yaml`. A capabilities reference declares `implements: project-tracker.capabilities@1`,
 which `reference check` verifies against the interface's sections, with `Tracker` and `Detect`
 required; repobuddy's references also keep `contract: 1` for skills older than the interface. A skill
 reads `implements`, or `contract` when there is none, and stops on a missing or unknown value. Adding a section or an optional field keeps

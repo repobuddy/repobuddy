@@ -27,6 +27,8 @@ Load these with the `reference` skill in the `cyber-agentkit` plugin, so a proje
 - Before any mode: `repobuddy.work-levels` (the level checks), `project-tracker.capabilities.interface` (what a capabilities reference holds, and the routing's format), and `repobuddy.work-template.initiative` (the initiative's body). When `project-tracker.capabilities.interface` does not load, read `references/project-tracker.capabilities.interface.md` in this skill's folder instead: it is the same interface, bundled for an install without the repobuddy plugin.
 - For each shell: `repobuddy.work-template.epic`.
 
+When a load warns `reference-legacy-format` or `reference-renamed`, a file is in a cyber-agentkit 1 form or under an old name: run `reference migrate` with the `reference` skill in the `cyber-agentkit` plugin, show the user its plan, and run it again with `--write` only on their yes. Then go on with the reference as loaded.
+
 Keep every section of a template, in order; write `None` under one you have nothing for. A section a team adds or rewords is part of the template.
 
 ## Guards
