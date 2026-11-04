@@ -165,7 +165,7 @@ Feature: issue — file one bug, feature, or task on the tracker
   @behavior
   Scenario: writes the body from the template reference, not from the skill
     Given the user confirms a task "migrate the build to tsdown"
-    And the project has .agents/references/repobuddy.work-template.task.md with merge: merge-sections
+    And the project has .agents/references/repobuddy.work-template.task.md with merge: patch
     And that file redefines only the Done when section as "- [ ] release notes merged"
     And that file adds a Rollout section reading "Ship behind the tsdown flag first"
     When issue writes the body of the task
@@ -186,15 +186,16 @@ Feature: issue — file one bug, feature, or task on the tracker
   Scenario Outline: stops on a capabilities reference whose contract version it does not know
     Given the origin remote is github.com
     And the installed project-tracker.capabilities.github has <contract_state>
-    And project-tracker.contract declares contract: 1
+    And project-tracker.capabilities.interface declares version 1
     When issue loads the capabilities reference
-    Then it names the tracker and says its contract version is not known
+    Then it names the tracker and says its version is not known
     And it runs no duplicate search and no create command
 
     Examples:
-      | contract_state             |
-      | contract: 2 in frontmatter |
-      | no contract in frontmatter |
+      | contract_state                                       |
+      | contract: 2 in frontmatter                           |
+      | no contract in frontmatter                           |
+      | implements: project-tracker.capabilities@2, no contract |
 
   @behavior
   Scenario: lists the capabilities references and loads the one that matches the host
@@ -202,9 +203,11 @@ Feature: issue — file one bug, feature, or task on the tracker
     And the project has no project-tracker.routing
     And exactly one reference named project-tracker.capabilities.github is installed
     And a fuzzier search hit named project-tracker.contract is also returned
+    And a prefix search hit named project-tracker.capabilities.interface is also returned
     When issue resolves the tracker
     Then it loads project-tracker.capabilities.github
     And it does not load project-tracker.contract
+    And it does not take project-tracker.capabilities.interface as a tracker
 
   @behavior
   Scenario: reads the bundled GitHub reference when the reference command cannot run
@@ -212,7 +215,7 @@ Feature: issue — file one bug, feature, or task on the tracker
     And the project has no .agents/references/project-tracker.routing.md file
     And the reference command exits with an error
     When issue resolves the tracker
-    Then it reads references/project-tracker.capabilities.github.md in its own folder
+    Then it reads references/project-tracker.capabilities.github.default.md in its own folder
 
   @behavior
   Scenario Outline: reads the bundled GitHub reference when the reference search finds no match
@@ -220,13 +223,14 @@ Feature: issue — file one bug, feature, or task on the tracker
     And the project has no project-tracker.routing
     And the reference search runs without error and returns <search_result>
     When issue resolves the tracker
-    Then it reads references/project-tracker.capabilities.github.md in its own folder
+    Then it reads references/project-tracker.capabilities.github.default.md in its own folder
     And it loads no reference from the search result
 
     Examples:
-      | search_result                                          |
-      | no names                                               |
-      | only project-tracker.contract, a fuzzier match         |
+      | search_result                                                  |
+      | no names                                                       |
+      | only project-tracker.contract, a fuzzier match                 |
+      | only project-tracker.capabilities.interface, the interface     |
 
   @behavior
   Scenario: writes a bug body with steps, expected, and actual behavior
@@ -260,7 +264,7 @@ Feature: issue — file one bug, feature, or task on the tracker
     And no GitLab capabilities reference is installed
     And the project has the label bug
     When the user confirms a bug
-    Then issue reads references/project-tracker.capabilities.gitlab.md in its own folder
+    Then issue reads references/project-tracker.capabilities.gitlab.default.md in its own folder
     And it creates the issue through glab api with the label bug
 
   # ── Use case 5 — file to the routed tracker ──

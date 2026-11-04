@@ -294,7 +294,7 @@ export function formatSuggestions(result: SuggestResult): string {
 	if (changes.length > 0) {
 		lines.push(
 			'',
-			`To apply, add to the \`## Weights\` section of ${result.overrideFile} (frontmatter \`merge: merge-sections\`):`,
+			`To apply, add to the \`## Weights\` section of ${result.overrideFile} (frontmatter \`merge: patch\`):`,
 			'',
 			...changes.map((s) => s.line as string),
 			'',

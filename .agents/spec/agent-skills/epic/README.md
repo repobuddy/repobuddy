@@ -35,7 +35,7 @@ level change (ADR 0003), so `epic` says which skill and stops.
 
 **How a level changes is the tracker's; the guards are the skill's** (ADR 0003, decision 7). Each
 capabilities reference's `Retype` section says, per change, whether it is in place or a new item, what
-happens to open children, and the limits; a team overrides that section with `merge-sections`. The
+happens to open children, and the limits; a team overrides that section with a `patch`. The
 skill keeps five guards no reference or team can change: confirm before any write (except Create on
 trackers the person owns); list every child
 the change touches; never close a child as a duplicate; never drop a child without saying where it

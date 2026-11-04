@@ -29,26 +29,28 @@ Feature: project-tracker — set up, show, change, and check which tracker holds
   Scenario: lists installed capabilities by prefix and drops the fuzzier matches
     Given no project-tracker.routing exists
     And the reference search for project-tracker.capabilities returns project-tracker.capabilities.github with match prefix
+    And it also returns project-tracker.capabilities.interface with match prefix
     And it also returns project-tracker.contract with match description
     When project-tracker sets up the routing
     Then the trackers it offers are exactly github
-    And project-tracker.contract is not among them
+    And neither project-tracker.capabilities.interface nor project-tracker.contract is among them
 
   @behavior
   Scenario: leaves out a capabilities reference whose contract version it does not know
     Given no project-tracker.routing exists
-    And project-tracker.contract declares contract: 1
+    And project-tracker.capabilities.interface declares version 1
     And the installed project-tracker.capabilities.github declares contract: 1
+    And the installed project-tracker.capabilities.gamma declares implements: project-tracker.capabilities@1 and no contract
     And the installed project-tracker.capabilities.beta declares contract: 2
-    And the installed project-tracker.capabilities.epsilon has no contract in its frontmatter
+    And the installed project-tracker.capabilities.epsilon has neither implements nor contract in its frontmatter
     When project-tracker sets up the routing
-    Then the trackers it offers are exactly github
-    And it says beta and epsilon were left out because their contract versions are not known
+    Then the trackers it offers are exactly github and gamma
+    And it says beta and epsilon were left out because their versions are not known
 
   @behavior
   Scenario: says no capabilities are installed and writes nothing
     Given no project-tracker.routing exists
-    And the reference search returns only project-tracker.contract with match description
+    And the reference search returns only project-tracker.capabilities.interface with match prefix and project-tracker.contract with match description
     When project-tracker sets up the routing
     Then it says no capabilities reference is installed
     And it writes no file
@@ -199,15 +201,16 @@ Feature: project-tracker — set up, show, change, and check which tracker holds
   @behavior
   Scenario Outline: reports a route on a contract version it does not know
     Given the project has a route to prov-a/project-tracker.capabilities.alpha
-    And project-tracker.contract declares contract: 1
+    And project-tracker.capabilities.interface declares version 1
     And that reference has <contract_state>
     When the user asks project-tracker to check the routing
-    Then it reports that route with the tracker alpha and says its contract version is not known
+    Then it reports that route with the tracker alpha and says its version is not known
 
     Examples:
-      | contract_state             |
-      | contract: 2 in frontmatter |
-      | no contract in frontmatter |
+      | contract_state                                          |
+      | contract: 2 in frontmatter                              |
+      | no contract in frontmatter                              |
+      | implements: project-tracker.capabilities@2, no contract |
 
   @behavior
   Scenario: reports a level and category that no route covers

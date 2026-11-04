@@ -2,6 +2,7 @@
 description: What a scaffold.recipe.<name> reference must contain, and the contract version the scaffold skill checks.
 tags: [scaffold, contract]
 contract: 1
+extends: [default]
 ---
 
 ## Version
@@ -37,4 +38,4 @@ The skill runs the recipe in this order: `Recipe`, `Inputs`, `host setup` (the h
 
 ## Overrides
 
-A team overrides one section by writing a reference with the same name and `merge: merge-sections`. Over a recipe two plugins ship, the override takes the qualified name.
+A team changes one section by writing a reference with the same name in `.agents/references/`. Its sections replace the sections they match by heading path, since `patch` is the default `merge`; `merge: combine` adds to a section instead, `replace` swaps the whole document, and `remove` turns the name off. Over a recipe two plugins ship, the override names the one it builds on in frontmatter `extends`, such as `extends: [<plugin>]`; `reference customize <name> --extends <plugin>` writes that pick.

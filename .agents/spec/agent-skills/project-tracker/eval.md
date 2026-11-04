@@ -13,7 +13,7 @@ eval:
 # project-tracker — measurement policy
 
 The subject is `packages/buddy/skills/project-tracker/SKILL.md` together with its `references/` copy of
-`project-tracker.contract`, which holds the routing table formats the skill writes and reads.
+`project-tracker.capabilities.interface`, which holds the routing table formats the skill writes and reads.
 
 **Trigger and behavior carry signal; quality does not.** Trigger: the skill sits beside `issue` and
 `to-question`, which share "tracker", "issue", and "ticket". Behavior: what to list, which pin form to

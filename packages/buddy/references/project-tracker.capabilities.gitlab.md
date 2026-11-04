@@ -1,7 +1,9 @@
 ---
 description: What the GitLab tracker can do for issue, epic, and initiative skills; operations, levels, categories, tiers, and visibility.
 tags: [project-tracker, gitlab, issue]
+implements: project-tracker.capabilities@1
 contract: 1
+extends: [default]
 ---
 
 ## Tracker

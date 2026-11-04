@@ -112,7 +112,7 @@ test('applies the repo weight override from the reference', async () => {
 	mkdirSync(join(dir, '.agents/references'), { recursive: true })
 	writeFileSync(
 		join(dir, '.agents/references/repobuddy.readiness.md'),
-		'---\nmerge: merge-sections\n---\n\n## Weights\n\n- noise: 30\n',
+		'---\nmerge: patch\n---\n\n## Weights\n\n- noise: 30\n',
 	)
 	await main(['score', '--dir', dir, '--json'])
 	const result = JSON.parse(stdout.join(''))
@@ -167,7 +167,7 @@ describe('suggest', () => {
 		mkdirSync(join(dir, '.agents/references'), { recursive: true })
 		writeFileSync(
 			join(dir, '.agents/references/repobuddy.readiness.md'),
-			'---\nmerge: merge-sections\n---\n\n## Weights\n\n- noise: 40\n',
+			'---\nmerge: patch\n---\n\n## Weights\n\n- noise: 40\n',
 		)
 		await main(['suggest', '--dir', dir])
 		expect(stdout.join('')).toMatch(/^noise \(weight 40\): keep the weight: already at the maximum/)

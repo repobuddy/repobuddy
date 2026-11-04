@@ -33,7 +33,7 @@ function write(path: string, text: string) {
 	writeFileSync(join(dir, path), text)
 }
 
-const override = (items: string) => `---\nmerge: merge-sections\n---\n\n## Weights\n\n${items}\n`
+const override = (items: string) => `---\nmerge: patch\n---\n\n## Weights\n\n${items}\n`
 const read = () => readConfig(dir, { skillDir, home, env: {} })
 
 describe('the shipped reference', () => {
@@ -54,8 +54,19 @@ describe('readConfig', () => {
 
 	it('applies a project override of the Weights section over the default', async () => {
 		write(OVERRIDE_FILE, override('- verification: 40\n- noise: 0'))
-		// merge-sections replaces the whole section; score() fills the areas it leaves out with the defaults.
+		// patch replaces the whole section; score() fills the areas it leaves out with the defaults.
 		expect((await read()).weights).toEqual({ verification: 40, noise: 0 })
+	})
+
+	it('still reads a merge-sections override as a patch, warning with its code', async () => {
+		write(OVERRIDE_FILE, '---\nmerge: merge-sections\n---\n\n## Weights\n\n- noise: 30\n')
+		const config = await read()
+		expect(config.weights).toEqual({ noise: 30 })
+		expect(config.warnings).toEqual([
+			expect.stringMatching(
+				/^reference-legacy-format: .*`merge: merge-sections` .*reads as patch.*`reference migrate`/,
+			),
+		])
 	})
 
 	it('reads an override with no skill folder', async () => {
@@ -133,6 +144,6 @@ describe('parseWeightsSection', () => {
 	})
 })
 
-it('overrideFor writes a merge-sections override', () => {
+it('overrideFor writes a patch override', () => {
 	expect(overrideFor({ noise: 30 })).toBe(override('- noise: 30'))
 })

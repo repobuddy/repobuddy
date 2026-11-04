@@ -24,7 +24,7 @@ Pick the mode from the request. With none clear, ask.
 
 Load these with the `reference` skill in the `cyber-agentkit` plugin, so a project's own override applies:
 
-- Before any mode: `repobuddy.work-levels` (the level checks), `project-tracker.contract` (what a capabilities reference holds, and the routing's format), and `repobuddy.work-template.initiative` (the initiative's body).
+- Before any mode: `repobuddy.work-levels` (the level checks), `project-tracker.capabilities.interface` (what a capabilities reference holds, and the routing's format), and `repobuddy.work-template.initiative` (the initiative's body). When `project-tracker.capabilities.interface` does not load, read `references/project-tracker.capabilities.interface.md` in this skill's folder instead: it is the same interface, bundled for an install without the repobuddy plugin.
 - For each shell: `repobuddy.work-template.epic`.
 
 Keep every section of a template, in order; write `None` under one you have nothing for. A section a team adds or rewords is part of the template.
@@ -33,7 +33,7 @@ Keep every section of a template, in order; write `None` under one you have noth
 
 These hold on every tracker and cannot be changed by a capabilities reference or a team override:
 
-- **Confirm before any write.** Show everything that will be created or linked, and wait for a yes. A capabilities section marked as writing in `project-tracker.contract` never runs before it.
+- **Confirm before any write.** Show everything that will be created or linked, and wait for a yes. A capabilities section marked as writing in `project-tracker.capabilities.interface` never runs before it.
 - **No metric, no initiative.** An initiative has one measure with a target. Never guess a baseline or a target: an unknown baseline is written as `unmeasured`, and measuring it becomes the first shell.
 - **A shell stays a shell.** Never propose, ask for, or file a shell's child issues here. A promoted epic keeps its body, its children, and its URL.
 - **List every epic the change touches**, by title and URL, with what happens to each.
@@ -46,11 +46,11 @@ These hold on every tracker and cannot be changed by a capabilities reference or
 A tracker's operations live in a capabilities reference named `project-tracker.capabilities.<tracker>`. This skill owns the workflow; the reference owns the commands. Resolve a tracker for a level and a category: the initiative at level initiative, each shell at level epic with its own category, and a Promote source at level epic with its category. Know the category first: a routing chooses by it. A source item given by URL is on the tracker whose `Url` section parses it; when that is not the tracker its route names, say so and stop.
 
 1. Look for a routing: `reference load project-tracker.routing --format json`. Status `missing` means no routing: go to step 3. When the command cannot run, read `.agents/references/project-tracker.routing.md` directly: absent means no routing (go to step 3); present means its pins cannot be resolved, so name the first matching pin, say the `reference` command cannot run, suggest `project-tracker` check once it can, and stop.
-2. With a routing, take the first `Routes` row that matches the level and the category. No row matches: name the pair, suggest `project-tracker` change, and stop. Run `reference load <pin> --format json` on its pin. Its status is `missing` or `ambiguous` (the bare name is held by more than one plugin): name the pin and the problem, suggest `project-tracker` check, and stop. Otherwise load that reference and go to step 6.
+2. With a routing, take the first `Routes` row that matches the level and the category. No row matches: name the pair, suggest `project-tracker` change, and stop. Run `reference load <pin> --format json --metadata` on its pin. Its status is `missing` or `ambiguous` (the bare name is held by more than one plugin): name the pin and the problem, suggest `project-tracker` check, and stop. Otherwise load that reference and go to step 6.
 3. Read the host of `git remote get-url origin`.
-4. List what is installed: `reference search project-tracker.capabilities`. Keep only hits whose `match` is `prefix`, which may carry a `<plugin>/` qualifier; drop fuzzier ones such as `project-tracker.contract`.
-5. Load the one whose `Detect` section matches the repository. Two matches, or a name ambiguous between plugins: report both qualified names, ask which, and load neither until answered. When the command cannot run, or nothing is left, load the bundled reference for the host from this skill's `references/` folder: `project-tracker.capabilities.github` for `github.com`, `project-tracker.capabilities.gitlab` for `gitlab.com` or a host `glab auth status --hostname <host>` accepts. Otherwise say that no tracker is set up for this repository, suggest `project-tracker`, and stop.
-6. Read `contract:` in the reference's frontmatter. Missing, or not a version `project-tracker.contract` declares: name the tracker and the version, and stop.
+4. List what is installed: `reference search project-tracker.capabilities`. Keep only hits whose `match` is `prefix`, which may carry a `<plugin>/` qualifier; drop the interface itself, `project-tracker.capabilities.interface`, and fuzzier ones.
+5. Load the one whose `Detect` section matches the repository. Two matches, or a name ambiguous between plugins: report both qualified names, ask which, and load neither until answered. When the command cannot run, or nothing is left, load the bundled reference for the host from this skill's `references/` folder: `project-tracker.capabilities.github.default.md` for `github.com`, `project-tracker.capabilities.gitlab.default.md` for `gitlab.com` or a host `glab auth status --hostname <host>` accepts. Otherwise say that no tracker is set up for this repository, suggest `project-tracker`, and stop.
+6. Read the version in the `metadata` of `reference load <name> --format json --metadata`, or in the frontmatter of a bundled reference: `implements` (`project-tracker.capabilities@<version>`), or `contract` when there is no `implements`. Missing, or not a version `project-tracker.capabilities.interface` declares: name the tracker and the version, and stop.
 7. Run its `Detect` checks; when a tool is missing, old, or logged out, say what to install, upgrade, or run, and stop.
 8. Check that the tracker holds the level (`Levels held` in its `Tracker` section). When it does not, say so and stop; do not file the initiative as an epic or a plain issue.
 
@@ -101,7 +101,7 @@ Promote never closes the epic, whatever the tracker. Where the `Retype` row for 
 ## Validate
 
 - [ ] The description in the frontmatter is at most 120 characters, and `name` equals the directory name
-- [ ] Every copy in this skill's `references/` equals the file of the same name in `packages/buddy/references/` (`node scripts/sync-skill-references.mjs --check`)
+- [ ] Every `<name>.default.md` in this skill's `references/` is generated from `<name>.md` in `packages/buddy/references/` (`node scripts/sync-skill-references.mjs --check`)
 - [ ] The request was checked for a security vulnerability before any mode ran
 - [ ] The level checks, the contract, and both templates were loaded, and each capabilities reference's `contract:` was checked
 - [ ] With a routing, every tracker came from a route, and a missing or ambiguous pin or an unmatched route stopped the skill before any search

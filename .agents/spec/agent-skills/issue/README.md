@@ -30,8 +30,8 @@ native tracker is gone.
 **Templates and level checks are references.** The body template for each category is
 `repobuddy.work-template.<category>`, and the checks that say an item is too big or too small are the
 issue sections of `repobuddy.work-levels`. The skill loads them by name through cyber-agentkit, so a
-project overrides one section with `merge-sections`. The capabilities reference declares the
-`contract:` it follows, and the skill stops on a version `project-tracker.contract` does not name. The
+project overrides one section with a `patch`. The capabilities reference declares the
+version it follows (`implements: project-tracker.capabilities@<version>`, or the older `contract:`), and the skill stops on a version `project-tracker.capabilities.interface` does not name. The
 references are specified in [work-references](../work-references/README.md).
 
 **A routing, when the project has one, decides the tracker.** `project-tracker.routing` (written by
@@ -40,7 +40,7 @@ With a routing, `issue` takes the first row that matches the issue level and the
 pinned reference instead of detecting the tracker from the `origin` host, and files there. It never
 guesses: a pin that resolves to nothing or to two plugins, or a level and category no row matches,
 stops the skill with the problem named. Without a routing it behaves as before, and its report ends
-with one line suggesting `project-tracker`. The table format is in `project-tracker.contract`.
+with one line suggesting `project-tracker`. The table format is in `project-tracker.capabilities.interface`.
 
 **The person's own tracker files without a confirmation turn.** The capabilities reference's
 optional `Ownership` section answers `owned` or `not owned` for the tracker's scope (GitHub:

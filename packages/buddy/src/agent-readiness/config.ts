@@ -2,7 +2,7 @@
  * Reads readiness's tunables from the reference `repobuddy.readiness`, resolved by
  * `cyber-agentkit` across the managed, repo (`.agents/references/`), user
  * (`~/.agents/references/`), and plugin tiers. The skill ships the default copy as its plugin layer; a
- * repo overrides the `## Weights` section with `merge: merge-sections` in
+ * repo patches the `## Weights` section (`merge: patch`, cyber-agentkit's default) in
  * `.agents/references/repobuddy.readiness.md`. Weights order fixes and area scores, never gates or the
  * level, so an override cannot lower the bar `--check` holds.
  *
@@ -91,7 +91,7 @@ function readLegacy(dir: string): Partial<Weights> {
 /** The override file that replaces `weights.json`, ready to save. */
 export function overrideFor(weights: Partial<Weights>): string {
 	const items = Object.entries(weights).map(([area, weight]) => `- ${area}: ${weight}`)
-	return ['---', 'merge: merge-sections', '---', '', '## Weights', '', ...items, ''].join('\n')
+	return ['---', 'merge: patch', '---', '', '## Weights', '', ...items, ''].join('\n')
 }
 
 export async function readConfig(dir: string, options: ConfigOptions = {}): Promise<Config> {
@@ -101,7 +101,8 @@ export async function readConfig(dir: string, options: ConfigOptions = {}): Prom
 		...(options.home ? { home: options.home } : {}),
 		...(options.env ? { env: options.env } : {}),
 	})
-	const warnings: string[] = []
+	// A fault in a contribution, such as an old `merge: merge-sections` (read as patch), loads anyway.
+	const warnings = resolved.warnings.map(({ code, message }) => `${code}: ${message}`)
 	let weights: Partial<Weights> = {}
 	if (resolved.status === 'found' && resolved.content !== undefined) {
 		weights = parseWeightsSection(
