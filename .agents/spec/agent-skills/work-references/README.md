@@ -23,7 +23,7 @@ ship in `packages/buddy/references/`, the plugin tier cyber-agentkit resolves
 | `repobuddy.work-template.epic`, `.initiative` | a body template for a level | the `##` sections of the template |
 | `project-tracker.contract` | the sections a capabilities reference must have, the `**Unsupported.**` marker, the item ref, the contract version, and the format of `project-tracker.routing` (its `Routes` and `Moves` tables) | `Version`, `Sections`, `Unsupported`, `Item ref`, `Overrides`, `Routing` |
 
-**Headings are API.** A team overrides text with `merge: merge-sections`, so renaming a heading breaks
+**Headings are API.** A team overrides text with `merge: patch` (cyber-agentkit's default), so renaming a heading breaks
 every override of it and needs a changeset. The resolver matches and replaces a whole `##` section
 and appends one the base lacks (run against the real resolver with a project override over a plugin
 copy). In a template, a `##` is one section, so an override restates just that one. In

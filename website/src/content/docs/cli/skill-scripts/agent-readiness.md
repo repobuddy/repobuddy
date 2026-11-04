@@ -59,8 +59,9 @@ An unknown flag is a usage error.
   `fail` when the root or any of those packages fails, and the detail lists each, plus the private packages skipped.
 - The area weights come from the reference `repobuddy.readiness`: the skill's default, under any
   `.agents/references/repobuddy.readiness.md` (project) or `~/.agents/references/repobuddy.readiness.md` (user)
-  override with `merge: merge-sections` and a `## Weights` section of `- <area>: <number>` items. A malformed item
-  exits `2`.
+  override with `merge: patch` and a `## Weights` section of `- <area>: <number>` items. A malformed item
+  exits `2`. An older override with `merge: merge-sections` is still read as a patch, and stderr prints a
+  `merge-unknown` warning.
 - `.agents/readiness/weights.json` is deprecated. It is still read when no project override exists, and stderr
   prints the override file to create instead.
 - Level 5 reads `.agents/aced/bench/repobuddy.readiness/baseline.json`, the baseline ACED's `bench` records.
