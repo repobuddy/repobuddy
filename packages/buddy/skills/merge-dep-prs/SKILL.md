@@ -191,28 +191,96 @@ and nothing objected** — an unenumerated consumer set is not an empty one.
 
 ## Step 4 — Merge passing PRs
 
-**GitHub:**
+Never hardcode a merge method. A repo may allow only merge commits, and a merge queue refuses any
+method flag ("The merge strategy for main is set by the merge queue").
+
+### 4a — Find the queue
+
+A repo has at most one merge queue: GitHub's own, or Mergify's. Check both.
+
+**GitHub merge queue** — `true` when one governs the PR's base branch:
 ```bash
-gh pr merge <number> --repo <owner>/<repo> --squash
+gh api graphql -F owner=<owner> -F repo=<repo> -F number=<number> -f query='
+  query($owner: String!, $repo: String!, $number: Int!) {
+    repository(owner: $owner, name: $repo) { pullRequest(number: $number) { isMergeQueueEnabled } }
+  }' --jq '.data.repository.pullRequest.isMergeQueueEnabled'
 ```
 
-**GitLab:**
+**Mergify queue** — present when either signal holds:
+
+1. Mergify's config file, on the default branch, has `queue_rules`. Mergify reads the first of these
+   paths it finds. If the file only `extends` another repo's config, read that one too.
+   ```bash
+   for f in .mergify.yml .mergify.yaml .mergify/config.yml .mergify/config.yaml \
+            .github/mergify.yml .github/mergify.yaml; do
+     gh api -H "Accept: application/vnd.github.raw" "repos/<owner>/<repo>/contents/$f" 2>/dev/null && break
+   done | grep -E '^(queue_rules|extends):'
+   ```
+2. The PR's `Mergify Merge Queue` check reports something other than neutral or skipped, which
+   means the PR is already queued or being checked:
+   ```bash
+   gh pr view <number> --repo <owner>/<repo> --json statusCheckRollup --jq '
+     [.statusCheckRollup[] | select(.name == "Mergify Merge Queue")
+       | select(.conclusion != "NEUTRAL" and .conclusion != "SKIPPED")] | length > 0'
+   ```
+
+Where the Mergify app is installed with no config file, Mergify still offers a default queue: its
+check stays neutral ("Merge queue is ready") and it may post a "Queue this pull request" comment.
+That is an offer the repo has not taken up, not its queue. Merge normally.
+
+### 4b — Merge through it
+
+| Queue found | Do this |
+|---|---|
+| Both GitHub's and Mergify's | Stop. Report the conflict to the user; do not merge or enqueue |
+| GitHub's | `gh pr merge` with no method flag |
+| Mergify's | `@mergifyio queue` comment; never `gh pr merge` |
+| None | `gh pr merge` with an allowed method |
+
+**GitHub merge queue.** Run `gh pr merge` with **no method flag**. It adds the PR to the queue, or
+turns on auto-merge when required checks are still running; the queue merges with its own method:
 ```bash
-glab mr merge <number> --squash
+gh pr merge <number> --repo <owner>/<repo>
 ```
 
-If blocked by branch protection (`mergeStateStatus = BLOCKED` or `BEHIND`):
+**Mergify queue.** Enqueue with Mergify's command, not `gh pr merge`, which would merge around the
+queue. Skip the comment if the `Mergify Merge Queue` check already shows the PR queued. With no name,
+Mergify picks the first queue whose `queue_conditions` match; name one to target it
+(`@mergifyio queue <queue-name>`):
 ```bash
-# Update branch first (GitHub)
+gh pr comment <number> --repo <owner>/<repo> --body "@mergifyio queue"
+```
+Then confirm Mergify answered: its reply comment, or the check moving to in progress. The PR is
+merged when Mergify reports it merged, not when the comment posts.
+
+**No queue.** Pick a method the repo allows, preferring a merge commit:
+```bash
+METHOD=$(gh api repos/<owner>/<repo> --jq '
+  if .allow_merge_commit then "--merge"
+  elif .allow_squash_merge then "--squash"
+  elif .allow_rebase_merge then "--rebase"
+  else empty end')
+gh pr merge <number> --repo <owner>/<repo> $METHOD
+```
+
+**GitLab:** the project's settings decide whether to squash, so pass no squash flag:
+```bash
+glab mr merge <number>
+```
+
+If blocked by branch protection (`mergeStateStatus = BLOCKED` or `BEHIND`), update the branch, wait
+for CI, then merge as above:
+```bash
 gh api --method PUT repos/<owner>/<repo>/pulls/<number>/update-branch
-
-# Then re-check CI; once passing:
-gh pr merge <number> --repo <owner>/<repo> --squash
 ```
 
-If the only blocker is a required check that already passed on an older commit, use `--admin` sparingly:
+**`--admin` is not a routine merge.** It bypasses the ruleset, its required checks, and the merge
+queue, GitHub's or Mergify's. Use it only when a required check can never report on the PR's head
+commit (for example, runs parked as `action_required` that nobody can approve), and only after you
+have confirmed the same checks passed on that commit another way. Ask the user first. Pass the
+allowed method from above, since `--admin` merges directly instead of enqueueing:
 ```bash
-gh pr merge <number> --repo <owner>/<repo> --squash --admin
+gh pr merge <number> --repo <owner>/<repo> $METHOD --admin
 ```
 
 ## Step 5 — Diagnose failing PRs
@@ -426,7 +494,7 @@ repo with no changeset check (Step 7).
 - [ ] For each PR: established that verification reach covers its blast radius
 - [ ] Enumerated the consumers wherever reach fell short, and checked what each resolves
 - [ ] Recorded an explicit hold-or-merge-with-follow-ups decision for every gated PR
-- [ ] Merged all PRs that cleared the gate
+- [ ] Merged all PRs that cleared the gate, through the repo's merge queue where it has one
 - [ ] Diagnosed and fixed all failing PRs (or noted as needing deeper investigation)
 - [ ] Handled changeset requirements where applicable
 - [ ] Closed any PRs that are now obsolete

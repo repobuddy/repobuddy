@@ -14,7 +14,7 @@ Works through a repository's open dependency-update PRs — classifies them, gat
 1. Lists the open PRs and keeps only dependency updates — Renovate, Dependabot, and manual bumps — while skipping anything whose purpose is to trigger a release
 2. Sorts them by CI status: passing, pending, failing, behind base, obsolete
 3. **Gates the merge on verification reach covering blast radius** (below) rather than on a green check
-4. Merges what clears the gate; diagnoses and fixes what fails, with recipes for the common breakages — ignored build scripts, Turbo's `pipeline`→`tasks` rename, new linter rules, TypeScript majors, ESM resolution, workflows that will not re-trigger
+4. Merges what clears the gate, through the repo's merge queue (GitHub's or Mergify's) when it has one, otherwise with a merge method the repo allows; diagnoses and fixes what fails, with recipes for the common breakages — ignored build scripts, Turbo's `pipeline`→`tasks` rename, new linter rules, TypeScript majors, ESM resolution, workflows that will not re-trigger
 5. Adds a changeset where the repo needs one, and closes PRs the base branch has already superseded
 
 ## The merge gate
