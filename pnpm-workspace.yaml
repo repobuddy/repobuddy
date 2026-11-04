@@ -42,6 +42,8 @@ minimumReleaseAgeExclude:
   - '@unional/*'
   # Council-authorized soak exemption for cyber-agentkit 2.0.0; remove after 2026-11-05T04:01Z.
   - cyber-agentkit@2.0.0
+  # Renovate security update: sharp@0.35.5
+  - sharp@0.35.5
 
 packages:
   - examples/*
