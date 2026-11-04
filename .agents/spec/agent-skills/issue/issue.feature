@@ -310,16 +310,16 @@ Feature: issue — file one bug, feature, or task on the tracker
   @behavior
   Scenario Outline: stops when a route's pin does not resolve to one reference
     Given the project has a project-tracker.routing whose bug route pins <pin>
-    And reference show for that pin exits 1 with <error>
+    And reference load for that pin exits 0 with <error>
     When the user asks to file a bug
     Then issue names the pin and says it <problem>
     And it suggests running project-tracker check
     And it runs no search and no create command
 
     Examples:
-      | pin                                         | error                               | problem                              |
-      | prov-gone/project-tracker.capabilities.alpha | no reference named                  | resolves to no reference             |
-      | project-tracker.capabilities.alpha           | held by more than one plugin        | is held by more than one plugin      |
+      | pin                                         | error                                   | problem                              |
+      | prov-gone/project-tracker.capabilities.alpha | status missing, code reference-missing  | resolves to no reference             |
+      | project-tracker.capabilities.alpha           | status ambiguous, code reference-ambiguous | is held by more than one plugin      |
 
   @behavior
   Scenario: stops when a routing exists and the reference command cannot run

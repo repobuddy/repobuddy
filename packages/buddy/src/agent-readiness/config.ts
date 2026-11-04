@@ -1,6 +1,6 @@
 /**
  * Reads readiness's tunables from the reference `repobuddy.readiness`, resolved by
- * `cyber-agentkit` across the managed, project (`.agents/references/`), user
+ * `cyber-agentkit` across the managed, repo (`.agents/references/`), user
  * (`~/.agents/references/`), and plugin tiers. The skill ships the default copy as its plugin layer; a
  * repo overrides the `## Weights` section with `merge: merge-sections` in
  * `.agents/references/repobuddy.readiness.md`. Weights order fixes and area scores, never gates or the
@@ -110,7 +110,7 @@ export async function readConfig(dir: string, options: ConfigOptions = {}): Prom
 		)
 	}
 	if (existsSync(join(dir, LEGACY_WEIGHTS_FILE))) {
-		if (resolved.trace.layers.some((layer) => layer.tier === 'project' && layer.outcome !== 'missing')) {
+		if (resolved.trace.layers.some((layer) => layer.tier === 'repo' && layer.outcome !== 'missing')) {
 			warnings.push(`${LEGACY_WEIGHTS_FILE} is ignored: ${OVERRIDE_FILE} overrides the weights. Delete it.`)
 		} else {
 			const legacy = readLegacy(dir)

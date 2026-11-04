@@ -183,7 +183,7 @@ Feature: project-tracker — set up, show, change, and check which tracker holds
   @behavior
   Scenario: reports a route whose capabilities reference is missing
     Given the project has a route whose Tracker cell is prov-gone/project-tracker.capabilities.alpha
-    And reference show for that name exits 1 with no reference named
+    And reference load for that name exits 0 with status missing and code reference-missing
     When the user asks project-tracker to check the routing
     Then it reports that route as missing and names the pin
     And it suggests running change
@@ -192,7 +192,7 @@ Feature: project-tracker — set up, show, change, and check which tracker holds
   @behavior
   Scenario: reports a route whose tracker two plugins ship
     Given the project has a route whose Tracker cell is the bare name project-tracker.capabilities.alpha
-    And reference show for that name exits 1 saying it is held by more than one plugin, and names prov-a/project-tracker.capabilities.alpha and prov-b/project-tracker.capabilities.alpha
+    And reference load for that name exits 0 with status ambiguous and code reference-ambiguous, and lists in options prov-a/project-tracker.capabilities.alpha and prov-b/project-tracker.capabilities.alpha
     When the user asks project-tracker to check the routing
     Then it reports that route as ambiguous and lists both qualified names
 

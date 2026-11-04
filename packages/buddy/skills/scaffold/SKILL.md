@@ -24,13 +24,13 @@ Pick the mode from the request. With none clear, ask.
 ### List
 
 1. Run `reference search scaffold.recipe`. Keep only hits whose `match` is `prefix`; drop every other hit.
-2. Run `reference show <name> --format json` on each kept name and read `contract` in `metadata`. When it is missing or is not a version `scaffold.contract` declares, leave that recipe out and say which one and why.
+2. Run `reference load <name> --format json` on each kept name and read `contract` in `metadata`. When it is missing or is not a version `scaffold.contract` declares, leave that recipe out and say which one and why.
 3. Show each remaining recipe with its `Produces` and `Hosts` from its `Recipe` section. When nothing is left, say no recipe is installed and write nothing.
 
 ### Scaffold
 
 1. Run **List**. Pick the recipe that matches the request; when more than one fits or none does, ask. When two plugins ship the same name, list both and ask which.
-2. Read the whole recipe with `reference show <name>`. Check every `Prerequisites` entry; stop and say what is missing. When the `Recipe` section has an `Order` bullet, check it as `scaffold.contract` says and stop on a bad one; steps 3 and 5 to 8 then run in that order, and step 4 still comes before the first step that writes.
+2. Read the whole recipe with `reference load <name>`. Check every `Prerequisites` entry; stop and say what is missing. When the `Recipe` section has an `Order` bullet, check it as `scaffold.contract` says and stop on a bad one; steps 3 and 5 to 8 then run in that order, and step 4 still comes before the first step that writes.
 3. Ask each `Inputs` entry, validating as the recipe says. Ask where the project goes and which host it uses; stop when the host is not in the recipe's `Hosts`.
 4. Show what will be created: the `Files`, the `Config` changes, and the `Post` steps, in plain words. Ask for confirmation. When declined, write nothing and say so.
 5. Run the host skill for the chosen host when one is installed (`setup-github-repo` for `github`); for a host with no skill, tell the user its basic settings are theirs to do and continue only when they say so.

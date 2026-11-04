@@ -261,8 +261,8 @@ importers:
         specifier: ^10.1.0
         version: 10.1.0
       cyber-agentkit:
-        specifier: ^1.0.0
-        version: 1.0.0(clibuilder@12.1.1(js-yaml@4.3.2))
+        specifier: ^2.0.0
+        version: 2.0.0(clibuilder@12.1.1(js-yaml@4.3.2))
       cyber-mux:
         specifier: ^0.10.0
         version: 0.10.0(js-yaml@4.3.2)
@@ -4919,6 +4919,16 @@ packages:
 
   cyber-agentkit@1.0.0:
     resolution: {integrity: sha512-95fpujPJiR4hvt6klML0tEUwrlmHZ4s4XDaSZHnmyyGsZgWiHARpfr+RSWX2oiVwQtJRbELRsuIL0k/z51kWjw==}
+    engines: {node: '>=22'}
+    hasBin: true
+    peerDependencies:
+      clibuilder: ^12.0.0
+    peerDependenciesMeta:
+      clibuilder:
+        optional: true
+
+  cyber-agentkit@2.0.0:
+    resolution: {integrity: sha512-+errwcKErS+ZJ+lImtofk8etwcobxYaNRm4Q6V+cL8GM09eN8FJtNePmJGG4xv+V+cq0ptuH3hekv20dmY7Tww==}
     engines: {node: '>=22'}
     hasBin: true
     peerDependencies:
@@ -11760,6 +11770,10 @@ snapshots:
   csstype@3.2.3: {}
 
   cyber-agentkit@1.0.0(clibuilder@12.1.1(js-yaml@4.3.2)):
+    optionalDependencies:
+      clibuilder: 12.1.1(js-yaml@4.3.2)
+
+  cyber-agentkit@2.0.0(clibuilder@12.1.1(js-yaml@4.3.2)):
     optionalDependencies:
       clibuilder: 12.1.1(js-yaml@4.3.2)
 
