@@ -49,7 +49,7 @@ Describe each route as a level and category going to a tracker, and each move as
 
 ### Change
 
-Ask which levels or categories change, then run set-up steps 2 to 9 for them: list the trackers again, ask only about the levels and categories named, and ask the move policy only for pairs with no row yet. Write the whole routing back with every route and move the user did not touch unchanged: `reference create` never overwrites, so replace the file at the project slot's path that `reference where project-tracker.routing` prints.
+Ask which levels or categories change, then run set-up steps 2 to 9 for them: list the trackers again, ask only about the levels and categories named, and ask the move policy only for pairs with no row yet. Write the whole routing back with every route and move the user did not touch unchanged: `reference create` never overwrites, so replace the file at the path of the `repo` entry in the `files` that `reference where project-tracker.routing` prints.
 
 ### Check
 
