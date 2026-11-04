@@ -218,6 +218,85 @@ describe('detectState', () => {
 		expect(rebase?.action).toBe('will set')
 	})
 
+	describe('triage bypass actor', () => {
+		function rulesetExec(rulesets: object[]): Exec {
+			const responses: Record<string, string> = { nameWithOwner: 'octo/repo', defaultBranchRef: 'main' }
+			for (const r of rulesets) responses[`repos/octo/repo/rulesets/${(r as { id: number }).id}`] = JSON.stringify(r)
+			responses['repos/octo/repo/rulesets'] = JSON.stringify(rulesets)
+			responses['repos/octo/repo'] = '{}'
+			return fakeExec(responses)
+		}
+
+		it('reports a Triage (RepositoryRole 2) bypass actor as drift and offers to remove it', () => {
+			const exec = rulesetExec([
+				{
+					id: 7,
+					name: 'main',
+					target: 'branch',
+					enforcement: 'active',
+					conditions: { ref_name: { include: ['~DEFAULT_BRANCH'] } },
+					bypass_actors: [
+						{ actor_id: 5, actor_type: 'RepositoryRole', bypass_mode: 'always' },
+						{ actor_id: 2, actor_type: 'RepositoryRole', bypass_mode: 'always' },
+					],
+				},
+			])
+			const { ack, state } = detectState({ dir, out, exec })
+			expect(state.current.triageBypass).toEqual([{ id: 7, name: 'main' }])
+			expect(state.rows.find((r) => r.setting === 'triage bypass actor')).toEqual({
+				setting: 'triage bypass actor',
+				current: 'main (7)',
+				target: 'none',
+				action: 'will offer to remove',
+			})
+			expect(ack.counts.willSet).toBeGreaterThan(0)
+		})
+
+		it('checks every active branch ruleset, not only the default-branch one', () => {
+			const exec = rulesetExec([
+				{
+					id: 7,
+					name: 'default-branch-protection',
+					target: 'branch',
+					enforcement: 'active',
+					conditions: { ref_name: { include: ['~DEFAULT_BRANCH'] } },
+					bypass_actors: [{ actor_id: 5, actor_type: 'RepositoryRole', bypass_mode: 'always' }],
+				},
+				{
+					id: 9,
+					name: 'merge-backstop',
+					target: 'branch',
+					enforcement: 'active',
+					conditions: { ref_name: { include: ['refs/heads/main'] } },
+					bypass_actors: [{ actor_id: 2, actor_type: 'RepositoryRole', bypass_mode: 'always' }],
+				},
+			])
+			expect(detectState({ dir, out, exec }).state.current.triageBypass).toEqual([{ id: 9, name: 'merge-backstop' }])
+		})
+
+		it('does not mistake a team or integration with id 2 for the Triage role', () => {
+			const exec = rulesetExec([
+				{
+					id: 7,
+					name: 'main',
+					target: 'branch',
+					enforcement: 'active',
+					conditions: { ref_name: { include: ['~DEFAULT_BRANCH'] } },
+					bypass_actors: [
+						{ actor_id: 2, actor_type: 'Team', bypass_mode: 'always' },
+						{ actor_id: 2, actor_type: 'Integration', bypass_mode: 'always' },
+					],
+				},
+			])
+			const { state } = detectState({ dir, out, exec })
+			expect(state.current.triageBypass).toEqual([])
+			expect(state.rows.find((r) => r.setting === 'triage bypass actor')).toMatchObject({
+				current: 'none',
+				action: 'already set',
+			})
+		})
+	})
+
 	describe('merge backstop', () => {
 		function backstopExec(extra: Record<string, string>, repo: object = {}): Exec {
 			return fakeExec({

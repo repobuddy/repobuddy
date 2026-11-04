@@ -34,6 +34,13 @@ interface Ruleset {
 	enforcement: string
 	conditions?: unknown
 	rules?: Array<{ type: string }>
+	/** Returned only by the per-ruleset endpoint, and only to a caller who can edit the ruleset. */
+	bypass_actors?: Array<{ actor_id: number | null; actor_type: string; bypass_mode?: string }>
+}
+
+/** `RepositoryRole` 2 is Triage, which has no push access: as a bypass actor it grants nothing. */
+function hasTriageBypass(ruleset: Ruleset): boolean {
+	return (ruleset.bypass_actors ?? []).some((a) => a.actor_type === 'RepositoryRole' && a.actor_id === 2)
 }
 
 /** One rule as `GET repos/{repo}/rules/branches/{branch}` reports it: every active rule on the branch, from any ruleset. */
@@ -93,6 +100,8 @@ interface State {
 		secretScanning: string
 		secretScanningPushProtection: string
 		defaultBranchRuleset: { id: number; name: string } | null
+		/** Active branch rulesets that list the Triage role (`RepositoryRole` 2) as a bypass actor. */
+		triageBypass: Array<{ id: number; name: string }>
 		mergeBackstop: MergeBackstop
 	}
 	detected: {
@@ -263,6 +272,12 @@ function buildRows(current: State['current']): Row[] {
 			action: current.defaultBranchRuleset ? 'already set' : 'will create',
 		},
 		{
+			setting: 'triage bypass actor',
+			current: current.triageBypass.length ? current.triageBypass.map((r) => `${r.name} (${r.id})`).join(', ') : 'none',
+			target: 'none',
+			action: current.triageBypass.length ? 'will offer to remove' : 'already set',
+		},
+		{
 			setting: 'merge backstop',
 			current: describeBackstop(current.mergeBackstop),
 			target: current.mergeBackstop.mergeQueueAvailability === 'unavailable' ? 'require up to date' : 'merge queue',
@@ -286,11 +301,13 @@ export function detectState(options: DetectStateOptions = {}): DetectStateResult
 	const repoSettings = runJson<RepoSettings>(exec, `gh api repos/${nameWithOwner}`) ?? ({} as RepoSettings)
 
 	const rulesets = runJson<Ruleset[]>(exec, `gh api repos/${nameWithOwner}/rulesets`) ?? []
-	// The list endpoint omits `conditions`, so each active branch ruleset is fetched by id to read them.
-	const defaultBranchRuleset = rulesets
+	// The list endpoint omits `conditions` and `bypass_actors`, so each active branch ruleset is fetched by id.
+	const branchRulesets = (Array.isArray(rulesets) ? rulesets : [])
 		.filter((r) => r.target === 'branch' && r.enforcement === 'active')
 		.map((r) => runJson<Ruleset>(exec, `gh api repos/${nameWithOwner}/rulesets/${r.id}`))
-		.find((r) => JSON.stringify(r?.conditions)?.includes('~DEFAULT_BRANCH'))
+		.filter((r): r is Ruleset => r != null)
+	const defaultBranchRuleset = branchRulesets.find((r) => JSON.stringify(r.conditions)?.includes('~DEFAULT_BRANCH'))
+	const triageBypass = branchRulesets.filter(hasTriageBypass).map((r) => ({ id: r.id, name: r.name }))
 
 	const reportedRules = runJson<BranchRule[]>(
 		exec,
@@ -338,6 +355,7 @@ export function detectState(options: DetectStateOptions = {}): DetectStateResult
 		defaultBranchRuleset: defaultBranchRuleset
 			? { id: defaultBranchRuleset.id, name: defaultBranchRuleset.name }
 			: null,
+		triageBypass,
 		mergeBackstop,
 	}
 

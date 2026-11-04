@@ -70,6 +70,7 @@ artifact file instead:
 jq '[.rows[] | select(.action | startswith("will"))]' "$STATE"
 jq '{repo, defaultBranch, detected}' "$STATE"
 jq '.current.mergeBackstop' "$STATE"
+jq '.current.triageBypass' "$STATE"
 ```
 
 Summarize pending changes for the user and confirm before applying any changes. Add `--verbose` to the detect command for a human-readable table on stderr (debugging only).
@@ -135,6 +136,20 @@ EOF
 ```
 
 Actor ID `5` = Administrators (the standard GitHub built-in role ID). Do not add `2`: that is the Triage role, which has no push access, so the bypass would grant nothing.
+
+### Triage bypass drift
+
+`current.triageBypass` lists every active branch ruleset that already has `RepositoryRole` `2`
+(Triage) among its bypass actors. Report each one as drift, whoever added it, and offer to remove that
+actor. On a yes, send back the ruleset's bypass list without it; the `PUT` leaves every field it does
+not send as it is:
+
+```bash
+RULESET_ID=<id from current.triageBypass>
+gh api "repos/$REPO/rulesets/$RULESET_ID" \
+  --jq '{bypass_actors: [.bypass_actors[] | select(.actor_type != "RepositoryRole" or .actor_id != 2)]}' \
+  | gh api --method PUT "repos/$REPO/rulesets/$RULESET_ID" --input -
+```
 
 ### Required status checks
 
@@ -370,6 +385,7 @@ Print a final table:
 ### Applied
 - [x] delete_branch_on_merge → true
 - [x] Branch ruleset: default-branch-protection (created)
+- [x] Triage bypass actor removed from ruleset main (7)
 - [x] Merge backstop: merge-backstop ruleset, merge queue (created)
 - [x] Workflows: pull-request.yml, dependabot-automerge.yml, codeql.yml
 
@@ -391,7 +407,7 @@ Print a final table:
   not copy it into the repo, and do not add it to `.gitignore`; it never appears in `git status`.
   The detect script deletes a leftover `.github/setup-state.json` if it finds one.
 - **No org assumptions**: generated workflows are standalone — no reusable workflow references from any specific org. If your org has shared workflows, replace the generated file contents manually.
-- **Bypass actor IDs**: role ID `5` (Administrators) is a standard GitHub built-in role. Do not substitute org-specific team IDs, and do not add `2` (Triage, which grants nothing).
+- **Bypass actor IDs**: role ID `5` (Administrators) is a standard GitHub built-in role. Do not substitute org-specific team IDs, and do not add `2` (Triage, which grants nothing). Detect reports an existing one as drift to remove.
 - **`--enable-auto-merge`**: enables the feature on the repo but does not auto-merge individual PRs; branch protection rules must still be satisfied per PR.
 - **One backstop**: a native merge queue, a require-up-to-date rule, or a third-party queue — detect which, never stack them.
 - **Status check timing**: if CI has never run, the check context won't exist in GitHub's UI. Add it after the first CI run completes, or re-run the skill then.
