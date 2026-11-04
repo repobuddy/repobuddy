@@ -15,6 +15,8 @@ Load these with the `reference` skill in the `cyber-agentkit` plugin:
 
 - `scaffold.contract`: the sections a recipe has, the order of work, and which `contract:` versions it knows.
 
+When a load warns `reference-legacy-format` or `reference-renamed`, a file is in a cyber-agentkit 1 form or under an old name: run `reference migrate` with the `reference` skill in the `cyber-agentkit` plugin, show the user its plan, and run it again with `--write` only on their yes. Then go on with the reference as loaded.
+
 When the `reference` command cannot run, say it is needed and stop: no recipe can be listed or read, so write nothing.
 
 ## Modes
