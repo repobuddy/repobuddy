@@ -1,5 +1,30 @@
 # repobuddy
 
+## 4.3.0
+
+### Minor Changes
+
+- d1d706b: `setup-github-repo` follows the owner's repository baseline for merges. Step 2 keeps merge commits and turns squash and rebase merges off. The merge backstop goes in the default-branch ruleset, where Administrators can bypass it, instead of a separate no-bypass `merge-backstop` ruleset. The merge queue merges one pull request at a time with a merge commit (`MERGE`, `max_entries_to_merge: 1`, `min_entries_to_merge_wait_minutes: 5`). detect-state reports the new targets and offers to fold a separate backstop ruleset into the default-branch one, and the scaffolded Dependabot auto-merge workflow merges with `--merge`.
+- b6c3b3d: `project-tracker.contract` is now `project-tracker.capabilities.interface`, a cyber-agentkit interface document, so `reference check project-tracker.capabilities.<tracker>` verifies a tracker's capabilities reference against it: its sections, their order, and the required `Tracker` and `Detect`. The GitHub and GitLab capabilities references declare `implements: project-tracker.capabilities@1` and keep `contract: 1` for older skills. The epic, initiative, issue, and project-tracker skills load the interface, read a tracker's version from `implements` or, when it has none, from `contract`, and leave the interface out of the trackers they list.
+  
+  `project-tracker.contract` still loads: the interface lists it in `aliases`, so `reference load project-tracker.contract` returns the interface with a `reference-renamed` warning. This needs cyber-agentkit 2.1.0 or later. The plugin alone serves the interface, since one beside a skill default warns `interface-not-composed`; each skill carries a plain copy it reads when the interface does not load.
+- 74b2967: Move to cyber-agentkit 2.0: the epic, initiative, issue, project-tracker and scaffold skills run `reference load` and read the `status` and `code` it reports for a missing or ambiguous name, instead of exit 1.
+- af51799: Upgrading from a repobuddy that used cyber-agentkit 1: run `npx cyber-agentkit@2.1.0 reference migrate` in your repository (or ask the `reference` skill of `cyber-agentkit` to migrate). It prints what it would change in your `.agents/references/` and `~/.agents/references/` files: a `merge: merge-sections` line is removed, since `patch` is now the default, and a `project-tracker.contract` file is renamed `project-tracker.capabilities.interface`. Run it again with `--write` to apply. Files in `~/.agents/references/` are in your home folder, outside git, so read the plan first.
+  
+  The epic, initiative, issue, project-tracker, scaffold, and agent-readiness skills now offer this when a load warns `reference-legacy-format` or `reference-renamed`: they show the plan and apply it only on your yes.
+
+### Patch Changes
+
+- e3d8b91: `setup-github-repo` says what to do when `release.yml` runs `changesets/action` in its own job instead of the shared release workflow: migrate to the shared workflow, or copy its approval step. Without one, the Version Packages PR's runs stay parked as `action_required`, its required checks never report, and it cannot merge without an admin override.
+- 2e77661: `merge-dep-prs` no longer hardcodes `--squash`. It merges through the repository's merge queue when there is one. Under GitHub's merge queue it runs `gh pr merge` with no method flag. Under a Mergify queue (a config file with `queue_rules`, or an active `Mergify Merge Queue` check) it comments `@mergifyio queue` instead of merging. The default queue Mergify offers on a repo with no Mergify config file does not count, and if both queues are found it stops and reports. With no queue it picks a method the repository allows, preferring a merge commit. `--admin` is limited to a required check that can never report on the head commit, needs the user's approval, and uses the allowed method.
+- b6c3b3d: Finish the move to cyber-agentkit 2.0 references.
+  
+  - Overrides patch: `project-tracker.contract`, `scaffold.contract`, and agent-readiness describe `merge: patch` (the default) and frontmatter `extends` instead of the retired `merge-sections` and qualified-name override. agent-readiness prints a `merge: patch` override, and passes each load warning on as `<code>: <message>`, so an old `merge-sections` override reports `reference-legacy-format` (cyber-agentkit 2.1); it is still read as a patch.
+  - The epic, initiative, issue, project-tracker, and scaffold skills read `contract` with `reference load --format json --metadata`; without `--metadata`, 2.0 prints a found name's content alone.
+  - Each skill's copy of a shipped reference is now its default, `references/<name>.default.md`, which 2.0 reads when the plugin is not installed. The old `references/<name>.md` copies were not read. The plugin's own files declare `extends: [default]`, so a load with both gives no warning.
+- 46bb6d1: `setup-github-repo` and `setup-npm-trusted-publishing` find their bundled scripts in the skill's own directory. They called `npx skills path`, a command the Skills CLI does not have, so the lookup always fell back to a guessed install path and then to `npx repobuddy`.
+- f515cbb: `setup-github-repo` reports a Triage (`RepositoryRole` 2) bypass actor on any active branch ruleset as drift and offers to remove it. Triage cannot push, so the bypass grants nothing; detect-state used to miss it.
+
 ## 4.2.0
 
 ### Minor Changes
