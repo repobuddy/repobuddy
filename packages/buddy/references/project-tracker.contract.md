@@ -2,6 +2,7 @@
 description: What a project-tracker.capabilities.<tracker> reference must contain, the contract version skills check, and the format of project-tracker.routing.
 tags: [project-tracker, contract]
 contract: 1
+extends: [default]
 ---
 
 ## Version

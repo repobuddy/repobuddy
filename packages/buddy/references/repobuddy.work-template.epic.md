@@ -1,6 +1,7 @@
 ---
 description: Body template for an epic.
 tags: [work-template, epic]
+extends: [default]
 ---
 
 ## Outcome

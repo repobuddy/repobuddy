@@ -212,7 +212,7 @@ Feature: issue — file one bug, feature, or task on the tracker
     And the project has no .agents/references/project-tracker.routing.md file
     And the reference command exits with an error
     When issue resolves the tracker
-    Then it reads references/project-tracker.capabilities.github.md in its own folder
+    Then it reads references/project-tracker.capabilities.github.default.md in its own folder
 
   @behavior
   Scenario Outline: reads the bundled GitHub reference when the reference search finds no match
@@ -220,7 +220,7 @@ Feature: issue — file one bug, feature, or task on the tracker
     And the project has no project-tracker.routing
     And the reference search runs without error and returns <search_result>
     When issue resolves the tracker
-    Then it reads references/project-tracker.capabilities.github.md in its own folder
+    Then it reads references/project-tracker.capabilities.github.default.md in its own folder
     And it loads no reference from the search result
 
     Examples:
@@ -260,7 +260,7 @@ Feature: issue — file one bug, feature, or task on the tracker
     And no GitLab capabilities reference is installed
     And the project has the label bug
     When the user confirms a bug
-    Then issue reads references/project-tracker.capabilities.gitlab.md in its own folder
+    Then issue reads references/project-tracker.capabilities.gitlab.default.md in its own folder
     And it creates the issue through glab api with the label bug
 
   # ── Use case 5 — file to the routed tracker ──

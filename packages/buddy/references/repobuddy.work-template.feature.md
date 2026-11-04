@@ -1,6 +1,7 @@
 ---
 description: Body template for a feature issue.
 tags: [work-template, feature, issue]
+extends: [default]
 ---
 
 ## Description

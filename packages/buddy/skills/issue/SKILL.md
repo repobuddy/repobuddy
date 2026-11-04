@@ -36,7 +36,7 @@ A tracker's operations live in a capabilities reference named `project-tracker.c
 2. With a routing, take the first `Routes` row that matches the issue level and the category. No row matches: name the pair, suggest running `project-tracker` change, and stop. Run `reference load <pin> --format json --metadata` on the row's pin. Its status is `missing` or `ambiguous` (the bare name is held by more than one plugin): name the pin and the problem, suggest running `project-tracker` check, and stop. Otherwise load that reference and go to Trackers step 6; skip the host steps, since the routing replaces them.
 3. Read the host of `git remote get-url origin`. A host that is neither `github.com` nor GitLab (`gitlab.com`, or a host `glab auth status --hostname <host>` accepts), including Bitbucket, whose native tracker is gone: say that no tracker is set up for it, and stop. Do not file anywhere else.
 4. List what is installed: run `reference search project-tracker.capabilities` with the `reference` skill in the `cyber-agentkit` plugin. Keep only hits whose `match` is `prefix`, which may carry a `<plugin>/` qualifier; drop fuzzier matches.
-5. Load the one whose `Detect` section matches the host. Two matches, or a name that is ambiguous between plugins: report both qualified names, ask which to pin, and load neither until answered. When the command cannot run, or nothing is left after step 4 drops the fuzzier names, load the bundled reference for the host from this skill's `references/` folder: `project-tracker.capabilities.github` for `github.com`, `project-tracker.capabilities.gitlab` for GitLab.
+5. Load the one whose `Detect` section matches the host. Two matches, or a name that is ambiguous between plugins: report both qualified names, ask which to pin, and load neither until answered. When the command cannot run, or nothing is left after step 4 drops the fuzzier names, load the bundled reference for the host from this skill's `references/` folder: `project-tracker.capabilities.github.default.md` for `github.com`, `project-tracker.capabilities.gitlab.default.md` for GitLab.
 6. Read `contract` in the `metadata` of `reference load <name> --format json --metadata`, or in the frontmatter of a bundled reference. When it is missing, or is not a contract version `project-tracker.contract` declares, name the tracker and the version, and stop.
 7. Run the reference's `Detect` checks. For GitHub they need `gh` 2.98.0 or later and a logged-in `gh`; for GitLab, a `glab` logged in to the host. When the tool is missing, older, or logged out, say what to install, upgrade, or run, and stop.
 
@@ -98,7 +98,7 @@ Read the issue level's `Too big` and `Too small` sections in `repobuddy.work-lev
 ## Validate
 
 - [ ] The description in the frontmatter is at most 120 characters, and `name` equals the directory name
-- [ ] Every copy in this skill's `references/` equals the file of the same name in `packages/buddy/references/` (`node scripts/sync-skill-references.mjs --check`)
+- [ ] Every `<name>.default.md` in this skill's `references/` is generated from `<name>.md` in `packages/buddy/references/` (`node scripts/sync-skill-references.mjs --check`)
 - [ ] The levels, the contract, and the category's template were loaded, and the capabilities reference's `contract:` was checked
 - [ ] The request was checked for a security vulnerability before any step ran
 - [ ] The tracker's capabilities were loaded (the pinned one when a routing exists)

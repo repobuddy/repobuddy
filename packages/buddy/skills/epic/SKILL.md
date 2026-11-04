@@ -50,7 +50,7 @@ A tracker's operations live in a capabilities reference named `project-tracker.c
 2. With a routing, take the first `Routes` row that matches the level and the category. No row matches: name the pair, suggest `project-tracker` change, and stop. Run `reference load <pin> --format json --metadata` on its pin. Its status is `missing` or `ambiguous` (the bare name is held by more than one plugin): name the pin and the problem, suggest `project-tracker` check, and stop. Otherwise load that reference and go to step 6.
 3. Read the host of `git remote get-url origin`.
 4. List what is installed: `reference search project-tracker.capabilities`. Keep only hits whose `match` is `prefix`, which may carry a `<plugin>/` qualifier; drop fuzzier ones such as `project-tracker.contract`.
-5. Load the one whose `Detect` section matches the repository. Two matches, or a name ambiguous between plugins: report both qualified names, ask which, and load neither until answered. When the command cannot run, or nothing is left, load the bundled reference for the host from this skill's `references/` folder: `project-tracker.capabilities.github` for `github.com`, `project-tracker.capabilities.gitlab` for `gitlab.com` or a host `glab auth status --hostname <host>` accepts. Otherwise say that no tracker is set up for this repository, suggest `project-tracker`, and stop.
+5. Load the one whose `Detect` section matches the repository. Two matches, or a name ambiguous between plugins: report both qualified names, ask which, and load neither until answered. When the command cannot run, or nothing is left, load the bundled reference for the host from this skill's `references/` folder: `project-tracker.capabilities.github.default.md` for `github.com`, `project-tracker.capabilities.gitlab.default.md` for `gitlab.com` or a host `glab auth status --hostname <host>` accepts. Otherwise say that no tracker is set up for this repository, suggest `project-tracker`, and stop.
 6. Read `contract` in the `metadata` of `reference load <name> --format json --metadata`, or in the frontmatter of a bundled reference. Missing, or not a version `project-tracker.contract` declares: name the tracker and the version, and stop.
 7. Run its `Detect` checks; when a tool is missing, old, or logged out, say what to install, upgrade, or run, and stop.
 8. Check that the tracker holds the level (`Levels held` in its `Tracker` section). When it does not, say so and stop; do not file the epic as a plain issue.
@@ -119,7 +119,7 @@ A level change crosses trackers when the routing puts the epic level on another 
 ## Validate
 
 - [ ] The description in the frontmatter is at most 120 characters, and `name` equals the directory name
-- [ ] Every copy in this skill's `references/` equals the file of the same name in `packages/buddy/references/` (`node scripts/sync-skill-references.mjs --check`)
+- [ ] Every `<name>.default.md` in this skill's `references/` is generated from `<name>.md` in `packages/buddy/references/` (`node scripts/sync-skill-references.mjs --check`)
 - [ ] The request was checked for a security vulnerability before any mode ran
 - [ ] The level checks, the contract, and the epic template were loaded, and each capabilities reference's `contract:` was checked
 - [ ] With a routing, every tracker came from a route, and a missing or ambiguous pin or an unmatched route stopped the skill before any search

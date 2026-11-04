@@ -2,6 +2,7 @@
 description: What a scaffold.recipe.<name> reference must contain, and the contract version the scaffold skill checks.
 tags: [scaffold, contract]
 contract: 1
+extends: [default]
 ---
 
 ## Version

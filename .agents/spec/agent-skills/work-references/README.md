@@ -30,11 +30,15 @@ copy). In a template, a `##` is one section, so an override restates just that o
 `repobuddy.work-levels` a `##` is a whole level: an override of one level restates all four of its
 `###` parts (Is, Done when, Too big, Too small), or the level loses the ones it leaves out.
 
-**One canonical copy.** The file in `packages/buddy/references/` is the source. A skill also carries
-a copy of each reference its `SKILL.md` names in backticks, because Skills CLI installs copy only a
-skill's folder and the `reference` skill reads the caller's copy when the command cannot run.
-`scripts/sync-skill-references.mjs` writes the copies, and `--check` (a `verify` task) fails when one is
-stale, missing, or no longer named. The script and `verify` own that rule; no scenario repeats it.
+**One canonical copy.** The file in `packages/buddy/references/` is the source, and its frontmatter
+says `extends: [default]`. A skill also carries a copy of each reference its `SKILL.md` names in
+backticks, as its default `references/<name>.default.md`, because Skills CLI installs copy only a
+skill's folder. cyber-agentkit adds that default below the plugin's file, and the `reference` skill
+reads it on its own when the command cannot run. The plugin's `extends: [default]` builds on the
+default, so a load with both gives no `default-not-selected` warning; the copy leaves that line out,
+since a default that extends itself warns `extends-self`. `scripts/sync-skill-references.mjs` writes
+the copies, and `--check` (a `verify` task) fails when one is stale, missing, under the old
+`<name>.md` name, or no longer named. The script and `verify` own that rule; no scenario repeats it.
 The GitHub capabilities reference belongs to the [issue](../issue/README.md) unit, which names it.
 
 **Contract versions.** `project-tracker.contract` is version 1. A capabilities reference declares
