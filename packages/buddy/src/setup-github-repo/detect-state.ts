@@ -33,9 +33,21 @@ interface Ruleset {
 	target: string
 	enforcement: string
 	conditions?: unknown
-	rules?: Array<{ type: string }>
+	rules?: BranchRule[]
 	/** Returned only by the per-ruleset endpoint, and only to a caller who can edit the ruleset. */
 	bypass_actors?: Array<{ actor_id: number | null; actor_type: string; bypass_mode?: string }>
+}
+
+/** A merge queue, or required checks that demand an up-to-date branch: the rules that make a ruleset a backstop. */
+function isBackstopRule(rule: BranchRule): boolean {
+	return (
+		rule.type === 'merge_queue' ||
+		(rule.type === 'required_status_checks' && rule.parameters?.strict_required_status_checks_policy === true)
+	)
+}
+
+function holdsBackstop(ruleset: Ruleset): boolean {
+	return (ruleset.rules ?? []).some(isBackstopRule)
 }
 
 /** `RepositoryRole` 2 is Triage, which has no push access: as a bypass actor it grants nothing. */
@@ -102,6 +114,14 @@ interface State {
 		defaultBranchRuleset: { id: number; name: string } | null
 		/** Active branch rulesets that list the Triage role (`RepositoryRole` 2) as a bypass actor. */
 		triageBypass: Array<{ id: number; name: string }>
+		/**
+		 * Active branch rulesets other than the default-branch one that hold a backstop rule, such as the
+		 * no-bypass `merge-backstop` ruleset earlier versions of this skill created. The backstop belongs in
+		 * the default-branch ruleset.
+		 */
+		separateBackstop: Array<{ id: number; name: string }>
+		/** Whether the default-branch ruleset itself holds a backstop rule. */
+		defaultRulesetHasBackstop: boolean
 		mergeBackstop: MergeBackstop
 	}
 	detected: {
@@ -238,20 +258,20 @@ function buildRows(current: State['current']): Row[] {
 		{
 			setting: 'allow_merge_commit',
 			current: String(current.allowMergeCommit),
-			target: 'false',
-			action: !current.allowMergeCommit ? 'already set' : 'will set',
+			target: 'true',
+			action: current.allowMergeCommit ? 'already set' : 'will set',
 		},
 		{
 			setting: 'allow_squash_merge',
 			current: String(current.allowSquashMerge),
-			target: 'true',
-			action: current.allowSquashMerge ? 'already set' : 'will set',
+			target: 'false',
+			action: current.allowSquashMerge ? 'will set' : 'already set',
 		},
 		{
 			setting: 'allow_rebase_merge',
 			current: String(current.allowRebaseMerge),
-			target: 'true',
-			action: current.allowRebaseMerge ? 'already set' : 'will set',
+			target: 'false',
+			action: current.allowRebaseMerge ? 'will set' : 'already set',
 		},
 		{
 			setting: 'allow_update_branch',
@@ -283,6 +303,16 @@ function buildRows(current: State['current']): Row[] {
 			target: current.mergeBackstop.mergeQueueAvailability === 'unavailable' ? 'require up to date' : 'merge queue',
 			action: describeBackstop(current.mergeBackstop) === 'none' ? 'will offer' : 'already set',
 		},
+		{
+			setting: 'merge backstop ruleset',
+			current: current.separateBackstop.length
+				? current.separateBackstop.map((r) => `${r.name} (${r.id})`).join(', ')
+				: current.defaultRulesetHasBackstop
+					? 'default-branch ruleset'
+					: 'none',
+			target: 'default-branch ruleset',
+			action: current.separateBackstop.length ? 'will offer to fold' : 'already set',
+		},
 	]
 }
 
@@ -308,6 +338,9 @@ export function detectState(options: DetectStateOptions = {}): DetectStateResult
 		.filter((r): r is Ruleset => r != null)
 	const defaultBranchRuleset = branchRulesets.find((r) => JSON.stringify(r.conditions)?.includes('~DEFAULT_BRANCH'))
 	const triageBypass = branchRulesets.filter(hasTriageBypass).map((r) => ({ id: r.id, name: r.name }))
+	const separateBackstop = branchRulesets
+		.filter((r) => r !== defaultBranchRuleset && holdsBackstop(r))
+		.map((r) => ({ id: r.id, name: r.name }))
 
 	const reportedRules = runJson<BranchRule[]>(
 		exec,
@@ -356,6 +389,8 @@ export function detectState(options: DetectStateOptions = {}): DetectStateResult
 			? { id: defaultBranchRuleset.id, name: defaultBranchRuleset.name }
 			: null,
 		triageBypass,
+		separateBackstop,
+		defaultRulesetHasBackstop: defaultBranchRuleset ? holdsBackstop(defaultBranchRuleset) : false,
 		mergeBackstop,
 	}
 

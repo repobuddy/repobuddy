@@ -62,6 +62,9 @@ describe('scaffoldWorkflows', () => {
 		expect(release).toContain('branches: [main]')
 		const codeql = readFileSync(join(dir, '.github', 'workflows', 'codeql.yml'), 'utf8')
 		expect(codeql).toContain("language: ['javascript']")
+		// Step 2 allows merge commits only, so a squash auto-merge would be refused.
+		const automerge = readFileSync(join(dir, '.github', 'workflows', 'dependabot-automerge.yml'), 'utf8')
+		expect(automerge).toContain('gh pr merge --auto --merge "$PR_URL"')
 	})
 
 	it('skips workflows that already exist', async () => {

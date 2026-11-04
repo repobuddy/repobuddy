@@ -76,9 +76,9 @@ describe('detectState', () => {
 			'repos/octo/repo': JSON.stringify({
 				delete_branch_on_merge: true,
 				allow_auto_merge: true,
-				allow_merge_commit: false,
-				allow_squash_merge: true,
-				allow_rebase_merge: true,
+				allow_merge_commit: true,
+				allow_squash_merge: false,
+				allow_rebase_merge: false,
 				allow_update_branch: true,
 				security_and_analysis: { dependabot_security_updates: { status: 'enabled' } },
 			}),
@@ -204,18 +204,39 @@ describe('detectState', () => {
 		expect(state.current.defaultBranchRuleset).toBeNull()
 	})
 
-	it('reports "will set" for merge-strategy settings that are currently false', () => {
+	it('targets merge commits only: squash and rebase off, merge commits on', () => {
 		const exec = fakeExec({
 			nameWithOwner: 'octo/repo',
 			defaultBranchRef: 'main',
 			'repos/octo/repo/rulesets': '[]',
-			'repos/octo/repo': JSON.stringify({ allow_squash_merge: false, allow_rebase_merge: false }),
+			'repos/octo/repo': JSON.stringify({
+				allow_merge_commit: false,
+				allow_squash_merge: true,
+				allow_rebase_merge: true,
+			}),
 		})
 		const { state } = detectState({ dir, out, exec })
-		const squash = state.rows.find((r) => r.setting === 'allow_squash_merge')
-		const rebase = state.rows.find((r) => r.setting === 'allow_rebase_merge')
-		expect(squash?.action).toBe('will set')
-		expect(rebase?.action).toBe('will set')
+		const row = (setting: string) => state.rows.find((r) => r.setting === setting)
+		expect(row('allow_merge_commit')).toMatchObject({ target: 'true', action: 'will set' })
+		expect(row('allow_squash_merge')).toMatchObject({ target: 'false', action: 'will set' })
+		expect(row('allow_rebase_merge')).toMatchObject({ target: 'false', action: 'will set' })
+	})
+
+	it('reports merge-strategy settings already at the baseline as set', () => {
+		const exec = fakeExec({
+			nameWithOwner: 'octo/repo',
+			defaultBranchRef: 'main',
+			'repos/octo/repo/rulesets': '[]',
+			'repos/octo/repo': JSON.stringify({
+				allow_merge_commit: true,
+				allow_squash_merge: false,
+				allow_rebase_merge: false,
+			}),
+		})
+		const { state } = detectState({ dir, out, exec })
+		for (const setting of ['allow_merge_commit', 'allow_squash_merge', 'allow_rebase_merge']) {
+			expect(state.rows.find((r) => r.setting === setting)?.action).toBe('already set')
+		}
 	})
 
 	describe('triage bypass actor', () => {
@@ -387,6 +408,96 @@ describe('detectState', () => {
 		it('treats branch rules the CLI did not return as a list as none', () => {
 			const exec = backstopExec({ 'rules/branches/main': '{"message":"Not Found"}' })
 			expect(detectState({ dir, out, exec }).state.current.mergeBackstop.mergeQueue).toBe(false)
+		})
+
+		// The fake matches by substring in key order, so each per-id key must come before the list key.
+		function rulesetsExec(rulesets: object[], branchRules: object[] = []): Exec {
+			const responses: Record<string, string> = { nameWithOwner: 'octo/repo', defaultBranchRef: 'main' }
+			for (const r of rulesets) responses[`repos/octo/repo/rulesets/${(r as { id: number }).id}`] = JSON.stringify(r)
+			responses['repos/octo/repo/rulesets'] = JSON.stringify(rulesets)
+			responses['repos/octo/repo/rules/branches/main'] = JSON.stringify(branchRules)
+			responses['protection/required_status_checks'] = 'not found'
+			responses['repos/octo/repo'] = JSON.stringify({ owner: { type: 'Organization' }, private: false })
+			return fakeExec(responses)
+		}
+
+		const defaultRuleset = {
+			id: 7,
+			name: 'default-branch-protection',
+			target: 'branch',
+			enforcement: 'active',
+			conditions: { ref_name: { include: ['~DEFAULT_BRANCH'] } },
+			rules: [{ type: 'deletion' }, { type: 'merge_queue', parameters: {} }],
+		}
+
+		it('reports a backstop kept in the default-branch ruleset as in place', () => {
+			const { state } = detectState({
+				dir,
+				out,
+				exec: rulesetsExec([defaultRuleset], [{ type: 'merge_queue', parameters: {} }]),
+			})
+			expect(state.current.separateBackstop).toEqual([])
+			expect(state.rows.find((r) => r.setting === 'merge backstop ruleset')).toEqual({
+				setting: 'merge backstop ruleset',
+				current: 'default-branch ruleset',
+				target: 'default-branch ruleset',
+				action: 'already set',
+			})
+		})
+
+		it('reports a backstop in its own ruleset and offers to fold it into the default-branch ruleset', () => {
+			const backstop = {
+				id: 9,
+				name: 'merge-backstop',
+				target: 'branch',
+				enforcement: 'active',
+				conditions: { ref_name: { include: ['~DEFAULT_BRANCH'] } },
+				bypass_actors: [],
+				rules: [{ type: 'merge_queue', parameters: { merge_method: 'SQUASH' } }],
+			}
+			const strict = {
+				id: 11,
+				name: 'up-to-date',
+				target: 'branch',
+				enforcement: 'active',
+				conditions: { ref_name: { include: ['refs/heads/main'] } },
+				rules: [{ type: 'required_status_checks', parameters: { strict_required_status_checks_policy: true } }],
+			}
+			const loose = {
+				id: 12,
+				name: 'checks',
+				target: 'branch',
+				enforcement: 'active',
+				conditions: { ref_name: { include: ['refs/heads/main'] } },
+				rules: [{ type: 'required_status_checks', parameters: { strict_required_status_checks_policy: false } }],
+			}
+			const { ack, state } = detectState({
+				dir,
+				out,
+				exec: rulesetsExec(
+					[{ ...defaultRuleset, rules: [{ type: 'deletion' }] }, backstop, strict, loose],
+					[{ type: 'merge_queue', parameters: {} }],
+				),
+			})
+			expect(state.current.separateBackstop).toEqual([
+				{ id: 9, name: 'merge-backstop' },
+				{ id: 11, name: 'up-to-date' },
+			])
+			expect(state.rows.find((r) => r.setting === 'merge backstop ruleset')).toEqual({
+				setting: 'merge backstop ruleset',
+				current: 'merge-backstop (9), up-to-date (11)',
+				target: 'default-branch ruleset',
+				action: 'will offer to fold',
+			})
+			expect(ack.counts.willSet).toBeGreaterThan(0)
+		})
+
+		it('reports no backstop ruleset when there is no backstop', () => {
+			const { state } = detectState({ dir, out, exec: backstopExec({}) })
+			expect(state.rows.find((r) => r.setting === 'merge backstop ruleset')).toMatchObject({
+				current: 'none',
+				action: 'already set',
+			})
 		})
 
 		it('lists the workflows that trigger on merge_group', () => {
