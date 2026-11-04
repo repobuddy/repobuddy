@@ -26,7 +26,7 @@ Pick the mode from the request. With none clear, ask. For show, change, and chec
 
 1. When a routing exists, show it, offer **Change**, and write nothing.
 2. List what is installed: run `reference search project-tracker.capabilities`. Keep only hits whose `match` is `prefix`; drop every other hit, such as `project-tracker.contract`.
-3. Run `reference load <name> --format json` on each kept name and read `contract` in `metadata`. When it is missing or is not a version `project-tracker.contract` declares, leave that tracker out of the choices and say which one and why.
+3. Run `reference load <name> --format json --metadata` on each kept name and read `contract` in `metadata`. When it is missing or is not a version `project-tracker.contract` declares, leave that tracker out of the choices and say which one and why.
 4. When nothing is left, say no capabilities reference is installed and write nothing.
 5. Build a draft from what can be read, before asking anything. The draft picks only among the trackers kept in step 3; it never names one that is not installed. Read these signals:
    - **Host**: the host of `git remote get-url origin`, as `issue` Trackers step 3 reads it. The kept tracker whose `Detect` matches the host is the host's tracker.
@@ -36,7 +36,7 @@ Pick the mode from the request. With none clear, ask. For show, change, and chec
 
    Show each route with the signal behind it, and say which kept trackers are installed but not linked. Ask a question only where signals conflict (a linked tracker and a different host tracker, or a repo line against the host) or say nothing (no host tracker, no linked tracker, no repo line); a route all signals agree on is not asked. Only one kept tracker matches and nothing conflicts: draft one catch-all route to it.
 6. Ask only what the draft left open: which tracker holds each level and category where signals conflict or were silent. Read the visibility, levels, and categories each tracker holds from its `Tracker` section.
-7. Pin each choice. A name that came back as `<plugin>/<name>` is already a pin; when two plugins ship the tracker, list both and ask which, then pin that one. A bare name: run `reference where <name>` and pin `<plugin>/<name>` from the `used` plugin slot. A tracker that only the project's own `.agents/references/` defines has no plugin: pin the bare name.
+7. Pin each choice. A name that came back as `<plugin>/<name>` is already a pin; when two plugins ship the tracker, list both and ask which, then pin that one. A bare name: run `reference where <name>` and pin `<plugin>/<name>` with the plugin its `used` list names. A tracker that only the project's own `.agents/references/` defines has no plugin: pin the bare name.
 8. Ask what happens to the source when an item moves between each pair of routed trackers that has no `Moves` row yet: `moved` (close the source as moved) or `mirror` (keep it open). Offer `moved` as the default. Never ask for or write a row that moves an item from a private tracker to a public one (see `Routing` in `project-tracker.contract`): refuse that pair and say a private tracker's details do not go into a public one.
 9. Show the routes and moves in plain words, with the signal behind each route, and ask for one confirmation covering the draft and the answers. When declined, write nothing and say so.
 10. Write the content to a temporary file in the format `project-tracker.contract` gives (specific rows first, a catch-all last), then run `reference create project-tracker.routing --template <file>`. It writes `.agents/references/project-tracker.routing.md` and never overwrites.
@@ -53,7 +53,7 @@ Ask which levels or categories change, then run set-up steps 2 to 9 for them: li
 
 ### Check
 
-Write nothing. Walk every route: run `reference load <pin> --format json` and note each problem with its route and pin, without stopping at the first. Then check coverage once. Report all the notes together:
+Write nothing. Walk every route: run `reference load <pin> --format json --metadata` and note each problem with its route and pin, without stopping at the first. Then check coverage once. Report all the notes together:
 
 - **missing**: status `missing`, code `reference-missing`.
 - **ambiguous**: status `ambiguous`, code `reference-ambiguous`; list the qualified names in `options`.

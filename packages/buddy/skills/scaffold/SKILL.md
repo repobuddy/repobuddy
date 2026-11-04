@@ -24,7 +24,7 @@ Pick the mode from the request. With none clear, ask.
 ### List
 
 1. Run `reference search scaffold.recipe`. Keep only hits whose `match` is `prefix`; drop every other hit.
-2. Run `reference load <name> --format json` on each kept name and read `contract` in `metadata`. When it is missing or is not a version `scaffold.contract` declares, leave that recipe out and say which one and why.
+2. Run `reference load <name> --format json --metadata` on each kept name and read `contract` in `metadata`. When it is missing or is not a version `scaffold.contract` declares, leave that recipe out and say which one and why.
 3. Show each remaining recipe with its `Produces` and `Hosts` from its `Recipe` section. When nothing is left, say no recipe is installed and write nothing.
 
 ### Scaffold

@@ -70,7 +70,7 @@ Run against `cyber-agentkit` with a scratch project and three fake provider pack
   `missing` and code `reference-missing`. A qualified pin resolves.
 - `reference where <bare name>` names the plugin that holds it (`plugin prov-gh`), which is how a
   bare search hit becomes a qualified pin.
-- `reference load --format json` carries the frontmatter, so `contract:` is read from `metadata`.
+- `reference load --format json --metadata` carries the composed frontmatter, so `contract:` is read from `metadata`; without `--metadata`, a found name prints its content alone.
 
 ## Use Cases
 
