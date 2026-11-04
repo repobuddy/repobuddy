@@ -14,14 +14,16 @@ Applies a standard set of GitHub repository settings with the `gh` CLI: merge op
 
 1. **Checks prerequisites:** `gh` logged in and a git remote present. If `gh` is missing or logged out, it runs [`init-buddy`](https://github.com/repobuddy/repobuddy/blob/main/packages/buddy/skills/init-buddy/README.md) when that is installed, and otherwise tells you what to fix.
 2. **Detects the current state** with a bundled script, then summarizes the pending changes and asks you to confirm. The state snapshot goes to the OS temp directory, never into the repo. If an earlier version of the skill left `.github/setup-state.json` in the repo, the script deletes it and the skill tells you.
-3. **Applies the repository settings:** delete branches on merge, allow auto-merge, squash and rebase merges, and updating a PR branch, and turns off merge commits.
+3. **Applies the repository settings:** delete branches on merge, allow auto-merge, merge commits, and updating a PR branch, and turns off squash and rebase merges, so each PR lands as one merge commit with its own commits kept.
 4. **Turns on Dependabot security updates** if they are off.
-5. **Creates a branch ruleset** named `default-branch-protection` when no branch ruleset exists. It blocks deleting and force-pushing the default branch, with Administrators able to bypass. When it also writes `pull-request.yml`, it requires the `all-checks` status check. Otherwise it asks whether you want required checks and which job names to use.
-6. **Reports the merge backstop, and offers one if there is none.** It tells you whether the default branch already has one: GitHub's merge queue, a rule requiring the branch to be up to date before merging, or a third-party queue such as Mergify (found by its config file). If one exists, it adds nothing. If none does, it offers a `merge-backstop` ruleset with no bypass actors, so an agent running with an admin token goes through it too:
-   - a **merge queue** where GitHub offers one: public repos owned by an organization, and private ones on GitHub Enterprise Cloud;
+5. **Creates a branch ruleset** named `default-branch-protection` when no branch ruleset exists. It blocks deleting and force-pushing the default branch, with Administrators able to bypass. When it also writes `pull-request.yml`, it requires the `all-checks` status check. Otherwise it asks whether you want required checks and which job names to use. If an existing branch ruleset lists the Triage role as a bypass actor, it reports that and offers to remove it: Triage cannot push, so the bypass grants nothing.
+6. **Reports the merge backstop, and offers one if there is none.** It tells you whether the default branch already has one: GitHub's merge queue, a rule requiring the branch to be up to date before merging, or a third-party queue such as Mergify (found by its config file). If one exists, it adds nothing. If none does, it offers one, added to the default-branch ruleset:
+   - a **merge queue** where GitHub offers one: public repos owned by an organization, and private ones on GitHub Enterprise Cloud. It merges one PR at a time with a merge commit;
    - otherwise, **require up to date**.
 
-   Either one requires your status checks. For a merge queue, it lists the workflows behind those checks that lack the `merge_group` trigger, without which the queue stalls.
+   Administrators can bypass the backstop like the rest of that ruleset. That keeps an admin override for a release PR whose checks never report, and a repo transfer wipes bypass actors anyway. If an earlier version of the skill put the backstop in its own `merge-backstop` ruleset, it offers to fold it into the default-branch ruleset.
+
+   Either one requires your status checks. For a merge queue, it lists the workflows behind those checks that lack the `merge_group` trigger, without which the queue stalls. If your `release.yml` runs `changesets/action` in its own job, the backstop would block the Version Packages PR, whose runs GitHub holds for approval; it offers to move the job to the shared release workflow or to copy that workflow's approval step.
 7. **Scaffolds workflow files**, if you want them. In a repo with no workflows it offers all four; in one that has some, it offers only the ones the repo's files call for. It never overwrites an existing file.
 
    | File | What it does |
@@ -37,7 +39,7 @@ Applies a standard set of GitHub repository settings with the `gh` CLI: merge op
 
 ## Notes
 
-- A merge queue adds latency. Every merge waits for a CI run on the merged result, even on a quiet repo where the pull request's own run was already current. Requiring the branch to be up to date costs nothing when it already is, but on a busy repo pull requests race to update, which a queue puts in order. Quiet repos often prefer the second; repos where agents merge in parallel get more from a queue.
+- The skill recommends a merge queue wherever GitHub offers one, even on a repo with one maintainer. Without a queue, every merge leaves the other open PRs out of date, and each must be updated and re-run; the queue does that on GitHub's servers as each PR lands.
 
 - `--enable-auto-merge` turns the feature on for the repo; it does not merge any PR by itself.
 - A required status check only appears in GitHub after CI has run once. If CI has never run, add the check after the first run, or run the skill again then.

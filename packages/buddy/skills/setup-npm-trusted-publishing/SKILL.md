@@ -42,8 +42,11 @@ Ask the user which applies; do not assume.
 
 ## Step 2 — Plan
 
+`<this-skill-dir>` is the absolute path of the directory holding this SKILL.md, not the current working
+directory:
+
 ```bash
-SKILL_DIR=$(npx skills@1.7.2 path setup-npm-trusted-publishing 2>/dev/null || echo "$HOME/.agents/skills/setup-npm-trusted-publishing")
+SKILL_DIR=<this-skill-dir>
 if [ -f "$SKILL_DIR/scripts/npm-trust.mjs" ]; then
   RUN="node $SKILL_DIR/scripts/npm-trust.mjs"
 else

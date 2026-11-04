@@ -19,14 +19,17 @@ Run `/setup-github-repo`, or ask in plain words. It takes no arguments and works
 
 ## What it changes
 
-- Repository settings: delete branches on merge, allow auto-merge, squash and rebase merges, update PR branch; merge commits off.
+- Repository settings: delete branches on merge, allow auto-merge, merge commits, update PR branch; squash and rebase
+  merges off.
 - Dependabot security updates, if off.
 - A `default-branch-protection` ruleset when no branch ruleset exists. It blocks deleting and force-pushing the default
   branch, with Administrators able to bypass. It requires the `all-checks` status check when it also
-  writes `pull-request.yml`.
-- A merge backstop if the branch has none: a `merge-backstop` ruleset with no bypass actors, as a merge queue where
-  GitHub offers one (public org repos, private repos on GitHub Enterprise Cloud), otherwise require up to date. It
-  reports an existing queue, up-to-date rule, or third-party queue such as Mergify and adds nothing.
+  writes `pull-request.yml`. It reports a Triage bypass actor on any branch ruleset and offers to remove it.
+- A merge backstop if the branch has none, added to the default-branch ruleset: a merge queue (merge commits, one PR
+  at a time) where GitHub offers one (public org repos, private repos on GitHub Enterprise Cloud), otherwise require up
+  to date. It reports an existing queue, up-to-date rule, or third-party queue such as Mergify and adds nothing. It
+  offers to fold a backstop kept in a separate ruleset, such as the `merge-backstop` ruleset earlier versions created,
+  into the default-branch ruleset.
 - Workflow files under `.github/workflows/`, never overwritten and not committed: `pull-request.yml`, `release.yml`,
   `dependabot-automerge.yml` (patch and minor only), and `codeql.yml`. The CI steps are marked `TODO`.
 - Optional: wiki, projects, or discussions off; secret scanning and push protection on.

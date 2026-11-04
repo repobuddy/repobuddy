@@ -35,10 +35,11 @@ DEFAULT_BRANCH=$(gh repo view --json defaultBranchRef --jq '.defaultBranchRef.na
 
 ## Step 1 — Detect current state
 
-Run the detect script from the repo root:
+Run the detect script from the repo root. `<this-skill-dir>` is the absolute path of the directory
+holding this SKILL.md, not the current working directory:
 
 ```bash
-SKILL_DIR=$(npx skills@1.7.2 path setup-github-repo 2>/dev/null || echo "$HOME/.agents/skills/setup-github-repo")
+SKILL_DIR=<this-skill-dir>
 if [ -f "$SKILL_DIR/scripts/detect-state.mjs" ]; then
   ACK=$(node "$SKILL_DIR/scripts/detect-state.mjs")
 else
@@ -69,6 +70,8 @@ artifact file instead:
 jq '[.rows[] | select(.action | startswith("will"))]' "$STATE"
 jq '{repo, defaultBranch, detected}' "$STATE"
 jq '.current.mergeBackstop' "$STATE"
+jq '.current.triageBypass' "$STATE"
+jq '.current.separateBackstop' "$STATE"
 ```
 
 Summarize pending changes for the user and confirm before applying any changes. Add `--verbose` to the detect command for a human-readable table on stderr (debugging only).
@@ -81,9 +84,9 @@ Always apply (no extra confirmation needed after Step 1):
 gh repo edit "$REPO" \
   --delete-branch-on-merge \
   --enable-auto-merge \
-  --enable-merge-commit=false \
-  --enable-squash-merge \
-  --enable-rebase-merge \
+  --enable-merge-commit \
+  --enable-squash-merge=false \
+  --enable-rebase-merge=false \
   --allow-update-branch
 ```
 
@@ -94,6 +97,9 @@ gh api "repos/$REPO" --jq '{delete_branch_on_merge, allow_auto_merge, allow_merg
 ```
 
 `gh repo view --json` has no field for auto-merge or update-branch, so read them from the REST API.
+
+Merge commits only: each pull request lands as one merge commit with its own commits kept beneath it.
+Do not add a `required_linear_history` rule, which forbids merge commits.
 
 ## Step 3 — Enable Dependabot security updates
 
@@ -134,6 +140,20 @@ EOF
 ```
 
 Actor ID `5` = Administrators (the standard GitHub built-in role ID). Do not add `2`: that is the Triage role, which has no push access, so the bypass would grant nothing.
+
+### Triage bypass drift
+
+`current.triageBypass` lists every active branch ruleset that already has `RepositoryRole` `2`
+(Triage) among its bypass actors. Report each one as drift, whoever added it, and offer to remove that
+actor. On a yes, send back the ruleset's bypass list without it; the `PUT` leaves every field it does
+not send as it is:
+
+```bash
+RULESET_ID=<id from current.triageBypass>
+gh api "repos/$REPO/rulesets/$RULESET_ID" \
+  --jq '{bypass_actors: [.bypass_actors[] | select(.actor_type != "RepositoryRole" or .actor_id != 2)]}' \
+  | gh api --method PUT "repos/$REPO/rulesets/$RULESET_ID" --input -
+```
 
 ### Required status checks
 
@@ -192,27 +212,49 @@ In particular, never add a native merge queue beside a third-party queue such as
 fight over the same pull requests. A third-party queue can also be configured outside the repo (Mergify
 reads an org-level config too); if the user says one runs, take their word and skip.
 
+**A backstop in its own ruleset.** `current.separateBackstop` lists active branch rulesets, other than
+the default-branch one, that hold a merge queue or a require-up-to-date rule. Earlier versions of this
+skill created one named `merge-backstop`, with no bypass actors. Report each as drift and offer to fold
+it into the default-branch ruleset. On a yes, note its required checks, delete it, then add the same
+kind of backstop to the default-branch ruleset as below, in the same run, so the branch is not left
+without one:
+
+```bash
+gh api "repos/$REPO/rulesets/<id>" --jq '[.rules[] | select(.type == "required_status_checks")]'
+gh api --method DELETE "repos/$REPO/rulesets/<id>"
+```
+
 **Offer one when there is none.** Ask, and apply only on a yes:
 
 1. **Merge queue** — when `mergeQueueAvailability` is `available`, or `enterprise-cloud-only` and the
-   user confirms the org is on GitHub Enterprise Cloud. Each merge is tested against the latest default
-   branch, with the pull requests ahead of it, and lands in order.
-2. **Require up to date** — otherwise. A pull request cannot merge until its branch contains the latest
-   default branch, so its checks ran on what the merge will produce. Without a queue, each pull request
-   behind another must be updated and re-run; `--allow-update-branch` (Step 2) and auto-merge make that
-   one click.
+   user confirms the org is on GitHub Enterprise Cloud. Recommend it wherever GitHub offers it: as
+   each pull request lands, GitHub updates and re-tests the next one against the new default branch on
+   its own servers. Without a queue, something has to update every other open pull request and re-run
+   its CI after each merge. Do not talk the user out of a queue because they work alone: agents,
+   Dependabot, and the Version Packages PR keep several pull requests open at once (check
+   `gh pr list`).
+2. **Require up to date** — where no queue is available. A pull request cannot merge until its branch
+   contains the latest default branch, so its checks ran on what the merge will produce. Here
+   `--allow-update-branch` (Step 2) is mandatory: without it a stale pull request has no way to update.
 
 Either needs **required status checks**, or nothing is gated: use the checks chosen above. If there are
 none, the backstop is not worth adding yet — say so.
 
-Put the backstop in its own ruleset, `merge-backstop`, with **no bypass actors**. The default-branch
-ruleset lets Administrators bypass, and an agent often runs with an admin token — a
-bypassable backstop is exactly the hole this closes. If the owner needs an emergency path, they can
-disable the ruleset for that one merge.
+**Put the backstop in the default-branch ruleset**, beside its deletion and force-push rules, with the
+same Administrators bypass. Do not create a separate no-bypass ruleset for it:
+
+- **The Version Packages PR can deadlock.** When its required checks never report (below), only an
+  admin override can merge it. A ruleset with no bypass actors leaves nobody able to override, and the
+  release stops.
+- **A transfer wipes ruleset bypass actors.** Any transferred repo is in that no-bypass state until
+  someone restores `RepositoryRole` `5`. Restore it as part of the transfer, then read the ruleset back.
+
+The bypass is for those cases, not for routine merges. An agent merges with `gh pr merge`, never
+`--admin`.
 
 A changesets Version Packages PR opened with the default `GITHUB_TOKEN` gets its `pull_request` runs
-created but parked as `action_required`, so its required checks never report and a backstop with no
-bypass actors blocks it. Keep the release secretless: the shared `pnpm-release-changeset-oidc.yml`
+created but parked as `action_required`, so its required checks never report and the PR cannot merge
+without an admin override. Keep the release secretless: the shared `pnpm-release-changeset-oidc.yml`
 release workflows approve those parked runs after opening the PR, which needs the calling job to grant
 `actions: write`:
 
@@ -229,44 +271,60 @@ release:
 Check the repo's `release.yml` for that grant, and add it if it is missing. Without it the release
 still publishes, but the PR waits until someone approves its runs from the Actions tab.
 
-Merge queue (`merge_method` must be one the repo allows — Step 2 allows `SQUASH` and `REBASE`):
+**A hand-rolled release job.** When `release.yml` runs `changesets/action` in its own job instead of
+calling the shared workflow, the Version Packages PR's runs can park the same way and nothing approves
+them. Tell the user, and offer one of:
+
+1. **Migrate to the shared workflow.** Replace the job with the `uses:` call above. It publishes
+   through npm trusted publishing, so each package needs a trusted publisher registered first (the
+   `setup-npm-trusted-publishing` skill does that). Fits a job that only installs, builds, and runs
+   `changesets/action`.
+2. **Copy the approval step.** Keep the job, and:
+   - give the `changesets/action` step `id: changesets`, since the approval step reads its
+     `pr-number` and `published` outputs;
+   - add `actions: write` to the job's `permissions:`;
+   - copy the step `Approve the version packages PR's pending runs` from
+     [`pnpm-release-changeset-oidc.yml`](https://github.com/repobuddy/.github/blob/main/.github/workflows/pnpm-release-changeset-oidc.yml)
+     unchanged, right after the `changesets/action` step. It assumes the default version branch,
+     `changeset-release/<branch>`; if the job sets the action's `branch` input, change `VERSION_BRANCH`
+     to match.
+
+Read the version branch's runs before choosing (`gh run list --event pull_request`, filtered to
+`changeset-release/` branches). Runs in `action_required` are what the approval step clears, whichever
+token opened the PR. If the PR has no runs at all, there is nothing to approve: its checks start only on
+a push by a real user or a GitHub App token.
+
+Merge queue: add the rule to the default-branch ruleset, keeping its other rules. `merge_method` must
+be one the repo allows; Step 2 allows only merge commits, so it is `MERGE`:
 
 ```bash
-gh api --method POST "repos/$REPO/rulesets" --input - <<'EOF'
-{
-  "name": "merge-backstop",
-  "target": "branch",
-  "enforcement": "active",
-  "conditions": {"ref_name": {"include": ["~DEFAULT_BRANCH"], "exclude": []}},
-  "bypass_actors": [],
-  "rules": [
-    {
-      "type": "merge_queue",
-      "parameters": {
-        "merge_method": "SQUASH",
-        "grouping_strategy": "ALLGREEN",
-        "max_entries_to_build": 5,
-        "min_entries_to_merge": 1,
-        "max_entries_to_merge": 5,
-        "min_entries_to_merge_wait_minutes": 0,
-        "check_response_timeout_minutes": 60
-      }
-    },
-    {
-      "type": "required_status_checks",
-      "parameters": {
-        "strict_required_status_checks_policy": false,
-        "do_not_enforce_on_create": false,
-        "required_status_checks": [{"context": "all-checks"}]
-      }
-    }
-  ]
-}
-EOF
+RULESET_ID=<id of the default-branch ruleset>
+QUEUE='{"type":"merge_queue","parameters":{"merge_method":"MERGE","grouping_strategy":"ALLGREEN","max_entries_to_build":5,"min_entries_to_merge":1,"max_entries_to_merge":1,"min_entries_to_merge_wait_minutes":5,"check_response_timeout_minutes":60}}'
+gh api "repos/$REPO/rulesets/$RULESET_ID" --jq '{rules: .rules}' \
+  | jq --argjson queue "$QUEUE" '.rules |= (map(select(.type != "merge_queue")
+      | if .type == "required_status_checks" then .parameters.strict_required_status_checks_policy = false else . end)
+      + [$queue])' \
+  | gh api --method PUT "repos/$REPO/rulesets/$RULESET_ID" --input -
 ```
 
-Require up to date — the same ruleset without the `merge_queue` rule, and with
-`"strict_required_status_checks_policy": true`.
+- **All seven queue parameters are required.** Leaving one out gets a 422 with an empty detail, the same
+  error a personal repo gets for the rule, so the error does not say which it was.
+- **`max_entries_to_merge: 1`** keeps one merge commit per pull request. Batching would fold several
+  pull requests into one merge commit. `max_entries_to_build: 5` still builds the ones behind it in
+  parallel.
+- **Require up to date goes off in the same `PUT`.** The queue tests each pull request against the real
+  default branch, so the rule is redundant, and left on it strands pull requests before they reach the
+  queue.
+
+Require up to date: turn on `strict_required_status_checks_policy` in the default-branch ruleset's
+required checks, keeping its other rules:
+
+```bash
+RULESET_ID=<id of the default-branch ruleset>
+gh api "repos/$REPO/rulesets/$RULESET_ID" \
+  --jq '{rules: [.rules[] | if .type == "required_status_checks" then .parameters.strict_required_status_checks_policy = true else . end]}' \
+  | gh api --method PUT "repos/$REPO/rulesets/$RULESET_ID" --input -
+```
 
 **Checks must run on the merged result.** A merge queue runs CI on a temporary `merge_group` branch,
 and GitHub Actions runs a workflow there only if it triggers on `merge_group`. A required check from a
@@ -280,27 +338,21 @@ on:
   merge_group:
 ```
 
-The `pull-request.yml` that Step 5 scaffolds already has it. Checks from a third-party CI (not Actions)
-must be configured to report on merge-queue branches (`gh-readonly-queue/*`) too. The require-up-to-date
-backstop needs nothing extra: its checks already run on a branch that contains the default branch.
-
-**The trade-off — say it when offering.** A merge queue adds latency: every merge waits for a full CI
-run on the merged result, even on a quiet repo where nothing else is merging and the pull request's own
-run was already current. Settings above keep it small (`min_entries_to_merge: 1`, no wait to batch), but
-it never reaches zero. Require-up-to-date costs nothing when the branch is current and a re-run when it
-is not — and on a busy repo pull requests race to update, which a queue serializes. Quiet repos with few
-merges often prefer require-up-to-date; repos where agents merge in parallel get the most from a queue.
+Land that change and see a run start before adding the queue rule. The `pull-request.yml` that Step 5
+scaffolds already has it. Checks from a third-party CI (not Actions) must be configured to report on
+merge-queue branches (`gh-readonly-queue/*`) too. The require-up-to-date backstop needs nothing extra:
+its checks already run on a branch that contains the default branch.
 
 Once a merge queue is on, `gh pr merge` adds the pull request to the queue instead of merging it; agents
-need no change. A `--admin` merge would skip it — the `merge-backstop` ruleset has no bypass actors, so
-it cannot.
+need no change. A `--admin` merge skips the queue and its checks, because Administrators can bypass the
+ruleset; keep that for the deadlocks above.
 
 ## Step 5 — Workflow files (optional)
 
 The scaffold script detects which workflows to offer based on filesystem signals. Run it:
 
 ```bash
-SKILL_DIR=$(npx skills@1.7.2 path setup-github-repo 2>/dev/null || echo "$HOME/.agents/skills/setup-github-repo")
+SKILL_DIR=<this-skill-dir>
 if [ -f "$SKILL_DIR/scripts/scaffold-workflows.mjs" ]; then
   node "$SKILL_DIR/scripts/scaffold-workflows.mjs" --state "$STATE" --yes
 else
@@ -369,11 +421,12 @@ Print a final table:
 ### Applied
 - [x] delete_branch_on_merge → true
 - [x] Branch ruleset: default-branch-protection (created)
-- [x] Merge backstop: merge-backstop ruleset, merge queue (created)
+- [x] Triage bypass actor removed from ruleset main (7)
+- [x] Merge backstop: merge queue on default-branch-protection (added)
 - [x] Workflows: pull-request.yml, dependabot-automerge.yml, codeql.yml
 
 ### Already configured (skipped)
-- [~] allow_squash_merge → true
+- [~] allow_merge_commit → true
 - [~] Merge backstop: mergify (.mergify.yml)
 
 ### Deferred
@@ -390,7 +443,7 @@ Print a final table:
   not copy it into the repo, and do not add it to `.gitignore`; it never appears in `git status`.
   The detect script deletes a leftover `.github/setup-state.json` if it finds one.
 - **No org assumptions**: generated workflows are standalone — no reusable workflow references from any specific org. If your org has shared workflows, replace the generated file contents manually.
-- **Bypass actor IDs**: role ID `5` (Administrators) is a standard GitHub built-in role. Do not substitute org-specific team IDs, and do not add `2` (Triage, which grants nothing).
+- **Bypass actor IDs**: role ID `5` (Administrators) is a standard GitHub built-in role. Do not substitute org-specific team IDs, and do not add `2` (Triage, which grants nothing). Detect reports an existing one as drift to remove.
 - **`--enable-auto-merge`**: enables the feature on the repo but does not auto-merge individual PRs; branch protection rules must still be satisfied per PR.
 - **One backstop**: a native merge queue, a require-up-to-date rule, or a third-party queue — detect which, never stack them.
 - **Status check timing**: if CI has never run, the check context won't exist in GitHub's UI. Add it after the first CI run completes, or re-run the skill then.
