@@ -245,6 +245,27 @@ release:
 Check the repo's `release.yml` for that grant, and add it if it is missing. Without it the release
 still publishes, but the PR waits until someone approves its runs from the Actions tab.
 
+**A hand-rolled release job.** When `release.yml` runs `changesets/action` in its own job with the
+default `GITHUB_TOKEN`, instead of calling the shared workflow, the Version Packages PR's runs park the
+same way and nothing approves them. Tell the user before adding the backstop, and offer one of:
+
+1. **Migrate to the shared workflow.** Replace the job with the `uses:` call above. It publishes
+   through npm trusted publishing, so each package needs a trusted publisher registered first (the
+   `setup-npm-trusted-publishing` skill does that). Fits a job that only installs, builds, and runs
+   `changesets/action`.
+2. **Copy the approval step.** Keep the job, and:
+   - give the `changesets/action` step `id: changesets`, since the approval step reads its
+     `pr-number` and `published` outputs;
+   - add `actions: write` to the job's `permissions:`;
+   - copy the step `Approve the version packages PR's pending runs` from
+     [`pnpm-release-changeset-oidc.yml`](https://github.com/repobuddy/.github/blob/main/.github/workflows/pnpm-release-changeset-oidc.yml)
+     unchanged, right after the `changesets/action` step. It assumes the default version branch,
+     `changeset-release/<branch>`; if the job sets the action's `branch` input, change `VERSION_BRANCH`
+     to match.
+
+A job that opens the PR with a personal access token or a GitHub App token needs neither: those runs are
+not parked.
+
 Merge queue (`merge_method` must be one the repo allows — Step 2 allows `SQUASH` and `REBASE`):
 
 ```bash

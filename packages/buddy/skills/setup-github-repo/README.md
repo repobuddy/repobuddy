@@ -21,7 +21,7 @@ Applies a standard set of GitHub repository settings with the `gh` CLI: merge op
    - a **merge queue** where GitHub offers one: public repos owned by an organization, and private ones on GitHub Enterprise Cloud;
    - otherwise, **require up to date**.
 
-   Either one requires your status checks. For a merge queue, it lists the workflows behind those checks that lack the `merge_group` trigger, without which the queue stalls.
+   Either one requires your status checks. For a merge queue, it lists the workflows behind those checks that lack the `merge_group` trigger, without which the queue stalls. If your `release.yml` runs `changesets/action` in its own job, the backstop would block the Version Packages PR, whose runs GitHub holds for approval; it offers to move the job to the shared release workflow or to copy that workflow's approval step.
 7. **Scaffolds workflow files**, if you want them. In a repo with no workflows it offers all four; in one that has some, it offers only the ones the repo's files call for. It never overwrites an existing file.
 
    | File | What it does |
