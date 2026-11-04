@@ -216,14 +216,17 @@ gh api graphql -F owner=<owner> -F repo=<repo> -F number=<number> -f query='
      gh api -H "Accept: application/vnd.github.raw" "repos/<owner>/<repo>/contents/$f" 2>/dev/null && break
    done | grep -E '^(queue_rules|extends):'
    ```
-2. The PR's `Mergify Merge Queue` check reports something other than neutral or skipped:
+2. The PR's `Mergify Merge Queue` check reports something other than neutral or skipped, which
+   means the PR is already queued or being checked:
    ```bash
    gh pr view <number> --repo <owner>/<repo> --json statusCheckRollup --jq '
      [.statusCheckRollup[] | select(.name == "Mergify Merge Queue")
        | select(.conclusion != "NEUTRAL" and .conclusion != "SKIPPED")] | length > 0'
    ```
 
-A Mergify app installed with no queue rules posts only a neutral check. That is not a queue.
+Where the Mergify app is installed with no config file, Mergify still offers a default queue: its
+check stays neutral ("Merge queue is ready") and it may post a "Queue this pull request" comment.
+That is an offer the repo has not taken up, not its queue. Merge normally.
 
 ### 4b — Merge through it
 
