@@ -191,28 +191,51 @@ and nothing objected** — an unenumerated consumer set is not an empty one.
 
 ## Step 4 — Merge passing PRs
 
-**GitHub:**
+Never hardcode a merge method. A repo may allow only merge commits, and a merge queue refuses any
+method flag ("The merge strategy for main is set by the merge queue").
+
+**GitHub — merge queue.** Check whether a queue governs the PR's base branch:
 ```bash
-gh pr merge <number> --repo <owner>/<repo> --squash
+gh api graphql -F owner=<owner> -F repo=<repo> -F number=<number> -f query='
+  query($owner: String!, $repo: String!, $number: Int!) {
+    repository(owner: $owner, name: $repo) { pullRequest(number: $number) { isMergeQueueEnabled } }
+  }' --jq '.data.repository.pullRequest.isMergeQueueEnabled'
 ```
 
-**GitLab:**
+If `true`, run `gh pr merge` with **no method flag**. It adds the PR to the queue, or turns on
+auto-merge when required checks are still running; the queue merges with its own method:
 ```bash
-glab mr merge <number> --squash
+gh pr merge <number> --repo <owner>/<repo>
 ```
 
-If blocked by branch protection (`mergeStateStatus = BLOCKED` or `BEHIND`):
+**GitHub — no queue.** Pick a method the repo allows, preferring a merge commit:
 ```bash
-# Update branch first (GitHub)
+METHOD=$(gh api repos/<owner>/<repo> --jq '
+  if .allow_merge_commit then "--merge"
+  elif .allow_squash_merge then "--squash"
+  elif .allow_rebase_merge then "--rebase"
+  else empty end')
+gh pr merge <number> --repo <owner>/<repo> $METHOD
+```
+
+**GitLab:** the project's settings decide whether to squash, so pass no squash flag:
+```bash
+glab mr merge <number>
+```
+
+If blocked by branch protection (`mergeStateStatus = BLOCKED` or `BEHIND`), update the branch, wait
+for CI, then merge as above:
+```bash
 gh api --method PUT repos/<owner>/<repo>/pulls/<number>/update-branch
-
-# Then re-check CI; once passing:
-gh pr merge <number> --repo <owner>/<repo> --squash
 ```
 
-If the only blocker is a required check that already passed on an older commit, use `--admin` sparingly:
+**`--admin` is not a routine merge.** It bypasses the ruleset, its required checks, and any merge
+queue. Use it only when a required check can never report on the PR's head commit (for example, runs
+parked as `action_required` that nobody can approve), and only after you have confirmed the same
+checks passed on that commit another way. Ask the user first. Pass the allowed method from above,
+since `--admin` merges directly instead of enqueueing:
 ```bash
-gh pr merge <number> --repo <owner>/<repo> --squash --admin
+gh pr merge <number> --repo <owner>/<repo> $METHOD --admin
 ```
 
 ## Step 5 — Diagnose failing PRs
