@@ -63,7 +63,9 @@ describe('readConfig', () => {
 		const config = await read()
 		expect(config.weights).toEqual({ noise: 30 })
 		expect(config.warnings).toEqual([
-			expect.stringMatching(/^merge-unknown: .*unknown merge "merge-sections"; read as patch$/),
+			expect.stringMatching(
+				/^reference-legacy-format: .*`merge: merge-sections` .*reads as patch.*`reference migrate`/,
+			),
 		])
 	})
 

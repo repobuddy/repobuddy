@@ -61,7 +61,7 @@ An unknown flag is a usage error.
   `.agents/references/repobuddy.readiness.md` (project) or `~/.agents/references/repobuddy.readiness.md` (user)
   override with `merge: patch` and a `## Weights` section of `- <area>: <number>` items. A malformed item
   exits `2`. An older override with `merge: merge-sections` is still read as a patch, and stderr prints a
-  `merge-unknown` warning.
+  `reference-legacy-format` warning that names `reference migrate` as the fix.
 - `.agents/readiness/weights.json` is deprecated. It is still read when no project override exists, and stderr
   prints the override file to create instead.
 - Level 5 reads `.agents/aced/bench/repobuddy.readiness/baseline.json`, the baseline ACED's `bench` records.
