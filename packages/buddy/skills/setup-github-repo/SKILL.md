@@ -35,10 +35,11 @@ DEFAULT_BRANCH=$(gh repo view --json defaultBranchRef --jq '.defaultBranchRef.na
 
 ## Step 1 — Detect current state
 
-Run the detect script from the repo root:
+Run the detect script from the repo root. `<this-skill-dir>` is the absolute path of the directory
+holding this SKILL.md, not the current working directory:
 
 ```bash
-SKILL_DIR=$(npx skills@1.7.2 path setup-github-repo 2>/dev/null || echo "$HOME/.agents/skills/setup-github-repo")
+SKILL_DIR=<this-skill-dir>
 if [ -f "$SKILL_DIR/scripts/detect-state.mjs" ]; then
   ACK=$(node "$SKILL_DIR/scripts/detect-state.mjs")
 else
@@ -300,7 +301,7 @@ it cannot.
 The scaffold script detects which workflows to offer based on filesystem signals. Run it:
 
 ```bash
-SKILL_DIR=$(npx skills@1.7.2 path setup-github-repo 2>/dev/null || echo "$HOME/.agents/skills/setup-github-repo")
+SKILL_DIR=<this-skill-dir>
 if [ -f "$SKILL_DIR/scripts/scaffold-workflows.mjs" ]; then
   node "$SKILL_DIR/scripts/scaffold-workflows.mjs" --state "$STATE" --yes
 else
