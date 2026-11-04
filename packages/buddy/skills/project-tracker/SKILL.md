@@ -20,13 +20,13 @@ When the `reference` command cannot run, say it is needed and stop: nothing can 
 
 ## Modes
 
-Pick the mode from the request. With none clear, ask. For show, change, and check: when `reference show project-tracker.routing` finds no routing, say none exists, offer set-up, and write nothing.
+Pick the mode from the request. With none clear, ask. For show, change, and check: when `reference load project-tracker.routing --format json` reports status `missing`, say none exists, offer set-up, and write nothing.
 
 ### Set up
 
 1. When a routing exists, show it, offer **Change**, and write nothing.
 2. List what is installed: run `reference search project-tracker.capabilities`. Keep only hits whose `match` is `prefix`; drop every other hit, such as `project-tracker.contract`.
-3. Run `reference show <name> --format json` on each kept name and read `contract` in `metadata`. When it is missing or is not a version `project-tracker.contract` declares, leave that tracker out of the choices and say which one and why.
+3. Run `reference load <name> --format json` on each kept name and read `contract` in `metadata`. When it is missing or is not a version `project-tracker.contract` declares, leave that tracker out of the choices and say which one and why.
 4. When nothing is left, say no capabilities reference is installed and write nothing.
 5. Build a draft from what can be read, before asking anything. The draft picks only among the trackers kept in step 3; it never names one that is not installed. Read these signals:
    - **Host**: the host of `git remote get-url origin`, as `issue` Trackers step 3 reads it. The kept tracker whose `Detect` matches the host is the host's tracker.
@@ -53,10 +53,10 @@ Ask which levels or categories change, then run set-up steps 2 to 9 for them: li
 
 ### Check
 
-Write nothing. Walk every route: run `reference show <pin> --format json` and note each problem with its route and pin, without stopping at the first. Then check coverage once. Report all the notes together:
+Write nothing. Walk every route: run `reference load <pin> --format json` and note each problem with its route and pin, without stopping at the first. Then check coverage once. Report all the notes together:
 
-- **missing**: exit 1 with `no reference named`.
-- **ambiguous**: exit 1 with `held by more than one plugin`; list both qualified names.
+- **missing**: status `missing`, code `reference-missing`.
+- **ambiguous**: status `ambiguous`, code `reference-ambiguous`; list the qualified names in `options`.
 - **unknown contract**: `contract` in `metadata` is missing or not a version `project-tracker.contract` declares; name the tracker and the version.
 - **uncovered**: a level and category (any of issue, epic, initiative with bug, feature, task) that no route matches.
 - **stale**: a route that the signals in set-up step 5 no longer support. Re-read them and report: a route to a tracker whose `Detect` no longer resolves a scope for this repository (for Asana, the project link was removed), or a catch-all route to a tracker other than the host's while no other signal supports it, such as a pinned host tracker that no longer matches `origin`. Name the route and the signal that changed. Report it as a note only: the routing may be deliberate.

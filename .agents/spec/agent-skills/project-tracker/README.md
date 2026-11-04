@@ -65,12 +65,12 @@ Run against `cyber-agentkit` with a scratch project and three fake provider pack
 - `reference search project-tracker.capabilities` returns a tracker one plugin ships by its bare
   name, a tracker two plugins ship once per plugin with the `<plugin>/` prefix, and the routing
   itself with `match: body`.
-- `reference show <name>` on a bare name two plugins hold exits 1 with `held by more than one
-  plugin; ask for one of ...`. A pin whose plugin does not hold the name exits 1 with `no reference
-  named ...`. A qualified pin resolves.
+- `reference load <name>` on a bare name two plugins hold exits 0 with status `ambiguous`
+  and code `reference-ambiguous`, the plugins in `options`. A pin whose plugin does not hold the name exits 0 with status
+  `missing` and code `reference-missing`. A qualified pin resolves.
 - `reference where <bare name>` names the plugin that holds it (`plugin prov-gh`), which is how a
   bare search hit becomes a qualified pin.
-- `reference show --format json` carries the frontmatter, so `contract:` is read from `metadata`.
+- `reference load --format json` carries the frontmatter, so `contract:` is read from `metadata`.
 
 ## Use Cases
 

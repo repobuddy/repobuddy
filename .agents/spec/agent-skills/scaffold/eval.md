@@ -14,7 +14,7 @@ eval:
 
 The subject is `packages/buddy/skills/scaffold/SKILL.md` together with its `references/` copy of
 `scaffold.contract`. No recipe ships with the skill; the fixture supplies made-up
-`scaffold.recipe.<name>` references and the `reference search` and `reference show` output the
+`scaffold.recipe.<name>` references and the `reference search` and `reference load` output the
 scenarios name.
 
 **Trigger and behavior carry signal; quality does not yet.** Trigger: the skill sits beside
