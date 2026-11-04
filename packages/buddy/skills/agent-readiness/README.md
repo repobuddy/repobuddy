@@ -116,7 +116,7 @@ its spend ceiling, runs only on your yes, and compares two arms with permutation
   cannot run in CI, so they count as unknown: the level comes from the checks the script decides, and
   the output marks it provisional while judgment gates are still unsettled.
 - To change the area weights for your repo, add `.agents/references/repobuddy.readiness.md` with
-  `merge: merge-sections` in its frontmatter and a `## Weights` section of `- <area>: <number>` items,
+  `merge: patch` in its frontmatter and a `## Weights` section of `- <area>: <number>` items,
   naming only the areas to change. The skill's own copy,
   [`references/repobuddy.readiness.md`](references/repobuddy.readiness.md), holds the defaults. An old
   `.agents/readiness/weights.json` is still read for one release, with a warning that prints the file

@@ -1,5 +1,5 @@
 ---
-description: agent-readiness tunables. Override a section with merge-sections in .agents/references/repobuddy.readiness.md.
+description: agent-readiness tunables. Patch a section in .agents/references/repobuddy.readiness.md.
 ---
 
 ## Weights
@@ -8,8 +8,8 @@ The repository area weights `agent-readiness score` uses. They order the fixes a
 scores and never touch gates or the level. [weights.md](weights.md) records the bench runs each one
 rests on.
 
-A repo overrides them in `.agents/references/repobuddy.readiness.md` with `merge: merge-sections`
-in its frontmatter and its own `## Weights` section. List only the areas to change; an area the
+A repo overrides them in `.agents/references/repobuddy.readiness.md` with `merge: patch` in its
+frontmatter and its own `## Weights` section. List only the areas to change; an area the
 override leaves out keeps its default.
 
 - verification: 25

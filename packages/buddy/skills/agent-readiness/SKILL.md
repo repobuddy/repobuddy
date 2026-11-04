@@ -87,7 +87,7 @@ request the `bench` comparison that justifies the change:
 
 ```markdown
 ---
-merge: merge-sections
+merge: patch
 ---
 
 ## Weights
@@ -96,8 +96,10 @@ merge: merge-sections
 - task-discovery: 0
 ```
 
-`merge: merge-sections` replaces only the `## Weights` section; an area it leaves out keeps its
-default. `--package` does not read it. Weights never touch gates or the level, so an override cannot
+`merge: patch`, the default operation of cyber-agentkit references, replaces only the `## Weights`
+section; an area it leaves out keeps its default. An older override with `merge: merge-sections` is
+still read as a patch, and the script prints a `merge-unknown` warning: offer to change the line to
+`merge: patch`. `--package` does not read it. Weights never touch gates or the level, so an override cannot
 lower the bar CI holds. The report marks each overridden weight. A malformed item stops the script
 (exit 2) rather than scoring with a guess. A legacy `.agents/readiness/weights.json` is still read
 when no project override exists; the script then prints the override file to create.

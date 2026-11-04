@@ -224,7 +224,7 @@ describe('formatSuggestions', () => {
 				'  - compare-a.json: improved; pooled outputTokens -10% (p <0.001); cost -6% (p 0.008), not deciding',
 				'  - compare-b.json: improved, 10 runs a side; fix pass 80% → 100% (p 0.01), pooled outputTokens -7% (p 0.02)',
 				'',
-				'To apply, add to the `## Weights` section of .agents/references/repobuddy.readiness.md (frontmatter `merge: merge-sections`):',
+				'To apply, add to the `## Weights` section of .agents/references/repobuddy.readiness.md (frontmatter `merge: patch`):',
 				'',
 				'- noise: 20',
 				'',
