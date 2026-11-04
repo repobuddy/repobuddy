@@ -43,7 +43,7 @@ Run `/project-tracker`, or ask in plain words. It has four modes: set up, show, 
 | repobuddy/project-tracker.capabilities.github | acme-tools/project-tracker.capabilities.acme | mirror |
 ```
 
-A pair with no `Moves` row means `moved`. The formats are defined in `project-tracker.contract`.
+A pair with no `Moves` row means `moved`. The formats are defined in `project-tracker.capabilities.interface`.
 
 ## Asks before acting
 

@@ -14,7 +14,7 @@ eval:
 
 The subject is `packages/buddy/skills/issue/SKILL.md` together with its `references/` copies: the
 GitHub capabilities reference (the commands the judge follows), `repobuddy.work-levels`,
-`project-tracker.contract`, and the three body templates.
+`project-tracker.capabilities.interface`, and the three body templates.
 
 **All three layers carry signal.** Trigger: the skill sits beside `to-question`, which shares its
 vocabulary ("ticket", "issue"), and an epic-planning skill. Behavior: duplicate search, confirmation,

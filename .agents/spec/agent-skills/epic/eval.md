@@ -13,7 +13,7 @@ eval:
 # epic — measurement policy
 
 The subject is `packages/buddy/skills/epic/SKILL.md` together with its `references/` copies: the GitHub
-capabilities reference (whose `Retype` the judge follows), `project-tracker.contract`,
+capabilities reference (whose `Retype` the judge follows), `project-tracker.capabilities.interface`,
 `repobuddy.work-levels`, and the epic and initiative templates. The Asana scenarios assume
 `project-tracker.capabilities.asana` from `cyber-asana` as published; the fixture supplies it.
 

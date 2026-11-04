@@ -21,7 +21,7 @@ ship in `packages/buddy/references/`, the plugin tier cyber-agentkit resolves
 | `repobuddy.work-levels` | the level checks | one `##` per level (Issue, Epic, Initiative), each with `### Is`, `### Done when`, `### Too big`, `### Too small` |
 | `repobuddy.work-template.bug`, `.feature`, `.task` | a body template for a category | the `##` sections of the template |
 | `repobuddy.work-template.epic`, `.initiative` | a body template for a level | the `##` sections of the template |
-| `project-tracker.contract` | the sections a capabilities reference must have, the `**Unsupported.**` marker, the item ref, the contract version, and the format of `project-tracker.routing` (its `Routes` and `Moves` tables) | `Version`, `Sections`, `Unsupported`, `Item ref`, `Overrides`, `Routing` |
+| `project-tracker.capabilities.interface` | the interface a capabilities reference implements: its sections, the `**Unsupported.**` marker, the item ref, the version, and the format of `project-tracker.routing` (its `Routes` and `Moves` tables) | `Version`, `Sections`, `Unsupported`, `Item ref`, `Overrides`, `Routing` |
 
 **Headings are API.** A team overrides text with `merge: patch` (cyber-agentkit's default), so renaming a heading breaks
 every override of it and needs a changeset. The resolver matches and replaces a whole `##` section
@@ -38,11 +38,19 @@ reads it on its own when the command cannot run. The plugin's `extends: [default
 default, so a load with both gives no `default-not-selected` warning; the copy leaves that line out,
 since a default that extends itself warns `extends-self`. `scripts/sync-skill-references.mjs` writes
 the copies, and `--check` (a `verify` task) fails when one is stale, missing, under the old
-`<name>.md` name, or no longer named. The script and `verify` own that rule; no scenario repeats it.
+`<name>.md` name, or no longer named. An interface document is the exception: cyber-agentkit never
+composes one, so a default beside the plugin's file would warn `interface-not-composed`. The plugin
+alone serves it, and each skill carries a plain `references/<name>.md` copy that it reads itself when
+the interface does not load. The script and `verify` own that rule; no scenario repeats it.
 The GitHub capabilities reference belongs to the [issue](../issue/README.md) unit, which names it.
 
-**Contract versions.** `project-tracker.contract` is version 1. A capabilities reference declares
-`contract: 1`; a skill stops on a missing or unknown value. Adding a section or an optional field keeps
+**Interface versions.** `project-tracker.capabilities.interface` is the `project-tracker.capabilities` interface, version 1;
+it was `project-tracker.contract`, which now ships only as a stub naming the new reference. An
+interface document's `aliases` are older interface ids, not older reference names, so the old name
+cannot be an alias. A capabilities reference declares `implements: project-tracker.capabilities@1`,
+which `reference check` verifies against the interface's sections, with `Tracker` and `Detect`
+required; repobuddy's references also keep `contract: 1` for skills older than the interface. A skill
+reads `implements`, or `contract` when there is none, and stops on a missing or unknown value. Adding a section or an optional field keeps
 the number; renaming or removing a section, or changing the item ref, raises it.
 
 ### Non-goals

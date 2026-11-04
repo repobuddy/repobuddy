@@ -1,16 +1,31 @@
 ---
-description: What a project-tracker.capabilities.<tracker> reference must contain, the contract version skills check, and the format of project-tracker.routing.
-tags: [project-tracker, contract]
-contract: 1
+description: The interface a project-tracker.capabilities.<tracker> reference implements, the version skills check, and the format of project-tracker.routing.
+tags: [project-tracker, interface]
+interface:
+  cardinality: many
+  version: 1
+  sections:
+    - {heading: Tracker, required: true, holds: "Name, visibility, levels and categories held, and the prerequisites"}
+    - {heading: Detect, required: true, holds: "How to tell the tracker applies, whether the user is logged in, and the scope"}
+    - {heading: Kinds, holds: "How each category and level is expressed on this tracker"}
+    - {heading: Search, holds: "The commands to find existing items, including closed ones"}
+    - {heading: Create, holds: "The command that creates an item at a level, with a category, an optional parent, and a body file"}
+    - {heading: Link, holds: "How to attach a child, detach it, and relate two items"}
+    - {heading: Retype, holds: "How an item changes level, per change: in place or a new item, open children, and limits"}
+    - {heading: Close, holds: "How to close an item as done, not planned, or moved"}
+    - {heading: Url, holds: "How to print an item's URL and parse one"}
+    - {heading: Ownership, holds: "How to tell whether the logged-in user owns the scope Detect resolved"}
 ---
 
 ## Version
 
-This is contract **1**. A capabilities reference declares the version it follows in its frontmatter as `contract: 1`. A skill that knows contract 1 loads a reference with `contract: 1` and stops on any other value or on none, saying which tracker and which version. A change that adds a section or an optional field keeps the number; a change that renames or removes a section, or changes the item ref, raises it.
+This is the `project-tracker.capabilities` interface, version **1**. It was named `project-tracker.contract` before. A capabilities reference is named `project-tracker.capabilities.<tracker>` and declares the version it follows in its frontmatter as `implements: project-tracker.capabilities@1`. A reference written before the interface declares `contract: 1` instead; repobuddy's own references declare both, so skills older than the interface still read them. A skill reads the version from `implements`, or from `contract` when there is no `implements`, loads a reference with version 1, and stops on any other value or on none, saying which tracker and which version. A change that adds a section or an optional field keeps the number; a change that renames or removes a section, or changes the item ref, raises it.
+
+`reference check project-tracker.capabilities.<tracker>` verifies a reference that declares `implements` against this interface: its sections, their order, and that `Tracker` and `Detect` are present and not `**Unsupported.**`.
 
 ## Sections
 
-A capabilities reference has these `##` sections, in this order. Heading text is API.
+A capabilities reference has these `##` sections, in this order. Heading text is API. The `interface` block in this document's frontmatter lists the same sections for `reference check`; `Tracker` and `Detect` are required, since a skill cannot pick or use a tracker without them.
 
 | Section | Holds | Writes |
 |---|---|---|
@@ -49,7 +64,7 @@ Every operation that returns an item gives the skill this record, read from what
 
 ## Overrides
 
-A team changes one section by writing a reference with the same name in `.agents/references/`. Its sections replace the sections they match by heading path, since `patch` is the default `merge`; `merge: combine` adds to a section instead, `replace` swaps the whole document, and `remove` turns the name off. Over a tracker two plugins ship, the override names the one it builds on in frontmatter `extends`, such as `extends: [<plugin>]`; `reference customize <name> --extends <plugin>` writes that pick.
+This interface is never composed: a contribution over `project-tracker.capabilities.interface` is ignored with a warning. A team changes one section of a capabilities reference by writing a reference with the tracker's name, such as `project-tracker.capabilities.github`, in `.agents/references/`. Its sections replace the sections they match by heading path, since `patch` is the default `merge`; `merge: combine` adds to a section instead, `replace` swaps the whole document, and `remove` turns the name off. Over a tracker two plugins ship, the override names the one it builds on in frontmatter `extends`, such as `extends: [<plugin>]`; `reference customize <name> --extends <plugin>` writes that pick.
 
 ## Routing
 
@@ -75,4 +90,4 @@ The first row that matches the level and category wins; `any` matches everything
 
 A pair with no row means `moved`, except that a move from a private tracker to a public one is never allowed, with a row or without: visibility is read from each reference's `Tracker` section, a row for that pair is invalid, and a skill that meets the pair stops. A private tracker's details never go into a public one. When an item moves from a public tracker to a private one, the public item says only that it is tracked internally, with no title or URL.
 
-Reading a pin: `reference load <pin>` resolves it. `reference load <pin> --format json` exits 0 either way and reports a `status`: `missing` (code `reference-missing`) means the pin is missing; `ambiguous` (code `reference-ambiguous`, the plugins in `options`) means a bare name is ambiguous. `--metadata` adds the composed frontmatter, so a found pin has `contract` in `metadata`; without it, a found pin prints its content alone. Exit 1 means the command could not complete, and exit 2 means it was called wrongly. To turn a bare name from `reference search` into a pin, run `reference where <name>`: its `used` list names the plugin, and with no `used`, only the project's own `.agents/references/` defines it and the bare name is the pin.
+Reading a pin: `reference load <pin>` resolves it. `reference load <pin> --format json` exits 0 either way and reports a `status`: `missing` (code `reference-missing`) means the pin is missing; `ambiguous` (code `reference-ambiguous`, the plugins in `options`) means a bare name is ambiguous. `--metadata` adds the composed frontmatter, so a found pin has its version (`implements`, or `contract`) in `metadata`; without it, a found pin prints its content alone. Exit 1 means the command could not complete, and exit 2 means it was called wrongly. To turn a bare name from `reference search` into a pin, run `reference where <name>`: its `used` list names the plugin, and with no `used`, only the project's own `.agents/references/` defines it and the bare name is the pin.

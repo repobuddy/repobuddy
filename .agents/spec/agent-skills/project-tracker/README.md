@@ -29,8 +29,9 @@ or without: a level skill that meets that pair stops. Every `Tracker`, `From`, a
 pin. Each tracker is **pinned** as `<plugin>/project-tracker.capabilities.<tracker>`,
 so two plugins that ship the same tracker never get mixed up. A tracker that only the project itself
 defines has no plugin and is pinned by its bare name. The table formats are in
-`project-tracker.contract`, which `issue` reads as well; the skill ships its own copy of that file as
-`references/project-tracker.contract.default.md`, generated from the canonical one by `scripts/sync-skill-references.mjs`.
+`project-tracker.capabilities.interface`, which `issue` reads as well; the skill ships its own copy of that file as
+`references/project-tracker.capabilities.interface.md`, generated from the canonical one by `scripts/sync-skill-references.mjs`,
+and reads it itself when the interface does not load.
 
 **Trackers are discovered, not named.** The skill lists the installed capabilities with
 `reference search project-tracker.capabilities` and keeps only hits whose `match` is `prefix`; the

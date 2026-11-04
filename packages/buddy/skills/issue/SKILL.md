@@ -25,19 +25,19 @@ If the category is unclear from the request, ask, before the Trackers steps: a r
 
 Load these with the `reference` skill in the `cyber-agentkit` plugin, so a project's own override applies:
 
-- Before step 1: `repobuddy.work-levels` (the level checks) and `project-tracker.contract` (what a capabilities reference holds).
+- Before step 1: `repobuddy.work-levels` (the level checks) and `project-tracker.capabilities.interface` (what a capabilities reference holds). When `project-tracker.capabilities.interface` does not load, read `references/project-tracker.capabilities.interface.md` in this skill's folder instead: it is the same interface, bundled for an install without the repobuddy plugin.
 - When the category is known: the template reference for it, from the table above. Keep every section it has, in order; write `None` under one you have nothing for. For a task, never leave `Done when` or `Out of scope` as `None`: propose a check and a boundary from the request, and show them in the summary. A section a team adds or rewords is part of the template. Its headings are the only fixed part: a team may reword the text under them or add a section.
 
 ## Trackers
 
 A tracker's operations live in a capabilities reference named `project-tracker.capabilities.<tracker>`. This skill owns the workflow; the reference owns the commands.
 
-1. Look for a routing: `reference load project-tracker.routing --format json`. Status `missing` means there is no routing; go to Trackers step 3. When the command cannot run, read `.agents/references/project-tracker.routing.md` directly: absent means no routing (go to Trackers step 3); present means a routing exists whose pins cannot be resolved, so name the first matching pin, say the `reference` command cannot run, suggest running `project-tracker` check once it can, and stop. Its format is in `project-tracker.contract` (the `Routing` section).
+1. Look for a routing: `reference load project-tracker.routing --format json`. Status `missing` means there is no routing; go to Trackers step 3. When the command cannot run, read `.agents/references/project-tracker.routing.md` directly: absent means no routing (go to Trackers step 3); present means a routing exists whose pins cannot be resolved, so name the first matching pin, say the `reference` command cannot run, suggest running `project-tracker` check once it can, and stop. Its format is in `project-tracker.capabilities.interface` (the `Routing` section).
 2. With a routing, take the first `Routes` row that matches the issue level and the category. No row matches: name the pair, suggest running `project-tracker` change, and stop. Run `reference load <pin> --format json --metadata` on the row's pin. Its status is `missing` or `ambiguous` (the bare name is held by more than one plugin): name the pin and the problem, suggest running `project-tracker` check, and stop. Otherwise load that reference and go to Trackers step 6; skip the host steps, since the routing replaces them.
 3. Read the host of `git remote get-url origin`. A host that is neither `github.com` nor GitLab (`gitlab.com`, or a host `glab auth status --hostname <host>` accepts), including Bitbucket, whose native tracker is gone: say that no tracker is set up for it, and stop. Do not file anywhere else.
-4. List what is installed: run `reference search project-tracker.capabilities` with the `reference` skill in the `cyber-agentkit` plugin. Keep only hits whose `match` is `prefix`, which may carry a `<plugin>/` qualifier; drop fuzzier matches.
+4. List what is installed: run `reference search project-tracker.capabilities` with the `reference` skill in the `cyber-agentkit` plugin. Keep only hits whose `match` is `prefix`, which may carry a `<plugin>/` qualifier; drop the interface itself, `project-tracker.capabilities.interface`, and fuzzier matches.
 5. Load the one whose `Detect` section matches the host. Two matches, or a name that is ambiguous between plugins: report both qualified names, ask which to pin, and load neither until answered. When the command cannot run, or nothing is left after step 4 drops the fuzzier names, load the bundled reference for the host from this skill's `references/` folder: `project-tracker.capabilities.github.default.md` for `github.com`, `project-tracker.capabilities.gitlab.default.md` for GitLab.
-6. Read `contract` in the `metadata` of `reference load <name> --format json --metadata`, or in the frontmatter of a bundled reference. When it is missing, or is not a contract version `project-tracker.contract` declares, name the tracker and the version, and stop.
+6. Read the version in the `metadata` of `reference load <name> --format json --metadata`, or in the frontmatter of a bundled reference: `implements` (`project-tracker.capabilities@<version>`), or `contract` when there is no `implements`. When it is missing, or is not a version `project-tracker.capabilities.interface` declares, name the tracker and the version, and stop.
 7. Run the reference's `Detect` checks. For GitHub they need `gh` 2.98.0 or later and a logged-in `gh`; for GitLab, a `glab` logged in to the host. When the tool is missing, older, or logged out, say what to install, upgrade, or run, and stop.
 
 Where the reference marks an operation unsupported: with no `Search`, the user confirms there is no duplicate; with no native `Link`, put the link in the body; with no `Ownership`, ask for confirmation before creating.
@@ -65,7 +65,7 @@ If the user confirms a match, stop. Give the existing issue's URL and suggest a 
 
 Run the tracker's `Kinds` operation so the type or label is known. Summarize what will be created: title, category, key points of the description, the type or label the tracker will use, and any environment details.
 
-Then run the tracker's `Ownership` operation (its format is in `project-tracker.contract`):
+Then run the tracker's `Ownership` operation (its format is in `project-tracker.capabilities.interface`):
 
 - **`owned`**, and the level check found nothing: show the summary and go to step 5 in the same turn. Do not wait for a reply.
 - **`owned`**, and the level check found the item too big or too small: show the summary with the suggestion and ask, as for a tracker the user does not own.
