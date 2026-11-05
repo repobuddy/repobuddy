@@ -23,7 +23,8 @@ the earlier `pause-session` and `resume-session` skills. The old names were remo
 ```
 
 Natural phrasing routes too: "let's stop here" creates a checkpoint, "pick up the auth refactor" resumes. A bare `/checkpoint`
-runs `create` in a git repo that has no checkpoint yet, and shows help in a repo that has some or outside a git repo.
+runs `resume` in a new or just-cleared session. In a session with work, it runs `create` in a git repo that has no
+checkpoint yet, and shows help in a repo that has some or outside a git repo.
 
 ### create
 
