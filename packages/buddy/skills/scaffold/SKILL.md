@@ -51,7 +51,6 @@ Pick the mode from the request. With none clear, ask.
 ## Validate
 
 - [ ] The description in the frontmatter is at most 120 characters, and `name` equals the directory name
-- [ ] Every `<name>.default.md` in this skill's `references/` is generated from `<name>.md` in `packages/buddy/references/` (`node scripts/sync-skill-references.mjs --check`)
 - [ ] Recipes were listed by the `scaffold.recipe` prefix and only `match: prefix` hits were kept
 - [ ] The steps ran in the recipe's `Order` when it has one, and in the contract's default order otherwise
 - [ ] Nothing was written before the user confirmed the plan

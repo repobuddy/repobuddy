@@ -100,7 +100,6 @@ Read the issue level's `Too big` and `Too small` sections in `repobuddy.work-lev
 ## Validate
 
 - [ ] The description in the frontmatter is at most 120 characters, and `name` equals the directory name
-- [ ] Every `<name>.default.md` in this skill's `references/` is generated from `<name>.md` in `packages/buddy/references/` (`node scripts/sync-skill-references.mjs --check`)
 - [ ] The levels, the contract, and the category's template were loaded, and the capabilities reference's `contract:` was checked
 - [ ] The request was checked for a security vulnerability before any step ran
 - [ ] The tracker's capabilities were loaded (the pinned one when a routing exists)
