@@ -19,10 +19,11 @@ the earlier `pause-session` and `resume-session` skills. The old names were remo
 ```
 /checkpoint create [what the next session should focus on] [--commit]
 /checkpoint resume [checkpoint slug | path | repo path]
+/checkpoint list [repo path]
 /checkpoint help
 ```
 
-Natural phrasing routes too: "let's stop here" creates a checkpoint, "pick up the auth refactor" resumes. A bare `/checkpoint`
+Natural phrasing routes too: "let's stop here" creates a checkpoint, "pick up the auth refactor" resumes, "what checkpoints do I have" lists them. A bare `/checkpoint`
 runs `resume` in a new or just-cleared session. In a session with work, it runs `create` in a git repo that has no
 checkpoint yet, and shows help in a repo that has some or outside a git repo.
 
@@ -42,6 +43,15 @@ checkpoint yet, and shows help in a repo that has some or outside a git repo.
 - `--commit` commits only the checkpoints in the current repo, with `git add -f`, after dropping absolute paths,
   usernames, and hostnames. A checkpoint in another repo stays uncommitted.
 
+### list
+
+- Shows the checkpoints and stops. It never opens or continues one.
+- Covers this repo's `.agents/repobuddy/checkpoints/` plus the ones in `~/.agents/repobuddy/checkpoints/` whose `repo:`
+  names this repo. Outside a repo it shows the home folder. Given a repo path, it shows that repo's checkpoints, with no
+  hand-off and no `cd`.
+- Each row has the title, branch, `updated` date, next step, `waits on <slug>` and, for a resumed checkpoint, whether
+  its session is still alive. With none, it says so and stops.
+
 ### resume
 
 - Finds the checkpoint (one you name, the only one, or a newest-first list to choose from). Warns when `repo:` names
@@ -54,6 +64,9 @@ checkpoint yet, and shows help in a repo that has some or outside a git repo.
   meanwhile.
 - Keeps the checkpoint until the work is done, then deletes it.
 - Given another repo's path, it lists that repo's checkpoints and gives the line to start a session there. It never runs `cd`.
+
+There is no `update` subcommand. `create` is the update: a topic that matches an existing checkpoint is merged into it,
+and "update the checkpoint" routes to `create`.
 
 ## Hands off to
 

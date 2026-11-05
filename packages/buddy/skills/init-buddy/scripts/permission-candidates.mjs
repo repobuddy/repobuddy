@@ -1,5 +1,5 @@
 // Compiled by `universal-plugin plugin build` from src/skills/permission-candidates.ts. Edit the source, not this file.
-globalThis.__SKILL_SCRIPT__ = {"package":"repobuddy","bin":"repobuddy","version":"4.3.1","entry":"skills/init-buddy/scripts/permission-candidates.mjs","commands":{}};
+globalThis.__SKILL_SCRIPT__ = {"package":"repobuddy","bin":"repobuddy","version":"4.4.0","entry":"skills/init-buddy/scripts/permission-candidates.mjs","commands":{}};
 import { execFileSync } from "node:child_process";
 import { accessSync, constants, readFileSync, statSync } from "node:fs";
 import { homedir } from "node:os";

@@ -19,10 +19,11 @@ topic that drifted into another repo is checkpointed in that repo, ready for a s
 ```
 /checkpoint create [what the next session should focus on] [--commit]
 /checkpoint resume [checkpoint slug or path | repo path]
+/checkpoint list [repo path]
 /checkpoint help
 ```
 
-Natural phrasing routes too: "let's stop here" creates a checkpoint, "pick up the auth refactor" resumes. A bare
+Natural phrasing routes too: "let's stop here" creates a checkpoint, "pick up the auth refactor" resumes, "what checkpoints do I have" lists them. A bare
 `/checkpoint` runs `resume` in a new or just-cleared session, since there is no work to `create` from. In a
 session with work, it runs `create` when the repo has no checkpoint yet and shows the help when it has some.
 The name differs from the `/resume` built into Claude Code, Codex, Copilot
@@ -73,6 +74,20 @@ CLI and Gemini CLI, so it doesn't collide with it.
 
 If a topic is an SDD mission, it hands that topic off to cyber-sdd's `pause-mission` (when installed),
 which checkpoints into the mission's plan brief instead.
+
+## No `update`
+
+`create` is the update. A topic that matches an existing checkpoint is merged into it, and `resume` keeps
+the checkpoint current as it works. "Update the checkpoint" routes to `create`.
+
+## `list`
+
+Shows the checkpoints and stops. It never opens or continues one. It covers this repo's
+`.agents/repobuddy/checkpoints/` plus the checkpoints in `~/.agents/repobuddy/checkpoints/` whose `repo:`
+names this repo; outside a repo, the home folder; given a repo path, that repo's checkpoints, with no
+hand-off and no `cd`. Rows are newest first, each with title, branch, `updated` date, next step,
+`waits on <slug>` and, for a resumed checkpoint, whether its session is still alive. With none, it says so
+and stops. `resume` uses the same listing when it asks which one to open.
 
 ## `resume`
 
