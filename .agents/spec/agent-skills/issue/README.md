@@ -52,6 +52,18 @@ the security check still runs first, a duplicate hit is still asked about, and a
 big or too small) still stops for the person's word, because filing it silently would bury the
 suggestion.
 
+**An issue about a dependency uses the intake its plugin ships.** `issue` first decides whether the
+issue is about the current repository or a dependency (the user names one, or the failure leads into its
+code). For a dependency it lists `repobuddy.intake.<key>` documents (interface:
+`repobuddy.intake.interface`, a keyed set like `project-tracker.capabilities.<tracker>`) and loads the one
+whose `Applies to` names the package. For that one filing the document replaces the routing: its `Tracker`
+pin and destination choose the tracker, its `Before filing` steps run before the summary, its `Criteria` are
+checked before the create, and its `Template` sections are added to the category's template. With no
+matching document the skill files nothing here and gives the dependency's own tracker (`bugs` in its
+`package.json`, else its repository). Listing includes a package plugin's documents (checked against
+cyber-agentkit 2.1.0); `load` delivers such a document as a project section for its folder. The scenarios
+for this path are not yet in the frozen `.feature`.
+
 **Category and level are separate.** Category (bug, feature, task) says why the work exists. This
 skill creates at the issue level only. When an item looks too big or too small, it suggests another
 level in the summary, asks, and files at this one unless the person changes it. It does not promote or
