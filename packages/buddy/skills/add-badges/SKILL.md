@@ -43,7 +43,6 @@ find . -maxdepth 2 -iname 'LICENSE*' -not -path '*/node_modules/*'
 Stop if `visibility` is `PRIVATE`: shields.io cannot read a private repo, so workflow and coverage badges render as `invalid`. Emit npm badges only.
 
 Scoped package names must be URL-encoded in shields paths (`@scope/name` → `%40scope%2Fname`).
-<!-- TODO: extract to scripts/badge-facts.sh — detection and URL encoding are deterministic -->
 
 ### 3. Choose the set
 
