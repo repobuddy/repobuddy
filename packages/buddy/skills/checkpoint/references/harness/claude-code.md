@@ -33,8 +33,6 @@ cd <repo-root> && claude "/checkpoint resume <slug>"
 - **The previous repo's conversation stays in context.** It costs tokens, and it can pull the resumed
   work toward the old repo's conventions. Suggest the fresh session when that conversation is long or
   unrelated.
-- `/cd` has been available since v2.1.169. Before v2.1.246 it loaded the new `CLAUDE.md` but applied the
-  new directory's settings, hooks, MCP servers and skills only after a `--resume`.
 - A `Cd` deny rule in the permissions disables `/cd`, and `Cd` allow rules restrict it to the paths they
   list. If `/cd` is refused, use the fallback.
 - Directories added with `--add-dir` or `/add-dir` stay added after the move. Hooks still see

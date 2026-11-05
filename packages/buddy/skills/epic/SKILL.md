@@ -121,7 +121,6 @@ A level change crosses trackers when the routing puts the epic level on another 
 ## Validate
 
 - [ ] The description in the frontmatter is at most 120 characters, and `name` equals the directory name
-- [ ] Every `<name>.default.md` in this skill's `references/` is generated from `<name>.md` in `packages/buddy/references/` (`node scripts/sync-skill-references.mjs --check`)
 - [ ] The request was checked for a security vulnerability before any mode ran
 - [ ] The level checks, the contract, and the epic template were loaded, and each capabilities reference's `contract:` was checked
 - [ ] With a routing, every tracker came from a route, and a missing or ambiguous pin or an unmatched route stopped the skill before any search

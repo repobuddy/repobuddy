@@ -76,7 +76,6 @@ When there are none, say the routing is clean. Suggest **Change** for any proble
 ## Validate
 
 - [ ] The description in the frontmatter is at most 120 characters, and `name` equals the directory name
-- [ ] Every `<name>.default.md` in this skill's `references/` is generated from `<name>.md` in `packages/buddy/references/` (`node scripts/sync-skill-references.mjs --check`)
 - [ ] Trackers were listed by the `project-tracker.capabilities` prefix and only `match: prefix` hits were kept
 - [ ] The draft named only trackers from the kept installed references, each route with its signal
 - [ ] No routing file was written without the user's confirmation, and no question was asked about a route all signals agreed on
