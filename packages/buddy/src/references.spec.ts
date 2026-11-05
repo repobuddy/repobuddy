@@ -95,6 +95,32 @@ describe('project-tracker.capabilities.interface', () => {
 	})
 })
 
+describe('repobuddy.intake.interface', () => {
+	const name = 'repobuddy.intake.interface'
+
+	it('loads from the plugin with no warning', async () => {
+		const resolved = await loadReference(name, { ...base, plugin })
+		expect({ status: resolved.status, warnings: resolved.warnings }).toEqual({ status: 'found', warnings: [] })
+	})
+
+	it('lists the same sections, in order, as its Sections table', async () => {
+		const resolved = await loadReference(name, { ...base, plugin })
+		const iface = resolved.metadata?.['interface'] as { sections: { heading: string }[] } | undefined
+		const declared = iface?.sections.map(({ heading }) => heading)
+		const table = (resolved.content ?? '')
+			.split('\n## Sections\n')[1]
+			?.split('\n## ')[0]
+			?.split('\n')
+			.flatMap((line) => /^\| `([^`]+)` \|/.exec(line)?.[1] ?? [])
+		expect(declared).toEqual(table)
+	})
+
+	it('ships with the issue skill under its own name, not as a default', () => {
+		const canonical = readFileSync(join(pluginRoot, 'references', `${name}.md`), 'utf8')
+		expect(readFileSync(join(skillsDir, 'issue', 'references', `${name}.md`), 'utf8')).toBe(canonical)
+	})
+})
+
 describe('reference migrate', () => {
 	it('plans the cyber-agentkit 1 overrides of an upgrading repository, renaming project-tracker.contract by the interface aliases', async () => {
 		const repo = mkdtempSync(join(tmpdir(), 'repobuddy-migrate-'))

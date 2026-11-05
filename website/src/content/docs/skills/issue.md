@@ -18,12 +18,13 @@ Run `/issue`, or ask in plain words. It takes no arguments.
 
 ## What it does
 
-1. Finds the tracker. With a `project-tracker.routing` (see [`project-tracker`](/repobuddy/skills/project-tracker/)), it files on the tracker routed for the category, and stops if the route's reference is missing or ambiguous or no route matches. Without one, it loads the capabilities for the `origin` host: GitHub (`gh` 2.98.0 or later) and GitLab (`glab`, not yet tested against a GitLab instance) ship with the skill, and the report ends with a suggestion to run `project-tracker`.
-2. Asks only for what you have not said: title, category (bug, feature, or task), description, and for a bug the steps and expected vs actual behavior.
-3. For a bug, reads OS, runtime, package manager, and package versions from your machine instead of asking.
-4. Searches for duplicates at least twice with different keywords. If you confirm a match, it stops and gives you that issue's URL.
-5. Shows the title, category, key points, and environment details, and waits for your go-ahead.
-6. Creates the issue and reports its URL. On GitHub the category is the issue type (`Bug`, `Feature`, `Task`). A repository without issue types, such as a user-owned one, gets the `bug` or `enhancement` label.
+1. Decides what the issue is about. For a dependency (you name it, or the failure leads into its code), it loads the `repobuddy.intake.<key>` document whose `Applies to` names the package: its tracker replaces the routing for that filing, its `Before filing` steps run before the summary, its `Criteria` are checked before the create, and its `Template` sections join the body. With no such document it files nothing in this repository and points at the dependency's own tracker (the `bugs` field of its `package.json`, else its repository).
+2. Finds the tracker. With a `project-tracker.routing` (see [`project-tracker`](/repobuddy/skills/project-tracker/)), it files on the tracker routed for the category, and stops if the route's reference is missing or ambiguous or no route matches. Without one, it loads the capabilities for the `origin` host: GitHub (`gh` 2.98.0 or later) and GitLab (`glab`, not yet tested against a GitLab instance) ship with the skill, and the report ends with a suggestion to run `project-tracker`.
+3. Asks only for what you have not said: title, category (bug, feature, or task), description, and for a bug the steps and expected vs actual behavior.
+4. For a bug, reads OS, runtime, package manager, and package versions from your machine instead of asking.
+5. Searches for duplicates at least twice with different keywords. If you confirm a match, it stops and gives you that issue's URL.
+6. Shows the title, category, key points, and environment details, and waits for your go-ahead.
+7. Creates the issue and reports its URL. On GitHub the category is the issue type (`Bug`, `Feature`, `Task`). A repository without issue types, such as a user-owned one, gets the `bug` or `enhancement` label.
 
 If the item looks too big or too small for one issue, it suggests another level and does not change it.
 
