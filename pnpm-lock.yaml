@@ -252,8 +252,8 @@ importers:
         specifier: workspace:*
         version: link:../jest
       buddy-agent-harness:
-        specifier: ^0.22.0
-        version: 0.22.0(js-yaml@4.3.2)
+        specifier: ^1.0.0
+        version: 1.0.1(clibuilder@12.1.1(js-yaml@4.3.2))
       clibuilder:
         specifier: ^12.1.0
         version: 12.1.1(js-yaml@4.3.2)
@@ -4497,10 +4497,15 @@ packages:
   bser@2.1.1:
     resolution: {integrity: sha512-gQxTNE/GAfIIrmHLUE3oJyp5FO6HRBfhjnw4/wMmA63ZGDJnWBmgY/lyQBpnDUkGmAhbSe39tx2d/iTOAfglwQ==}
 
-  buddy-agent-harness@0.22.0:
-    resolution: {integrity: sha512-aYxvB2ih+5sK7HBMahi9By9Z/jXthbH1wh+E3J9z6qwDatnj9EHnB6Vcl1nUOPQFfATTvhGCkCzPxeskySubGw==}
+  buddy-agent-harness@1.0.1:
+    resolution: {integrity: sha512-gEpU1Jr7GgxKszU3ZmAXgfPjdDB/BqmrVm5E0ptyNVRdPhQIvaXGJVExVAQxaDMrcHu6HR4GBXGBrVLxrmCcrg==}
     engines: {node: '>=22'}
     hasBin: true
+    peerDependencies:
+      clibuilder: ^12.1.0
+    peerDependenciesMeta:
+      clibuilder:
+        optional: true
 
   buffer-from@1.1.2:
     resolution: {integrity: sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==}
@@ -4768,16 +4773,6 @@ packages:
 
   csstype@3.2.3:
     resolution: {integrity: sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==}
-
-  cyber-agentkit@1.0.0:
-    resolution: {integrity: sha512-95fpujPJiR4hvt6klML0tEUwrlmHZ4s4XDaSZHnmyyGsZgWiHARpfr+RSWX2oiVwQtJRbELRsuIL0k/z51kWjw==}
-    engines: {node: '>=22'}
-    hasBin: true
-    peerDependencies:
-      clibuilder: ^12.0.0
-    peerDependenciesMeta:
-      clibuilder:
-        optional: true
 
   cyber-agentkit@2.1.0:
     resolution: {integrity: sha512-PMNXDxGX2cYbJ5xr27yy7//4hSUWYiknDn/OoUwWc7BKRIPQUFaBvpFu1zUkaJLiFgtN8/HtBYjpGn9KPF5MWQ==}
@@ -11288,16 +11283,15 @@ snapshots:
     dependencies:
       node-int64: 0.4.0
 
-  buddy-agent-harness@0.22.0(js-yaml@4.3.2):
+  buddy-agent-harness@1.0.1(clibuilder@12.1.1(js-yaml@4.3.2)):
     dependencies:
-      clibuilder: 12.1.1(js-yaml@4.3.2)
-      cyber-agentkit: 1.0.0(clibuilder@12.1.1(js-yaml@4.3.2))
+      cyber-agentkit: 2.1.0(clibuilder@12.1.1(js-yaml@4.3.2))
       jsonc-parser: 3.3.1
       smol-toml: 1.8.0
       toml-eslint-parser: 1.0.3
       yaml: 2.9.0
-    transitivePeerDependencies:
-      - js-yaml
+    optionalDependencies:
+      clibuilder: 12.1.1(js-yaml@4.3.2)
 
   buffer-from@1.1.2: {}
 
@@ -11521,10 +11515,6 @@ snapshots:
       rrweb-cssom: 0.8.0
 
   csstype@3.2.3: {}
-
-  cyber-agentkit@1.0.0(clibuilder@12.1.1(js-yaml@4.3.2)):
-    optionalDependencies:
-      clibuilder: 12.1.1(js-yaml@4.3.2)
 
   cyber-agentkit@2.1.0(clibuilder@12.1.1(js-yaml@4.3.2)):
     optionalDependencies:
