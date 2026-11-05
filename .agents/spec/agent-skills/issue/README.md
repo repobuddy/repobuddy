@@ -28,8 +28,8 @@ the `origin` host from its own folder when nothing installed matches; Bitbucket 
 native tracker is gone.
 
 **Templates and level checks are references.** The body template for each category is
-`repobuddy.work-template.<category>`, and the checks that say an item is too big or too small are the
-issue sections of `repobuddy.work-levels`. The skill loads them by name through cyber-agentkit, so a
+`project-tracker.template.<category>`, and the checks that say an item is too big or too small are the
+issue sections of `project-tracker.levels`. The skill loads them by name through cyber-agentkit, so a
 project overrides one section with a `patch`. The capabilities reference declares the
 version it follows (`implements: project-tracker.capabilities@<version>`, or the older `contract:`), and the skill stops on a version `project-tracker.capabilities.interface` does not name. The
 references are specified in [work-references](../work-references/README.md).
@@ -51,6 +51,18 @@ or an older reference, or a failed command), it asks as before. Only the create 
 the security check still runs first, a duplicate hit is still asked about, and a level finding (too
 big or too small) still stops for the person's word, because filing it silently would bury the
 suggestion.
+
+**An issue about a dependency uses the intake its plugin ships.** `issue` first decides whether the
+issue is about the current repository or a dependency (the user names one, or the failure leads into its
+code). For a dependency it lists `project-tracker.intake.<key>` documents (interface:
+`project-tracker.intake.interface`, a keyed set like `project-tracker.capabilities.<tracker>`) and loads the one
+whose `Applies to` names the package. For that one filing the document replaces the routing: its `Tracker`
+pin and destination choose the tracker, its `Before filing` steps run before the summary, its `Criteria` are
+checked before the create, and its `Template` sections are added to the category's template. With no
+matching document the skill files nothing here and gives the dependency's own tracker (`bugs` in its
+`package.json`, else its repository). Listing includes a package plugin's documents (checked against
+cyber-agentkit 2.1.0); `load` delivers such a document as a project section for its folder. The scenarios
+for this path are not yet in the frozen `.feature`.
 
 **Category and level are separate.** Category (bug, feature, task) says why the work exists. This
 skill creates at the issue level only. When an item looks too big or too small, it suggests another

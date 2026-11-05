@@ -11,13 +11,14 @@ Files one item of tracked work (a bug, a feature, or a task) on the repository's
 
 ## What it does
 
-1. **Finds the tracker.** When the project has a `project-tracker.routing` (set up by [`project-tracker`](../project-tracker/README.md)), it files on the tracker routed for the category and never guesses: a missing or ambiguous pin, or no matching route, stops it with the problem named. Without a routing it lists the installed `project-tracker.capabilities.<tracker>` references and loads the one that matches the `origin` remote, and ends by offering to save the drafted routing once per session (or suggesting `project-tracker` when the draft is not one tracker for all work). GitHub and GitLab ship with this skill. GitLab's commands follow GitLab's documentation and have not yet run against a GitLab instance. Any other host, Bitbucket included, gets a message and no filing.
-2. **Gathers the details:** title, category (bug, feature, or task), and a description. It asks only for what you have not said.
-3. **Collects environment and versions** for a bug, from your machine and the repo where it can.
-4. **Searches for duplicates** in open and closed issues, at least twice. If you say a hit is your issue, it stops and gives you that URL.
-5. **Confirms** the title, category, and details, and waits for your go-ahead.
-6. **Creates the issue.** On GitHub the category is the issue type (`Bug`, `Feature`, `Task`); a repository without issue types gets the `bug` or `enhancement` label instead.
-7. **Reports the URL.**
+1. **Decides what the issue is about.** When you name a dependency ("file this against X"), or the failure leads into its code, it lists the `project-tracker.intake.<key>` documents installed (a library's plugin ships one) and loads the one whose `Applies to` names the package. That document's tracker and destination replace the routing for this one filing, its `Before filing` steps run before the summary, its `Criteria` are checked before the create, and its `Template` sections join the body. With no matching document, it files nothing in this repository and points at the dependency's own tracker (the `bugs` field of its `package.json`, else its repository).
+2. **Finds the tracker.** When the project has a `project-tracker.routing` (set up by [`project-tracker`](../project-tracker/README.md)), it files on the tracker routed for the category and never guesses: a missing or ambiguous pin, or no matching route, stops it with the problem named. Without a routing it lists the installed `project-tracker.capabilities.<tracker>` references and loads the one that matches the `origin` remote, and ends by offering to save the drafted routing once per session (or suggesting `project-tracker` when the draft is not one tracker for all work). GitHub and GitLab ship with this skill. GitLab's commands follow GitLab's documentation and have not yet run against a GitLab instance. Any other host, Bitbucket included, gets a message and no filing.
+3. **Gathers the details:** title, category (bug, feature, or task), and a description. It asks only for what you have not said.
+4. **Collects environment and versions** for a bug, from your machine and the repo where it can.
+5. **Searches for duplicates** in open and closed issues, at least twice. If you say a hit is your issue, it stops and gives you that URL.
+6. **Confirms** the title, category, and details, and waits for your go-ahead.
+7. **Creates the issue.** On GitHub the category is the issue type (`Bug`, `Feature`, `Task`); a repository without issue types gets the `bug` or `enhancement` label instead.
+8. **Reports the URL.**
 
 If the item looks too big or too small for one issue, it says so and suggests another level. It never changes the level itself.
 

@@ -15,22 +15,38 @@ This skill files a **single issue**. It is not for an epic or an initiative, and
 
 | Category | Use when | Template reference |
 |---|---|---|
-| bug | something behaves differently than it should | `repobuddy.work-template.bug` |
-| feature | new behavior someone wants | `repobuddy.work-template.feature` |
-| task | work to be done that is neither a defect nor new behavior (a chore, a refactor, a migration) | `repobuddy.work-template.task` |
+| bug | something behaves differently than it should | `project-tracker.template.bug` |
+| feature | new behavior someone wants | `project-tracker.template.feature` |
+| task | work to be done that is neither a defect nor new behavior (a chore, a refactor, a migration) | `project-tracker.template.task` |
 
 If the category is unclear from the request, ask, before the Trackers steps: a routing picks the tracker by category.
+
+## What the issue is about
+
+Decide this first, before the Trackers steps. The issue is about a **dependency** when the user names one ("file this against X") or when the failure leads into a dependency's code, not the current repository's. Otherwise it is about the current repository: skip this section.
+
+For a dependency, work out its npm package name, then:
+
+1. Load `project-tracker.intake.interface` (what an intake document holds). When it does not load, read `references/project-tracker.intake.interface.md` in this skill's folder instead.
+2. List the intake documents: `reference search project-tracker.intake` with the `reference` skill in the `cyber-agentkit` plugin. Keep only hits whose `match` is `prefix`, and drop the interface itself, `project-tracker.intake.interface`. The list includes a document a plugin ships to only one package of a monorepo.
+3. Load each kept document and keep the one whose `Applies to` names the package exactly. A document that arrives only as a project section (`projectSections` in the JSON, with a `folder` and a `plugin`) is the document for that folder: use it when the working folder is inside `folder`, else treat it as no match. Two matches, or a name ambiguous between plugins: report both qualified names, ask which to use, and load neither until answered. A document whose version (`implements`) is missing or not one the interface declares: name the document and the version, and stop.
+4. No match: do not file in this repository. Read the dependency's own tracker, the `bugs` field of its `package.json` (in `node_modules`, else `npm view <package> bugs repository --json`), or else its `repository`. Give the user that address, say the dependency ships no intake document, and stop.
+
+With a match, that document takes the routing's place for this one filing: its `Tracker` replaces Trackers steps 1 to 5 (see Trackers), its `Before filing` steps run before the summary, its `Criteria` are checked before the create, and its `Template` sections go into the body. The project's own routing and the repository's `origin` host play no part.
 
 ## References
 
 Load these with the `reference` skill in the `cyber-agentkit` plugin, so a project's own override applies:
 
-- Before step 1: `repobuddy.work-levels` (the level checks) and `project-tracker.capabilities.interface` (what a capabilities reference holds). When `project-tracker.capabilities.interface` does not load, read `references/project-tracker.capabilities.interface.md` in this skill's folder instead: it is the same interface, bundled for an install without the repobuddy plugin.
+- Before step 1: `project-tracker.levels` (the level checks) and `project-tracker.capabilities.interface` (what a capabilities reference holds). When `project-tracker.capabilities.interface` does not load, read `references/project-tracker.capabilities.interface.md` in this skill's folder instead: it is the same interface, bundled for an install without the repobuddy plugin.
+- For a dependency, after the intake document is chosen: the document itself, by its name. A team may override it with `reference customize`; load it through the `reference` skill so the override applies.
 - When the category is known: the template reference for it, from the table above. Keep every section it has, in order; write `None` under one you have nothing for. For a task, never leave `Done when` or `Out of scope` as `None`: propose a check and a boundary from the request, and show them in the summary. A section a team adds or rewords is part of the template. Its headings are the only fixed part: a team may reword the text under them or add a section.
 
 When a load warns `reference-legacy-format` or `reference-renamed`, a file is in a cyber-agentkit 1 form or under an old name: run `reference migrate` with the `reference` skill in the `cyber-agentkit` plugin, show the user its plan, and run it again with `--write` only on their yes. Then go on with the reference as loaded.
 
 ## Trackers
+
+**With an intake document**, skip steps 1 to 5. Read `Pin` and `Destination` from its `Tracker` section, run `reference load <pin> --format json --metadata` on the pin, and handle a `missing` or `ambiguous` status as in step 2: name the pin and the problem, suggest the dependency's author check the document, and stop. Go on with step 6 and step 7, and give the tracker's reference the `Destination` as its scope in place of the one `Detect` resolves from the repository. Where the document and the reference disagree on `Visibility`, the document's applies.
 
 A tracker's operations live in a capabilities reference named `project-tracker.capabilities.<tracker>`. This skill owns the workflow; the reference owns the commands.
 
@@ -65,6 +81,8 @@ If the user confirms a match, stop. Give the existing issue's URL and suggest a 
 
 ### 4. Summarize, and confirm unless the user owns the tracker
 
+With an intake document, run its `Before filing` steps first, confirming with the user before any step that changes the machine, and carry what they produced (a reproduction link, the latest version checked) into the summary. A step that cannot run: say so, and ask the user whether to go on without it; do not skip it silently.
+
 Run the tracker's `Kinds` operation so the type or label is known. Summarize what will be created: title, category, key points of the description, the type or label the tracker will use, and any environment details.
 
 Then run the tracker's `Ownership` operation (its format is in `project-tracker.capabilities.interface`):
@@ -75,7 +93,9 @@ Then run the tracker's `Ownership` operation (its format is in `project-tracker.
 
 ### 5. Create
 
-Run the tracker's `Create` operation with the category `Kinds` mapped to. Write the body from the category's template reference to a file, with every section the reference has.
+With an intake document, check each item of its `Criteria` first. State each as met or not met, with how you know. Create only when every item is met, or the user waives the unmet ones by name; otherwise stop and say which are unmet.
+
+Run the tracker's `Create` operation with the category `Kinds` mapped to. Write the body from the category's template reference to a file, with every section the reference has, then add the sections the intake document's `Template` holds under the category's heading, and under `any`, after the template's own.
 
 If a create command fails, check for an issue it left behind before retrying (the reference says how). When one is there, do not retry: give its URL as the new issue in the Report step. When none is, say nothing was filed before any retry.
 
@@ -83,11 +103,11 @@ Keep the body free of internal file names, commit SHAs, and implementation detai
 
 ### 6. Report
 
-Give the URL of the new issue. When a routing chose the tracker, add nothing. When the tracker was found without a routing (Trackers step 3 onward), end with one line that offers the draft instead of naming the skill, for example: "Save GitHub as the tracker for all work in this repo? (y)". Offer it only when the `project-tracker` set-up draft would route all work to the tracker just used (it is the only kept tracker that matches, with no conflicting signal); otherwise end with one line suggesting `project-tracker`. A yes hands the draft to `project-tracker` set-up, which writes the routing after that yes; a no or no answer writes nothing. Ask once per filing session: after the offer has been made, a later filing in the same session adds no line.
+Give the URL of the new issue. When a routing or an intake document chose the tracker, add nothing. When the tracker was found without a routing (Trackers step 3 onward), end with one line that offers the draft instead of naming the skill, for example: "Save GitHub as the tracker for all work in this repo? (y)". Offer it only when the `project-tracker` set-up draft would route all work to the tracker just used (it is the only kept tracker that matches, with no conflicting signal); otherwise end with one line suggesting `project-tracker`. A yes hands the draft to `project-tracker` set-up, which writes the routing after that yes; a no or no answer writes nothing. Ask once per filing session: after the offer has been made, a later filing in the same session adds no line.
 
 ## Level check
 
-Read the issue level's `Too big` and `Too small` sections in `repobuddy.work-levels`. When the item meets them, say so in the summary and ask before creating, even on a tracker the user owns. For an item that is too big, suggest an epic (the `epic` skill when it is installed; otherwise one parent issue with child issues); for one that is too small, suggest not tracking it. Only suggest; file at this level if the user does not change it.
+Read the issue level's `Too big` and `Too small` sections in `project-tracker.levels`. When the item meets them, say so in the summary and ask before creating, even on a tracker the user owns. For an item that is too big, suggest an epic (the `epic` skill when it is installed; otherwise one parent issue with child issues); for one that is too small, suggest not tracking it. Only suggest; file at this level if the user does not change it.
 
 ## What NOT to Do
 
@@ -95,6 +115,7 @@ Read the issue level's `Too big` and `Too small` sections in `repobuddy.work-lev
 - Do not create without the user's confirmation unless the tracker's `Ownership` answered `owned` and the level check found nothing; unknown ownership asks
 - Do not invent labels or issue types: use only those the repository has
 - Do not file an epic or initiative here, or a security vulnerability publicly
+- Do not file an issue about a dependency in the current repository's tracker
 - Do not close, retype, or move an existing item
 
 ## Validate
@@ -102,7 +123,9 @@ Read the issue level's `Too big` and `Too small` sections in `repobuddy.work-lev
 - [ ] The description in the frontmatter is at most 120 characters, and `name` equals the directory name
 - [ ] The levels, the contract, and the category's template were loaded, and the capabilities reference's `contract:` was checked
 - [ ] The request was checked for a security vulnerability before any step ran
-- [ ] The tracker's capabilities were loaded (the pinned one when a routing exists)
+- [ ] The tracker's capabilities were loaded (the pinned one when a routing or an intake document exists)
+- [ ] For a dependency, the intake documents were listed and matched by `Applies to`; with none, nothing was filed in this repository and the dependency's own tracker was named
+- [ ] With an intake document, no routing or host detection ran, its `Before filing` steps ran before the summary, and every `Criteria` item was met or waived by name before the create
 - [ ] With a routing, no host detection ran, and a missing or ambiguous pin or an unmatched route stopped the skill before any search
 - [ ] At least two searches with different keywords ran before any create command
 - [ ] The summary was shown before any create command, and a create without the user's confirmation ran only when `Ownership` answered `owned` and the level check found nothing

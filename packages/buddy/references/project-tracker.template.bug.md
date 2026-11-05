@@ -2,6 +2,7 @@
 description: Body template for a bug issue.
 tags: [work-template, bug, issue]
 extends: [default]
+aliases: [repobuddy.work-template.bug]
 ---
 
 ## Description

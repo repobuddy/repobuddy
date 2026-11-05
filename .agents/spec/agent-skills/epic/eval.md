@@ -14,7 +14,7 @@ eval:
 
 The subject is `packages/buddy/skills/epic/SKILL.md` together with its `references/` copies: the GitHub
 capabilities reference (whose `Retype` the judge follows), `project-tracker.capabilities.interface`,
-`repobuddy.work-levels`, and the epic and initiative templates. The Asana scenarios assume
+`project-tracker.levels`, and the epic and initiative templates. The Asana scenarios assume
 `project-tracker.capabilities.asana` from `cyber-asana` as published; the fixture supplies it.
 
 **Trigger and behavior carry signal; quality does not yet.** Trigger: the skill sits beside `issue` and

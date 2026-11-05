@@ -165,7 +165,7 @@ Feature: issue — file one bug, feature, or task on the tracker
   @behavior
   Scenario: writes the body from the template reference, not from the skill
     Given the user confirms a task "migrate the build to tsdown"
-    And the project has .agents/references/repobuddy.work-template.task.md with merge: patch
+    And the project has .agents/references/project-tracker.template.task.md with merge: patch
     And that file redefines only the Done when section as "- [ ] release notes merged"
     And that file adds a Rollout section reading "Ship behind the tsdown flag first"
     When issue writes the body of the task
@@ -175,7 +175,7 @@ Feature: issue — file one bug, feature, or task on the tracker
 
   @behavior
   Scenario: follows a project override of the level checks
-    Given the project overrides the Issue level in repobuddy.work-levels with all four of its parts
+    Given the project overrides the Issue level in project-tracker.levels with all four of its parts
     And the Too big part of that override reads "- It names more than one package."
     And the default Too big section would only note, not suggest, for this request
     When the user asks for one issue that names @repobuddy/jest and @repobuddy/vitest

@@ -18,16 +18,16 @@ ship in `packages/buddy/references/`, the plugin tier cyber-agentkit resolves
 
 | Reference | Holds | Headings that are API |
 |---|---|---|
-| `repobuddy.work-levels` | the level checks | one `##` per level (Issue, Epic, Initiative), each with `### Is`, `### Done when`, `### Too big`, `### Too small` |
-| `repobuddy.work-template.bug`, `.feature`, `.task` | a body template for a category | the `##` sections of the template |
-| `repobuddy.work-template.epic`, `.initiative` | a body template for a level | the `##` sections of the template |
+| `project-tracker.levels` | the level checks | one `##` per level (Issue, Epic, Initiative), each with `### Is`, `### Done when`, `### Too big`, `### Too small` |
+| `project-tracker.template.bug`, `.feature`, `.task` | a body template for a category | the `##` sections of the template |
+| `project-tracker.template.epic`, `.initiative` | a body template for a level | the `##` sections of the template |
 | `project-tracker.capabilities.interface` | the interface a capabilities reference implements: its sections, the `**Unsupported.**` marker, the item ref, the version, and the format of `project-tracker.routing` (its `Routes` and `Moves` tables) | `Version`, `Sections`, `Unsupported`, `Item ref`, `Overrides`, `Routing` |
 
 **Headings are API.** A team overrides text with `merge: patch` (cyber-agentkit's default), so renaming a heading breaks
 every override of it and needs a changeset. The resolver matches and replaces a whole `##` section
 and appends one the base lacks (run against the real resolver with a project override over a plugin
 copy). In a template, a `##` is one section, so an override restates just that one. In
-`repobuddy.work-levels` a `##` is a whole level: an override of one level restates all four of its
+`project-tracker.levels` a `##` is a whole level: an override of one level restates all four of its
 `###` parts (Is, Done when, Too big, Too small), or the level loses the ones it leaves out.
 
 **One canonical copy.** The file in `packages/buddy/references/` is the source, and its frontmatter
