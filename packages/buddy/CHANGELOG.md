@@ -1,5 +1,13 @@
 # repobuddy
 
+## 4.3.1
+
+### Patch Changes
+
+- 634c175: The `add-badges` skill no longer ships a maintainer TODO that names a `scripts/badge-facts.sh` the skill does not have.
+- 634c175: The `checkpoint` skill's Claude Code reference drops a caveat that retold how `/cd` behaved before v2.1.246. The fallback section already covers older versions.
+- 634c175: The epic, initiative, issue, project-tracker, and scaffold skills no longer list a Validate item that runs `node scripts/sync-skill-references.mjs --check`. That script exists only in the repobuddy repository, so an agent in your repository could not run it. The repository's own CI still runs the check.
+
 ## 4.3.0
 
 ### Minor Changes
