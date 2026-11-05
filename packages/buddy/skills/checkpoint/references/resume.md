@@ -17,16 +17,12 @@ that drifted in elsewhere is already here.
    1. The user gave a checkpoint path or slug: open that one.
    2. The user gave the path of another repo: go to step 1a.
    3. Exactly one checkpoint exists: open it.
-   4. More than one exists: list them, newest `updated` first, each with its title, branch,
-      `updated` date and `## NEXT` line, and ask which one to resume. Ask even when one of them
-      matches the current branch; a branch match is a hint to mention, not a choice to make. Mark
-      a checkpoint whose `depends-on` names a checkpoint that still exists as `waits on <slug>`.
-      Annotate each checkpoint that carries a `resumed:` block with its liveness answer (see
-      **Resume marker**). The marker only annotates: never hide, skip or block a checkpoint because
-      of it.
+   4. More than one exists: list them as [list.md](list.md) describes, and ask which one to resume. Ask
+      even when one of them matches the current branch; a branch match is a hint to mention, not a
+      choice to make.
 
-   **1a. Another repo.** List that repo's checkpoints (root from
-   `git -C <repo-path> rev-parse --show-toplevel`) the same way and let the user pick, even if only
+   **1a. Another repo.** List that repo's checkpoints as [list.md](list.md) describes for a repo
+   path, and let the user pick, even if only
    one exists. Then hand back what the user types to resume there, and stop. Never `cd` there
    yourself and continue: a shell `cd` leaves the harness on this repo's working directory,
    AGENTS.md, skills and permissions.
