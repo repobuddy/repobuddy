@@ -23,8 +23,9 @@ topic that drifted into another repo is checkpointed in that repo, ready for a s
 ```
 
 Natural phrasing routes too: "let's stop here" creates a checkpoint, "pick up the auth refactor" resumes. A bare
-`/checkpoint` runs `create` when the repo has no checkpoint yet, since there is nothing to resume, and
-shows the help when it has some. The name differs from the `/resume` built into Claude Code, Codex, Copilot
+`/checkpoint` runs `resume` in a new or just-cleared session, since there is no work to `create` from. In a
+session with work, it runs `create` when the repo has no checkpoint yet and shows the help when it has some.
+The name differs from the `/resume` built into Claude Code, Codex, Copilot
 CLI and Gemini CLI, so it doesn't collide with it.
 
 ## `create`
