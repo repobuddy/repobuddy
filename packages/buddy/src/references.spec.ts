@@ -95,8 +95,8 @@ describe('project-tracker.capabilities.interface', () => {
 	})
 })
 
-describe('repobuddy.intake.interface', () => {
-	const name = 'repobuddy.intake.interface'
+describe('project-tracker.intake.interface', () => {
+	const name = 'project-tracker.intake.interface'
 
 	it('loads from the plugin with no warning', async () => {
 		const resolved = await loadReference(name, { ...base, plugin })
@@ -121,6 +121,23 @@ describe('repobuddy.intake.interface', () => {
 	})
 })
 
+describe('the work references, renamed from repobuddy.work-*', () => {
+	it.each([
+		['repobuddy.work-levels', 'project-tracker.levels'],
+		['repobuddy.work-template.bug', 'project-tracker.template.bug'],
+		['repobuddy.work-template.epic', 'project-tracker.template.epic'],
+		['repobuddy.work-template.feature', 'project-tracker.template.feature'],
+		['repobuddy.work-template.initiative', 'project-tracker.template.initiative'],
+		['repobuddy.work-template.task', 'project-tracker.template.task'],
+	])('still loads %s as %s, with a reference-renamed warning', async (old, name) => {
+		const resolved = await loadReference(old, { ...base, plugin })
+		const current = await loadReference(name, { ...base, plugin })
+		expect(resolved.status).toBe('found')
+		expect(resolved.content).toBe(current.content)
+		expect(resolved.warnings.map(({ code }) => code)).toEqual(['reference-renamed'])
+	})
+})
+
 describe('reference migrate', () => {
 	it('plans the cyber-agentkit 1 overrides of an upgrading repository, renaming project-tracker.contract by the interface aliases', async () => {
 		const repo = mkdtempSync(join(tmpdir(), 'repobuddy-migrate-'))
@@ -129,7 +146,7 @@ describe('reference migrate', () => {
 			const dir = join(repo, '.agents', 'references')
 			mkdirSync(dir, { recursive: true })
 			const override = '---\nmerge: merge-sections\n---\n\n## Routing\n\nTeam text.\n'
-			writeFileSync(join(dir, 'repobuddy.work-levels.md'), override)
+			writeFileSync(join(dir, 'project-tracker.levels.md'), override)
 			writeFileSync(join(dir, 'project-tracker.contract.md'), override)
 
 			const layers = await referenceLayers({ root: repo, home, env: {}, plugin, platform: process.platform })
@@ -153,7 +170,7 @@ describe('reference migrate', () => {
 					by: 'the aliases of plugin repobuddy',
 				},
 				{
-					name: 'repobuddy.work-levels',
+					name: 'project-tracker.levels',
 					tier: 'repo',
 					form: 'merge-sections',
 					to: 'no merge: patch is the default',

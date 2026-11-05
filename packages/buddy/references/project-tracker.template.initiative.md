@@ -2,6 +2,7 @@
 description: Body template for an initiative.
 tags: [work-template, initiative]
 extends: [default]
+aliases: [repobuddy.work-template.initiative]
 ---
 
 ## Goal

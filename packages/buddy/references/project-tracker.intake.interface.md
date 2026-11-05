@@ -1,5 +1,5 @@
 ---
-description: The interface a repobuddy.intake.<key> reference implements, so a library's plugin can say how issues about that library are filed.
+description: The interface a project-tracker.intake.<key> reference implements, so a library's plugin can say how issues about that library are filed.
 tags: [intake, interface, issue]
 interface:
   cardinality: many
@@ -14,9 +14,9 @@ interface:
 
 ## Version
 
-This is the `repobuddy.intake` interface, version **1**. An intake document is named `repobuddy.intake.<key>` and declares the version it follows in its frontmatter as `implements: repobuddy.intake@1`. The key is a short name the plugin picks (`x` for the library `x`), since a reference name cannot hold `/`. A skill loads a document whose version is 1, and stops on any other value or on none, saying which document and which version. A change that adds a section or an optional field keeps the number; a change that renames or removes a section raises it.
+This is the `project-tracker.intake` interface, version **1**. An intake document is named `project-tracker.intake.<key>` and declares the version it follows in its frontmatter as `implements: project-tracker.intake@1`. The key is a short name the plugin picks (`x` for the library `x`), since a reference name cannot hold `/`. A skill loads a document whose version is 1, and stops on any other value or on none, saying which document and which version. A change that adds a section or an optional field keeps the number; a change that renames or removes a section raises it.
 
-`reference check repobuddy.intake.<key>` verifies a document that declares `implements` against this interface: its sections, their order, and that `Applies to` and `Tracker` are present.
+`reference check project-tracker.intake.<key>` verifies a document that declares `implements` against this interface: its sections, their order, and that `Applies to` and `Tracker` are present.
 
 ## Sections
 
@@ -42,7 +42,7 @@ A skill matches a document by `Applies to`, never by its key. It compares each b
 
 ## Template
 
-For a filing, the skill writes the body from `repobuddy.work-template.<category>` and then adds the sections under the document's `### <category>` heading, and under `### any`, after the template's own, in that order. The template's sections stay.
+For a filing, the skill writes the body from `project-tracker.template.<category>` and then adds the sections under the document's `### <category>` heading, and under `### any`, after the template's own, in that order. The template's sections stay.
 
 ## Before filing and Criteria
 
@@ -50,4 +50,4 @@ For a filing, the skill writes the body from `repobuddy.work-template.<category>
 
 ## Overrides
 
-This interface is never composed: a contribution over `repobuddy.intake.interface` is ignored with a warning. A team changes a document by writing a reference with its name, such as `repobuddy.intake.x`, in `.agents/references/` (`reference customize repobuddy.intake.x`). Its sections replace the sections they match by heading path.
+This interface is never composed: a contribution over `project-tracker.intake.interface` is ignored with a warning. A team changes a document by writing a reference with its name, such as `project-tracker.intake.x`, in `.agents/references/` (`reference customize project-tracker.intake.x`). Its sections replace the sections they match by heading path.

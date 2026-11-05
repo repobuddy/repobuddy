@@ -15,9 +15,9 @@ This skill files a **single issue**. It is not for an epic or an initiative, and
 
 | Category | Use when | Template reference |
 |---|---|---|
-| bug | something behaves differently than it should | `repobuddy.work-template.bug` |
-| feature | new behavior someone wants | `repobuddy.work-template.feature` |
-| task | work to be done that is neither a defect nor new behavior (a chore, a refactor, a migration) | `repobuddy.work-template.task` |
+| bug | something behaves differently than it should | `project-tracker.template.bug` |
+| feature | new behavior someone wants | `project-tracker.template.feature` |
+| task | work to be done that is neither a defect nor new behavior (a chore, a refactor, a migration) | `project-tracker.template.task` |
 
 If the category is unclear from the request, ask, before the Trackers steps: a routing picks the tracker by category.
 
@@ -27,8 +27,8 @@ Decide this first, before the Trackers steps. The issue is about a **dependency*
 
 For a dependency, work out its npm package name, then:
 
-1. Load `repobuddy.intake.interface` (what an intake document holds). When it does not load, read `references/repobuddy.intake.interface.md` in this skill's folder instead.
-2. List the intake documents: `reference search repobuddy.intake` with the `reference` skill in the `cyber-agentkit` plugin. Keep only hits whose `match` is `prefix`, and drop the interface itself, `repobuddy.intake.interface`. The list includes a document a plugin ships to only one package of a monorepo.
+1. Load `project-tracker.intake.interface` (what an intake document holds). When it does not load, read `references/project-tracker.intake.interface.md` in this skill's folder instead.
+2. List the intake documents: `reference search project-tracker.intake` with the `reference` skill in the `cyber-agentkit` plugin. Keep only hits whose `match` is `prefix`, and drop the interface itself, `project-tracker.intake.interface`. The list includes a document a plugin ships to only one package of a monorepo.
 3. Load each kept document and keep the one whose `Applies to` names the package exactly. A document that arrives only as a project section (`projectSections` in the JSON, with a `folder` and a `plugin`) is the document for that folder: use it when the working folder is inside `folder`, else treat it as no match. Two matches, or a name ambiguous between plugins: report both qualified names, ask which to use, and load neither until answered. A document whose version (`implements`) is missing or not one the interface declares: name the document and the version, and stop.
 4. No match: do not file in this repository. Read the dependency's own tracker, the `bugs` field of its `package.json` (in `node_modules`, else `npm view <package> bugs repository --json`), or else its `repository`. Give the user that address, say the dependency ships no intake document, and stop.
 
@@ -38,7 +38,7 @@ With a match, that document takes the routing's place for this one filing: its `
 
 Load these with the `reference` skill in the `cyber-agentkit` plugin, so a project's own override applies:
 
-- Before step 1: `repobuddy.work-levels` (the level checks) and `project-tracker.capabilities.interface` (what a capabilities reference holds). When `project-tracker.capabilities.interface` does not load, read `references/project-tracker.capabilities.interface.md` in this skill's folder instead: it is the same interface, bundled for an install without the repobuddy plugin.
+- Before step 1: `project-tracker.levels` (the level checks) and `project-tracker.capabilities.interface` (what a capabilities reference holds). When `project-tracker.capabilities.interface` does not load, read `references/project-tracker.capabilities.interface.md` in this skill's folder instead: it is the same interface, bundled for an install without the repobuddy plugin.
 - For a dependency, after the intake document is chosen: the document itself, by its name. A team may override it with `reference customize`; load it through the `reference` skill so the override applies.
 - When the category is known: the template reference for it, from the table above. Keep every section it has, in order; write `None` under one you have nothing for. For a task, never leave `Done when` or `Out of scope` as `None`: propose a check and a boundary from the request, and show them in the summary. A section a team adds or rewords is part of the template. Its headings are the only fixed part: a team may reword the text under them or add a section.
 
@@ -107,7 +107,7 @@ Give the URL of the new issue. When a routing or an intake document chose the tr
 
 ## Level check
 
-Read the issue level's `Too big` and `Too small` sections in `repobuddy.work-levels`. When the item meets them, say so in the summary and ask before creating, even on a tracker the user owns. For an item that is too big, suggest an epic (the `epic` skill when it is installed; otherwise one parent issue with child issues); for one that is too small, suggest not tracking it. Only suggest; file at this level if the user does not change it.
+Read the issue level's `Too big` and `Too small` sections in `project-tracker.levels`. When the item meets them, say so in the summary and ask before creating, even on a tracker the user owns. For an item that is too big, suggest an epic (the `epic` skill when it is installed; otherwise one parent issue with child issues); for one that is too small, suggest not tracking it. Only suggest; file at this level if the user does not change it.
 
 ## What NOT to Do
 

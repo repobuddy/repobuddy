@@ -28,8 +28,8 @@ the `origin` host from its own folder when nothing installed matches; Bitbucket 
 native tracker is gone.
 
 **Templates and level checks are references.** The body template for each category is
-`repobuddy.work-template.<category>`, and the checks that say an item is too big or too small are the
-issue sections of `repobuddy.work-levels`. The skill loads them by name through cyber-agentkit, so a
+`project-tracker.template.<category>`, and the checks that say an item is too big or too small are the
+issue sections of `project-tracker.levels`. The skill loads them by name through cyber-agentkit, so a
 project overrides one section with a `patch`. The capabilities reference declares the
 version it follows (`implements: project-tracker.capabilities@<version>`, or the older `contract:`), and the skill stops on a version `project-tracker.capabilities.interface` does not name. The
 references are specified in [work-references](../work-references/README.md).
@@ -54,8 +54,8 @@ suggestion.
 
 **An issue about a dependency uses the intake its plugin ships.** `issue` first decides whether the
 issue is about the current repository or a dependency (the user names one, or the failure leads into its
-code). For a dependency it lists `repobuddy.intake.<key>` documents (interface:
-`repobuddy.intake.interface`, a keyed set like `project-tracker.capabilities.<tracker>`) and loads the one
+code). For a dependency it lists `project-tracker.intake.<key>` documents (interface:
+`project-tracker.intake.interface`, a keyed set like `project-tracker.capabilities.<tracker>`) and loads the one
 whose `Applies to` names the package. For that one filing the document replaces the routing: its `Tracker`
 pin and destination choose the tracker, its `Before filing` steps run before the summary, its `Criteria` are
 checked before the create, and its `Template` sections are added to the category's template. With no

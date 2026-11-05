@@ -1,6 +1,7 @@
 ---
 description: Body template for an epic.
 tags: [work-template, epic]
+aliases: [repobuddy.work-template.epic]
 ---
 
 ## Outcome

@@ -1,6 +1,7 @@
 ---
 description: Body template for a feature issue.
 tags: [work-template, feature, issue]
+aliases: [repobuddy.work-template.feature]
 ---
 
 ## Description

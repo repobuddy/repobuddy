@@ -1,6 +1,7 @@
 ---
 description: The checks that define an issue, an epic, and an initiative, and when work is too big or too small for its level.
 tags: [work-levels, issue, epic, initiative]
+aliases: [repobuddy.work-levels]
 ---
 
 ## Issue

@@ -2,6 +2,7 @@
 description: Body template for an epic.
 tags: [work-template, epic]
 extends: [default]
+aliases: [repobuddy.work-template.epic]
 ---
 
 ## Outcome

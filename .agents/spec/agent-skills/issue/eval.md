@@ -13,7 +13,7 @@ eval:
 # issue — measurement policy
 
 The subject is `packages/buddy/skills/issue/SKILL.md` together with its `references/` copies: the
-GitHub capabilities reference (the commands the judge follows), `repobuddy.work-levels`,
+GitHub capabilities reference (the commands the judge follows), `project-tracker.levels`,
 `project-tracker.capabilities.interface`, and the three body templates.
 
 **All three layers carry signal.** Trigger: the skill sits beside `to-question`, which shares its
