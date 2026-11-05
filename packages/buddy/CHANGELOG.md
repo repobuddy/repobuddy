@@ -1,5 +1,11 @@
 # repobuddy
 
+## 4.4.0
+
+### Minor Changes
+
+- e24bf8a: `checkpoint` gains a read-only `list [repo]` subcommand that shows the checkpoints without opening one, and its help and routing now say that `create` is how to update a checkpoint.
+
 ## 4.3.2
 
 ### Patch Changes
