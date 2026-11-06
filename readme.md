@@ -116,13 +116,13 @@ These companion repositories provide additional skills often used alongside `rep
 
 | Repository | Skills |
 | --- | --- |
-| [`repobuddy/agent-changesets`] | Changeset authoring and release setup |
+| [`repobuddy/buddy-changesets`] | Changeset authoring and release setup |
 | [`repobuddy/agent-security`] | Security PR remediation |
 
 Install from a related repo the same way:
 
 ```sh
-npx skills add repobuddy/agent-changesets
+npx skills add repobuddy/buddy-changesets
 ```
 
 ## [@repobuddy/biome]
@@ -187,7 +187,7 @@ npx skills add repobuddy/agent-changesets
 [`setup-github-repo`]: ./packages/buddy/skills/setup-github-repo/SKILL.md
 [`website`]: ./packages/buddy/skills/website/SKILL.md
 [`to-question`]: ./packages/buddy/skills/to-question/SKILL.md
-[`repobuddy/agent-changesets`]: https://github.com/repobuddy/agent-changesets
+[`repobuddy/buddy-changesets`]: https://github.com/repobuddy/buddy-changesets
 [`repobuddy/agent-security`]: https://github.com/repobuddy/agent-security
 [biome]: https://biomejs.dev/
 [codecov-biome-image]: https://codecov.io/gh/repobuddy/repobuddy/badge.svg?flag=biome
