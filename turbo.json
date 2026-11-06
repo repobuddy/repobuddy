@@ -6,6 +6,11 @@
 		// which need a build first.
 		"//#check-plugin-version": {},
 		"//#check-skill-references": {},
+		// Rebuilds the plugin, then fails if a committed skill script differs from the build.
+		"//#check-build-drift": {
+			"dependsOn": ["repobuddy#build"],
+			"cache": false
+		},
 		// knip reads each package's `exports` map, and the jest testcases' configs
 		// resolve `@repobuddy/jest` through its built `cjs/` output, so the
 		// workspace has to be built first — same reason the old `depcheck` task
