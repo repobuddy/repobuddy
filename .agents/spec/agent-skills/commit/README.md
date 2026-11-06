@@ -61,7 +61,7 @@ only when they cannot decide; with no one to answer, it stops and reports what i
 
 ## Use Cases
 
-**Fit:** high
+**Fit:** strong
 
 Its triggers ("commit this", "split into commits", "write a commit message") are distinct from
 pushing, releasing, and changeset authoring, which belong to other skills. The judgment is where a
@@ -72,8 +72,8 @@ left staged work in the index. A *repository* supplies rules, hooks, and referen
 
 | # | Use case (surface: `/commit`) | Actor / goal | Entry point | Extensions |
 |---|---|---|---|---|
-| 1 | **Commit one unit** | Agent: turn a finished change into one commit | Trigger: a unit is done, or the developer says "commit". Outcome: one commit holding only that unit | 1–8 |
-| 2 | **Split into units** | Agent: turn a mixed working tree into several commits | Trigger: "split these into commits", or the one-sentence test fails. Outcome: one commit per unit | 1–9 |
+| 1 | **Commit one unit** | Agent: turn a finished change into one commit | Trigger: a unit is done, or the developer says "commit". Outcome: one commit holding only that unit | 1–13 |
+| 2 | **Split into units** | Agent: turn a mixed working tree into several commits | Trigger: "split these into commits", or the one-sentence test fails. Outcome: one commit per unit | 1–13 |
 
 **Extensions:**
 
@@ -84,14 +84,19 @@ left staged work in the index. A *repository* supplies rules, hooks, and referen
 5. **The repository has a commitlint config.** The message follows its rules.
 6. **The repository overrides a reference.** The override's sections replace the default's.
 7. **The `reference` command cannot run.** The bundled default, then any `.agents/references/` override, is read.
-8. **The repository uses changesets.** A published change carries its changeset; a missing one is handed to the `changesets` skill.
-9. **The rules cannot place a change.** With no one to answer, the skill commits nothing it cannot place and reports.
+8. **The repository uses changesets.** A published change carries its changeset. A missing one is written with the `changesets` skill when it is installed; otherwise the skill names it and commits nothing. A change outside any published package carries none.
+9. **The rules cannot place a change.** Someone present is asked; with no one to answer, the skill commits nothing it cannot place and reports.
+10. **The repository has its own Commit Discipline.** Its rules replace the skill's defaults where they differ.
+11. **Changes of two units share one hunk.** The patch is built with no context (`-U0`) and staged with `--unidiff-zero`.
+12. **The repository has commit hooks.** The skill says what they run and runs those checks before committing.
+13. **One changed run holds both units.** The file's content for this commit is written outside the repository and staged directly with `git update-index --cacheinfo`.
 
 ## Control Flow
 
 ```mermaid
 graph TD
-    A[A unit is finished, or asked to commit] --> I{Index holds changes outside this unit?}
+    A[A unit is finished, or asked to commit] --> A1[Read the repository's Commit Discipline and SKILL.local.md]
+    A1 --> I{Index holds changes outside this unit?}
     I -->|Yes, whole files| I1[git restore --staged those files]
     I -->|Yes, partly staged| I2[Stop and report]
     I -->|No| D
@@ -99,34 +104,50 @@ graph TD
     D -->|No| D1[Stage nothing; report]
     D -->|Yes| R[Load commit.release-notes]
     R --> R0{Needs a changeset that is missing?}
-    R0 -->|Yes| R1[Name the changesets skill; do not commit]
-    R0 -->|No| S[Stage this unit: git add files, or git apply --cached patch]
+    R0 -->|Yes| RI{changesets skill installed?}
+    RI -->|Yes| R2[Write it with changesets add; stage it with the change]
+    RI -->|No| R1[Name the changesets skill and its install command; do not commit]
+    R2 --> S
+    R0 -->|No: has one, or not a published change| S[Stage this unit: git add files, git apply --cached patch, or update-index --cacheinfo]
     S --> T{One-sentence test passes?}
     T -->|No| T1[Unstage and split]
     T1 --> S
+    T -->|Cannot tell, someone present| T3[Ask which unit the change belongs to]
+    T3 --> S
     T -->|Cannot tell, no one to ask| T2[Commit nothing unplaced; report]
     T -->|Yes| V{Unstaged changes could affect checks?}
     V -->|Yes| V1[stash --keep-index, check, restore]
-    V -->|No| M
-    V1 --> M[Write message by commit.message; git commit -F]
+    V -->|No| MR
+    V1 --> MR{Message rules source?}
+    MR -->|commitlint config| M
+    MR -->|.agents/references override| M
+    MR -->|no reference command: bundled default, then override| M
+    M[Write message by commit.message; run the hook checks; git commit -F]
     M --> H{Hook rejects?}
     H -->|Yes| H1[Fix the cause; git commit again]
     H1 --> H
-    H -->|No| C[git log -1 --stat; next unit]
+    H -->|No| C[git log -1 --stat; Validate; next unit]
 ```
 
 ## Scenario map
 
 | Edge | Path (Given) | Scenario |
 |---|---|---|
-| `A` (engage) | a repo with repobuddy and buddy-changesets installed | `engages to commit work, not to push, release, or write a changeset` |
+| `A` (engage) | a repo with repobuddy and buddy-changesets installed and uncommitted changes | `engages to commit work, not to push, release, amend, or write a changeset` |
+| `A1` | a Commit Discipline section that splits by package | `follows the repository's Commit Discipline over its own defaults` |
+| `A1` (local) | a `SKILL.local.md` that adds a ticket id | `follows SKILL.local.md over its own defaults` |
 | `S` (by file) | a bugfix and an unrelated docs edit in two files | `splits a change across files by staging each unit's files by name` |
 | `S` (by hunk) | two hunks of one file for two units | `stages part of one file with a patch of hunks` |
+| `S` (shared hunk) | two units' changes in one hunk | `splits two units whose changes share one hunk` |
+| `S` (one run) | two units' changes on adjacent lines | `stages one unit's lines from a changed run that holds both units` |
 | `M` | a unit whose message needs a body | `runs no command that opens an editor or a pager` |
-| `—` (artifact) | the shipped skill | `does not defer to another commit skill` |
+| `—` (artifact) | the shipped skill's SKILL.md and references/ text | `does not defer to another commit skill` |
 | `M` (commitlint) | a commitlint config with its own header length and type-enum | `reads the allowed types, scope, and header length from the commitlint config` |
 | `M` (override) | an override of the `Type` section | `uses a section of the repository's override in place of the default` |
 | `M` (no command) | the `reference` command not installed | `reads the bundled default when the reference command cannot run` |
+| `M` (no command, override) | the `reference` command not installed and an override of `Type` | `applies an override's section by hand when the reference command cannot run` |
+| `M` (breaking) | a change that removes an export | `marks a change that breaks a consumer` |
+| `M` (hooks) | husky pre-commit and commit-msg hooks | `runs the repository's hook checks before committing` |
 | `H → H1` (message) | a commit-msg hook rejects the subject case | `commits again after a commit-msg hook rejects the message` |
 | `H → H1` (code) | a pre-commit lint failure | `fixes the code when a pre-commit hook fails a check` |
 | `I → I1` | an unrelated file already staged | `unstages files that are not this unit before committing` |
@@ -134,11 +155,17 @@ graph TD
 | `V → V1` | an unstaged change the staged change depends on | `verifies the staged snapshot when unstaged changes could hide a failure` |
 | `V → M` | only an unstaged typo no check reads | `skips the snapshot check when unstaged changes cannot affect it` |
 | `D → D1` | failing tests | `does not stage a change that is not done` |
+| `D` (runtime surface) | a new CLI flag with passing tests | `exercises a changed CLI once before staging` |
 | `M` (trailers) | the harness supplies Co-Authored-By | `keeps the trailers the harness supplies` |
 | `T → T1` | a feature and an unrelated CI change, no one present | `decides the split from the rules without asking up front` |
-| `T → T2` | a hunk serving two units, no one present | `stops and reports when the rules cannot decide` |
-| `H1` | a pushed last commit and a hook rejection | `never pushes or rewrites history` |
+| `T → T3` | one changed line two units need, the developer present | `asks the developer when the rules cannot place a change` |
+| `T → T2` | one changed line two units need, no one present | `stops and reports when the rules cannot decide` |
+| `H → H1 → C` | a hook rejection on a branch that tracks origin | `never pushes or rewrites history` |
 | `R0 → S` | a published change with its changeset | `commits the changeset with the change in a repository that uses changesets` |
-| `R0 → R1` | a published change with no changeset | `hands writing a changeset to the changesets skill` |
+| `RI → R2` | a published change with no changeset, the changesets skill installed | `writes a missing changeset through the changesets skill and commits it with the change` |
+| `RI → R1` | a published change with no changeset, the changesets skill not installed | `names the changesets skill and commits nothing when it is not installed` |
+| `R0 → S` (unpublished) | a CI-only change in a changesets repository | `carries no changeset for a change outside any published package` |
+| `R0 → S` (private) | a change to a `"private": true` package in a changesets repository | `carries no changeset for a change to a private package` |
 | `R` (none) | no `.changeset/config.json` | `adds no release notes in a repository without changesets` |
-| `—` (artifact) | the shipped skill | `ships a Validate section whose mechanical assertions pass` |
+| `—` (artifact) | the shipped skill's frontmatter and its bundled reference copies | `ships a skill file whose frontmatter and bundled reference copies are valid` |
+| `C` (Validate) | two units on a branch that tracks origin | `leaves the repository in the state its Validate section checks` |
