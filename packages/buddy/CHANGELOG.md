@@ -1,5 +1,18 @@
 # repobuddy
 
+## 4.5.0
+
+### Minor Changes
+
+- 5d7b6d2: Add the `commit` skill. It stages and commits one unit of work at a time, safely enough for an agent to run unattended: it checks the index and a definition of done before staging, stages files by name or hunks with `git apply --cached`, verifies the staged snapshot when unstaged changes could hide a failure, and recovers from a hook rejection without `--no-verify` or `--amend`. No command it runs opens an editor, a pager, or a prompt. The message rules (`commit.message`, Conventional Commits read from the repository's commitlint config) and the release-note rules (`commit.release-notes`, the changeset when the repository uses changesets) are references a repository overrides in `.agents/references/`.
+- dd4b63e: The `issue` skill files an issue about a dependency using the intake document its plugin ships. A library's plugin publishes `project-tracker.intake.<key>` (sections `Applies to`, `Tracker`, `Before filing`, `Criteria`, `Template`, described by the new `project-tracker.intake.interface`); for a dependency, `/issue` loads the document that names the package and files with its tracker, destination, steps, criteria, and template sections. With no matching document it points at the dependency's own tracker instead of filing in the current repository.
+  
+  The work references move under the `project-tracker` context: `repobuddy.work-levels` is now `project-tracker.levels`, and `repobuddy.work-template.<category>` is now `project-tracker.template.<category>`. The old names still load, with a `reference-renamed` warning; run `reference migrate` to rename a repository's overrides.
+
+### Patch Changes
+
+- d3710d6: The `buddy` CLI and the `init-buddy` skill's `detect-env` script now bundle `buddy-agent-harness` 1.0 to list MCP servers. The MCP listing and the `agent-readiness` harness doctor check work as before.
+
 ## 4.4.0
 
 ### Minor Changes
