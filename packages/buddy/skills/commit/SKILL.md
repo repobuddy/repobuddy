@@ -5,9 +5,6 @@ description: "Use this skill when committing work: stages one unit by name, chec
 
 # Commit
 
-Stages and commits one unit of work at a time. Every command here runs without an editor, a pager, or
-a prompt, so an agent can run it unattended.
-
 Use when asked to commit, to split changes into commits, or to write a commit message, and when a unit
 of work is finished and the repository's rules say to commit it.
 
@@ -28,6 +25,10 @@ When the `reference` command cannot run, read the bundled default in this skill'
 `references/commit.message.default.md` or `references/commit.release-notes.default.md`. Then read
 `.agents/references/<name>.md` when it exists: each of its sections replaces the default's section of
 the same heading, and a new section is added.
+
+Read [references/splitting.md](references/splitting.md) before a split inside one file or a snapshot
+check: it has the commands for building the patch, a hunk that mixes two units, and restoring the stash
+when other sessions share it.
 
 ## Rules
 
@@ -80,7 +81,8 @@ or the code and then the checks above), stage what the fix touched, and run `git
 6. **Verify the staged snapshot** when unstaged changes could change the result; see
    [Splitting](#splitting).
 7. **Write the message** by `commit.message`, to a file outside the repository, with the trailers the
-   harness or repository supplies. Commit with `git commit -F <file>`, or one `-m` per paragraph.
+   harness or repository supplies. Commit with `git commit -F <file>`. Use one `-m` per paragraph
+   only when no file can be written.
 8. **Confirm:** `git log -1 --stat` shows the new commit, and `git status --porcelain` shows only what
    the next units hold. Repeat from step 1 for the next unit.
 
@@ -94,14 +96,14 @@ set aside only the unstaged part (`git stash push --keep-index --include-untrack
 checks, and restore it (`git stash pop`). Skip this when nothing is unstaged, or when the unstaged
 changes are in files the checks do not read.
 
-[references/splitting.md](references/splitting.md) has the commands: building the patch, a hunk that
-mixes two units, and restoring the stash when other sessions share it. Load it before a split inside
-one file or a snapshot check.
-
 ## Validate
 
-- [ ] The index was checked before staging, and nothing outside this unit was committed
-- [ ] No command opened an editor, a pager, or an interactive prompt, and none was `git add .`, `-A`, or `-p`
-- [ ] The definition of done held before staging, and the staged snapshot was verified or the skip has a reason
-- [ ] The message follows `commit.message`, and the commit carries what `commit.release-notes` says
-- [ ] No `--no-verify`, no `--amend` after a hook rejection, no push, and no history rewrite
+After each commit:
+
+- [ ] `git show --stat HEAD` lists only this unit's files, and its change is described in one sentence with no "and"
+- [ ] The files unstaged in step 1 still show their changes in `git status --porcelain`
+- [ ] `git log -1 --format=%B | node_modules/.bin/commitlint` exits 0 when commitlint is installed; otherwise the message follows `commit.message`
+- [ ] When `commit.release-notes` asks for a changeset, `git show --stat HEAD` lists the `.changeset/<name>.md` file
+- [ ] `git reflog` since the skill started shows only `commit:` entries: no `commit (amend)`, `rebase`, or `reset`
+- [ ] The upstream is unchanged: `git rev-parse @{upstream}` gives the same commit as before the skill ran
+- [ ] `git stash list` holds no entry the skill pushed
