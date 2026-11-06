@@ -100,7 +100,6 @@ one file or a snapshot check.
 
 ## Validate
 
-- [ ] The description in the frontmatter is at most 120 characters, and `name` equals the directory name
 - [ ] The index was checked before staging, and nothing outside this unit was committed
 - [ ] No command opened an editor, a pager, or an interactive prompt, and none was `git add .`, `-A`, or `-p`
 - [ ] The definition of done held before staging, and the staged snapshot was verified or the skip has a reason
