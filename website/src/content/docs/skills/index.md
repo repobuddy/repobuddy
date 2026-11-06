@@ -1,6 +1,6 @@
 ---
 title: Agent skills
-description: The 19 repobuddy skills for coding agents, grouped by what you want done, with a page for each.
+description: The 20 repobuddy skills for coding agents, grouped by what you want done, with a page for each.
 ---
 
 The [`repobuddy` package](/repobuddy/repobuddy/) is an agent plugin as well as a CLI. The plugin ships agent skills:
@@ -42,6 +42,12 @@ Skills that need a deterministic step run a bundled script. See [Skill scripts](
 | Skill | Use it to |
 | --- | --- |
 | [`website`](/repobuddy/skills/website/) | Add an Astro docs site to a monorepo (`init`) or publish a static site from CI (`deploy`) |
+
+## Commits
+
+| Skill | Use it to |
+| --- | --- |
+| [`commit`](/repobuddy/skills/commit/) | Commit one finished unit of work at a time, with no interactive git, by the repository's message rules |
 
 ## Issues and questions
 

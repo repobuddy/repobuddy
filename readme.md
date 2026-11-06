@@ -14,6 +14,7 @@
 | Skill | Description |
 | --- | --- |
 | [`agent-readiness`] | Score how ready a repo is for coding agents — a gated level, the three fixes worth the most, and the tokens every session loads — hold a level in CI, then fix the findings one area per commit, and benchmark what agents cost before and after; `--package` scores how easily consumers' agents can use a library |
+| [`commit`] | Commit one unit of work at a time, safe to run unattended — checks the change is done, stages files or hunks by name with no interactive git, verifies the staged snapshot, follows the repo's commitlint rules, and recovers from a hook rejection without `--no-verify` |
 | [`epic`] | Plan an epic and its child issues — outcome first, unknowns as spikes — promote an issue to an epic, or demote an initiative, moving the work to the tracker that holds epics when the routing says so |
 | [`initiative`] | Set an initiative's goal and one metric — measure, baseline, target — and file its epics as shells for `epic` to break down, or promote an epic by creating the initiative above it |
 | [`issue`] | File a bug, feature, or task on GitHub, or on the tracker a routing names — searches for duplicates first |
@@ -182,6 +183,7 @@ npx skills add repobuddy/agent-changesets
 [`review-permissions`]: ./packages/buddy/skills/review-permissions/SKILL.md
 [`scaffold`]: ./packages/buddy/skills/scaffold/SKILL.md
 [`checkpoint`]: ./packages/buddy/skills/checkpoint/SKILL.md
+[`commit`]: ./packages/buddy/skills/commit/SKILL.md
 [`setup-github-repo`]: ./packages/buddy/skills/setup-github-repo/SKILL.md
 [`website`]: ./packages/buddy/skills/website/SKILL.md
 [`to-question`]: ./packages/buddy/skills/to-question/SKILL.md

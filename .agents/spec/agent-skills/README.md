@@ -14,6 +14,7 @@ One unit per shipped skill.
 | [initiative](./initiative/README.md) | Set an initiative's goal and metric with its epics as shells, and promote an epic to one as a new parent |
 | [project-tracker](./project-tracker/README.md) | Set up, show, change, and check which tracker holds each level and category, and the move policy between trackers |
 | [scaffold](./scaffold/README.md) | List the installed scaffold recipes and apply one after a single confirmation |
+| [commit](./commit/README.md) | Stage and commit one unit of work at a time, unattended, with no interactive git |
 | [work-references](./work-references/README.md) | The level checks, body templates, and tracker contract the level skills load by name |
 
 Skills present in `skills/` with no unit here are **not yet backfilled** — `agent-readiness`,
