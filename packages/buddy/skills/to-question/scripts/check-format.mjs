@@ -2,7 +2,7 @@
 // Compiled by `universal-plugin plugin build` from src/skills/check-format.ts. Edit the source, not this file.
 globalThis.__SKILL_SCRIPT__ = {"package":"repobuddy","bin":"repobuddy","version":"4.5.1","entry":"skills/to-question/scripts/check-format.mjs","commands":{}};
 import { existsSync, readFileSync } from "node:fs";
-//#region src/skills/check-format.ts
+// src/skills/check-format.ts
 /**
 * Check a composed question against its target platform's markup rules.
 *
@@ -221,5 +221,4 @@ else {
 	out("\n");
 }
 process.exit(findings.length === 0 ? 0 : 1);
-//#endregion
 export {};
