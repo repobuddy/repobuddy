@@ -92,6 +92,7 @@ export default defineConfig({
 									],
 								},
 								{ label: 'Docs', items: [{ label: 'website', slug: 'skills/website' }] },
+								{ label: 'Commits', items: [{ label: 'commit', slug: 'skills/commit' }] },
 								{
 									label: 'Issues and questions',
 									items: [
