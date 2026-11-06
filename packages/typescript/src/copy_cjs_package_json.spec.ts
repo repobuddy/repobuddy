@@ -20,9 +20,10 @@ afterEach(async () => {
 })
 
 it('copies package.json into the dir under the given cwd', async () => {
-	const { exitCode } = await testCommand(copyCJSPackageJson, `copy-cjs-package-json cjs ${cwd}`)
+	const { exitCode, result } = await testCommand(copyCJSPackageJson, `copy-cjs-package-json cjs ${cwd}`)
 
 	expect(exitCode).toBeUndefined()
+	expect(result).toEqual({ copied: join(cwd, 'cjs/package.json') })
 	expect(JSON.parse(await readFile(join(cwd, 'cjs/package.json'), 'utf8'))).toEqual({ type: 'commonjs' })
 })
 
@@ -33,4 +34,11 @@ it('defaults cwd to process.cwd()', async () => {
 
 	expect(exitCode).toBeUndefined()
 	expect(JSON.parse(await readFile(join(cwd, 'cjs/package.json'), 'utf8'))).toEqual({ type: 'commonjs' })
+})
+
+it('reports a missing dir as a coded error with exit code 1', async () => {
+	const { exitCode, messages } = await testCommand(copyCJSPackageJson, `cpj nope ${cwd}`)
+
+	expect(exitCode).toBe(1)
+	expect(messages).toContain('code: copy-failed')
 })

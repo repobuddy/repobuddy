@@ -54,12 +54,18 @@ List it in a `.repobuddy.json` file at the project root to add the `ts` commands
 }
 ```
 
-The commands are in beta:
+The commands are in beta. They follow the AXI conventions of `clibuilder` 12:
+the answer is TOON on stdout (`--format json` and `--format text` also work), and a failure is a coded error with exit code 1.
 
+- 🐤 `buddy ts`: lists the builds that have a `tsconfig.<cjs|tslib|esm>.json` in the current directory,
+  and says `0 builds found` when there is none.
 - 🐤 `buddy ts build <cjs|esm|tslib>`: runs `tsc -p tsconfig.<type>.json`,
   then marks `cjs` and `tslib` output as CommonJS with a `package.json`.
+  Errors: `tsc-failed`, `copy-failed`.
 - 🐤 `buddy ts copy-cjs-package-json <dir> [cwd]` (alias `cpj`): copies that `package.json` into `<cwd>/<dir>`.
-  `cwd` defaults to the current directory.
+  `cwd` defaults to the current directory. Error: `copy-failed`.
+
+Every command takes `--help`, which ends with examples.
 
 [@repobuddy/typescript]: ./readme.md
 [downloads-image]: https://img.shields.io/npm/dm/@repobuddy/typescript.svg?style=flat
