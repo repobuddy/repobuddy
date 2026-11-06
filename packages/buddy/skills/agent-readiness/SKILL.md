@@ -281,7 +281,7 @@ tokens an agent reads to learn the API; smaller is cheaper, but size is not a de
 | Types and exports | `references/areas/package-api.md` | none |
 | Docs | `references/areas/package-docs.md` | none |
 | Errors | `references/areas/package-errors.md` | none |
-| Changelog | `references/areas/package-changelog.md` | `init-changesets` (repobuddy/agent-changesets) |
+| Changelog | `references/areas/package-changelog.md` | `init-changesets` (repobuddy/buddy-changesets) |
 | llms.txt | `references/areas/package-llms-txt.md` | `llms-txt` |
 
 Every `llms.txt` fix goes to `llms-txt`, which generates the file and wires its drift check. This

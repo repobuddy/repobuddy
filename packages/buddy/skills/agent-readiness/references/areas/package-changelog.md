@@ -18,5 +18,5 @@ A changelog that lives on a releases page instead of in the package fails `chang
 agent reading `node_modules` cannot see it. Say where it lives. A `0.x` minor that breaks is not
 flagged, since the script only compares majors; mention it if you see one.
 
-Fixes go to `init-changesets` (repobuddy/agent-changesets), which writes a changelog per package with
+Fixes go to `init-changesets` (repobuddy/buddy-changesets), which writes a changelog per package with
 breaking changes under "Major Changes".
