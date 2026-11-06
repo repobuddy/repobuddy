@@ -4,7 +4,7 @@ globalThis.__SKILL_SCRIPT__ = {"package":"repobuddy","bin":"repobuddy","version"
 import { existsSync, readFileSync } from "node:fs";
 import { homedir, platform } from "node:os";
 import { join, resolve } from "node:path";
-//#region src/permissions/auto-mode-drops.ts
+// src/permissions/auto-mode-drops.ts
 /**
 * The allow rules Claude Code drops while auto mode is active, as observed with Claude Code 2.1.316:
 * a session started with `--permission-mode auto` logs "Ignoring dangerous permission <rule> ...
@@ -63,8 +63,7 @@ function droppedInAutoMode(tool, arg) {
 	if (tool !== "Bash") return null;
 	return DROPPED.find(([, prefixes]) => prefixes.includes(prefix))?.[0] ?? null;
 }
-//#endregion
-//#region src/permissions/template-text.ts
+// src/permissions/template-text.ts
 /**
 * Words that mark an `autoMode` entry as a template nobody filled in. They are tested on the entry
 * with its code spans removed, and an angle placeholder inside a path or URL (`~/code/<repo>`) is
@@ -91,8 +90,7 @@ function templateMarkers(entry) {
 	}
 	return found;
 }
-//#endregion
-//#region src/skills/scan-permissions.ts
+// src/skills/scan-permissions.ts
 /**
 * Collect and assess the permissions a user has granted to their agent harnesses.
 *
@@ -929,5 +927,4 @@ if (notes.length) {
 	for (const n of notes) out.push(`  - ${n}`);
 }
 process.stdout.write(`${out.join("\n")}\n`);
-//#endregion
 export {};

@@ -4,7 +4,7 @@ import { execFileSync } from "node:child_process";
 import { accessSync, constants, readFileSync, statSync } from "node:fs";
 import { homedir } from "node:os";
 import { delimiter, join, resolve } from "node:path";
-//#region src/permissions/deny-entries.ts
+// src/permissions/deny-entries.ts
 /**
 * Deny entries from `skills/init-buddy/references/deny-list.md` (Entries, Claude Code) that more than
 * one script writes.
@@ -24,8 +24,7 @@ const FORCE_PUSH_DENY = [
 ];
 /** `gh pr merge --admin`, which merges past the required checks. */
 const GITHUB_ADMIN_MERGE_DENY = ["Bash(gh pr merge --admin*)", "Bash(gh pr merge * --admin*)"];
-//#endregion
-//#region src/skills/permission-candidates.ts
+// src/skills/permission-candidates.ts
 const HOSTS = [
 	"github",
 	"gitlab",
@@ -436,5 +435,4 @@ async function main(argv = process.argv.slice(2)) {
 }
 /* istanbul ignore next -- process.argv entrypoint guard, covered by bundles.spec.ts (child process) */
 if (process.argv[1]?.endsWith("permission-candidates.mjs")) await main();
-//#endregion
 export { candidates, main };

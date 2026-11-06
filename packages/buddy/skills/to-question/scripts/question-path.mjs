@@ -4,7 +4,7 @@ globalThis.__SKILL_SCRIPT__ = {"package":"repobuddy","bin":"repobuddy","version"
 import { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-//#region src/skills/question-path.ts
+// src/skills/question-path.ts
 /**
 * Print the path the composed question should be written to.
 *
@@ -20,5 +20,4 @@ import { join } from "node:path";
 * carries a random suffix: no collision, and no other user can read it.
 */
 process.stdout.write(`${join(mkdtempSync(join(tmpdir(), "to-question-")), "question.md")}\n`);
-//#endregion
 export {};
