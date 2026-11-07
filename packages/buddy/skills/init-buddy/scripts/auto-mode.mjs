@@ -4,7 +4,7 @@ import { spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { dirname, join, resolve } from "node:path";
-//#region src/permissions/deny-entries.ts
+// src/permissions/deny-entries.ts
 /**
 * Deny entries from `skills/init-buddy/references/deny-list.md` (Entries, Claude Code) that more than
 * one script writes.
@@ -24,8 +24,7 @@ const FORCE_PUSH_DENY = [
 ];
 /** `gh pr merge --admin`, which merges past the required checks. */
 const GITHUB_ADMIN_MERGE_DENY = ["Bash(gh pr merge --admin*)", "Bash(gh pr merge * --admin*)"];
-//#endregion
-//#region src/permissions/template-text.ts
+// src/permissions/template-text.ts
 /**
 * Words that mark an `autoMode` entry as a template nobody filled in. They are tested on the entry
 * with its code spans removed, and an angle placeholder inside a path or URL (`~/code/<repo>`) is
@@ -52,8 +51,7 @@ function templateMarkers(entry) {
 	}
 	return found;
 }
-//#endregion
-//#region src/skills/auto-mode.ts
+// src/skills/auto-mode.ts
 const USAGE = `usage: auto-mode.mjs check    [--project <dir>] [--home <dir>]
        auto-mode.mjs discover [--project <dir>] [--home <dir>]
        auto-mode.mjs render   <answers.json>
@@ -529,5 +527,4 @@ async function main(argv = process.argv.slice(2)) {
 }
 /* istanbul ignore next -- process.argv entrypoint guard, covered by bundles.spec.ts (child process) */
 if (process.argv[1]?.endsWith("auto-mode.mjs")) await main();
-//#endregion
 export { RULES, apply, check, discover, main, render };
