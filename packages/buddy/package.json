@@ -59,7 +59,7 @@
 		"verify": "npm-run-all -p build typecheck -p test"
 	},
 	"devDependencies": {
-		"@clibuilder/plugins": "0.2.1",
+		"@clibuilder/plugins": "0.3.0",
 		"cyber-agentkit": "^2.1.0",
 		"@jest/globals": "^30.0.0",
 		"@repobuddy/jest": "workspace:*",
