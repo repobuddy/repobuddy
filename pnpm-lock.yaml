@@ -423,8 +423,8 @@ importers:
         version: 10.0.1
     devDependencies:
       '@clibuilder/plugins':
-        specifier: 0.2.1
-        version: 0.2.1(clibuilder@12.2.0(js-yaml@4.3.2))
+        specifier: 0.3.0
+        version: 0.3.0(clibuilder@12.2.0(js-yaml@4.3.2))
       '@size-limit/preset-small-lib':
         specifier: ~14.3.0
         version: 14.3.0(size-limit@14.3.0)
@@ -1483,6 +1483,12 @@ packages:
     engines: {node: '>= 20.19'}
     peerDependencies:
       clibuilder: ^12.1.1
+
+  '@clibuilder/plugins@0.3.0':
+    resolution: {integrity: sha512-t2U32XcSKMgw8MsaDCt9mpVSSTN4mKBkFOdBqPFJHoe9QUH6s4OcUT5SdKvMocyfb1JntRT/Ikff3AqFvT8Aow==}
+    engines: {node: '>= 20.19'}
+    peerDependencies:
+      clibuilder: ^12.2.0
 
   '@commitlint/cli@21.2.2':
     resolution: {integrity: sha512-a+6hQxIxnpdvSvS2apvttPNbEliYsVC3PqFYDiiB2kjbwIsQsj1urvQ4Tkf70pKYozPalKAuRQmm/GHwndduqA==}
@@ -5165,6 +5171,10 @@ packages:
     resolution: {integrity: sha512-5bQRIhtLkyLRXxDsUX/GzXLx7vlfFJIlrPinxpmDD0s1n26UzA6Fxva1YOWTW3J31mDL683yZUIxohR3n7ZhUg==}
     engines: {bun: '>=1.0', node: '>=20.19'}
 
+  find-installed-packages@4.0.2:
+    resolution: {integrity: sha512-WlGcs8PfOx1IMizd1IxKvQVCFgpcVd1sngVjGLnpsZ/66NYvvwIPXCrMv6ib8Oji7VX7KYETr/p1FJMgvtC9Yg==}
+    engines: {bun: '>=1.0', node: '>=20.19'}
+
   find-proc@0.2.0:
     resolution: {integrity: sha512-a6h2nTrgB3g5Wrn4au9Ux4kMk7IJtyF6oA8uGn+mk3weLZssUtc1cp6meHIzzuW2o1srrBAxzkmXLbqjRkgB6w==}
     engines: {node: ^20.19.0 || >=22.12.0}
@@ -8633,10 +8643,10 @@ snapshots:
       import-meta-resolve: 4.2.0
       search-packages: 2.2.3
 
-  '@clibuilder/plugins@0.2.1(clibuilder@12.2.0(js-yaml@4.3.2))':
+  '@clibuilder/plugins@0.3.0(clibuilder@12.2.0(js-yaml@4.3.2))':
     dependencies:
       clibuilder: 12.2.0(js-yaml@4.3.2)
-      find-installed-packages: 4.0.1
+      find-installed-packages: 4.0.2
       import-meta-resolve: 4.2.0
       search-packages: 2.2.3
 
@@ -11913,6 +11923,12 @@ snapshots:
       to-regex-range: 5.0.1
 
   find-installed-packages@4.0.1:
+    dependencies:
+      package-manager-detector: 1.8.0
+      temp: 0.9.4
+      unpartial: 1.0.8
+
+  find-installed-packages@4.0.2:
     dependencies:
       package-manager-detector: 1.8.0
       temp: 0.9.4
