@@ -44,10 +44,6 @@ minimumReleaseAgeExclude:
   - cyber-agentkit@2.0.0
   # Council-authorized soak exemption for cyber-agentkit 2.1.0; remove after 2026-11-05T16:53Z.
   - cyber-agentkit@2.1.0
-  # Council-authorized soak exemption for @clibuilder/plugins 0.3.0 (#899); remove after 2026-11-07T09:31Z.
-  - '@clibuilder/plugins@0.3.0'
-  # Council-authorized soak exemption for find-installed-packages 4.0.2 (#899); remove after 2026-11-07T08:25Z.
-  - find-installed-packages@4.0.2
   # Renovate security update: sharp@0.35.5
   - sharp@0.35.5
 
