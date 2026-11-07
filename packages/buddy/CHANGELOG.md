@@ -1,5 +1,11 @@
 # repobuddy
 
+## 4.5.1
+
+### Patch Changes
+
+- 698b30c: Point the `agent-readiness` skill at `repobuddy/buddy-changesets`, the new name of `repobuddy/agent-changesets`.
+
 ## 4.5.0
 
 ### Minor Changes
