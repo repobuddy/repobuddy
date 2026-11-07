@@ -314,7 +314,7 @@ importers:
         version: 30.0.0
       assertron:
         specifier: ^11.7.1
-        version: 11.7.1(typescript@6.0.3)
+        version: 11.7.1(typescript@7.0.2)
       chalk:
         specifier: ^6.0.0
         version: 6.0.0
@@ -356,10 +356,10 @@ importers:
         version: 7.2.0
       ts-jest:
         specifier: 29.4.15
-        version: 29.4.15(@babel/core@7.29.7(supports-color@8.1.1))(@jest/transform@30.4.1(supports-color@8.1.1))(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(esbuild@0.28.1)(jest-util@30.4.1)(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))(typescript@6.0.3)
+        version: 29.4.15(@babel/core@7.29.7(supports-color@8.1.1))(@jest/transform@30.4.1(supports-color@8.1.1))(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(esbuild@0.28.1)(jest-util@30.4.1)(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))(typescript@7.0.2)
       typescript:
-        specifier: ^6.0.0
-        version: 6.0.3
+        specifier: ^7.0.0
+        version: 7.0.2
 
   packages/test:
     dependencies:
@@ -540,7 +540,7 @@ importers:
         version: 7.2.0
       type-plus:
         specifier: 8.0.0
-        version: 8.0.0(typescript@6.0.3)
+        version: 8.0.0(typescript@7.0.2)
       uuid:
         specifier: ^14.0.0
         version: 14.0.1
@@ -556,7 +556,7 @@ importers:
         version: 30.0.0
       assertron:
         specifier: ^11.7.1
-        version: 11.7.1(typescript@6.0.3)
+        version: 11.7.1(typescript@7.0.2)
       cross-env:
         specifier: ^10.1.0
         version: 10.1.0
@@ -580,10 +580,10 @@ importers:
         version: 6.1.3
       ts-jest:
         specifier: 29.4.15
-        version: 29.4.15(@babel/core@7.29.7(supports-color@8.1.1))(@jest/transform@30.4.1(supports-color@8.1.1))(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(esbuild@0.28.1)(jest-util@30.4.1)(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))(typescript@6.0.3)
+        version: 29.4.15(@babel/core@7.29.7(supports-color@8.1.1))(@jest/transform@30.4.1(supports-color@8.1.1))(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(esbuild@0.28.1)(jest-util@30.4.1)(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))(typescript@7.0.2)
       typescript:
-        specifier: ^6.0.0
-        version: 6.0.3
+        specifier: ^7.0.0
+        version: 7.0.2
       vitest:
         specifier: ^5.0.0
         version: 5.0.3(@types/node@24.13.3)(@vitest/browser-playwright@5.0.3)(@vitest/coverage-v8@5.0.3)(@vitest/ui@5.0.3)(jsdom@26.1.0(supports-color@8.1.1))(vite@8.2.0(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.7.0)(yaml@2.9.0))
@@ -598,7 +598,7 @@ importers:
         version: 7.2.0
       type-plus:
         specifier: 8.0.0
-        version: 8.0.0(typescript@6.0.3)
+        version: 8.0.0(typescript@7.0.2)
       uuid:
         specifier: ^14.0.0
         version: 14.0.1
@@ -614,7 +614,7 @@ importers:
         version: 30.0.0
       assertron:
         specifier: ^11.7.1
-        version: 11.7.1(typescript@6.0.3)
+        version: 11.7.1(typescript@7.0.2)
       cross-env:
         specifier: ^10.1.0
         version: 10.1.0
@@ -638,10 +638,10 @@ importers:
         version: 6.1.3
       ts-jest:
         specifier: 29.4.15
-        version: 29.4.15(@babel/core@7.29.7(supports-color@8.1.1))(@jest/transform@30.4.1(supports-color@8.1.1))(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(esbuild@0.28.1)(jest-util@30.4.1)(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))(typescript@6.0.3)
+        version: 29.4.15(@babel/core@7.29.7(supports-color@8.1.1))(@jest/transform@30.4.1(supports-color@8.1.1))(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(esbuild@0.28.1)(jest-util@30.4.1)(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))(typescript@7.0.2)
       typescript:
-        specifier: ^6.0.0
-        version: 6.0.3
+        specifier: ^7.0.0
+        version: 7.0.2
       vitest:
         specifier: ^5.0.0
         version: 5.0.3(@types/node@24.13.3)(@vitest/browser-playwright@5.0.3)(@vitest/coverage-v8@5.0.3)(@vitest/ui@5.0.3)(jsdom@26.1.0(supports-color@8.1.1))(vite@8.2.0(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.7.0)(yaml@2.9.0))
@@ -731,10 +731,10 @@ importers:
         version: 3.0.1(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))
       ts-jest:
         specifier: 29.4.15
-        version: 29.4.15(@babel/core@7.29.7(supports-color@8.1.1))(@jest/transform@30.4.1(supports-color@8.1.1))(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(esbuild@0.28.1)(jest-util@30.4.1)(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))(typescript@6.0.3)
+        version: 29.4.15(@babel/core@7.29.7(supports-color@8.1.1))(@jest/transform@30.4.1(supports-color@8.1.1))(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(esbuild@0.28.1)(jest-util@30.4.1)(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))(typescript@7.0.2)
       typescript:
-        specifier: ^6.0.0
-        version: 6.0.3
+        specifier: ^7.0.0
+        version: 7.0.2
 
   testcases/ts-cjs:
     dependencies:
@@ -753,7 +753,7 @@ importers:
         version: 30.0.0
       assertron:
         specifier: ^11.7.1
-        version: 11.7.1(typescript@6.0.3)
+        version: 11.7.1(typescript@7.0.2)
       chalk:
         specifier: ^6.0.0
         version: 6.0.0
@@ -777,10 +777,10 @@ importers:
         version: 7.2.0
       ts-jest:
         specifier: 29.4.15
-        version: 29.4.15(@babel/core@7.29.7(supports-color@8.1.1))(@jest/transform@30.4.1(supports-color@8.1.1))(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(esbuild@0.28.1)(jest-util@30.4.1)(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))(typescript@6.0.3)
+        version: 29.4.15(@babel/core@7.29.7(supports-color@8.1.1))(@jest/transform@30.4.1(supports-color@8.1.1))(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(esbuild@0.28.1)(jest-util@30.4.1)(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))(typescript@7.0.2)
       typescript:
-        specifier: ^6.0.0
-        version: 6.0.3
+        specifier: ^7.0.0
+        version: 7.0.2
 
   testcases/ts-esm:
     devDependencies:
@@ -795,7 +795,7 @@ importers:
         version: link:../../packages/typescript
       assertron:
         specifier: ^11.7.1
-        version: 11.7.1(typescript@6.0.3)
+        version: 11.7.1(typescript@7.0.2)
       chalk:
         specifier: ^6.0.0
         version: 6.0.0
@@ -825,10 +825,10 @@ importers:
         version: 7.2.0
       ts-jest:
         specifier: 29.4.15
-        version: 29.4.15(@babel/core@7.29.7(supports-color@8.1.1))(@jest/transform@30.4.1(supports-color@8.1.1))(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(esbuild@0.28.1)(jest-util@30.4.1)(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))(typescript@6.0.3)
+        version: 29.4.15(@babel/core@7.29.7(supports-color@8.1.1))(@jest/transform@30.4.1(supports-color@8.1.1))(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(esbuild@0.28.1)(jest-util@30.4.1)(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))(typescript@7.0.2)
       typescript:
-        specifier: ^6.0.0
-        version: 6.0.3
+        specifier: ^7.0.0
+        version: 7.0.2
 
   testcases/two-chalk:
     devDependencies:
@@ -840,7 +840,7 @@ importers:
         version: link:../../packages/jest
       '@unional/fixture':
         specifier: ^6.0.2
-        version: 6.0.2(typescript@6.0.3)
+        version: 6.0.2(typescript@7.0.2)
       cross-env:
         specifier: ^10.1.0
         version: 10.1.0
@@ -861,10 +861,10 @@ importers:
         version: 3.0.1(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))
       ts-jest:
         specifier: 29.4.15
-        version: 29.4.15(@babel/core@7.29.7(supports-color@8.1.1))(@jest/transform@30.4.1(supports-color@8.1.1))(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(esbuild@0.28.1)(jest-util@30.4.1)(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))(typescript@6.0.3)
+        version: 29.4.15(@babel/core@7.29.7(supports-color@8.1.1))(@jest/transform@30.4.1(supports-color@8.1.1))(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(esbuild@0.28.1)(jest-util@30.4.1)(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))(typescript@7.0.2)
       typescript:
-        specifier: ^6.0.0
-        version: 6.0.3
+        specifier: ^7.0.0
+        version: 7.0.2
 
   testcases/with-t:
     devDependencies:
@@ -894,19 +894,19 @@ importers:
         version: 3.0.1(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))
       ts-jest:
         specifier: 29.4.15
-        version: 29.4.15(@babel/core@7.29.7(supports-color@8.1.1))(@jest/transform@30.4.1(supports-color@8.1.1))(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(esbuild@0.28.1)(jest-util@30.4.1)(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))(typescript@6.0.3)
+        version: 29.4.15(@babel/core@7.29.7(supports-color@8.1.1))(@jest/transform@30.4.1(supports-color@8.1.1))(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(esbuild@0.28.1)(jest-util@30.4.1)(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))(typescript@7.0.2)
       typescript:
-        specifier: ^6.0.0
-        version: 6.0.3
+        specifier: ^7.0.0
+        version: 7.0.2
 
   website:
     dependencies:
       '@astrojs/check':
         specifier: ^0.9.0
-        version: 0.9.10(prettier@3.9.6)(typescript@6.0.3)
+        version: 0.9.10(prettier@3.9.6)(typescript@7.0.2)
       '@astrojs/starlight':
         specifier: ^0.42.0
-        version: 0.42.4(astro@7.3.5(@types/node@24.13.3)(jiti@2.7.0)(yaml@2.9.0))(supports-color@8.1.1)(typescript@6.0.3)
+        version: 0.42.4(astro@7.3.5(@types/node@24.13.3)(jiti@2.7.0)(yaml@2.9.0))(supports-color@8.1.1)(typescript@7.0.2)
       astro:
         specifier: ^7.2.10
         version: 7.3.5(@types/node@24.13.3)(jiti@2.7.0)(yaml@2.9.0)
@@ -914,8 +914,8 @@ importers:
         specifier: ^0.35.0
         version: 0.35.5(@types/node@24.13.3)
       typescript:
-        specifier: ^6.0.0
-        version: 6.0.3
+        specifier: ^7.0.0
+        version: 7.0.2
 
 packages:
 
@@ -7354,11 +7354,6 @@ packages:
   typescript-auto-import-cache@0.3.6:
     resolution: {integrity: sha512-RpuHXrknHdVdK7wv/8ug3Fr0WNsNi5l5aB8MYYuXhq2UH5lnEB1htJ1smhtD5VeCsGr2p8mUDtd83LCQDFVgjQ==}
 
-  typescript@6.0.3:
-    resolution: {integrity: sha512-y2TvuxSZPDyQakkFRPZHKFm+KKVqIisdg9/CZwm9ftvKXLP8NRWj38/ODjNbr43SsoXqNuAisEf1GdCxqWcdBw==}
-    engines: {node: '>=14.17'}
-    hasBin: true
-
   typescript@7.0.2:
     resolution: {integrity: sha512-8FYau96o3NKOhbjKi/qNvG/W5jhzxkbdm5sj9AbZ/5T5sWqn3hJgLfGx27sRKZWTvyzCP8dLRBTf5tBTSRVUNA==}
     engines: {node: '>=16.20.0'}
@@ -8024,12 +8019,12 @@ snapshots:
       '@csstools/css-tokenizer': 3.0.4
       lru-cache: 10.4.3
 
-  '@astrojs/check@0.9.10(prettier@3.9.6)(typescript@6.0.3)':
+  '@astrojs/check@0.9.10(prettier@3.9.6)(typescript@7.0.2)':
     dependencies:
-      '@astrojs/language-server': 2.16.13(prettier@3.9.6)(typescript@6.0.3)
+      '@astrojs/language-server': 2.16.13(prettier@3.9.6)(typescript@7.0.2)
       chokidar: 4.0.3
       kleur: 4.1.5
-      typescript: 6.0.3
+      typescript: 7.0.2
       yargs: 18.1.0
     transitivePeerDependencies:
       - prettier
@@ -8099,24 +8094,24 @@ snapshots:
       smol-toml: 1.8.0
       unified: 11.0.5
 
-  '@astrojs/language-server@2.16.13(prettier@3.9.6)(typescript@6.0.3)':
+  '@astrojs/language-server@2.16.13(prettier@3.9.6)(typescript@7.0.2)':
     dependencies:
       '@astrojs/compiler': 2.13.1
       '@astrojs/yaml2ts': 0.2.4
       '@jridgewell/sourcemap-codec': 1.5.5
-      '@volar/kit': 2.4.28(typescript@6.0.3)
+      '@volar/kit': 2.4.28(typescript@7.0.2)
       '@volar/language-core': 2.4.28
-      '@volar/language-server': 2.4.28(typescript@6.0.3)
-      '@volar/language-service': 2.4.28(typescript@6.0.3)
+      '@volar/language-server': 2.4.28(typescript@7.0.2)
+      '@volar/language-service': 2.4.28(typescript@7.0.2)
       muggle-string: 0.4.1
       tinyglobby: 0.2.17
-      volar-service-css: 0.0.71(@volar/language-service@2.4.28(typescript@6.0.3))
-      volar-service-emmet: 0.0.71(@volar/language-service@2.4.28(typescript@6.0.3))
-      volar-service-html: 0.0.71(@volar/language-service@2.4.28(typescript@6.0.3))
-      volar-service-prettier: 0.0.71(@volar/language-service@2.4.28(typescript@6.0.3))(prettier@3.9.6)
-      volar-service-typescript: 0.0.71(@volar/language-service@2.4.28(typescript@6.0.3))(typescript@6.0.3)
-      volar-service-typescript-twoslash-queries: 0.0.71(@volar/language-service@2.4.28(typescript@6.0.3))(typescript@6.0.3)
-      volar-service-yaml: 0.0.71(@volar/language-service@2.4.28(typescript@6.0.3))
+      volar-service-css: 0.0.71(@volar/language-service@2.4.28(typescript@7.0.2))
+      volar-service-emmet: 0.0.71(@volar/language-service@2.4.28(typescript@7.0.2))
+      volar-service-html: 0.0.71(@volar/language-service@2.4.28(typescript@7.0.2))
+      volar-service-prettier: 0.0.71(@volar/language-service@2.4.28(typescript@7.0.2))(prettier@3.9.6)
+      volar-service-typescript: 0.0.71(@volar/language-service@2.4.28(typescript@7.0.2))(typescript@7.0.2)
+      volar-service-typescript-twoslash-queries: 0.0.71(@volar/language-service@2.4.28(typescript@7.0.2))(typescript@7.0.2)
+      volar-service-yaml: 0.0.71(@volar/language-service@2.4.28(typescript@7.0.2))
       vscode-html-languageservice: 5.6.2
       vscode-uri: 3.1.0
     optionalDependencies:
@@ -8148,7 +8143,7 @@ snapshots:
       stream-replace-string: 2.0.0
       zod: 4.4.3
 
-  '@astrojs/starlight@0.42.4(astro@7.3.5(@types/node@24.13.3)(jiti@2.7.0)(yaml@2.9.0))(supports-color@8.1.1)(typescript@6.0.3)':
+  '@astrojs/starlight@0.42.4(astro@7.3.5(@types/node@24.13.3)(jiti@2.7.0)(yaml@2.9.0))(supports-color@8.1.1)(typescript@7.0.2)':
     dependencies:
       '@astrojs/markdown-satteri': 0.4.2
       '@astrojs/mdx': 8.0.2(@astrojs/markdown-satteri@0.4.2)(astro@7.3.5(@types/node@24.13.3)(jiti@2.7.0)(yaml@2.9.0))
@@ -8165,7 +8160,7 @@ snapshots:
       hast-util-to-html: 9.0.5
       hast-util-to-string: 3.0.1
       hastscript: 9.0.1
-      i18next: 26.3.6(typescript@6.0.3)
+      i18next: 26.3.6(typescript@7.0.2)
       js-yaml: 4.3.1
       klona: 2.0.6
       magic-string: 1.4.2
@@ -9386,9 +9381,9 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.6.0
 
-  '@just-func/types@0.6.1(typescript@6.0.3)':
+  '@just-func/types@0.6.1(typescript@7.0.2)':
     dependencies:
-      type-plus: 8.0.0-beta.12(typescript@6.0.3)
+      type-plus: 8.0.0-beta.12(typescript@7.0.2)
     transitivePeerDependencies:
       - typescript
 
@@ -10521,7 +10516,7 @@ snapshots:
 
   '@ungap/structured-clone@1.3.1': {}
 
-  '@unional/fixture@6.0.2(typescript@6.0.3)':
+  '@unional/fixture@6.0.2(typescript@7.0.2)':
     dependencies:
       '@types/diff-match-patch': 1.0.36
       chalk: 5.6.2
@@ -10536,10 +10531,10 @@ snapshots:
       minimatch: 8.0.7
       pad-left: 2.1.0
       rimraf: 3.0.2
-      standard-log: 13.3.1(typescript@6.0.3)
-      standard-log-color: 13.3.1(standard-log@13.3.1(typescript@6.0.3))
+      standard-log: 13.3.1(typescript@7.0.2)
+      standard-log-color: 13.3.1(standard-log@13.3.1(typescript@7.0.2))
       tersify: 4.0.8
-      type-plus: 8.0.0-beta.12(typescript@6.0.3)
+      type-plus: 8.0.0-beta.12(typescript@7.0.2)
       unpartial: 1.0.8
     transitivePeerDependencies:
       - typescript
@@ -10805,12 +10800,12 @@ snapshots:
       convert-source-map: 2.0.0
       tinyrainbow: 3.1.1
 
-  '@volar/kit@2.4.28(typescript@6.0.3)':
+  '@volar/kit@2.4.28(typescript@7.0.2)':
     dependencies:
-      '@volar/language-service': 2.4.28(typescript@6.0.3)
-      '@volar/typescript': 2.4.28(typescript@6.0.3)
+      '@volar/language-service': 2.4.28(typescript@7.0.2)
+      '@volar/typescript': 2.4.28(typescript@7.0.2)
       typesafe-path: 0.2.2
-      typescript: 6.0.3
+      typescript: 7.0.2
       vscode-languageserver-textdocument: 1.0.12
       vscode-uri: 3.1.0
 
@@ -10818,11 +10813,11 @@ snapshots:
     dependencies:
       '@volar/source-map': 2.4.28
 
-  '@volar/language-server@2.4.28(typescript@6.0.3)':
+  '@volar/language-server@2.4.28(typescript@7.0.2)':
     dependencies:
       '@volar/language-core': 2.4.28
-      '@volar/language-service': 2.4.28(typescript@6.0.3)
-      '@volar/typescript': 2.4.28(typescript@6.0.3)
+      '@volar/language-service': 2.4.28(typescript@7.0.2)
+      '@volar/typescript': 2.4.28(typescript@7.0.2)
       path-browserify: 1.0.1
       request-light: 0.7.0
       vscode-languageserver: 9.0.1
@@ -10830,26 +10825,18 @@ snapshots:
       vscode-languageserver-textdocument: 1.0.12
       vscode-uri: 3.1.0
     optionalDependencies:
-      typescript: 6.0.3
+      typescript: 7.0.2
 
-  '@volar/language-service@2.4.28(typescript@6.0.3)':
+  '@volar/language-service@2.4.28(typescript@7.0.2)':
     dependencies:
       '@volar/language-core': 2.4.28
       vscode-languageserver-protocol: 3.18.2
       vscode-languageserver-textdocument: 1.0.12
       vscode-uri: 3.1.0
     optionalDependencies:
-      typescript: 6.0.3
+      typescript: 7.0.2
 
   '@volar/source-map@2.4.28': {}
-
-  '@volar/typescript@2.4.28(typescript@6.0.3)':
-    dependencies:
-      '@volar/language-core': 2.4.28
-      path-browserify: 1.0.1
-      vscode-uri: 3.1.0
-    optionalDependencies:
-      typescript: 6.0.3
 
   '@volar/typescript@2.4.28(typescript@7.0.2)':
     dependencies:
@@ -10858,7 +10845,6 @@ snapshots:
       vscode-uri: 3.1.0
     optionalDependencies:
       typescript: 7.0.2
-    optional: true
 
   '@vscode/emmet-helper@2.11.0':
     dependencies:
@@ -11032,17 +11018,6 @@ snapshots:
   array-slice@1.1.0: {}
 
   assertion-error@2.0.1: {}
-
-  assertron@11.7.1(typescript@6.0.3):
-    dependencies:
-      is-promise: 4.0.0
-      iso-error: 7.0.0
-      path-equal: 1.2.8
-      satisfier: 5.4.6
-      tersify: 4.0.8
-      type-plus: 8.0.0-beta.12(typescript@6.0.3)
-    transitivePeerDependencies:
-      - typescript
 
   assertron@11.7.1(typescript@7.0.2):
     dependencies:
@@ -12250,9 +12225,9 @@ snapshots:
 
   husky@9.1.7: {}
 
-  i18next@26.3.6(typescript@6.0.3):
+  i18next@26.3.6(typescript@7.0.2):
     optionalDependencies:
-      typescript: 6.0.3
+      typescript: 7.0.2
 
   iconv-lite@0.6.3:
     dependencies:
@@ -14214,19 +14189,19 @@ snapshots:
 
   stackback@0.0.2: {}
 
-  standard-log-color@13.3.1(standard-log@13.3.1(typescript@6.0.3)):
+  standard-log-color@13.3.1(standard-log@13.3.1(typescript@7.0.2)):
     dependencies:
       color-map: 2.0.6
-      standard-log: 13.3.1(typescript@6.0.3)
+      standard-log: 13.3.1(typescript@7.0.2)
       supports-color: 8.1.1
       unpartial: 1.0.8
 
-  standard-log@13.3.1(typescript@6.0.3):
+  standard-log@13.3.1(typescript@7.0.2):
     dependencies:
-      '@just-func/types': 0.6.1(typescript@6.0.3)
+      '@just-func/types': 0.6.1(typescript@7.0.2)
       iso-error: 7.0.0
       ms: 2.1.3
-      type-plus: 8.0.0-beta.12(typescript@6.0.3)
+      type-plus: 8.0.0-beta.12(typescript@7.0.2)
       unpartial: 1.0.8
     transitivePeerDependencies:
       - typescript
@@ -14481,7 +14456,7 @@ snapshots:
 
   ts-dedent@2.3.0: {}
 
-  ts-jest@29.4.15(@babel/core@7.29.7(supports-color@8.1.1))(@jest/transform@30.4.1(supports-color@8.1.1))(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(esbuild@0.28.1)(jest-util@30.4.1)(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))(typescript@6.0.3):
+  ts-jest@29.4.15(@babel/core@7.29.7(supports-color@8.1.1))(@jest/transform@30.4.1(supports-color@8.1.1))(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(esbuild@0.28.1)(jest-util@30.4.1)(jest@30.4.2(@types/node@24.13.3)(supports-color@8.1.1))(typescript@7.0.2):
     dependencies:
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
@@ -14492,7 +14467,7 @@ snapshots:
       make-error: 1.3.6
       semver: 7.8.5
       type-fest: 4.41.0
-      typescript: 6.0.3
+      typescript: 7.0.2
       yargs-parser: 21.1.1
     optionalDependencies:
       '@babel/core': 7.29.7(supports-color@8.1.1)
@@ -14557,17 +14532,11 @@ snapshots:
 
   type-fest@4.41.0: {}
 
-  type-plus@8.0.0(typescript@6.0.3):
+  type-plus@8.0.0(typescript@7.0.2):
     dependencies:
       unpartial: 1.0.8
     optionalDependencies:
-      typescript: 6.0.3
-
-  type-plus@8.0.0-beta.12(typescript@6.0.3):
-    dependencies:
-      tersify: 4.0.8
-      typescript: 6.0.3
-      unpartial: 1.0.8
+      typescript: 7.0.2
 
   type-plus@8.0.0-beta.12(typescript@7.0.2):
     dependencies:
@@ -14580,8 +14549,6 @@ snapshots:
   typescript-auto-import-cache@0.3.6:
     dependencies:
       semver: 7.8.5
-
-  typescript@6.0.3: {}
 
   typescript@7.0.2:
     optionalDependencies:
@@ -14866,46 +14833,46 @@ snapshots:
     transitivePeerDependencies:
       - msw
 
-  volar-service-css@0.0.71(@volar/language-service@2.4.28(typescript@6.0.3)):
+  volar-service-css@0.0.71(@volar/language-service@2.4.28(typescript@7.0.2)):
     dependencies:
       vscode-css-languageservice: 6.3.10
       vscode-languageserver-textdocument: 1.0.12
       vscode-uri: 3.1.0
     optionalDependencies:
-      '@volar/language-service': 2.4.28(typescript@6.0.3)
+      '@volar/language-service': 2.4.28(typescript@7.0.2)
 
-  volar-service-emmet@0.0.71(@volar/language-service@2.4.28(typescript@6.0.3)):
+  volar-service-emmet@0.0.71(@volar/language-service@2.4.28(typescript@7.0.2)):
     dependencies:
       '@emmetio/css-parser': 0.4.1
       '@emmetio/html-matcher': 1.3.0
       '@vscode/emmet-helper': 2.11.0
       vscode-uri: 3.1.0
     optionalDependencies:
-      '@volar/language-service': 2.4.28(typescript@6.0.3)
+      '@volar/language-service': 2.4.28(typescript@7.0.2)
 
-  volar-service-html@0.0.71(@volar/language-service@2.4.28(typescript@6.0.3)):
+  volar-service-html@0.0.71(@volar/language-service@2.4.28(typescript@7.0.2)):
     dependencies:
       vscode-html-languageservice: 5.6.2
       vscode-languageserver-textdocument: 1.0.12
       vscode-uri: 3.1.0
     optionalDependencies:
-      '@volar/language-service': 2.4.28(typescript@6.0.3)
+      '@volar/language-service': 2.4.28(typescript@7.0.2)
 
-  volar-service-prettier@0.0.71(@volar/language-service@2.4.28(typescript@6.0.3))(prettier@3.9.6):
+  volar-service-prettier@0.0.71(@volar/language-service@2.4.28(typescript@7.0.2))(prettier@3.9.6):
     dependencies:
       vscode-uri: 3.1.0
     optionalDependencies:
-      '@volar/language-service': 2.4.28(typescript@6.0.3)
+      '@volar/language-service': 2.4.28(typescript@7.0.2)
       prettier: 3.9.6
 
-  volar-service-typescript-twoslash-queries@0.0.71(@volar/language-service@2.4.28(typescript@6.0.3))(typescript@6.0.3):
+  volar-service-typescript-twoslash-queries@0.0.71(@volar/language-service@2.4.28(typescript@7.0.2))(typescript@7.0.2):
     dependencies:
       vscode-uri: 3.1.0
     optionalDependencies:
-      '@volar/language-service': 2.4.28(typescript@6.0.3)
-      typescript: 6.0.3
+      '@volar/language-service': 2.4.28(typescript@7.0.2)
+      typescript: 7.0.2
 
-  volar-service-typescript@0.0.71(@volar/language-service@2.4.28(typescript@6.0.3))(typescript@6.0.3):
+  volar-service-typescript@0.0.71(@volar/language-service@2.4.28(typescript@7.0.2))(typescript@7.0.2):
     dependencies:
       path-browserify: 1.0.1
       semver: 7.8.5
@@ -14914,15 +14881,15 @@ snapshots:
       vscode-nls: 5.2.0
       vscode-uri: 3.1.0
     optionalDependencies:
-      '@volar/language-service': 2.4.28(typescript@6.0.3)
-      typescript: 6.0.3
+      '@volar/language-service': 2.4.28(typescript@7.0.2)
+      typescript: 7.0.2
 
-  volar-service-yaml@0.0.71(@volar/language-service@2.4.28(typescript@6.0.3)):
+  volar-service-yaml@0.0.71(@volar/language-service@2.4.28(typescript@7.0.2)):
     dependencies:
       vscode-uri: 3.1.0
       yaml-language-server: 1.23.0
     optionalDependencies:
-      '@volar/language-service': 2.4.28(typescript@6.0.3)
+      '@volar/language-service': 2.4.28(typescript@7.0.2)
 
   vscode-css-languageservice@6.3.10:
     dependencies:
