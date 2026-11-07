@@ -243,8 +243,8 @@ importers:
   packages/buddy:
     devDependencies:
       '@clibuilder/plugins':
-        specifier: 0.2.1
-        version: 0.2.1(clibuilder@12.1.1(js-yaml@4.3.2))
+        specifier: 0.3.0
+        version: 0.3.0(clibuilder@12.1.1(js-yaml@4.3.2))
       '@jest/globals':
         specifier: ^30.0.0
         version: 30.4.1(supports-color@8.1.1)
@@ -1477,12 +1477,6 @@ packages:
   '@clack/prompts@1.7.0':
     resolution: {integrity: sha512-y7/yvZ2TPAnR9+jnc00klvNNLkJiXFFrQA/hlLCcxA9a2A4zQIOimyFQ9XfwYKiGD1fb5GY8vbKIIgO8d5Tb2A==}
     engines: {node: '>= 20.12.0'}
-
-  '@clibuilder/plugins@0.2.1':
-    resolution: {integrity: sha512-fc2x8aY0HfnkiCBNCXgrI15yrDnu9HqQ3B9DRAgp/ibcvBOFSEEBxUD7BYf4JzNzTWfqMPsNu7DlPhtJFxx5kA==}
-    engines: {node: '>= 20.19'}
-    peerDependencies:
-      clibuilder: ^12.1.1
 
   '@clibuilder/plugins@0.3.0':
     resolution: {integrity: sha512-t2U32XcSKMgw8MsaDCt9mpVSSTN4mKBkFOdBqPFJHoe9QUH6s4OcUT5SdKvMocyfb1JntRT/Ikff3AqFvT8Aow==}
@@ -5167,10 +5161,6 @@ packages:
     resolution: {integrity: sha512-YsGpe3WHLK8ZYi4tWDg2Jy3ebRz2rXowDxnld4bkQB00cc/1Zw9AWnC0i9ztDJitivtQvaI9KaLyKrc+hBW0yg==}
     engines: {node: '>=8'}
 
-  find-installed-packages@4.0.1:
-    resolution: {integrity: sha512-5bQRIhtLkyLRXxDsUX/GzXLx7vlfFJIlrPinxpmDD0s1n26UzA6Fxva1YOWTW3J31mDL683yZUIxohR3n7ZhUg==}
-    engines: {bun: '>=1.0', node: '>=20.19'}
-
   find-installed-packages@4.0.2:
     resolution: {integrity: sha512-WlGcs8PfOx1IMizd1IxKvQVCFgpcVd1sngVjGLnpsZ/66NYvvwIPXCrMv6ib8Oji7VX7KYETr/p1FJMgvtC9Yg==}
     engines: {bun: '>=1.0', node: '>=20.19'}
@@ -8636,10 +8626,10 @@ snapshots:
       fast-wrap-ansi: 0.2.2
       sisteransi: 1.0.5
 
-  '@clibuilder/plugins@0.2.1(clibuilder@12.1.1(js-yaml@4.3.2))':
+  '@clibuilder/plugins@0.3.0(clibuilder@12.1.1(js-yaml@4.3.2))':
     dependencies:
       clibuilder: 12.1.1(js-yaml@4.3.2)
-      find-installed-packages: 4.0.1
+      find-installed-packages: 4.0.2
       import-meta-resolve: 4.2.0
       search-packages: 2.2.3
 
@@ -11921,12 +11911,6 @@ snapshots:
   fill-range@7.1.1:
     dependencies:
       to-regex-range: 5.0.1
-
-  find-installed-packages@4.0.1:
-    dependencies:
-      package-manager-detector: 1.8.0
-      temp: 0.9.4
-      unpartial: 1.0.8
 
   find-installed-packages@4.0.2:
     dependencies:
