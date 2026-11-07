@@ -264,8 +264,8 @@ importers:
         specifier: ^2.1.0
         version: 2.1.0(clibuilder@12.1.1(js-yaml@4.3.2))
       cyber-mux:
-        specifier: ^0.10.0
-        version: 0.10.0(js-yaml@4.3.2)
+        specifier: ^0.12.0
+        version: 0.12.0(clibuilder@12.1.1(js-yaml@4.3.2))
       jest:
         specifier: ^30.0.0
         version: 30.4.2(@types/node@24.13.3)(supports-color@8.1.1)
@@ -1600,17 +1600,6 @@ packages:
   '@ctrl/tinycolor@4.2.0':
     resolution: {integrity: sha512-kzyuwOAQnXJNLS9PSyrk0CWk35nWJW/zl/6KvnTBMFK65gm7U1/Z5BqjxeapjZCIhQcM/DsrEmcbRwDyXyXK4A==}
     engines: {node: '>=14'}
-
-  '@cyberuni/agent-harness@0.7.0':
-    resolution: {integrity: sha512-d3I2Z2sg3JeRcOM6LGO2oPA7dGGxAeRzjEihx8SDkAWzXjOLtMf3umApsu7iej5FxsHkXJpiag7+UubbJdDHsA==}
-    engines: {node: '>=22'}
-    deprecated: Renamed to cyber-agentkit
-    hasBin: true
-    peerDependencies:
-      clibuilder: ^12.0.0
-    peerDependenciesMeta:
-      clibuilder:
-        optional: true
 
   '@emmetio/abbreviation@2.3.3':
     resolution: {integrity: sha512-mgv58UrU3rh4YgbE/TzgLQwJ3pFsHHhCLqY20aJq+9comytTXUDNGG/SMtSeMJdkpxgXSXunBGLD8Boka3JyVA==}
@@ -4784,10 +4773,15 @@ packages:
       clibuilder:
         optional: true
 
-  cyber-mux@0.10.0:
-    resolution: {integrity: sha512-QnBnenL1hfOhL7mXGpRcg54N6wQNpFAbJGceHYIgSAFJkTKgwejZZKIyXT58C/KDiwB4/0rFjkOff94Veqr8fw==}
+  cyber-mux@0.12.0:
+    resolution: {integrity: sha512-sEStYZyDsPE3sEFWvYK0FnXcE5P79pPoNQOt+EMxiOsEPm/ERg8MdFKjxZYDNNePWqhVNmjaDV7hCzWdwsCL2Q==}
     engines: {node: '>=22'}
     hasBin: true
+    peerDependencies:
+      clibuilder: ^12.2.0
+    peerDependenciesMeta:
+      clibuilder:
+        optional: true
 
   data-urls@5.0.0:
     resolution: {integrity: sha512-ZYP5VBHshaDAiVZxjbRVcFJpc+4xGgT0bK3vzy1HLN8jTO975HEbuYzZJcHoQEY5K1a0z8YayJkyVETa08eNTg==}
@@ -8781,10 +8775,6 @@ snapshots:
 
   '@ctrl/tinycolor@4.2.0': {}
 
-  '@cyberuni/agent-harness@0.7.0(clibuilder@12.1.1(js-yaml@4.3.2))':
-    optionalDependencies:
-      clibuilder: 12.1.1(js-yaml@4.3.2)
-
   '@emmetio/abbreviation@2.3.3':
     dependencies:
       '@emmetio/scanner': 1.0.4
@@ -11520,12 +11510,11 @@ snapshots:
     optionalDependencies:
       clibuilder: 12.1.1(js-yaml@4.3.2)
 
-  cyber-mux@0.10.0(js-yaml@4.3.2):
+  cyber-mux@0.12.0(clibuilder@12.1.1(js-yaml@4.3.2)):
     dependencies:
-      '@cyberuni/agent-harness': 0.7.0(clibuilder@12.1.1(js-yaml@4.3.2))
+      cyber-agentkit: 2.1.0(clibuilder@12.1.1(js-yaml@4.3.2))
+    optionalDependencies:
       clibuilder: 12.1.1(js-yaml@4.3.2)
-    transitivePeerDependencies:
-      - js-yaml
 
   data-urls@5.0.0:
     dependencies:
