@@ -60,3 +60,30 @@ another commit skill` are static checks of files, not simulated behavior.
 The git mechanics (hunk patch with `git apply --cached`, the `-U0` split, `update-index --cacheinfo`,
 the stash `--keep-index` round trip, `commitlint < file`) were exercised by hand in a scratch repository
 when the skill was written (#900), not by an eval.
+
+## Runs
+
+Results are in `.agents/aced/results/skills-commit/` (git-ignored). Judge: `aced-case-judge` under
+claude-sonnet-5-5.
+
+**Run 1 (2026-11-13, subject 516e1cd5).** Trigger 28/30 (0.93, over 0.8); behavior 33/36. Failures:
+`stages one unit's lines from a changed run that holds both units` (took the `-U0` patch path for two
+adjacent lines), `asks the developer when the rules cannot place a change` (rewrote the shared line to
+fit one unit and committed without asking), and trigger rows "push my branch and open a pull request"
+and "amend my last commit message" (one run each selected the skill). `ships a skill file whose
+frontmatter and bundled reference copies are valid` failed because the simulation did not check the
+frontmatter; `validate-skill` shows name `commit` and a 90-character description.
+
+**Run 2 (2026-11-13, subject 38c4918b), after fixing the skill.** Re-ran the trigger layer, since its
+text changed, and the behavior scenarios the fixes touch; the other 30 behavior scenarios passed in run
+1 and were not re-run. Trigger 29/30 (0.97); the push-and-pull-request row still selected the skill once
+in three, reasoning that the uncommitted changes need a commit first. Both run-1 behavior failures now
+pass, as do the neighbouring `splits two units whose changes share one hunk`, `decides the split from
+the rules without asking up front`, and `stops and reports when the rules cannot decide`. `ships a skill
+file…` failed once more, on a claim that `commit.message.default.md` has an extra line (a diff shows it
+equals the canonical file less its `extends` line), then passed on a retry. It is recorded as failing,
+so the latest result does not claim `implementation_pass`. A static file check is a poor fit for a
+simulated judge; `validate-skill` and `sync-skill-references.mjs --check` are the reliable checks for it.
+
+Running many judges at once hits the harness's 20-subagent limit, since each judge starts its own
+simulator; two run-1 cases came back unmeasured that way and were re-run. Keep waves under ten judges.
