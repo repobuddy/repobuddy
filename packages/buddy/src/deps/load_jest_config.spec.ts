@@ -22,7 +22,7 @@ function project(setup: {
 		const content = files[String(path)]
 		if (content === undefined) throw new Error(`ENOENT: ${path}`)
 		return content
-	}) as typeof ctx.readFile
+	}) as unknown as typeof ctx.readFile
 	ctx.importModule = async (path) => {
 		const module = modules[path]
 		if (!module) throw new Error(`cannot import ${path}`)
