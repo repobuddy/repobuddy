@@ -2,7 +2,7 @@
 
 Codeberg Pages (the git-pages server), deployed by a Forgejo Actions workflow. It is a Codeberg service,
 not a Forgejo feature: self-hosted Forgejo and Gitea have no built-in static hosting (see Step 1 of
-[deploy.md](deploy.md)).
+the `website.deploy` reference).
 
 Reference: [Codeberg Pages](https://docs.codeberg.org/codeberg-pages/),
 [deploying from Forgejo Actions](https://docs.codeberg.org/codeberg-pages/forgejo-actions/),
