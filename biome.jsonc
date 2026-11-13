@@ -30,7 +30,17 @@
 		"enabled": true,
 		"useEditorconfig": true
 	},
+	"yaml": {
+		// Biome 2.6 formats YAML with double quotes by default; pnpm, Renovate, and eslint `yml/quotes` use single.
+		// Drop this once the @repobuddy/biome presets set it (#920).
+		"formatter": { "quoteStyle": "single" }
+	},
 	"overrides": [
+		{
+			// A fragment pre-indented to paste under `pipelines: custom:`; the formatter would dedent it.
+			"includes": ["packages/buddy/skills/min-release-age/assets/ci/bitbucket.yml"],
+			"formatter": { "enabled": false }
+		},
 		{
 			// Repo maintenance CLIs: printing is their output, and they read their own env config.
 			"includes": ["**/scripts/**"],

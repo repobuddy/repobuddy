@@ -24,4 +24,3 @@ jobs:
       pull-requests: write
       # Approves the Version Packages PR's parked pull_request runs (CI, CodeQL).
       actions: write
-
