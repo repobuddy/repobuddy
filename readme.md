@@ -69,10 +69,11 @@ Dashboard → Plugins → Team Marketplaces → Add Marketplace → Import from 
 
 Several skills load their instructions with the `reference` skill of the
 [`cyber-agentkit`](https://github.com/cyber-uni/cyber-agentkit) plugin, so a plugin, a repository, or a
-user can customize them. `repobuddy` declares `cyber-agentkit` as a plugin dependency, but only Claude
-Code installs plugin dependencies. On Cursor, Codex, and GitHub Copilot CLI, install `cyber-agentkit` by
-hand from its marketplace, `cyber-uni/marketplace`. Without it, a skill that ships a default reads that
-default, and no customization applies.
+user can customize them. `repobuddy` declares `cyber-agentkit` as a plugin dependency. Claude Code
+resolves it when you install `repobuddy` from `cyber-uni/marketplace`, which lists both plugins. It is
+the only harness that installs plugin dependencies. On Cursor, Codex, and GitHub Copilot CLI, install
+`cyber-agentkit` by hand from its marketplace, `cyber-uni/marketplace`. Without it, a skill that ships a
+default reads that default, and no customization applies.
 
 See [Install the skills](https://repobuddy.github.io/repobuddy/skills/install/) for the update and uninstall
 commands of each route.
