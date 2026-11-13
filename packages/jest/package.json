@@ -416,7 +416,6 @@
 	},
 	"dependencies": {
 		"jest-resolve": "^30.0.0",
-		"read-pkg-up": "^7.0.1",
 		"resolve.imports": "^2.0.0",
 		"satisfier": "^5.4.6"
 	},

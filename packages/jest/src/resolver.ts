@@ -1,18 +1,18 @@
 import { dirname, join } from 'node:path'
 import type { ResolverOptions } from 'jest-resolve'
-import { sync as readPkgSync } from 'read-pkg-up'
 import { resolve } from 'resolve.imports'
+import { readPackageUpSync } from './utils/read_package_up.js'
 
 // istanbul ignore next
 export function sync(path: string, options: ResolverOptions) {
 	try {
 		return options.defaultResolver(path, options)
 	} catch {
-		const result = readPkgSync({ cwd: options.basedir })!
+		const result = readPackageUpSync(options.basedir)!
 		// `options.conditions` is `[ 'require', 'default', 'node', 'node-addons' ]`
 		// which is not correct as it will take `default` over `node`.
 		const conditions = options.conditions ? options.conditions.filter((c) => c !== 'default') : []
-		const mapped = resolve({ content: result.packageJson['imports'], base: options.basedir, path: result.path }, path, {
+		const mapped = resolve({ content: result.packageJson, base: options.basedir, path: result.path }, path, {
 			conditions,
 		})
 		if (mapped) {
