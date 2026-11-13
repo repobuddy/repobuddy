@@ -37,8 +37,8 @@ extends from `node_modules` when present. A rule whose level is `0` is off.
 | `header-max-length` | the longest first line |
 | `body-max-line-length` | where the body wraps |
 
-With no commitlint config, use the rules of `@commitlint/config-conventional`: the types `build`,
-`chore`, `ci`, `docs`, `feat`, `fix`, `perf`, `refactor`, `revert`, `style`, `test`; a subject not in
+With no commitlint config, use the rules of `@commitlint/config-conventional`: the types in the
+[Type](#type) section; a subject not in
 sentence, start, pascal, or upper case; a header and body lines of at most 100 characters. Take the
 scope from what `git log --oneline -20` shows the repository uses, and leave it out when it shows none.
 
@@ -60,7 +60,8 @@ Check the message before committing when commitlint is installed:
 | `style` | formatting only |
 | `revert` | reverts an earlier commit |
 
-Use only a type the rules allow. When two fit, the one higher in this table wins.
+Use only a type the rules allow: with a commitlint config, its `type-enum`; without one, the types in
+this table. When two fit, the one higher in this table wins.
 
 ## Subject
 
