@@ -42,6 +42,11 @@ This is the content of `packages/biome/recommended.jsonc` with the comments shor
 			"semicolons": "asNeeded"
 		}
 	},
+	"yaml": {
+		"formatter": {
+			"quoteStyle": "single"
+		}
+	},
 	"linter": {
 		"enabled": true,
 		"rules": {
@@ -127,6 +132,7 @@ Markdown, so the exclusion has no effect today.
 | `javascript.formatter.quoteStyle` | `single` |
 | `javascript.formatter.semicolons` | `asNeeded` |
 | `javascript.formatter.trailingCommas` | not set (Biome default, `all`) |
+| `yaml.formatter.quoteStyle` | `single`, matching what pnpm and Renovate write to `pnpm-workspace.yaml` |
 | `**/package.json` `formatter.lineWidth` | `20`, so the output matches `sort-package-json` |
 
 ## Linter

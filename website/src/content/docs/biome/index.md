@@ -19,7 +19,7 @@ yarn add -D @repobuddy/biome @biomejs/biome
 pnpm add -D @repobuddy/biome @biomejs/biome
 ```
 
-The package declares `@biomejs/biome >= 2` as a peer dependency. Install Biome alongside it.
+The package declares `@biomejs/biome >= 2.6.0` as a peer dependency. Install Biome alongside it.
 
 ```jsonc
 // biome.json
@@ -42,19 +42,20 @@ To see every difference in one table, read [recommended vs performant](/repobudd
 
 | Area | Support | Source |
 | --- | --- | --- |
-| Biome | `@biomejs/biome >= 2` (peer dependency). Tested in this repository with 2.5.15. | `packages/biome/package.json` |
+| Biome | `@biomejs/biome >= 2.6.0` (peer dependency). Tested in this repository with 2.6.7. | `packages/biome/package.json` |
 | Config format | JSONC files, exported as `.`, `./recommended`, and `./performant`. | `packages/biome/package.json` |
 | Module format | Not applicable. The package contains no JavaScript. | `packages/biome/package.json` (`files`) |
 | File types | Every file Biome processes, except `**/.vscode/**/*.txt` and `**/*.md`. | `recommended.jsonc`, `performant.jsonc` |
-| Formatter | Tabs, `lf`, line width 120, single quotes, semicolons as needed. | both configs |
+| Formatter | Tabs, `lf`, line width 120, single quotes in JavaScript and YAML, semicolons as needed. | both configs |
 
 With the presets applied, Biome 2.5.15 picked up JavaScript, TypeScript, JSX/TSX, JSON, JSONC, CSS, GraphQL, Svelte,
-Vue, Astro, and HTML files in a scratch project. It ignored `.yaml` and `.md` files. What Biome supports is Biome's
+Vue, Astro, and HTML files in a scratch project. It ignored `.yaml` and `.md` files. Biome 2.6 also formats YAML, which is why the configs
+set `yaml.formatter.quoteStyle`. What Biome supports is Biome's
 decision; see the [Biome documentation](https://biomejs.dev).
 
 ## Not supported
 
-- Biome 1.x. The peer range is `>= 2`, and the configs use Biome 2 keys (`assist`, `files.includes`).
+- Biome 1.x. The peer range is `>= 2.6.0`, and the configs use Biome 2 keys (`assist`, `files.includes`).
 - Markdown. Both configs exclude `**/*.md`. Biome 2.5 does not process Markdown anyway, and the exclusion stays as a
   guard (see the comment in `recommended.jsonc`).
 - YAML linting. Biome does not process `.yaml` files, and the presets add nothing for them. This repository lints YAML

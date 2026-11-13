@@ -14,7 +14,7 @@ Add Biome to a project, extend a preset, and fix the first run's findings.
    pnpm add -D @biomejs/biome @repobuddy/biome
    ```
 
-   The package needs `@biomejs/biome >= 2`.
+   The package needs `@biomejs/biome >= 2.6.0`.
 
 2. Create `biome.json` and extend a preset. See [Choose a config](/repobuddy/biome/#choose-a-config).
 
