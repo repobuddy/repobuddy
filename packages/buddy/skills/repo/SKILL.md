@@ -1,6 +1,7 @@
 ---
 name: repo
 description: "Sets up how a repo is worked in: enhance offers vetted AGENTS.md sections, such as auto-commit."
+argument-hint: "enhance [--root <dir>] | help"
 ---
 
 # Repo
