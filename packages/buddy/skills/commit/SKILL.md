@@ -97,7 +97,7 @@ hunks and stage it with `git apply --cached <patch>`, then check it with `git --
 Tests run on the working tree, so unstaged changes can make a broken commit pass. Before committing,
 set aside only the unstaged part (`git stash push --keep-index --include-untracked -m <tag>`), run the
 checks, and restore it (`git stash pop`). Skip this when nothing is unstaged, or when the unstaged
-changes are in files the checks do not read.
+changes are in files the checks do not read, and say why you skipped it.
 
 ## Validate
 
