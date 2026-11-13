@@ -18,6 +18,13 @@
 			"trailingCommas": "none"
 		}
 	},
+	"yaml": {
+		"formatter": {
+			// pnpm and Renovate write `pnpm-workspace.yaml` with single quotes. Biome's
+			// default (double) would fail `check` on every edit they make. Needs Biome 2.6.
+			"quoteStyle": "single"
+		}
+	},
 	"linter": {
 		"enabled": true,
 		"rules": {

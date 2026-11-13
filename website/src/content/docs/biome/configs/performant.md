@@ -41,6 +41,11 @@ This is the content of `packages/biome/performant.jsonc`.
 			"trailingCommas": "none"
 		}
 	},
+	"yaml": {
+		"formatter": {
+			"quoteStyle": "single"
+		}
+	},
 	"linter": {
 		"enabled": true,
 		"rules": {
@@ -93,7 +98,7 @@ Identical to `recommended`: `**`, minus `**/.vscode/**/*.txt` and `**/*.md`.
 
 ## Formatter
 
-Same as `recommended` (tabs, `lf`, width 120, single quotes, semicolons as needed, `package.json` width 20), with one
+Same as `recommended` (tabs, `lf`, width 120, single quotes in JavaScript and YAML, semicolons as needed, `package.json` width 20), with one
 change: `javascript.formatter.trailingCommas` is `none`.
 
 ## Linter
