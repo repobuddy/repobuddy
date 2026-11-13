@@ -6,7 +6,9 @@ description: "Commits work: stages one unit by name, checks it is done, commits 
 # Commit
 
 Use when asked to commit, to split changes into commits, or to write a commit message, and when a unit
-of work is finished and the repository's rules say to commit it.
+of work is finished and the repository's rules say to commit it. Not for pushing, opening a pull request,
+or amending, rewording, squashing, or undoing a commit already made; those belong to other skills even
+when the working tree has uncommitted changes.
 
 Repository rules take precedence over this skill: the **Commit Discipline** section of `AGENTS.md` or
 `CLAUDE.md`, and a `SKILL.local.md` beside this skill.
@@ -45,8 +47,9 @@ when other sessions share it.
 - **Never commit with red checks.** Never `--no-verify`.
 - **Never rewrite history:** never push, force-push, rebase, or amend.
 - **Decide, do not ask:** settle each choice from these rules, the repository's rules, and the
-  references. Ask only when they cannot decide, such as a change that fits two units. With no one to
-  answer, stop and report what is left uncommitted and why.
+  references. Ask only when they cannot decide, such as a change that fits two units. A line both
+  units need is such a change: do not rewrite it to fit one of them. With no one to answer, stop and
+  report what is left uncommitted and why.
 
 ## Definition of done
 

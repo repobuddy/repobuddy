@@ -24,8 +24,10 @@ Changes within three lines of each other share a hunk. Build the patch with no c
 `git apply --cached --check --unidiff-zero <patch>`: without `--unidiff-zero`, the check rejects a
 patch with no context.
 
-When one changed run still holds both units, write the file as it must read in this commit to
-`<tmp>/<name>` and stage that content directly:
+Changed lines with no unchanged line between them, such as lines 10 and 11, are one run, and `-U0`
+keeps them in one hunk that no patch can split. Read the `-U0` diff first: when one hunk holds lines
+of both units, skip the patch. Write the file as it must read in this commit to `<tmp>/<name>` and stage
+that content directly:
 
 ```sh
 mode=$(git ls-files -s -- <file> | cut -d' ' -f1)   # 100644 for a new file
