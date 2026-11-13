@@ -1,6 +1,6 @@
 ---
 title: website
-description: Add an Astro and Starlight docs site to a monorepo, or deploy a static site from CI to the repo's git host.
+description: Add an Astro and Starlight docs site to a monorepo, deploy a static site from CI to the repo's git host, or change an existing site.
 ---
 
 `website` is a router for documentation website work. It picks one command and follows that command's instructions.
@@ -9,6 +9,7 @@ description: Add an Astro and Starlight docs site to a monorepo, or deploy a sta
 
 - "add a docs website to this monorepo" or "set up Starlight in apps/web"
 - "publish the docs to GitLab Pages" or "the site loads without CSS"
+- "add a page to the docs" or "upgrade Starlight"
 
 ## Invoke
 
@@ -16,8 +17,9 @@ A bare `/website` lists the commands.
 
 | Command | Use it when |
 | --- | --- |
-| `/website init` | The monorepo has no website. If an `astro.config.*` already exists outside `node_modules`, `init` does not apply and it offers `deploy`. |
+| `/website init` | The monorepo has no website. If an `astro.config.*` already exists outside `node_modules`, `init` does not apply and it offers `deploy` or `update`. |
 | `/website deploy` | A static site exists and should be published from CI. |
+| `/website update` | A site exists and should change: pages, sidebar, framework versions, or config. |
 
 ### init
 
@@ -44,6 +46,26 @@ VuePress, Vite, Next.js static export, Create React App, Jekyll, and Hugo.
 
 Self-hosted Forgejo and Gitea have no built-in static hosting: it sets the base path and hands the build command and
 output directory to the host you pick. Tokens only you can create (Bitbucket, Azure) are reported as manual steps.
+
+### update
+
+Adds, moves, or removes pages and keeps the sidebar and internal links in step, updates a package's docs pages from its
+source, and upgrades Astro and Starlight inside Starlight's peer range and the release-age window. A base-path or host
+change goes to `deploy`. It ends by building and type-checking the site.
+
+## Customize
+
+Each command's instructions are a reference loaded by name with the `reference` skill from the `cyber-agentkit` plugin.
+The skill ships a default of each. Another plugin can ship its own version, and a repository can override one section at
+a time in `.agents/references/<name>.md`:
+
+| Reference | Default |
+| --- | --- |
+| `website.init` | A private Starlight site in `apps/web` or `website/`, wired into the monorepo's checks |
+| `website.deploy` | A CI job publishing to the static hosting of the repo's git host |
+| `website.update` | Page, sidebar, version, and config changes that keep the build and deploy working |
+
+Without `cyber-agentkit` installed, the skill reads its bundled defaults and no customization applies.
 
 ## Requirements
 

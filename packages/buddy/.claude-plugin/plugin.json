@@ -16,5 +16,8 @@
 		"automation",
 		"cli"
 	],
-	"skills": "./skills/"
+	"skills": "./skills/",
+	"dependencies": [
+		"cyber-agentkit"
+	]
 }

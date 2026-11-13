@@ -1,4 +1,8 @@
-# website init
+---
+description: How the website skill adds an Astro Starlight docs site to a monorepo as a private workspace package.
+---
+
+## Purpose
 
 Adds a documentation site to a monorepo as a private workspace package. The site builds with the repo's
 task runner, stays out of the lint and dead-code checks it would otherwise break, and deploys on its own
@@ -14,8 +18,8 @@ Starlight site published to GitHub Pages.
 - The user wants to move docs from the root readme into a site
 
 Do not use this command for a single-package repo. Scaffold there with `npm create astro@latest` instead.
-If an `astro.config.*` already exists anywhere outside `node_modules`, stop and ask. The repo already has
-a site, and the job is to fix or extend it.
+If an `astro.config.*` already exists anywhere outside `node_modules`, the repo already has a site: use
+the `website.update` reference instead.
 
 ## Step 1: Detect the monorepo
 
@@ -67,7 +71,7 @@ npm view @astrojs/starlight peerDependencies.astro
 
 ## Step 4: Scaffold the package
 
-Copy the skill's `assets/site/` directory into `SITE_DIR` and replace every `<PLACEHOLDER>` in the copies:
+Copy the `assets/site/` directory in the `website` skill's folder into `SITE_DIR` and replace every `<PLACEHOLDER>` in the copies:
 
 | File | What to fill in |
 |---|---|
@@ -78,7 +82,7 @@ Copy the skill's `assets/site/` directory into `SITE_DIR` and replace every `<PL
 | `src/content/docs/index.mdx` | Title, pitch, and tagline for the splash page |
 
 Set `site` and `base` for the deploy target now, because a wrong base breaks every asset path. Take
-the values from the **Base path** section of the repo's host file, which Step 1 of [deploy.md](deploy.md)
+the values from the **Base path** section of the repo's host file, which Step 1 of the `website.deploy` reference
 picks. For a GitHub project site, `site` is `https://<OWNER>.github.io` and `base` is `/<REPO_NAME>`.
 When `base` is `/`, remove it and the `/<REPO_NAME>` prefix in `index.mdx`.
 
@@ -115,7 +119,7 @@ Change only the files that exist. Each change stops a check from failing on file
 
 ## Step 6: Deploy
 
-Follow [deploy.md](deploy.md) with `SITE_DIR`, `<SITE_DIR>/dist`, and `<PM> --filter <SCOPE>/web build`.
+Follow the `website.deploy` reference with `SITE_DIR`, `<SITE_DIR>/dist`, and `<PM> --filter <SCOPE>/web build`.
 It works out the base path for the repo's git host. If that differs from what Step 4 set, update
 `site` and `base`.
 

@@ -15,6 +15,7 @@
 		"org.cyberuni.universal-plugin": {
 			"vendors": ["claude-code", "cursor", "codex", "copilot-cli"],
 			"skills": "./skills/",
+			"dependencies": ["cyber-agentkit"],
 			"harnesses": {
 				"claude-code": {},
 				"cursor": {

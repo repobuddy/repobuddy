@@ -1,4 +1,8 @@
-# website deploy
+---
+description: How the website skill publishes a static site from CI to the static hosting of the repo's git host.
+---
+
+## Purpose
 
 Deploys a repository's static site from CI to the static hosting of the repo's own git host. It sets
 the site's base path to match the URL the host serves it at. Idempotent: it checks the current state
@@ -8,19 +12,19 @@ before changing anything.
 
 - A repo has a static site (in a monorepo subdirectory or at the root) that is not deployed yet
 - The site moves to a different host, or a deploy is broken because of a wrong base path
-- `website init` has scaffolded a site and hands off here
+- The `website.init` reference has scaffolded a site and hands off here
 
 ## Step 1: Detect the git host
 
 Read the host from `git remote get-url origin`:
 
-| Remote host | `HOST` | Instructions |
+| Remote host | `HOST` | Instructions, in the `website` skill's folder |
 |---|---|---|
-| `github.com` or GitHub Enterprise | `github` | [deploy-github.md](deploy-github.md) |
-| `gitlab.com` or self-managed GitLab | `gitlab` | [deploy-gitlab.md](deploy-gitlab.md) |
-| `codeberg.org` | `codeberg` | [deploy-codeberg.md](deploy-codeberg.md) |
-| `bitbucket.org` | `bitbucket` | [deploy-bitbucket.md](deploy-bitbucket.md) |
-| `dev.azure.com` or `*.visualstudio.com` | `azure` | [deploy-azure.md](deploy-azure.md) |
+| `github.com` or GitHub Enterprise | `github` | `references/deploy-github.md` |
+| `gitlab.com` or self-managed GitLab | `gitlab` | `references/deploy-gitlab.md` |
+| `codeberg.org` | `codeberg` | `references/deploy-codeberg.md` |
+| `bitbucket.org` | `bitbucket` | `references/deploy-bitbucket.md` |
+| `dev.azure.com` or `*.visualstudio.com` | `azure` | `references/deploy-azure.md` |
 
 When the hostname does not say which product it runs (a self-hosted instance), run the `init-buddy`
 skill's detection with `--probe` if it is installed, or ask the user.
@@ -99,7 +103,7 @@ slash in full URLs.
 
 A wrong base does not fail the build. The pages load without CSS or JavaScript, so this step is not
 optional. Links written in Markdown do not get the base added either. See the internal-links section of
-[init.md](init.md).
+the `website.init` reference.
 
 ## Step 5: Create the CI job and enable hosting
 

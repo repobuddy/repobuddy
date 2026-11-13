@@ -1,6 +1,6 @@
 # website
 
-A router skill for a repository's documentation website. It picks the command that fits the request and follows that command's instructions.
+A router skill for a repository's documentation website: `init`, `deploy`, and `update`. It picks the command that fits the request and follows that command's instructions.
 
 ## Commands
 
@@ -38,6 +38,16 @@ Publishes a static site from CI to the static hosting of the repo's git host. It
 
 Self-hosted Forgejo and Gitea have no built-in static hosting. For those, it sets the base path and hands the build command and the output directory to the external host the user picks. Tokens that only the user can create (Bitbucket, Azure) are reported as manual steps.
 
+### `update`
+
+Changes a site that already exists: adds, moves, or removes pages and keeps the sidebar and internal links in step, updates a package's docs pages from its source, upgrades Astro and Starlight inside Starlight's peer range and the repo's release-age window, and hands base-path or host changes to `deploy`. It then builds and type-checks the site.
+
+## Customize
+
+Each command's instructions are a reference, loaded by name with the `reference` skill of [cyber-agentkit](https://github.com/cyber-uni/cyber-agentkit): `website.init`, `website.deploy`, and `website.update`. The skill ships the default of each in `references/website.<command>.default.md`. Another plugin can ship its own version, and a repository (`.agents/references/<name>.md`) or a user (`~/.agents/references/<name>.md`) can override one section at a time, without touching the skill. Run `reference load website.init --trace` to see which version applies.
+
+Without cyber-agentkit installed, the skill reads its bundled defaults and no customization applies.
+
 ## How to invoke
 
-Run `/website init` where slash commands are supported, or ask directly, for example "add a docs website to this monorepo" or "set up Starlight in apps/web". Run `/website deploy`, or ask "publish the docs to GitLab Pages". A bare `/website` lists the commands.
+Run `/website init` where slash commands are supported, or ask directly, for example "add a docs website to this monorepo" or "set up Starlight in apps/web". Run `/website deploy`, or ask "publish the docs to GitLab Pages". Run `/website update`, or ask "add a page to the docs". A bare `/website` lists the commands.

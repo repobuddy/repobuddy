@@ -28,7 +28,7 @@
 | [`review-permissions`] | Audit what your agents are allowed to do — risk-rank every grant, then tighten and consolidate it |
 | [`checkpoint`] | `create` checkpoints from any agent session that a fresh session can continue from — next step first, settled decisions, open questions, in another repo when the work belongs there — and `resume` one without reopening settled decisions |
 | [`setup-github-repo`] | Set up a GitHub repo with branch protection, a merge backstop, Dependabot, and CI |
-| [`website`] | Work on a repo's docs website — `init` adds an Astro/Starlight site to a monorepo; `deploy` publishes a static site to GitHub, GitLab, or Codeberg Pages, Bitbucket, or Azure Static Web Apps |
+| [`website`] | Work on a repo's docs website — `init` adds an Astro/Starlight site to a monorepo; `deploy` publishes a static site to GitHub, GitLab, or Codeberg Pages, Bitbucket, or Azure Static Web Apps; `update` changes an existing site |
 | [`to-question`] | Word a question for Slack, Jira, Linear, Asana, GitHub, GitLab, Bugzilla, Redmine, Trac, or email — checks the markup before you paste |
 
 ### Installing as a Plugin
@@ -66,6 +66,14 @@ Start a new session before using the plugin.
 
 Cursor has no command-line install; a workspace admin imports the catalog from
 Dashboard → Plugins → Team Marketplaces → Add Marketplace → Import from Repo.
+
+Several skills load their instructions with the `reference` skill of the
+[`cyber-agentkit`](https://github.com/cyber-uni/cyber-agentkit) plugin, so a plugin, a repository, or a
+user can customize them. `repobuddy` declares `cyber-agentkit` as a plugin dependency. Claude Code
+resolves it when you install `repobuddy` from `cyber-uni/marketplace`, which lists both plugins. It is
+the only harness that installs plugin dependencies. On Cursor, Codex, and GitHub Copilot CLI, install
+`cyber-agentkit` by hand from its marketplace, `cyber-uni/marketplace`. Without it, a skill that ships a
+default reads that default, and no customization applies.
 
 See [Install the skills](https://repobuddy.github.io/repobuddy/skills/install/) for the update and uninstall
 commands of each route.
