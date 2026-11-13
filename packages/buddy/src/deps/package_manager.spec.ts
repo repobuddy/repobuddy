@@ -10,7 +10,7 @@ function files(entries: Record<string, string>) {
 		const content = entries[String(path)]
 		if (content === undefined) throw new Error(`ENOENT: ${path}`)
 		return content
-	}) as typeof ctx.readFile
+	}) as unknown as typeof ctx.readFile
 }
 
 beforeEach(() => {
