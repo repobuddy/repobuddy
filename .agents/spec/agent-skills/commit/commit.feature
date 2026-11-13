@@ -1,3 +1,4 @@
+@frozen
 Feature: commit — stage and commit one unit of work, unattended and without interactive git
 
   The skill commits one unit of work at a time. It follows the repository's rules over its own
@@ -241,6 +242,16 @@ Feature: commit — stage and commit one unit of work, unattended and without in
     When the agent commits a unit with a body
     Then the message ends with the Co-Authored-By trailer after one blank line
     And it is passed with git commit -F or -m
+
+  @behavior
+  Scenario: writes the message for what the developer staged and commits only when asked
+    Given the developer staged lines 10 to 14 of src/config.ts for a timeout bugfix
+    And src/config.ts has more unstaged changes for a retries feature
+    When the developer says "write a commit message for what I staged"
+    Then the agent writes the message for the timeout bugfix by commit.message
+    And it shows the message to the developer
+    And it does not unstage or restage src/config.ts
+    And it makes no commit
 
   # ── P7 — unattended-safe ──
 

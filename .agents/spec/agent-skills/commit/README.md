@@ -72,7 +72,7 @@ left staged work in the index. A *repository* supplies rules, hooks, and referen
 
 | # | Use case (surface: `/commit`) | Actor / goal | Entry point | Extensions |
 |---|---|---|---|---|
-| 1 | **Commit one unit** | Agent: turn a finished change into one commit | Trigger: a unit is done, or the developer says "commit". Outcome: one commit holding only that unit | 1–13 |
+| 1 | **Commit one unit** | Agent: turn a finished change into one commit | Trigger: a unit is done, or the developer says "commit". Outcome: one commit holding only that unit | 1–14 |
 | 2 | **Split into units** | Agent: turn a mixed working tree into several commits | Trigger: "split these into commits", or the one-sentence test fails. Outcome: one commit per unit | 1–13 |
 
 **Extensions:**
@@ -90,13 +90,16 @@ left staged work in the index. A *repository* supplies rules, hooks, and referen
 11. **Changes of two units share one hunk.** The patch is built with no context (`-U0`) and staged with `--unidiff-zero`.
 12. **The repository has commit hooks.** The skill says what they run and runs those checks before committing.
 13. **One changed run holds both units.** The file's content for this commit is written outside the repository and staged directly with `git update-index --cacheinfo`.
+14. **Asked only for a message.** What is staged is the unit: the message is written for it and shown, and the commit is made only when asked.
 
 ## Control Flow
 
 ```mermaid
 graph TD
     A[A unit is finished, or asked to commit] --> A1[Read the repository's Commit Discipline and SKILL.local.md]
-    A1 --> I{Index holds changes outside this unit?}
+    A1 --> Q{Asked only for a message?}
+    Q -->|Yes| Q1[Write the message for what is staged; show it; commit only when asked]
+    Q -->|No| I{Index holds changes outside this unit?}
     I -->|Yes, whole files| I1[git restore --staged those files]
     I -->|Yes, partly staged| I2[Stop and report]
     I -->|No| D
@@ -135,6 +138,7 @@ graph TD
 |---|---|---|
 | `A` (engage) | a repo with repobuddy and buddy-changesets installed and uncommitted changes | `engages to commit work, not to push, release, amend, or write a changeset` |
 | `A1` | a Commit Discipline section that splits by package | `follows the repository's Commit Discipline over its own defaults` |
+| `Q → Q1` | a developer's partly staged file and "write a commit message for what I staged" | `writes the message for what the developer staged and commits only when asked` |
 | `A1` (local) | a `SKILL.local.md` that adds a ticket id | `follows SKILL.local.md over its own defaults` |
 | `S` (by file) | a bugfix and an unrelated docs edit in two files | `splits a change across files by staging each unit's files by name` |
 | `S` (by hunk) | two hunks of one file for two units | `stages part of one file with a patch of hunks` |

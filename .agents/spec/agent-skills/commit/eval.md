@@ -3,7 +3,7 @@ subject: packages/buddy/skills/commit/SKILL.md
 eval:
   layers: [trigger, behavior]
   judge:
-    model: claude-sonnet-4-6
+    model: claude-sonnet-5-5
     default_threshold: 4
   trigger:
     activation_threshold: 0.8
@@ -28,6 +28,11 @@ neighbours that share its vocabulary.
 
 ## Known weaknesses
 
+The suite was frozen after four cold spec-judge rounds (2026-11-12); the fourth returned ALIGNED. Its
+advisory F3 was left open: `reads the allowed types, scope, and header length from the commitlint
+config` pipes `git log -1` to commitlint although its When writes the message without asking for a
+commit, so a judge may split on whether the commit had to happen.
+
 A judged run reads a narrated transcript from a simulator that executes nothing. A transcript cannot
 show that a command did not run or what the repository holds afterwards, so treat these passes as
 unproven: `runs no git add ., git add -A, or git add -p` (splits a change across files), `runs no git
@@ -42,7 +47,7 @@ not unstage README.md`, `it does not commit README.md along with the unit`, and 
 (stops when unstaging would lose a partial selection), `it stages nothing` (does not stage a change
 that is not done), `without stashing` (skips the snapshot check), `it does not commit the staged change
 while the snapshot check fails` (verifies the staged snapshot), `it makes no commit before the answer`
-(asks the developer), `it commits neither unit that needs the line` (stops and reports), and `it
+(asks the developer), `it does not unstage or restage src/config.ts` and `it makes no commit` (writes the message for what the developer staged), `it commits neither unit that needs the line` (stops and reports), and `it
 commits the change with no .changeset/ file` (carries no changeset outside a published package, and for a private package).
 
 `leaves the repository in the state its Validate section checks` asserts repository state (reflog,
