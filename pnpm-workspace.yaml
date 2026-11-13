@@ -55,6 +55,7 @@ packages:
   - testcases/*
   - website
 allowBuilds:
+  '@parcel/watcher': true
   '@swc/core': true
   esbuild: true
   fsevents: true
