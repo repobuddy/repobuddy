@@ -1,6 +1,6 @@
 ---
 name: review-api
-description: Use this skill when reviewing a library's public API for consistency and completeness against its own conventions.
+description: Reviews a library's public API for consistency and completeness against its own conventions.
 ---
 
 # Review API

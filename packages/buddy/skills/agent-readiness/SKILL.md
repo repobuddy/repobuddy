@@ -1,6 +1,6 @@
 ---
 name: agent-readiness
-description: "Use this skill when scoring or improving how ready a repo or package is for coding agents, or benchmarking agent cost."
+description: "Scores or improves how ready a repo or package is for coding agents, or benchmarks agent cost."
 argument-hint: "score [--dir <repo> | --package <path>] [--check] | improve [area] | bench"
 ---
 

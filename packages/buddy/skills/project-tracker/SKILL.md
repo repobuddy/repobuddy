@@ -1,6 +1,6 @@
 ---
 name: project-tracker
-description: "Use this skill when setting up, showing, changing, or checking which tracker holds each kind of work."
+description: "Sets up, shows, changes, or checks which tracker holds each kind of work."
 ---
 
 # Project tracker

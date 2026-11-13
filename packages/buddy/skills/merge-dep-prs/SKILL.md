@@ -1,6 +1,6 @@
 ---
 name: merge-dep-prs
-description: "Use this skill when merging dependency update PRs; fixes CI, handles changesets, never merges release PRs."
+description: "Merges dependency update PRs; fixes CI, handles changesets, never merges release PRs."
 ---
 
 # Merge Dependency PRs

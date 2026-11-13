@@ -1,6 +1,6 @@
 ---
 name: review-permissions
-description: "Use this skill when auditing an agent harness allowlist — permission risk, tightening, and cross-harness consolidation."
+description: "Audits an agent harness allowlist — permission risk, tightening, and cross-harness consolidation."
 ---
 
 # Review Permissions

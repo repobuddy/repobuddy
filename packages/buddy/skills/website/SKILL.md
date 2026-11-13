@@ -1,6 +1,6 @@
 ---
 name: website
-description: Use this skill when adding or deploying a docs website — `init` scaffolds Astro in a monorepo, `deploy` publishes it.
+description: Adds or deploys a docs website — `init` scaffolds Astro in a monorepo, `deploy` publishes it.
 metadata:
   setup: true
 ---

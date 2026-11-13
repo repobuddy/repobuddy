@@ -1,6 +1,6 @@
 ---
 name: add-badges
-description: Use this skill when adding, fixing, or auditing readme badges — npm, CI, docs, coverage, license.
+description: Adds, fixes, or audits readme badges — npm, CI, docs, coverage, license.
 ---
 
 # Add Badges

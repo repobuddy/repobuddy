@@ -1,6 +1,6 @@
 ---
 name: scaffold
-description: "Use this skill when creating a new repository or package from a scaffold recipe, or listing the recipes installed."
+description: "Creates a new repository or package from a scaffold recipe, or lists the recipes installed."
 ---
 
 # Scaffold

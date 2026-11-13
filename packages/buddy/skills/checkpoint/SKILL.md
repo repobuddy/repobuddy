@@ -1,6 +1,6 @@
 ---
 name: checkpoint
-description: "Use this skill when pausing a session into topic checkpoints or resuming one, in this repo or another."
+description: "Pauses a session into topic checkpoints or resumes one, in this repo or another."
 argument-hint: "create [focus] [--commit] | resume [slug|path|repo] | list [repo] | help"
 ---
 

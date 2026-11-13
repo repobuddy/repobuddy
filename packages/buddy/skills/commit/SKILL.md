@@ -1,6 +1,6 @@
 ---
 name: commit
-description: "Use this skill when committing work: stages one unit by name, checks it is done, commits with no interactive git."
+description: "Commits work: stages one unit by name, checks it is done, commits with no interactive git."
 ---
 
 # Commit

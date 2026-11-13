@@ -1,6 +1,6 @@
 ---
 name: issue
-description: "Use this skill when filing a bug, feature, or task as an issue on the project's tracker; searches for duplicates first."
+description: "Files a bug, feature, or task as an issue on the project's tracker; searches for duplicates first."
 ---
 
 # Issue

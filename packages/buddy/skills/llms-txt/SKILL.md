@@ -1,6 +1,6 @@
 ---
 name: llms-txt
-description: Use this skill when publishing an llms.txt — generated from a project's public surface, with a CI drift check.
+description: Publishes an llms.txt — generated from a project's public surface, with a CI drift check.
 ---
 
 # llms.txt

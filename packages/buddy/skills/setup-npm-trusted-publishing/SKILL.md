@@ -1,6 +1,6 @@
 ---
 name: setup-npm-trusted-publishing
-description: Use this skill when configuring npm trusted publishing (OIDC) for a package, an org, or every org you own.
+description: Configures npm trusted publishing (OIDC) for a package, an org, or every org you own.
 ---
 
 # Setup npm Trusted Publishing

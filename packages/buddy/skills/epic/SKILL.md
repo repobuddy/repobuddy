@@ -1,6 +1,6 @@
 ---
 name: epic
-description: "Use this skill when planning an epic and its child issues, promoting an issue to an epic, or demoting an initiative."
+description: "Plans an epic and its child issues, promotes an issue to an epic, or demotes an initiative."
 ---
 
 # Epic
