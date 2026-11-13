@@ -8,8 +8,10 @@ repository's rules, and runs no git command that opens an editor, a pager, or a 
 
 - "commit this"
 - "split these changes into commits"
-- "write a commit message for what is staged"
+- "write a commit message for what is staged": it writes and shows the message, and commits only when asked
 - A unit of work is finished and the repository's `AGENTS.md` says to commit it.
+
+Not for pushing, opening a pull request, or amending, squashing, or undoing a commit already made.
 
 ## What it does
 

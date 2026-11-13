@@ -10,8 +10,10 @@ it runs works without an editor, a pager, or a prompt, so an agent never falls b
 
 - "commit this"
 - "split these changes into commits"
-- "write a commit message for what is staged"
+- "write a commit message for what is staged": it writes and shows the message, and commits only when asked
 - A unit of work is finished and the repository's `AGENTS.md` says to commit it.
+
+It is not for pushing, opening a pull request, or amending, squashing, or undoing a commit already made.
 
 ## Invoke
 

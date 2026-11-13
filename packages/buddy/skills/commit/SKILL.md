@@ -6,7 +6,9 @@ description: "Commits work: stages one unit by name, checks it is done, commits 
 # Commit
 
 Use when asked to commit, to split changes into commits, or to write a commit message, and when a unit
-of work is finished and the repository's rules say to commit it.
+of work is finished and the repository's rules say to commit it. Not for pushing, opening a pull request,
+or amending, rewording, squashing, or undoing a commit already made; those belong to other skills even
+when the working tree has uncommitted changes.
 
 Repository rules take precedence over this skill: the **Commit Discipline** section of `AGENTS.md` or
 `CLAUDE.md`, and a `SKILL.local.md` beside this skill.
@@ -26,6 +28,9 @@ When the `reference` command cannot run, read the bundled default in this skill'
 `.agents/references/<name>.md` when it exists: each of its sections replaces the default's section of
 the same heading, and a new section is added.
 
+When asked only for a message ("write a commit message for what I staged"), what is staged is the unit:
+write the message for it by `commit.message`, show it, and commit only when asked to.
+
 Read [references/splitting.md](references/splitting.md) before a split inside one file or a snapshot
 check: it has the commands for building the patch, a hunk that mixes two units, and restoring the stash
 when other sessions share it.
@@ -40,10 +45,11 @@ when other sessions share it.
   `git add .`, `git add -A`, `git add -p`, `git restore -p`, `git commit -v`, or any command that opens
   an editor or a pager. Read diffs with `git --no-pager diff`.
 - **Never commit with red checks.** Never `--no-verify`.
-- **Never rewrite history:** never push, force, rebase, or amend a commit that has been pushed.
+- **Never rewrite history:** never push, force-push, rebase, or amend.
 - **Decide, do not ask:** settle each choice from these rules, the repository's rules, and the
-  references. Ask only when they cannot decide, such as a change that fits two units. With no one to
-  answer, stop and report what is left uncommitted and why.
+  references. Ask only when they cannot decide, such as a change that fits two units. A line both
+  units need is such a change: do not rewrite it to fit one of them. With no one to answer, stop and
+  report what is left uncommitted and why.
 
 ## Definition of done
 
@@ -94,7 +100,7 @@ hunks and stage it with `git apply --cached <patch>`, then check it with `git --
 Tests run on the working tree, so unstaged changes can make a broken commit pass. Before committing,
 set aside only the unstaged part (`git stash push --keep-index --include-untracked -m <tag>`), run the
 checks, and restore it (`git stash pop`). Skip this when nothing is unstaged, or when the unstaged
-changes are in files the checks do not read.
+changes are in files the checks do not read, and say why you skipped it.
 
 ## Validate
 
@@ -104,6 +110,6 @@ After each commit:
 - [ ] The files unstaged in step 1 still show their changes in `git status --porcelain`
 - [ ] `git log -1 --format=%B | node_modules/.bin/commitlint` exits 0 when commitlint is installed; otherwise the message follows `commit.message`
 - [ ] When `commit.release-notes` asks for a changeset, `git show --stat HEAD` lists the `.changeset/<name>.md` file
-- [ ] `git reflog` since the skill started shows only `commit:` entries: no `commit (amend)`, `rebase`, or `reset`
+- [ ] `git reflog` since the skill started shows a `commit:` entry for each new commit and no `commit (amend)`, `rebase`, or `reset` that moves HEAD to another commit (the snapshot check's `reset: moving to HEAD` is expected)
 - [ ] The upstream is unchanged: `git rev-parse @{upstream}` gives the same commit as before the skill ran
 - [ ] `git stash list` holds no entry the skill pushed
