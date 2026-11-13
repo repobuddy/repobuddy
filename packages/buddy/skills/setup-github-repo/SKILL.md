@@ -1,6 +1,6 @@
 ---
 name: setup-github-repo
-description: Use this skill when setting up a GitHub repo with standard settings — branch protection, a merge backstop, Dependabot, and CI.
+description: Sets up a GitHub repo with standard settings — branch protection, a merge backstop, Dependabot, and CI.
 ---
 
 # Setup GitHub Repo

@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: Use this skill when reviewing code through the Linus, Uncle Bob, and Fowler lenses — reports split verdicts.
+description: Reviews code through the Linus, Uncle Bob, and Fowler lenses — reports split verdicts.
 ---
 
 # Code Review

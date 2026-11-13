@@ -1,6 +1,6 @@
 ---
 name: init-buddy
-description: "Use this skill when installing or logging in a git host CLI (gh, glab), or seeding its allow, deny, or auto-mode rules."
+description: "Installs or logs in a git host CLI (gh, glab), or seeds its allow, deny, or auto-mode rules."
 argument-hint: "[github|gitlab|bitbucket|azure|gitea|forgejo[=hostname]]"
 ---
 

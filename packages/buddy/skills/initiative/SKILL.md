@@ -1,6 +1,6 @@
 ---
 name: initiative
-description: "Use this skill when setting an initiative's goal and metric with its epics as shells, or promoting an epic to one."
+description: "Sets an initiative's goal and metric with its epics as shells, or promotes an epic to one."
 ---
 
 # Initiative

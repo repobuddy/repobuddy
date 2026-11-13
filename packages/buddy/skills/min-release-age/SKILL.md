@@ -1,6 +1,6 @@
 ---
 name: min-release-age
-description: "Use this skill when an install fails minimum-release-age, or to lift a package with a scheduled expiry, or restore."
+description: "Fixes an install that fails minimum-release-age, or lifts a package with a scheduled expiry, or restores it."
 argument-hint: "[lift <pkg>[@version|@tag] | restore | setup-ci]"
 ---
 
