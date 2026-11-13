@@ -73,6 +73,14 @@ copilot plugin marketplace remove repobuddy
 **Cursor** has no command-line install. A workspace admin imports the catalog from
 Dashboard, Plugins, Team Marketplaces, Add Marketplace, Import from Repo.
 
+### cyber-agentkit
+
+Several skills load their instructions with the `reference` skill of the
+[`cyber-agentkit`](https://github.com/cyber-uni/cyber-agentkit) plugin, so a plugin, a repository, or a user can
+customize them. `repobuddy` declares `cyber-agentkit` as a plugin dependency, but only Claude Code installs plugin
+dependencies. On Cursor, Codex, and GitHub Copilot CLI, install `cyber-agentkit` by hand from its marketplace,
+`cyber-uni/marketplace`. Without it, a skill that ships a default reads that default, and no customization applies.
+
 ## Skills CLI
 
 For an agent without a plugin system, the [Skills CLI](https://github.com/vercel-labs/skills) copies the skills into
