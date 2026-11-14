@@ -695,6 +695,7 @@ export function run(argv: string[], gh: Gh = realGh): RunResult {
 	}
 }
 
+/* istanbul ignore next -- the process entry point; bundles.spec.ts runs it as a child process */
 function main(argv: string[] = process.argv.slice(2)): void {
 	const r = run(argv)
 	if (r.stdout) process.stdout.write(r.stdout)

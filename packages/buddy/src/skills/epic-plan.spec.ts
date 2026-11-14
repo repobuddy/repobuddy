@@ -73,6 +73,8 @@ describe('usage', () => {
 			['graph', ...base],
 			['graph', ...base, '--epic', 'x'],
 			['depend', ...base],
+			['check', ...base, '--epic', '79', '--write'],
+			['graph', ...base, '--epic', '79', '--bogus'],
 		]) {
 			const r = run(argv, () => {
 				throw new Error('no gh')
@@ -222,6 +224,20 @@ describe('depend', () => {
 		expect(json(r).results).toEqual([{ child: '#84', ok: true, verified: false }])
 	})
 
+	it('reports a write whose read-back fails as not verified', () => {
+		const w = world()
+		const { gh } = fake(w)
+		let edited = false
+		const flaky = (args: string[]) => {
+			if (args[1] === 'edit') edited = true
+			else if (edited) throw new Error('read back failed')
+			return gh(args)
+		}
+		const r = run(['depend', ...base, '--plan', plan({ 84: ['83', '80'] }), '--write'], flaky)
+		expect(r.code).toBe(1)
+		expect(json(r).results).toEqual([{ child: '#84', ok: true, error: 'gh issue view repobuddy/.github#84 failed: read back failed', verified: false }])
+	})
+
 	it('refuses a planned cycle and writes nothing', () => {
 		const { gh, calls } = fake(world())
 		const r = run(['depend', ...base, '--plan', plan({ 80: ['81'], 81: ['80'] }), '--write'], gh)
@@ -327,6 +343,31 @@ describe('sync-body', () => {
 		expect(written).toBe(json(r).body)
 	})
 
+	it('exits 1 and reports written false when the body edit fails', () => {
+		const w = world({ closed: [80] })
+		w.failEdit = true
+		const { r, out } = sync(w, ['--write'])
+		expect(r.code).toBe(1)
+		expect(out.written).toBe(false)
+		expect(out.error).toBe('boom')
+	})
+
+	it('leaves an empty section alone when the epic has no sub-issues', () => {
+		const w = world({ body: () => '## Child Issues\n\n## Done when\n\nx' })
+		w.epic.subIssues.nodes = []
+		const { out } = sync(w)
+		expect(out.changed).toBe(false)
+		expect(out.body).toBe('## Child Issues\n\n## Done when\n\nx')
+	})
+
+	it('puts the list before text lines when the section has no list yet', () => {
+		const w = world({ body: (b) => `## Child Issues\nFiled below.\n\n## Done when\n\nx${b.length ? '' : b}` })
+		const { out } = sync(w)
+		expect(out.added).toHaveLength(11)
+		expect(out.body.startsWith('## Child Issues\n\n- [ ] #80')).toBe(true)
+		expect(out.body).toContain('\n\nFiled below.\n')
+	})
+
 	it('does not write when nothing changed', () => {
 		const { calls, out } = sync(world(), ['--write'])
 		expect(out.written).toBeUndefined()
@@ -401,6 +442,18 @@ describe('check', () => {
 			'the line "Spike: what permissions and events does the repobuddy app need?" has no issue ref; it matches #81 (run sync-body)',
 			'the line "unknown thing" has no issue ref and matches no sub-issue title',
 		])
+	})
+
+	it('fails children when a line is listed twice', () => {
+		const c = check(world({ body: (b) => b.replace('- [ ] #84 ', '- [ ] #84 again\n- [ ] #84 ') }))
+		expect(c.status['children']).toBe('fail')
+		expect(detail(c, 'children')).toEqual(['the list has 12 lines, the epic has 11 sub-issues'])
+	})
+
+	it('fails run-order when a row names an issue that is not a child', () => {
+		const c = check(world({ body: (b) => b.replace('| 1 | #80 ', '| 1 | #99 ') }))
+		expect(c.status['run-order']).toBe('fail')
+		expect(detail(c, 'run-order')).toContain('row #99 is not a sub-issue of the epic')
 	})
 
 	it('fails run-order when a row names a wrong blocker', () => {

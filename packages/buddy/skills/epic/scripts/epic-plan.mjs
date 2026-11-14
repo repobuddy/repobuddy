@@ -672,6 +672,7 @@ function run(argv, gh = realGh) {
 		};
 	}
 }
+/* istanbul ignore next -- the process entry point; bundles.spec.ts runs it as a child process */
 function main(argv = process.argv.slice(2)) {
 	const r = run(argv);
 	if (r.stdout) process.stdout.write(r.stdout);
