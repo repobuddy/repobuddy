@@ -187,3 +187,23 @@ glab api "projects/<project-enc>/members/all/<user id>" | jq -r .access_level
 - `50` (Owner) or `40` (Maintainer) is `owned`. The owner of a project in a user namespace is its Owner.
 - A lower level (`30` Developer and below) is `not owned`, and so is a `404 Not found` from the members call: the user is not a member.
 - Any other error means unknown.
+
+## Board
+
+**Unsupported.** This reference has no tested board commands for GitLab yet.
+Workaround: set the board's label or column by hand in the GitLab UI.
+
+## Transfer
+
+**Unsupported.** This reference has no tested move command for GitLab yet.
+Workaround: move the issue in the GitLab UI (Move issue), then rewrite the parent's body with its new reference.
+
+## Depend
+
+**Unsupported.** This reference has no tested batch blocked-by command for GitLab yet.
+Workaround: add each blocking link by hand, as `Link` says.
+
+## Sync body
+
+**Unsupported.** `epic-plan.mjs sync-body` reads GitHub sub-issues only.
+Workaround: rewrite the `Child Issues` list by hand from `Link`'s tree read.
