@@ -65,6 +65,7 @@ Skills that need a deterministic step run a bundled script. See [Skill scripts](
 | --- | --- |
 | [`init-buddy`](/repobuddy/skills/init-buddy/) | Install and log in the git host CLI, and seed a harness allow and deny list and Claude Code auto-mode rules |
 | [`checkpoint`](/repobuddy/skills/checkpoint/) | Pause work into checkpoints and resume them in a fresh session |
+| [`repo`](/repobuddy/skills/repo/) | Offer the vetted sections a repository's `AGENTS.md` is missing, such as auto-commit, and write only what you approve |
 
 ## Which harnesses
 
