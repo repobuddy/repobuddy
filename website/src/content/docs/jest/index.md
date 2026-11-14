@@ -93,6 +93,10 @@ has every name.
 - Other environments, such as `happy-dom` or a real browser. The package knows only `node` and `jsdom`.
 - A Babel preset. No preset configures Babel. `js-esm` sets no `transform`, so Jest's default `babel-jest` stays in
   place.
+- TypeScript 7 with the CommonJS TypeScript presets (`ts-cjs`, `jsdom-ts-cjs`, and `ts` / `jsdom-ts` in a CommonJS
+  package). They transform with `ts-jest`, which needs the TypeScript JavaScript compiler API that `typescript@7` no
+  longer exposes; its peer range is `typescript <7`. Keep those projects on TypeScript 6. The ESM presets use
+  `@swc/jest` and are not affected.
 - `ts-jest` for ESM as a preset. The ESM presets use `@swc/jest`. Build the `ts-jest` variant from `configs` and
   `fields`.
 - Per-project detection in a multi-project config. Each preset reads the source folder and `package.json` `type`
