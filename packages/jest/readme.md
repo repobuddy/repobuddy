@@ -76,6 +76,15 @@ SyntaxError: Cannot use import statement outside a module
 
 This is because `ts-jest` 29.2 adds support for `module: Node16/NodeNext`.
 
+## TypeScript 7 and `ts-jest`
+
+The CommonJS TypeScript presets (`ts-cjs`, `jsdom-ts-cjs`, their `-watch` variants,
+and `ts` / `jsdom-ts` in a CommonJS package) transform with [ts-jest].
+`ts-jest` needs the TypeScript JavaScript compiler API, which `typescript@7` no longer exposes,
+and its peer range is `typescript <7`.
+Keep those projects on TypeScript 6 until `ts-jest` supports TypeScript 7.
+The ESM presets use [@swc/jest] and are not affected.
+
 ## Presets
 
 [@repobuddy/jest] comes with many presets:

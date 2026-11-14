@@ -12,8 +12,11 @@ dependencies to CommonJS with `jest-esm-transformer-2`.
 1. Install Jest, the preset package, and the transformers:
 
 	```sh
-	pnpm add -D jest @repobuddy/jest ts-jest typescript jest-esm-transformer-2
+	pnpm add -D jest @repobuddy/jest ts-jest typescript@6 jest-esm-transformer-2
 	```
+
+	`ts-jest` does not support TypeScript 7: it needs the JavaScript compiler API that `typescript@7` no longer
+	exposes, and its peer range is `typescript <7`.
 
 2. Add the watch plugins if you use `jest --watch`:
 
