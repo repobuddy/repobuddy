@@ -23,11 +23,24 @@ topic that drifted into another repo is checkpointed in that repo, ready for a s
 /checkpoint help
 ```
 
+Type the skill's name the way your harness invokes it. The lines above use `/checkpoint`, which is right
+for a Skills CLI install in Copilot CLI and the Cursor editor:
+
+| Harness | From the repobuddy plugin | Installed by the Skills CLI |
+| --- | --- | --- |
+| Claude Code | `/repobuddy:checkpoint` (pnpm install: `pnpm-repobuddy-checkpoint`) | ask in words ("use the checkpoint skill to resume …"): `/checkpoint` is an alias of the built-in `/rewind` |
+| Codex CLI | `$repobuddy:checkpoint` | `$checkpoint` |
+| Copilot CLI | ask in words (namespacing not documented) | `/checkpoint` |
+| Cursor | ask in words (namespacing not documented) | `/checkpoint` in the editor's Agent chat; ask in words in the `agent` CLI |
+| Gemini CLI | — | ask in words |
+
+The skill hands back lines in the same form. Sources are in [`references/command.md`](references/command.md).
+
 Natural phrasing routes too: "let's stop here" creates a checkpoint, "pick up the auth refactor" resumes, "what checkpoints do I have" lists them. A bare
 `/checkpoint` runs `resume` in a new or just-cleared session, since there is no work to `create` from. In a
 session with work, it runs `create` when the repo has no checkpoint yet and shows the help when it has some.
 The name differs from the `/resume` built into Claude Code, Codex, Copilot
-CLI and Gemini CLI, so it doesn't collide with it.
+CLI and Gemini CLI. In Claude Code the bare `/checkpoint` is still taken by `/rewind`, hence the table.
 
 ## `create`
 
@@ -117,13 +130,14 @@ permissions.
 
 | Harness | Moves the live session? | Hand-off |
 | --- | --- | --- |
-| Claude Code | Yes: `/cd` (v2.1.246+) | `/cd <repo>` then `/checkpoint resume <slug>`; fresh `claude` session as fallback |
-| Codex CLI | Yes: `/cd` (0.150.0+) | `/cd <repo>` then `$checkpoint resume <slug>`; `codex -C <repo>` as fallback |
-| Copilot CLI | Partly: `/cd` changes directory, but no instruction reload is documented | `/cd <repo>`, check `/env`, then `/checkpoint resume <slug>`; `copilot -C <repo> -i` as fallback |
+| Claude Code | Yes: `/cd` (v2.1.246+) | `/cd <repo>` then `/repobuddy:checkpoint resume <slug>`; fresh `claude` session as fallback |
+| Codex CLI | Yes: `/cd` (0.150.0+) | `/cd <repo>` then `$repobuddy:checkpoint resume <slug>`; `codex -C <repo>` as fallback |
+| Copilot CLI | Partly: `/cd` changes directory, but no instruction reload is documented | `/cd <repo>`, check `/env`, then `/checkpoint resume <slug>` (Skills CLI install); `copilot -C <repo> -i` as fallback |
 | Gemini CLI | No (`/directory add` only adds a directory) | `cd <repo> && gemini -i "…"` |
-| Cursor | No | `cd <repo> && agent "/checkpoint resume <slug>"`, or open the folder in the editor |
+| Cursor | No | `cd <repo> && agent "Use the checkpoint skill to resume <slug>"`, or open the folder in the editor and type `/checkpoint resume <slug>` (Skills CLI install) |
 
-After an in-session move, the previous repo's conversation stays in context. Start a fresh session
+The table shows the plugin form where it is known. Each row's command follows the table under
+[Usage](#usage). After an in-session move, the previous repo's conversation stays in context. Start a fresh session
 instead if that conversation is long or unrelated. Each harness's exact lines, caveats and sources are
 in [`references/harness/`](references/harness/).
 

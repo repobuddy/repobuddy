@@ -35,7 +35,8 @@ that drifted in elsewhere is already here.
    [Claude Code](harness/claude-code.md), [Codex](harness/codex.md),
    [Gemini CLI](harness/gemini.md), [Copilot CLI](harness/copilot.md),
    [Cursor](harness/cursor.md). For any other harness, give the fresh-session form: `cd <repo-root>`,
-   then start the harness with a prompt that runs `checkpoint resume <slug>`.
+   then start the harness with a prompt that runs `<command> resume <slug>`, with `<command>` from
+   [command.md](command.md).
 
    **If there is no checkpoint** but an `.agents/plans/*.plan.md` has todos `in_progress`, the work is
    an SDD mission. Use `resume-mission` if it is available, or read that plan's `## NEXT` yourself.

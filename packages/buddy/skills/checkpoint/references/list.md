@@ -28,5 +28,6 @@ never `cd`. `checkpoint resume` uses the same listing when it has to ask which c
 
 3. **With no checkpoints,** say so and stop. Do not reconstruct one from guesses.
 
-4. **Stop.** Name `/checkpoint resume <slug>` as the way to open one. For another repo's list, resume
+4. **Stop.** Name `<command> resume <slug>` as the way to open one, with `<command>` from
+   [command.md](command.md). For another repo's list, resume
    hands off as step 1a of [resume.md](resume.md) describes; `list` only shows.
