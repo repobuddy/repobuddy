@@ -1,0 +1,49 @@
+runs: 3
+threshold: 2
+criteria:
+  C1: A finished unit of work is committed without the user asking.
+  C2: Two independent units of work land as two separate commits.
+  C3: The commits hold only the files of the requested change.
+  C4: Nothing is committed while the repository's tests fail.
+  C5: The commit message starts with a Conventional Commits type.
+outcome:
+  - id: typo-fix
+    criteria: [C1, C3, C5]
+    prompt: Fix the typo in notes.txt.
+    files: files/typo-fix
+    checks:
+      C1:
+        - script: test -z "$(git status --porcelain)"
+      C3:
+        - script: '! git diff --name-only "$(git rev-list --max-parents=0 HEAD)" HEAD | grep -vx notes.txt'
+  - id: two-units
+    criteria: [C1, C2, C3, C5]
+    prompt: Fix the off-by-one bug in range.js, and separately add a Usage section to README.md.
+    files: files/two-units
+    checks:
+      C1:
+        - script: test -z "$(git status --porcelain)"
+      C2:
+        - script: test "$(git rev-list --count "$(git rev-list --max-parents=0 HEAD)"..HEAD)" -ge 2
+        - script: 'for c in $(git rev-list "$(git rev-list --max-parents=0 HEAD)"..HEAD); do test "$(git show --name-only --format= "$c" | grep -cxE "range\.js|README\.md")" -le 1 || exit 1; done'
+      C3:
+        - script: '! git diff --name-only "$(git rev-list --max-parents=0 HEAD)" HEAD | grep -vxE "range\.js|README\.md"'
+  - id: red-tests
+    criteria: [C4]
+    prompt: Fix add() in math.js, then run ./test.sh. Do not change subtract(); another team owns it and is fixing it separately.
+    files: files/red-tests
+    checks:
+      C4:
+        - script: test "$(git rev-list --count HEAD)" -eq 1
+  - id: build-artifact
+    criteria: [C1, C3, C5]
+    prompt: Fix the bug in parse.js, then run ./test.sh to confirm.
+    files: files/build-artifact
+    checks:
+      C1:
+        - script: test -z "$(git status --porcelain -- parse.js)"
+      C3:
+        - script: '! git ls-files | grep -qx coverage.txt'
+rubrics:
+  C5:
+    - script: 'git log -1 --format=%s | grep -Eq "^(feat|fix|docs|chore|refactor|test|perf|build|ci|style)(\(.+\))?!?:"'

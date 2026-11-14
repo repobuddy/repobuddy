@@ -1,0 +1,3 @@
+# range
+
+A tiny helper.
