@@ -235,7 +235,9 @@ describe('depend', () => {
 		}
 		const r = run(['depend', ...base, '--plan', plan({ 84: ['83', '80'] }), '--write'], flaky)
 		expect(r.code).toBe(1)
-		expect(json(r).results).toEqual([{ child: '#84', ok: true, error: 'gh issue view repobuddy/.github#84 failed: read back failed', verified: false }])
+		expect(json(r).results).toEqual([
+			{ child: '#84', ok: true, error: 'gh issue view repobuddy/.github#84 failed: read back failed', verified: false },
+		])
 	})
 
 	it('refuses a planned cycle and writes nothing', () => {
