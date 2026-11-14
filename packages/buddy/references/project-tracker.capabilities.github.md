@@ -103,3 +103,48 @@ gh repo view <owner>/<repo> --json viewerPermission --jq .viewerPermission
 - `ADMIN` is `owned`. The owner of a user-owned repository always has `ADMIN` on it, and so does a person who administers an organization's repository. Tested: `ADMIN` on a user-owned and an organization-owned repository the user runs, `READ` on another owner's public repository.
 - `MAINTAIN`, `WRITE`, `TRIAGE`, `READ`, or an empty value is `not owned`.
 - A non-zero exit (the repository cannot be found, or `gh` is logged out) means unknown.
+
+## Board
+
+A board is a GitHub Projects board, named in the routing or by the user as `<owner>` and a project number. The token needs the `project` scope: `gh auth status` lists it, and `gh auth refresh -s project` adds it.
+
+```bash
+gh project item-add <number> --owner <owner> --url <issue-url> --format json --jq .id
+gh project item-edit <number> --owner <owner> --url <issue-url> --field "<field>" --value "<option>"
+```
+
+- `item-add` prints the item's id.
+- `item-edit` sets one field per call. A single-select field takes the option's name as `--value`. When `gh project item-edit --help` has no `--field` flag (an older `gh`), read the ids with `gh project field-list <number> --owner <owner> --format json` and pass `--project-id`, `--id`, `--field-id`, and `--single-select-option-id` instead.
+- Read which boards an issue is on: `gh issue view <n> --repo <owner>/<repo> --json projectItems`.
+
+## Transfer
+
+```bash
+gh issue transfer <n> <owner>/<destination-repo> --repo <owner>/<repo>
+```
+
+- The issue gets a new number and URL in the destination, and its old URL redirects to the new one. GitHub keeps a label or milestone only when the destination has one of the same name.
+- Both repositories must have the same owner, the user needs write access to both, and an issue cannot move from a private repository to a public one.
+- After the move, re-link it: read its new URL from `gh issue view <old-url> --json url --jq .url`, then rewrite every line in the parent's body that named the old reference, with a note such as `(moved from <owner>/<repo>#<n>)`. Then read the parent's tree with `Link`, and attach the issue again by its new URL when it is no longer a child.
+- A transfer is irreversible in the sense of `project-tracker.executors`: it waits for a confirmation on the issue.
+
+## Depend
+
+Use the `epic-plan.mjs` script in the `epic` skill's `scripts/` folder, not a shell loop:
+
+```bash
+node <epic skill folder>/scripts/epic-plan.mjs depend --repo <owner>/<repo> --plan <plan.json> [--prune] [--write]
+node <epic skill folder>/scripts/epic-plan.mjs graph --repo <owner>/<repo> --epic <n>
+```
+
+- `<plan.json>` maps each child to the full list of issues it is blocked by, such as `{"82": [], "84": ["83"]}`. Without `--write` the script prints the changes and writes nothing. With `--write` it runs one `gh issue edit <child> --add-blocked-by <a>,<b>` (and `--remove-blocked-by` with `--prune`) per child, reads each one back, and reports what did not verify. It refuses a plan with a cycle.
+- `graph` prints each child's blockers, any blocker outside the epic, any cycle, and the waves of the run order.
+- One link by hand: `gh issue edit <n> --repo <owner>/<repo> --add-blocked-by <other>`. Read them with `gh issue view <n> --json blockedBy,blocking`.
+
+## Sync body
+
+```bash
+node <epic skill folder>/scripts/epic-plan.mjs sync-body --repo <owner>/<repo> --epic <n> [--write]
+```
+
+It rebuilds the `## Child Issues` list from the native sub-issues. It keeps the list's order, checks off closed children, fixes titles, appends new sub-issues, and drops lines for issues that are no longer children. It leaves every other line of the body as it is. Without `--write` it prints the new body and what changed. With `--write` it saves the body with `gh issue edit --body-file`.

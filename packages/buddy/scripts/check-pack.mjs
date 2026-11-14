@@ -30,6 +30,7 @@ const SCRIPTS = [
 	// Committed bundles compiled by `plugin build`; they reject bad usage before reading anything.
 	{ path: 'skills/init-buddy/scripts/auto-mode.mjs', args: ['no-such-command'], exit: 2 },
 	{ path: 'skills/init-buddy/scripts/permission-candidates.mjs', args: ['--bogus'], exit: 2 },
+	{ path: 'skills/epic/scripts/epic-plan.mjs', args: ['no-such-command'], exit: 2 },
 	// These reject bad usage before shelling out to `gh`, so they run without a git remote or auth.
 	{ path: 'skills/setup-github-repo/scripts/detect-state.mjs', args: ['--dir'], exit: 1 },
 	{ path: 'skills/setup-github-repo/scripts/scaffold-workflows.mjs', args: ['no-such-command'], exit: 1 },

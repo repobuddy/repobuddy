@@ -16,6 +16,10 @@ interface:
     - {heading: Close, holds: "How to close an item as done, not planned, or moved"}
     - {heading: Url, holds: "How to print an item's URL and parse one"}
     - {heading: Ownership, holds: "How to tell whether the logged-in user owns the scope Detect resolved"}
+    - {heading: Board, holds: "How to add an item to a planning board and set a single-select field on it"}
+    - {heading: Transfer, holds: "How to move an item to another repository or project, and what happens to its links"}
+    - {heading: Depend, holds: "How to add and remove blocked-by links in a batch, and read them back"}
+    - {heading: Sync body, holds: "How to rewrite a parent's child list in its body from the native child tree"}
 ---
 
 ## Version
@@ -40,6 +44,10 @@ A capabilities reference has these `##` sections, in this order. Heading text is
 | `Close` | How to close an item with a reason: done, not planned, or moved | yes |
 | `Url` | How to print an item's URL and parse one | no |
 | `Ownership` | Optional. How to tell whether the logged-in user owns the tracker's scope (the repository or project `Detect` resolved): the command, and which of its answers mean `owned` and `not owned` | no |
+| `Board` | Optional. How to add an item to a planning board (a GitHub Projects board, say) and set a single-select field on it, such as `Status` | yes |
+| `Transfer` | Optional. How to move an item to another repository or project, what happens to its number, URL, and links, and how to re-link it from its parent's body | yes |
+| `Depend` | Optional. How to add and remove blocked-by links for many items from one list, without a shell loop, and read the result back | yes |
+| `Sync body` | Optional. How to rewrite a parent's `Child Issues` list in its body from the native child tree | yes |
 
 A skill confirms with the user before any section marked as writing. The one exception is a create that the skill's own workflow lets run without a confirmation turn because `Ownership` answered `owned`. A skill with no such rule always confirms.
 

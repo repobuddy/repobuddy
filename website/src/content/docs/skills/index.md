@@ -53,7 +53,7 @@ Skills that need a deterministic step run a bundled script. See [Skill scripts](
 
 | Skill | Use it to |
 | --- | --- |
-| [`epic`](/repobuddy/skills/epic/) | Plan an epic and its child issues, or turn an issue or an initiative into an epic, on the tracker that holds epics |
+| [`epic`](/repobuddy/skills/epic/) | Plan, revise, review, or hand off an epic and its child issues, or turn an issue or an initiative into an epic, on the tracker that holds epics |
 | [`initiative`](/repobuddy/skills/initiative/) | Set a goal and its metric, and file the epics that move it as shells, or put an epic under a new initiative |
 | [`issue`](/repobuddy/skills/issue/) | File a bug, feature, or task on the tracker for your repository, after a duplicate search |
 | [`project-tracker`](/repobuddy/skills/project-tracker/) | Set up, show, change, and check which tracker holds each level and category of work |
