@@ -1,5 +1,14 @@
 # @unional/jest-presets
 
+## 7.1.4
+
+### Patch Changes
+
+- 2aec586: Drop the `read-pkg-up` dependency. The presets and resolver now find the nearest `package.json` with a small built-in lookup, so they stay loadable with `require`.
+  
+  The resolver's subpath `imports` fallback now passes the whole `package.json` to `resolve.imports`. Before, it passed only the `imports` field, so the fallback never matched.
+- 2a92f73: Document that the CommonJS TypeScript presets cannot use TypeScript 7 yet: they transform with `ts-jest`, whose peer range is `typescript <7`.
+
 ## 7.1.3
 
 ### Patch Changes
