@@ -680,4 +680,4 @@ function main(argv = process.argv.slice(2)) {
 }
 /* istanbul ignore next -- process.argv entrypoint guard, covered by bundles.spec.ts (child process) */
 if (process.argv[1]?.endsWith("epic-plan.mjs")) main();
-export { USAGE, main, run };
+export { run };

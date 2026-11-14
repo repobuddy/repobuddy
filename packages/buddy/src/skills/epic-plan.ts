@@ -32,7 +32,7 @@ import { join } from 'node:path'
 
 export type Gh = (args: string[]) => string
 
-export const USAGE = `usage: epic-plan.mjs graph --repo <owner/repo> --epic <ref> [--verbose]
+const USAGE = `usage: epic-plan.mjs graph --repo <owner/repo> --epic <ref> [--verbose]
        epic-plan.mjs depend --repo <owner/repo> --plan <file.json> [--prune] [--write] [--verbose]
        epic-plan.mjs sync-body --repo <owner/repo> --epic <ref> [--write] [--verbose]
        epic-plan.mjs check --repo <owner/repo> --epic <ref> [--project <title>] [--verbose]
@@ -695,7 +695,7 @@ export function run(argv: string[], gh: Gh = realGh): RunResult {
 	}
 }
 
-export function main(argv: string[] = process.argv.slice(2)): void {
+function main(argv: string[] = process.argv.slice(2)): void {
 	const r = run(argv)
 	if (r.stdout) process.stdout.write(r.stdout)
 	if (r.stderr) process.stderr.write(r.stderr)
