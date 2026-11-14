@@ -1,12 +1,6 @@
 {
 	"version": 1,
 	"skills": {
-		"audit-skill": {
-			"source": "cyberuni/cyber-skills",
-			"sourceType": "github",
-			"skillPath": "skills/audit-skill/SKILL.md",
-			"computedHash": "fec14d36c275541f1d814233e7be81c1be72bb57647215cf9be5f8d2960aaa69"
-		},
 		"fix-security-pr": {
 			"source": "repobuddy/agent-security",
 			"sourceType": "github",
