@@ -10,8 +10,10 @@ Give the user these two lines to type in this session once the current turn has 
 
 ```
 /cd <repo-root>
-$checkpoint resume <slug>
+<command> resume <slug>
 ```
+
+`<command>` is the skill's name as this harness invokes it, from [command.md](../command.md).
 
 `/cd` keeps the conversation history. It reloads the destination's project configuration,
 instructions, permissions, keybindings, file search and hooks before the session continues there.
@@ -22,11 +24,11 @@ instructions, permissions, keybindings, file search and hooks before the session
 When `/cd` is missing (older Codex) or refuses the move, start a fresh session in the repo:
 
 ```sh
-codex -C <repo-root> '$checkpoint resume <slug>'
+codex -C <repo-root> '<command> resume <slug>'
 ```
 
 `--cd`/`-C` sets the working directory before the agent starts. The optional prompt starts the session
-with that text. Keep the single quotes so the shell doesn't expand `$checkpoint`. If the mention
+with that text. Keep the single quotes so the shell doesn't expand the `$` mention. If the mention
 isn't picked up, use plain text instead: `"Use the checkpoint skill to resume <slug>"`.
 
 ## Caveats

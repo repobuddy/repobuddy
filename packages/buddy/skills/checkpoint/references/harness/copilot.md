@@ -12,8 +12,10 @@ Give the user these lines to type in this session, then stop:
 ```
 /cd <repo-root>
 /env
-/checkpoint resume <slug>
+<command> resume <slug>
 ```
+
+`<command>` is the skill's name as this harness invokes it, from [command.md](../command.md).
 
 `/env` lists the instructions and skills that are loaded. If they still come from the previous repo,
 `/skills reload` reloads the skills, but there is no documented reload for the instructions, so use the
@@ -24,7 +26,7 @@ fallback.
 Start a fresh session in the repo:
 
 ```sh
-copilot -C <repo-root> -i "/checkpoint resume <slug>"
+copilot -C <repo-root> -i "<command> resume <slug>"
 ```
 
 `-C DIRECTORY` changes the working directory before doing anything else. `-i PROMPT` starts an interactive
