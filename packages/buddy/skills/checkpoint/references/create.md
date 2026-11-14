@@ -172,14 +172,17 @@ opens the file has to be able to continue.
     its match to an existing checkpoint was unclear, name both. If there are uncommitted changes, say
     that they won't travel with an uncommitted checkpoint.
 
+    For each checkpoint written to the current repo, give the line the user types in a new session here
+    to resume it: `<command> resume <slug>`, with `<command>` from [command.md](command.md).
+
     For each checkpoint written to another repo, name that repo and say it was left uncommitted, then
     give the line the user types to resume it there. Load only the reference for the current harness
     and use its hand-off lines, with `<repo-root>` as that repo's root and `<slug>` as the checkpoint's:
     [Claude Code](harness/claude-code.md), [Codex](harness/codex.md),
     [Gemini CLI](harness/gemini.md), [Copilot CLI](harness/copilot.md),
     [Cursor](harness/cursor.md). For any other harness, give the fresh-session form: `cd <repo-root>`,
-    then start the harness with a prompt that runs `checkpoint resume <slug>`. For a checkpoint that fell
-    back to `~/.agents/repobuddy/checkpoints/`, give its path instead, to pass to `checkpoint resume` from
+    then start the harness with a prompt that runs `<command> resume <slug>`. For a checkpoint that fell
+    back to `~/.agents/repobuddy/checkpoints/`, give its path instead, to pass to `<command> resume` from
     a session in the home repo.
 
 ## Checkpoint format

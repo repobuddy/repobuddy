@@ -9,8 +9,10 @@ On Claude Code v2.1.246 or later, give the user these two lines to type in this 
 
 ```
 /cd <repo-root>
-/checkpoint resume <slug>
+<command> resume <slug>
 ```
+
+`<command>` is the skill's name as this harness invokes it, from [command.md](../command.md).
 
 `/cd` keeps the conversation and applies the new directory's project configuration as soon as the
 session moves. That includes its `CLAUDE.md`, project settings (permission rules and hooks), `.mcp.json`
@@ -23,7 +25,7 @@ On a version older than v2.1.246, where `/cd` is missing or doesn't apply the ne
 skills or hooks until a `--resume`, or when the user wants a clean context, start a fresh session there:
 
 ```sh
-cd <repo-root> && claude "/checkpoint resume <slug>"
+cd <repo-root> && claude "<command> resume <slug>"
 ```
 
 `claude "query"` starts an interactive session with that initial prompt.
