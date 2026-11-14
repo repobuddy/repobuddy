@@ -123,6 +123,9 @@ const config: KnipConfig = {
 		// Recorded bench pilots: another repo's task-set checks, kept as a record and
 		// run only in that repo.
 		'.agents/aced/bench/*/pilots/**',
+		// `/instruction compare` case files: copied into a throwaway repository for
+		// each run, never imported here.
+		'.agents/instruction-design/cases/files/**',
 		// Fixtures that exist precisely because nothing imports them — they prove
 		// the coverage reporters still count a non-spec source file.
 		'**/not_a_spec.*',

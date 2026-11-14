@@ -108,6 +108,7 @@ export default defineConfig({
 									items: [
 										{ label: 'init-buddy', slug: 'skills/init-buddy' },
 										{ label: 'checkpoint', slug: 'skills/checkpoint' },
+										{ label: 'repo', slug: 'skills/repo' },
 									],
 								},
 							],
