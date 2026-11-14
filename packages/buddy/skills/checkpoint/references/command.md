@@ -16,7 +16,7 @@ these. If you can't tell where the skill's files are, use the fallback.
 
 | Harness | From the repobuddy plugin | Installed by the Skills CLI |
 | --- | --- | --- |
-| Claude Code | `/repobuddy:checkpoint` (pnpm install: `pnpm-repobuddy-checkpoint`) | the fallback |
+| Claude Code | `/repobuddy:checkpoint` | the fallback |
 | Codex CLI | `$repobuddy:checkpoint` | `$checkpoint` |
 | Copilot CLI | the fallback | `/checkpoint` |
 | Cursor editor | the fallback | `/checkpoint` |
