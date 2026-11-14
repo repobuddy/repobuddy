@@ -4,14 +4,11 @@ When reading a `SKILL.md`, also read a `SKILL.local.md` in the same directory if
 
 ## Commit Discipline
 
-**Auto-commit rule:** When a unit of work is complete and verified, commit it immediately — do not wait for the user to ask. Batching multiple units into one commit, or finishing all work before committing, are both violations of this rule.
+Commit each unit of work as soon as it is complete and verified, without waiting to be asked. Finishing several units before committing, or putting two units in one commit, breaks this rule.
 
-**Unit of work:** one coherent, independently revertable change — one refactor, feature, bugfix, test expansion for one concern, or config change. A TDD red-green-refactor cycle alone is not a commit boundary. If the working tree has unrelated changes, leave them unstaged.
+A unit of work is one coherent change that can be reverted on its own: one feature, one bugfix, one refactor, one config change, or one test expansion for one concern. A red-green-refactor cycle alone is not a unit.
 
-- Conventional Commits (`feat:`, `fix:`, `refactor:`, `test:`, `docs:`, `chore:`); commitlint rejects others at commit time
-- Stage only this unit's files with `git add <files>`, then check `git diff --cached`
-- Never `git add .`, `git add -A`, or `git add -p`
-- Never commit with red tests
+Commit with the `commit` skill from repobuddy. Where it is not installed, stage only this unit's files by name, leave unrelated changes unstaged, and never commit with failing checks.
 
 ## Commands
 
