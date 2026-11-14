@@ -23,8 +23,8 @@ the request, then loads that subcommand's instructions and follows them. It does
 
 Take the first rule that matches, and load only the reference for the subcommand it picks:
 
-1. **An explicit subcommand.** `/checkpoint create`, `/checkpoint resume auth-refactor`, `/checkpoint list`, `/checkpoint help`. The
-   rest of the arguments go to that subcommand.
+1. **An explicit subcommand.** `create`, `resume auth-refactor`, `list` or `help` right after the skill's
+   name, in whatever form the harness invoked it. The rest of the arguments go to that subcommand.
 2. **Intent read from the request.** "Let's stop here", "wrap up for now", "checkpoint this", "update the
    checkpoint", "hand this off" route to `create`. "Pick up X", "continue from the checkpoint", "where did we leave off"
    route to `resume`. "What checkpoints are there", "list checkpoints", "show my checkpoints"
@@ -46,7 +46,8 @@ Take the first rule that matches, and load only the reference for the subcommand
 
 ## Help
 
-Show this, then ask which subcommand the user wants:
+Show this, then ask which subcommand the user wants. Write each example with the skill's name as this
+harness invokes it, from [references/command.md](references/command.md), in place of `/checkpoint`:
 
 - `checkpoint`: with nothing after it, runs `resume` in a new or just-cleared session; in a session with
   work, runs `create` when the repo has no checkpoint yet, and shows this list otherwise.

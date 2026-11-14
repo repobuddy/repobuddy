@@ -23,6 +23,20 @@ the earlier `pause-session` and `resume-session` skills. The old names were remo
 /checkpoint help
 ```
 
+Type the skill's name the way your harness invokes it. The lines above use `/checkpoint`, which is right for a Skills
+CLI install in Copilot CLI and the Cursor editor:
+
+| Harness | From the repobuddy plugin | Installed by the Skills CLI |
+| --- | --- | --- |
+| Claude Code | `/repobuddy:checkpoint` | ask in words: `/checkpoint` is an alias of the built-in `/rewind` |
+| Codex CLI | `$repobuddy:checkpoint` | `$checkpoint` |
+| Copilot CLI | ask in words (namespacing not documented) | `/checkpoint` |
+| Cursor | ask in words (namespacing not documented) | `/checkpoint` in the editor's Agent chat; ask in words in the `agent` CLI |
+| Gemini CLI | — | ask in words |
+
+"Ask in words" means a request such as "use the checkpoint skill to resume flaky-login-test". The resume lines the
+skill hands back use the same form.
+
 Natural phrasing routes too: "let's stop here" creates a checkpoint, "pick up the auth refactor" resumes, "what checkpoints do I have" lists them. A bare `/checkpoint`
 runs `resume` in a new or just-cleared session. In a session with work, it runs `create` in a git repo that has no
 checkpoint yet, and shows help in a repo that has some or outside a git repo.
@@ -81,7 +95,9 @@ session started in the repo. Exact lines are in the skill's `references/harness/
 ## Example
 
 ```
-/checkpoint create the flaky login test --commit
+/repobuddy:checkpoint create the flaky login test --commit
 ```
+
+That is the Claude Code plugin form; use your harness's form from the table above.
 
 More detail: [skill README](https://github.com/repobuddy/repobuddy/tree/main/packages/buddy/skills/checkpoint).
