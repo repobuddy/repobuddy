@@ -19,7 +19,7 @@ published `repobuddy` npm package instead (only the tarball carries the built, g
 `sync-plugin-manifests.mjs` restores that `source` in `.claude-plugin/marketplace.json` after every rebuild — the one
 generated field intentionally kept out of sync with the tool's output.
 
-`plugin build` also bundles the five skill scripts listed under `scripts` in `plugin.json`. Unlike the tsdown bundles,
+`plugin build` also bundles the six skill scripts listed under `scripts` in `plugin.json`. Unlike the tsdown bundles,
 they are committed, and their bytes follow the rolldown version the lockfile pins for `universal-plugin`.
 `scripts/check-build-drift.mjs` (`check-build-drift` in `verify`) rebuilds and fails when any of them differs from git.
 After a dependency update changes them, run `pnpm --filter repobuddy build` and commit the result. The release PR will

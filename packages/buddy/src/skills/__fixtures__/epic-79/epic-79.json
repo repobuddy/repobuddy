@@ -1,0 +1,368 @@
+{
+	"epic": {
+		"number": 79,
+		"title": "Consolidate the bot GitHub Apps onto one repobuddy-org-owned app",
+		"url": "https://github.com/repobuddy/.github/issues/79",
+		"body": "## Outcome\n\nIn every org `unional` owns, the bot jobs below push with a token from one `repobuddy` GitHub App owned by the `repobuddy` org, and those pushes start CI. `cyberuni-ci-bot`, `visual-testing`, and `repobuddy-bot` are retired, `repobuddy/repobuddy-app` is archived, and the app lives in `repobuddy/github-app`.\n\n## Scope\n\nA push or PR made with the built-in `GITHUB_TOKEN` starts no workflows, so a PR it updates never runs its required checks. Each job here pushes with an app token instead:\n\n- J1. Add a changeset to Renovate PRs: `cyberuni/.github` and `stable-packages/.github` `dep-changeset.yml`, and `renovate-changeset.yml` in 8 cyberuni repos.\n- J2. Push rebuilt output onto Renovate PRs: `cyberuni/cyberlegion` (`dist/cli.mjs`).\n- J3. Refresh the lockfile on Dependabot PRs: `cyberuni/gherkin-cli` `dependabot-autofix.yml` (needs the Dependabot copy of the secrets).\n- J4. Open the Version Packages PR so its checks run: `clibuilder` (`RELEASE_APP_*`). The org release workflows already replaced this with `GITHUB_TOKEN` plus approving the parked runs, so J4 is either moved or retired, as the inventory spike finds.\n\nThe apps in scope:\n\n| App | Id | Created | Owner | Paired code repo | Fate |\n|---|---|---|---|---|---|\n| `repobuddy` | 1056494 | 2024-11-13 | `unional` account | `repobuddy/github-app` (renamed from `repobuddy/bot`) | **Kept** as **Repobuddy** (`repobuddy[bot]`), transferred to the `repobuddy` org |\n| `repobuddy-bot` | 163423 | 2022-01-09 | `repobuddy` org | `repobuddy/repobuddy-app` | Retired early (#91); repo archived (#90) |\n| `visual-testing` | 2578520 | n/a | `unional` account | none | Retired early (#91), no consumer found |\n| `cyberuni-ci-bot` | 4341564 | 2026-07-19 | `cyberuni` org | none | Retired after verification (#88) |\n\nAlso in scope: the app's installation on all 36 owned orgs, and the org secrets that hold its key.\n\nThe live app config (permissions, events, webhook) exists only in GitHub's app settings. Each repo's `app.yml` is only a Probot registration manifest and has drifted. Making a declarative `app.yml` the source of truth, with a drift check, is part of repobuddy/github-app#40.\n\n### Run order and who does what\n\nAgents cannot transfer, install, re-permission, or delete GitHub Apps, or generate their keys: those steps are `unional`'s, in the UI. An agent working this epic stops at each of them, posts what is needed on the issue, and waits.\n\n| Wave | Issue | Who | Blocked by |\n|---|---|---|---|\n| 1 | #80 inventory spike | agent, read-only | none |\n| 1 | #82 transfer the app to the org | `unional` (UI); agent checks after | none |\n| 2 | #81 permissions spike | agent drafts, `unional` confirms | #80 |\n| 2 | #91 retire `repobuddy-bot` and `visual-testing` | `unional` deletes apps; agent deletes secrets after confirmation | #80 |\n| 2 | #90 archive `repobuddy/repobuddy-app` | agent archives; `unional` sets the homepage URL | #80 |\n| 3 | #83 set permissions, accept on installations | `unional` (UI); agent checks | #81, #82 |\n| 3 | #85 generate the key, store secrets | `unional` generates the key; agent sets secrets | #80, #82 |\n| 4 | #84 install on the 24 missing orgs | `unional` (UI); agent writes the check script | #83 |\n| 4 | #86 switch consumers, wire dep-changeset into `stable-packages/store` | agent, by PRs | #85 |\n| 5 | #87 verify end to end | agent | #83, #86 |\n| 6 | #88 retire `cyberuni-ci-bot`, delete old secrets | `unional` deletes the app; agent deletes secrets after confirmation | #87 |\n\nNever delete an app or a secret without `unional`'s confirmation on the issue: both are irreversible. The bot design in repobuddy/github-app#40 is not part of this epic and should not be started from it.\n\n## Non-goals\n\n- What the app does as a bot: ChatOps over the buddy CLI, visual-snapshot management, and hosting. That design is repobuddy/github-app#40. It plans GitHub Actions first and a Cloudflare Workers webhook router later, and it holds the hosting research.\n- Replacing PAT secrets (`CI_GITHUB_TOKEN` in 7 orgs, `RERUN_WORKFLOW_TOKEN`, `CHANGESETS_GITHUB_TOKEN`). The inventory spike records them for a follow-up epic.\n- Removing Mergify. That is #57.\n- Third-party apps such as `changeset-bot`.\n\n## Child Issues\n\n- [ ] #80 Spike: which workflows consume GitHub App or bot credentials across all owned orgs?\n- [ ] #81 Spike: what permissions and events does the repobuddy app need?\n- [ ] #82 Transfer the repobuddy app from the unional account to the repobuddy org\n- [ ] #83 Set the repobuddy app's permissions and accept them on every installation\n- [ ] #84 Install the repobuddy app on every owned org\n- [ ] #85 Store the repobuddy app key as org secrets where it is consumed\n- [ ] #86 Point every consumer at the repobuddy app secrets\n- [ ] #91 Retire the unused repobuddy-bot and visual-testing apps\n- [ ] #90 Archive repobuddy/repobuddy-app and point the repobuddy app at repobuddy/github-app\n- [ ] #87 Verify the repobuddy app token end to end\n- [ ] #88 Retire cyberuni-ci-bot and the replaced app secrets\n\nClosed: #89, superseded by repobuddy/github-app#40.\n\nRelated: #57, repobuddy/github-app#40\n\n## Done when\n\nAll child issues are done, and the outcome can be observed:\n\n- [ ] `gh api apps/repobuddy --jq .owner.login` prints `repobuddy`, and all 36 owned orgs list it installed on all repositories.\n- [ ] J1, J2, and J3 each have one real run, linked here, where the commit author is `repobuddy[bot]` and that push started CI.\n- [ ] J4 is either on the `repobuddy` token with a linked run, or recorded as retired.\n- [ ] `repobuddy/repobuddy-app` is archived, and the app's homepage points at `repobuddy/github-app`.\n- [ ] `gh api apps/cyberuni-ci-bot`, `apps/visual-testing`, and `apps/repobuddy-bot` return 404, and no org holds `AUTOFIX_APP_*`, `RELEASE_APP_*`, or `VIS_TEST_APP_*` secrets.\n\n",
+		"projectItems": [
+			{
+				"status": {
+					"optionId": "f75ad846",
+					"name": "Backlog"
+				},
+				"title": "repobuddy bot clean up"
+			}
+		],
+		"subIssues": {
+			"nodes": [
+				{
+					"number": 80,
+					"state": "OPEN",
+					"title": "Spike: which workflows consume GitHub App or bot credentials across all owned orgs?",
+					"url": "https://github.com/repobuddy/.github/issues/80"
+				},
+				{
+					"number": 81,
+					"state": "OPEN",
+					"title": "Spike: what permissions and events does the repobuddy app need?",
+					"url": "https://github.com/repobuddy/.github/issues/81"
+				},
+				{
+					"number": 82,
+					"state": "OPEN",
+					"title": "Transfer the repobuddy app from the unional account to the repobuddy org",
+					"url": "https://github.com/repobuddy/.github/issues/82"
+				},
+				{
+					"number": 83,
+					"state": "OPEN",
+					"title": "Set the repobuddy app's permissions and accept them on every installation",
+					"url": "https://github.com/repobuddy/.github/issues/83"
+				},
+				{
+					"number": 84,
+					"state": "OPEN",
+					"title": "Install the repobuddy app on every owned org",
+					"url": "https://github.com/repobuddy/.github/issues/84"
+				},
+				{
+					"number": 85,
+					"state": "OPEN",
+					"title": "Store the repobuddy app key as org secrets where it is consumed",
+					"url": "https://github.com/repobuddy/.github/issues/85"
+				},
+				{
+					"number": 86,
+					"state": "OPEN",
+					"title": "Point every consumer at the repobuddy app secrets",
+					"url": "https://github.com/repobuddy/.github/issues/86"
+				},
+				{
+					"number": 87,
+					"state": "OPEN",
+					"title": "Verify the repobuddy app token end to end",
+					"url": "https://github.com/repobuddy/.github/issues/87"
+				},
+				{
+					"number": 88,
+					"state": "OPEN",
+					"title": "Retire cyberuni-ci-bot and the replaced app secrets",
+					"url": "https://github.com/repobuddy/.github/issues/88"
+				},
+				{
+					"number": 90,
+					"state": "OPEN",
+					"title": "Archive repobuddy/repobuddy-app and point the repobuddy app at repobuddy/github-app",
+					"url": "https://github.com/repobuddy/.github/issues/90"
+				},
+				{
+					"number": 91,
+					"state": "OPEN",
+					"title": "Retire the unused repobuddy-bot and visual-testing apps",
+					"url": "https://github.com/repobuddy/.github/issues/91"
+				}
+			]
+		}
+	},
+	"children": {
+		"80": {
+			"blockedBy": {
+				"nodes": []
+			},
+			"number": 80,
+			"projectItems": [
+				{
+					"status": {
+						"optionId": "f75ad846",
+						"name": "Backlog"
+					},
+					"title": "repobuddy bot clean up"
+				}
+			],
+			"state": "OPEN",
+			"title": "Spike: which workflows consume GitHub App or bot credentials across all owned orgs?",
+			"url": "https://github.com/repobuddy/.github/issues/80"
+		},
+		"81": {
+			"blockedBy": {
+				"nodes": [
+					{
+						"number": 80,
+						"state": "OPEN",
+						"title": "Spike: which workflows consume GitHub App or bot credentials across all owned orgs?",
+						"url": "https://github.com/repobuddy/.github/issues/80"
+					}
+				]
+			},
+			"number": 81,
+			"projectItems": [
+				{
+					"status": {
+						"optionId": "f75ad846",
+						"name": "Backlog"
+					},
+					"title": "repobuddy bot clean up"
+				}
+			],
+			"state": "OPEN",
+			"title": "Spike: what permissions and events does the repobuddy app need?",
+			"url": "https://github.com/repobuddy/.github/issues/81"
+		},
+		"82": {
+			"blockedBy": {
+				"nodes": []
+			},
+			"number": 82,
+			"projectItems": [
+				{
+					"status": {
+						"optionId": "f75ad846",
+						"name": "Backlog"
+					},
+					"title": "repobuddy bot clean up"
+				}
+			],
+			"state": "OPEN",
+			"title": "Transfer the repobuddy app from the unional account to the repobuddy org",
+			"url": "https://github.com/repobuddy/.github/issues/82"
+		},
+		"83": {
+			"blockedBy": {
+				"nodes": [
+					{
+						"number": 82,
+						"state": "OPEN",
+						"title": "Transfer the repobuddy app from the unional account to the repobuddy org",
+						"url": "https://github.com/repobuddy/.github/issues/82"
+					},
+					{
+						"number": 81,
+						"state": "OPEN",
+						"title": "Spike: what permissions and events does the repobuddy app need?",
+						"url": "https://github.com/repobuddy/.github/issues/81"
+					}
+				]
+			},
+			"number": 83,
+			"projectItems": [
+				{
+					"status": {
+						"optionId": "f75ad846",
+						"name": "Backlog"
+					},
+					"title": "repobuddy bot clean up"
+				}
+			],
+			"state": "OPEN",
+			"title": "Set the repobuddy app's permissions and accept them on every installation",
+			"url": "https://github.com/repobuddy/.github/issues/83"
+		},
+		"84": {
+			"blockedBy": {
+				"nodes": [
+					{
+						"number": 83,
+						"state": "OPEN",
+						"title": "Set the repobuddy app's permissions and accept them on every installation",
+						"url": "https://github.com/repobuddy/.github/issues/83"
+					}
+				]
+			},
+			"number": 84,
+			"projectItems": [
+				{
+					"status": {
+						"optionId": "f75ad846",
+						"name": "Backlog"
+					},
+					"title": "repobuddy bot clean up"
+				}
+			],
+			"state": "OPEN",
+			"title": "Install the repobuddy app on every owned org",
+			"url": "https://github.com/repobuddy/.github/issues/84"
+		},
+		"85": {
+			"blockedBy": {
+				"nodes": [
+					{
+						"number": 82,
+						"state": "OPEN",
+						"title": "Transfer the repobuddy app from the unional account to the repobuddy org",
+						"url": "https://github.com/repobuddy/.github/issues/82"
+					},
+					{
+						"number": 80,
+						"state": "OPEN",
+						"title": "Spike: which workflows consume GitHub App or bot credentials across all owned orgs?",
+						"url": "https://github.com/repobuddy/.github/issues/80"
+					}
+				]
+			},
+			"number": 85,
+			"projectItems": [
+				{
+					"status": {
+						"optionId": "f75ad846",
+						"name": "Backlog"
+					},
+					"title": "repobuddy bot clean up"
+				}
+			],
+			"state": "OPEN",
+			"title": "Store the repobuddy app key as org secrets where it is consumed",
+			"url": "https://github.com/repobuddy/.github/issues/85"
+		},
+		"86": {
+			"blockedBy": {
+				"nodes": [
+					{
+						"number": 85,
+						"state": "OPEN",
+						"title": "Store the repobuddy app key as org secrets where it is consumed",
+						"url": "https://github.com/repobuddy/.github/issues/85"
+					}
+				]
+			},
+			"number": 86,
+			"projectItems": [
+				{
+					"status": {
+						"optionId": "f75ad846",
+						"name": "Backlog"
+					},
+					"title": "repobuddy bot clean up"
+				}
+			],
+			"state": "OPEN",
+			"title": "Point every consumer at the repobuddy app secrets",
+			"url": "https://github.com/repobuddy/.github/issues/86"
+		},
+		"87": {
+			"blockedBy": {
+				"nodes": [
+					{
+						"number": 86,
+						"state": "OPEN",
+						"title": "Point every consumer at the repobuddy app secrets",
+						"url": "https://github.com/repobuddy/.github/issues/86"
+					},
+					{
+						"number": 83,
+						"state": "OPEN",
+						"title": "Set the repobuddy app's permissions and accept them on every installation",
+						"url": "https://github.com/repobuddy/.github/issues/83"
+					}
+				]
+			},
+			"number": 87,
+			"projectItems": [
+				{
+					"status": {
+						"optionId": "f75ad846",
+						"name": "Backlog"
+					},
+					"title": "repobuddy bot clean up"
+				}
+			],
+			"state": "OPEN",
+			"title": "Verify the repobuddy app token end to end",
+			"url": "https://github.com/repobuddy/.github/issues/87"
+		},
+		"88": {
+			"blockedBy": {
+				"nodes": [
+					{
+						"number": 87,
+						"state": "OPEN",
+						"title": "Verify the repobuddy app token end to end",
+						"url": "https://github.com/repobuddy/.github/issues/87"
+					}
+				]
+			},
+			"number": 88,
+			"projectItems": [
+				{
+					"status": {
+						"optionId": "f75ad846",
+						"name": "Backlog"
+					},
+					"title": "repobuddy bot clean up"
+				}
+			],
+			"state": "OPEN",
+			"title": "Retire cyberuni-ci-bot and the replaced app secrets",
+			"url": "https://github.com/repobuddy/.github/issues/88"
+		},
+		"90": {
+			"blockedBy": {
+				"nodes": [
+					{
+						"number": 80,
+						"state": "OPEN",
+						"title": "Spike: which workflows consume GitHub App or bot credentials across all owned orgs?",
+						"url": "https://github.com/repobuddy/.github/issues/80"
+					}
+				]
+			},
+			"number": 90,
+			"projectItems": [
+				{
+					"status": {
+						"optionId": "f75ad846",
+						"name": "Backlog"
+					},
+					"title": "repobuddy bot clean up"
+				}
+			],
+			"state": "OPEN",
+			"title": "Archive repobuddy/repobuddy-app and point the repobuddy app at repobuddy/github-app",
+			"url": "https://github.com/repobuddy/.github/issues/90"
+		},
+		"91": {
+			"blockedBy": {
+				"nodes": [
+					{
+						"number": 80,
+						"state": "OPEN",
+						"title": "Spike: which workflows consume GitHub App or bot credentials across all owned orgs?",
+						"url": "https://github.com/repobuddy/.github/issues/80"
+					}
+				]
+			},
+			"number": 91,
+			"projectItems": [
+				{
+					"status": {
+						"optionId": "f75ad846",
+						"name": "Backlog"
+					},
+					"title": "repobuddy bot clean up"
+				}
+			],
+			"state": "OPEN",
+			"title": "Retire the unused repobuddy-bot and visual-testing apps",
+			"url": "https://github.com/repobuddy/.github/issues/91"
+		}
+	}
+}

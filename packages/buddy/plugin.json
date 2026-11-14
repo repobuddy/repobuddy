@@ -32,6 +32,7 @@
 				"copilot-cli": {}
 			},
 			"scripts": {
+				"skills/epic/scripts/epic-plan.mjs": "src/skills/epic-plan.ts",
 				"skills/init-buddy/scripts/auto-mode.mjs": "src/skills/auto-mode.ts",
 				"skills/init-buddy/scripts/permission-candidates.mjs": "src/skills/permission-candidates.ts",
 				"skills/to-question/scripts/check-format.mjs": "src/skills/check-format.ts",

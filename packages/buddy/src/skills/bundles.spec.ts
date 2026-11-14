@@ -11,6 +11,8 @@ const GH_API_GUARD = join(ROOT, 'skills', 'init-buddy', 'scripts', 'gh-api-guard
 const AUTO_MODE = join(ROOT, 'skills', 'init-buddy', 'scripts', 'auto-mode.mjs')
 const PERMISSION_CANDIDATES = join(ROOT, 'skills', 'init-buddy', 'scripts', 'permission-candidates.mjs')
 
+const EPIC_PLAN = join(ROOT, 'skills', 'epic', 'scripts', 'epic-plan.mjs')
+
 describe('built skill bundles', () => {
 	it('min-release-age.mjs runs standalone and rejects bad usage with exit 2', () => {
 		if (!existsSync(MIN_RELEASE_AGE)) {
@@ -68,5 +70,12 @@ describe('built skill bundles', () => {
 		})
 		expect(r.status).toBe(0)
 		expect(JSON.parse(r.stdout).hosts).toEqual(['github'])
+	})
+
+	it('epic-plan.mjs runs standalone and rejects bad usage with exit 2', () => {
+		const r = spawnSync('node', [EPIC_PLAN, 'not-a-command'], { encoding: 'utf8' })
+		expect(r.status).toBe(2)
+		expect(r.stdout).toBe('')
+		expect(r.stderr).toMatch(/usage: epic-plan\.mjs/)
 	})
 })
