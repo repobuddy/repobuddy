@@ -58,7 +58,7 @@ Not for pushing, opening a pull request, or amending, squashing, or undoing a co
 - Reads the staged diff for a secret, debug logging, or formatting churn before committing.
 - Verifies the staged snapshot, not the working tree, when unstaged changes could hide a failure.
 - Writes the message with `git commit -F`, keeping trailers such as `Co-Authored-By`.
-- When a hook rejects the commit, fixes the cause and commits again. Never `--no-verify` or `--amend`.
+- Never `--no-verify` or `--amend`.
 - Reports each commit's hash, subject, and why.
 
 ## Customize

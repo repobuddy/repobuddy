@@ -68,9 +68,8 @@ Before staging a unit, its change is finished:
 
 ## Workflow
 
-1. **Check the index:** `git --no-pager diff --cached --stat`. Unstage files that are not this run's
-   work with `git restore --staged <files>`; their changes stay in the working tree. When such a file
-   also has unstaged changes, someone chose part of it: do not unstage it, commit nothing, and report it.
+1. **Check the index:** `git --no-pager diff --cached --stat`. When a file staged that is not this
+   run's work also has unstaged changes, someone chose part of it: commit nothing, and report it.
 2. **Plan:** `git status --porcelain` and `git --no-pager diff --stat`. Assign each file to a unit by
    the split axes. Read the full diff only of a file whose unit the path and the stat do not settle, or
    that holds two units. Never diff the whole tree when the stat lists more than a few files. State the
@@ -89,8 +88,6 @@ Before staging a unit, its change is finished:
       files, and say why.
    5. **Commit:** write the message by `commit.message` to a file outside the repository, with the body
       saying why and the trailers the harness or repository supplies, and run `git commit -F <file>`.
-      When a hook rejects it, the commit did not happen: fix the cause (the message, or the code and its
-      checks), stage what the fix touched, and commit again. Never `--amend`.
 5. **Report** what C7 lists.
 
 ## Done when
@@ -100,8 +97,7 @@ that fails.
 
 - **C1.** `git show --stat` of each new commit lists only its unit's files, its change is described in
   one sentence with no "and", and a change's tests are in the change's commit.
-- **C2.** Every change the run did not commit, and every file unstaged in step 1, still shows in
-  `git status --porcelain`.
+- **C2.** Every change the run did not commit still shows in `git status --porcelain`.
 - **C3.** Each message follows `commit.message`, and ends with the trailers the harness or repository
   supplies.
 - **C4.** When `commit.release-notes` asks for a changeset, the commit of that change lists the
