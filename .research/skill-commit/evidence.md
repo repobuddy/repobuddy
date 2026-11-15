@@ -44,7 +44,7 @@ Notes: Official docs do not state hook behavior on `git commit`. Trailer and `--
 
 ## Claim E9: commit-work plans a split, is lean, but uses interactive git and asks questions
 Status: supports | Confidence: high
-Source: /home/unional/.claude/plugins/cache/agent-toolkit/commit-work/3027f20f3181/skills/commit-work/SKILL.md and references/commit-message-template.md (both read in full). Listed upstream as softaworks/agent-toolkit@commit-work, 4.2K installs: https://skills.sh/softaworks/agent-toolkit/commit-work
+Source: ~/.claude/plugins/cache/agent-toolkit/commit-work/3027f20f3181/skills/commit-work/SKILL.md and references/commit-message-template.md (both read in full). Listed upstream as softaworks/agent-toolkit@commit-work, 4.2K installs: https://skills.sh/softaworks/agent-toolkit/commit-work
 Notes: Quotes: "Prefer patch staging for mixed changes: `git add -p`"; "Prefer an editor for multi-line messages: `git commit -v`"; "Inputs to ask for (if missing)". Verification step 7 is after the commit message, not a gate.
 
 ## Claim E10: github `git-commit` is the safest published skill, with merge-state handling
@@ -76,7 +76,7 @@ Source: listing name and `npx skills find commit` output only (551K): https://sk
 
 ## Claim E16: repobuddy's skill already has the Intent's safety rules, lacks in-progress-operation handling
 Status: supports | Confidence: high
-Source: /home/unional/code/repobuddy/repobuddy.worktrees/repobuddy-11/packages/buddy/skills/commit/SKILL.md (read in full, HEAD 9e38bad0). `grep` of it: no mention of MERGE_HEAD, cherry-pick, or sandbox.
+Source: packages/buddy/skills/commit/SKILL.md (read in full, HEAD 9e38bad0). `grep` of it: no mention of MERGE_HEAD, cherry-pick, or sandbox.
 Notes: The working tree has uncommitted edits to `packages/buddy/skills/commit/evals/`; the SKILL.md itself was clean.
 
 ## Contradictions
