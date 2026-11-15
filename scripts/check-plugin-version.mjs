@@ -20,12 +20,6 @@ function readJson(path) {
 	return JSON.parse(readFileSync(path, 'utf-8'))
 }
 
-function pluginEntryVersion(catalogPath) {
-	const catalog = readJson(catalogPath)
-	const entry = catalog.plugins.find((p) => p.name === 'repobuddy')
-	return entry?.version
-}
-
 const expected = readJson(join(PLUGIN_ROOT, 'package.json')).version
 
 const actual = {
@@ -33,8 +27,6 @@ const actual = {
 	[join(PLUGIN_ROOT, '.claude-plugin/plugin.json')]: readJson(join(PLUGIN_ROOT, '.claude-plugin/plugin.json')).version,
 	[join(PLUGIN_ROOT, '.cursor-plugin/plugin.json')]: readJson(join(PLUGIN_ROOT, '.cursor-plugin/plugin.json')).version,
 	[join(PLUGIN_ROOT, '.codex-plugin/plugin.json')]: readJson(join(PLUGIN_ROOT, '.codex-plugin/plugin.json')).version,
-	'.claude-plugin/marketplace.json': pluginEntryVersion('.claude-plugin/marketplace.json'),
-	'.github/plugin/marketplace.json': pluginEntryVersion('.github/plugin/marketplace.json'),
 }
 
 const mismatches = Object.entries(actual).filter(([, version]) => version !== expected)

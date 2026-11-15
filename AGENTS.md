@@ -40,7 +40,7 @@ Before changing what a package does, read its GOALS.md: [repobuddy](packages/bud
 
 pnpm + Turborepo monorepo. Published packages in `packages/`; public skills in `packages/buddy/skills/`, shipped in the `repobuddy` npm package; integration fixtures in `testcases/`.
 
-- Before touching `packages/buddy/plugin.json`, any `*-plugin/` manifest or marketplace catalog, or the `version` script, read [.agents/docs/plugin-manifests.md](.agents/docs/plugin-manifests.md) — most of those files are generated.
+- Before touching `packages/buddy/plugin.json`, any `*-plugin/` manifest, or the `version` script, read [.agents/docs/plugin-manifests.md](.agents/docs/plugin-manifests.md) — most of those files are generated.
 - Before editing `website/`, or after changing a package's presets, exports, options, or commands, read [.agents/docs/website.md](.agents/docs/website.md).
 
 ## Skills
