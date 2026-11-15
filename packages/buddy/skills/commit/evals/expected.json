@@ -1,0 +1,367 @@
+{
+	"version": 1,
+	"skill": "commit",
+	"at": "2026-11-15T23:21:26.695Z",
+	"verification": "skill-design.aspects.verification from cyber-agentkit",
+	"model": "sonnet",
+	"runs": 3,
+	"threshold": 2,
+	"baseline": "without the skill",
+	"trigger": [
+		{
+			"case": "trigger-1",
+			"prompt": "commit this",
+			"expect": "fire",
+			"fired": 3,
+			"ran": 3,
+			"status": "pass"
+		},
+		{
+			"case": "trigger-2",
+			"prompt": "split these changes into separate commits",
+			"expect": "fire",
+			"fired": 3,
+			"ran": 3,
+			"status": "pass"
+		},
+		{
+			"case": "trigger-3",
+			"prompt": "write a commit message for what I staged",
+			"expect": "fire",
+			"fired": 3,
+			"ran": 3,
+			"status": "pass"
+		},
+		{
+			"case": "trigger-4",
+			"prompt": "the fix is done and the tests pass, commit it",
+			"expect": "fire",
+			"fired": 3,
+			"ran": 3,
+			"status": "pass"
+		},
+		{
+			"case": "trigger-5",
+			"prompt": "push my branch and open a pull request",
+			"expect": "skip",
+			"fired": 0,
+			"ran": 3,
+			"status": "pass"
+		},
+		{
+			"case": "trigger-6",
+			"prompt": "add a changeset for this change",
+			"expect": "skip",
+			"fired": 0,
+			"ran": 3,
+			"status": "pass"
+		},
+		{
+			"case": "trigger-7",
+			"prompt": "squash the last three commits",
+			"expect": "skip",
+			"fired": 1,
+			"ran": 3,
+			"status": "pass"
+		},
+		{
+			"case": "trigger-8",
+			"prompt": "amend my last commit message",
+			"expect": "skip",
+			"fired": 0,
+			"ran": 3,
+			"status": "pass"
+		},
+		{
+			"case": "trigger-9",
+			"prompt": "undo my last commit",
+			"expect": "skip",
+			"fired": 0,
+			"ran": 3,
+			"status": "pass"
+		}
+	],
+	"criteria": [
+		{
+			"id": "C1",
+			"status": "pass",
+			"passed": 9,
+			"ran": 9,
+			"baseline": {
+				"passed": 6,
+				"ran": 9
+			}
+		},
+		{
+			"id": "C2",
+			"status": "pass",
+			"passed": 6,
+			"ran": 6,
+			"baseline": {
+				"passed": 6,
+				"ran": 6
+			}
+		},
+		{
+			"id": "C3",
+			"status": "pass",
+			"passed": 6,
+			"ran": 6,
+			"baseline": {
+				"passed": 3,
+				"ran": 6
+			}
+		},
+		{
+			"id": "C4",
+			"status": "pass",
+			"passed": 6,
+			"ran": 6,
+			"baseline": {
+				"passed": 3,
+				"ran": 6
+			}
+		},
+		{
+			"id": "C5",
+			"status": "pass",
+			"passed": 3,
+			"ran": 3,
+			"baseline": {
+				"passed": 0,
+				"ran": 3
+			}
+		},
+		{
+			"id": "C6",
+			"status": "pass",
+			"passed": 6,
+			"ran": 6,
+			"baseline": {
+				"passed": 6,
+				"ran": 6
+			}
+		},
+		{
+			"id": "C7",
+			"status": "pass",
+			"passed": 3,
+			"ran": 3,
+			"baseline": {
+				"passed": 2,
+				"ran": 3
+			}
+		}
+	],
+	"cases": [
+		{
+			"case": "trigger-1",
+			"status": "pass",
+			"passed": 3,
+			"ran": 3
+		},
+		{
+			"case": "trigger-2",
+			"status": "pass",
+			"passed": 3,
+			"ran": 3
+		},
+		{
+			"case": "trigger-3",
+			"status": "pass",
+			"passed": 3,
+			"ran": 3
+		},
+		{
+			"case": "trigger-4",
+			"status": "pass",
+			"passed": 3,
+			"ran": 3
+		},
+		{
+			"case": "trigger-5",
+			"status": "pass",
+			"passed": 3,
+			"ran": 3
+		},
+		{
+			"case": "trigger-6",
+			"status": "pass",
+			"passed": 3,
+			"ran": 3
+		},
+		{
+			"case": "trigger-7",
+			"status": "pass",
+			"passed": 2,
+			"ran": 3
+		},
+		{
+			"case": "trigger-8",
+			"status": "pass",
+			"passed": 3,
+			"ran": 3
+		},
+		{
+			"case": "trigger-9",
+			"status": "pass",
+			"passed": 3,
+			"ran": 3
+		},
+		{
+			"case": "split",
+			"status": "pass",
+			"passed": 3,
+			"ran": 3
+		},
+		{
+			"case": "red-check",
+			"status": "pass",
+			"passed": 3,
+			"ran": 3
+		},
+		{
+			"case": "message-only",
+			"status": "pass",
+			"passed": 3,
+			"ran": 3
+		},
+		{
+			"case": "changeset",
+			"status": "pass",
+			"passed": 3,
+			"ran": 3
+		},
+		{
+			"case": "pre-staged",
+			"status": "pass",
+			"passed": 3,
+			"ran": 3
+		},
+		{
+			"case": "missing-changeset",
+			"status": "pass",
+			"passed": 3,
+			"ran": 3
+		},
+		{
+			"case": "hook-reject",
+			"status": "pass",
+			"passed": 3,
+			"ran": 3
+		}
+	],
+	"notRun": [],
+	"blocked": [
+		{
+			"case": "split",
+			"arm": "skill",
+			"run": 1,
+			"what": "network",
+			"target": "registry.npmjs.org"
+		},
+		{
+			"case": "split",
+			"arm": "skill",
+			"run": 2,
+			"what": "network",
+			"target": "registry.npmjs.org"
+		},
+		{
+			"case": "split",
+			"arm": "skill",
+			"run": 3,
+			"what": "network",
+			"target": "registry.npmjs.org"
+		},
+		{
+			"case": "red-check",
+			"arm": "skill",
+			"run": 1,
+			"what": "network",
+			"target": "registry.npmjs.org"
+		},
+		{
+			"case": "red-check",
+			"arm": "skill",
+			"run": 2,
+			"what": "network",
+			"target": "registry.npmjs.org"
+		},
+		{
+			"case": "changeset",
+			"arm": "skill",
+			"run": 1,
+			"what": "network",
+			"target": "registry.npmjs.org"
+		},
+		{
+			"case": "changeset",
+			"arm": "skill",
+			"run": 2,
+			"what": "network",
+			"target": "registry.npmjs.org"
+		},
+		{
+			"case": "changeset",
+			"arm": "skill",
+			"run": 3,
+			"what": "network",
+			"target": "registry.npmjs.org"
+		},
+		{
+			"case": "pre-staged",
+			"arm": "skill",
+			"run": 1,
+			"what": "network",
+			"target": "registry.npmjs.org"
+		},
+		{
+			"case": "pre-staged",
+			"arm": "skill",
+			"run": 2,
+			"what": "network",
+			"target": "registry.npmjs.org"
+		},
+		{
+			"case": "pre-staged",
+			"arm": "skill",
+			"run": 3,
+			"what": "network",
+			"target": "registry.npmjs.org"
+		},
+		{
+			"case": "missing-changeset",
+			"arm": "skill",
+			"run": 2,
+			"what": "network",
+			"target": "registry.npmjs.org"
+		},
+		{
+			"case": "hook-reject",
+			"arm": "skill",
+			"run": 1,
+			"what": "network",
+			"target": "registry.npmjs.org"
+		},
+		{
+			"case": "hook-reject",
+			"arm": "skill",
+			"run": 2,
+			"what": "network",
+			"target": "registry.npmjs.org"
+		},
+		{
+			"case": "hook-reject",
+			"arm": "skill",
+			"run": 3,
+			"what": "network",
+			"target": "registry.npmjs.org"
+		}
+	],
+	"cost": 4.2612,
+	"durationMs": 145964,
+	"totalRuns": 69,
+	"comparedWith": "previous",
+	"changed": []
+}

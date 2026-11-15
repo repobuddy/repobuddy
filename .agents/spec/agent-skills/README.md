@@ -14,12 +14,14 @@ One unit per shipped skill.
 | [initiative](./initiative/README.md) | Set an initiative's goal and metric with its epics as shells, and promote an epic to one as a new parent |
 | [project-tracker](./project-tracker/README.md) | Set up, show, change, and check which tracker holds each level and category, and the move policy between trackers |
 | [scaffold](./scaffold/README.md) | List the installed scaffold recipes and apply one after a single confirmation |
-| [commit](./commit/README.md) | Stage and commit one unit of work at a time, unattended, with no interactive git |
 | [work-references](./work-references/README.md) | The level checks, body templates, and tracker contract the level skills load by name |
 
 Skills present in `skills/` with no unit here are **not yet backfilled** — `agent-readiness`,
 `init-buddy`, `min-release-age`, `checkpoint`, `repo`, `setup-github-repo`, `setup-npm-trusted-publishing`, `website`. They are a
 standing worklist, not a claim that they are unspecified by design.
+
+`commit` has no unit here: its spec is its own skill folder, written through cyber-agentkit's `/skill`
+aspects (the README's Intent and Research, `SKILL.md`'s `## Done when`, and `evals/`).
 
 `merge-dep-prs` is **partially** backfilled: its unit specifies the merge gate and nothing else. The
 rest of that skill — PR classification, CI triage, the fix recipes, changesets, closing obsolete PRs
