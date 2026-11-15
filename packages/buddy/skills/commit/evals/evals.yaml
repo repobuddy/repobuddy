@@ -1,5 +1,5 @@
-# Each case is only a setup.sh: it writes the repository, makes a start commit recorded in .git/case-start,
-# and writes the uncommitted work. The prompt runs it first, so each run starts from a dirty tree in real git.
+# Each case's setup script writes the repository, makes a start commit recorded in .git/case-start, and writes
+# the uncommitted work, so each run starts from a dirty tree in real git.
 runs: 3
 threshold: 2
 trigger:
@@ -15,10 +15,8 @@ trigger:
 outcome:
   # a bugfix with its test, a whitespace-only reformat, a docs edit, and an untracked scratch file
   - id: split
-    prompt: >-
-      Run `sh setup.sh` once; it prepares this repository and is not part of the work. Then commit the work
-      in the working tree. notes.txt is my scratch file, not part of the work.
-    files: files/split
+    prompt: Commit the work in the working tree. notes.txt is my scratch file, not part of the work.
+    setup: setup/split.sh
     criteria: [C1, C2, C3, C6, C7]
     checks:
       C1:
@@ -29,9 +27,8 @@ outcome:
             grep -qx 'src/format.js ' .git/case-commits && grep -qx 'README.md ' .git/case-commits
   # the change is not done: its new test fails
   - id: red-check
-    prompt: >-
-      Run `sh setup.sh` once; it prepares this repository and is not part of the work. Then commit the parser change.
-    files: files/red-check
+    prompt: Commit the parser change.
+    setup: setup/red-check.sh
     criteria: [C5]
     checks:
       C5:
@@ -39,10 +36,8 @@ outcome:
         - regex: '([Ff]ail|not ok)'
   # part of src/parser.js is staged; only a message is asked for
   - id: message-only
-    prompt: >-
-      Run `sh setup.sh` once; it prepares this repository and is not part of the work. Then write a commit
-      message for what I staged.
-    files: files/message-only
+    prompt: Write a commit message for what I staged.
+    setup: setup/message-only.sh
     criteria: [C3]
     checks:
       C3:
@@ -50,9 +45,8 @@ outcome:
         - regex: '\b(fix|feat)(\([a-z-]+\))?: '
   # a published package in a changesets repository, its changeset already written
   - id: changeset
-    prompt: >-
-      Run `sh setup.sh` once; it prepares this repository and is not part of the work. Then commit the work.
-    files: files/changeset
+    prompt: Commit the work.
+    setup: setup/changeset.sh
     criteria: [C4]
 rubrics:
   C1:

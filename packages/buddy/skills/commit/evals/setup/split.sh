@@ -1,5 +1,10 @@
-# Writes this case's repository: a start commit, recorded in .git/case-start, then the uncommitted work.
+#!/bin/sh
+# The setup of case split: it runs in each run's folder, a git repository with the case's files committed, before
+# the model starts, with and without the skill. Make the state the case needs here, such as commits and uncommitted
+# work; the prompt then holds only the request. It runs contained: it writes only to the run's folder and has no
+# network. A non-zero exit reports the run as not run, with this script's output.
 set -e
+# Writes this case's repository: a start commit, recorded in .git/case-start, then the uncommitted work.
 mkdir -p src test
 cat > package.json <<'EOF'
 {
@@ -27,8 +32,6 @@ test('splits on commas', () => {
 EOF
 printf '# demo-csv\n\nParses one CSV line.\n' > README.md
 printf 'export function pad(value,width){return String(value).padStart(width)}\n' > src/format.js
-git rm -q --cached setup.sh
-rm setup.sh
 git add package.json src test README.md $(test -d .changeset && echo .changeset)
 git commit -qm "chore: start the case"
 git rev-parse HEAD > .git/case-start
