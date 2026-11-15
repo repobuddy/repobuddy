@@ -48,8 +48,7 @@
 		"verify:ci": "turbo run check check:preset check-plugin-version check-skill-references check-build-drift knip lint coverage e2e size pack:check --concurrency=1",
 		"version": "changeset version && node scripts/sync-plugin-manifests.mjs",
 		"vt": "pnpm --filter ./packages/vitest",
-		"web": "pnpm --filter ./website",
-		"check:skill": "node scripts/validate-skill.mjs"
+		"web": "pnpm --filter ./website"
 	},
 	"dependencies": {
 		"@types/react": "^19.1.3",
