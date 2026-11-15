@@ -10,13 +10,9 @@ CLI for any other agent. Start a new agent session after you install or update.
 
 ## Plugin marketplace
 
-The repository is a plugin marketplace.
-
-| Harness | Catalog it reads | Where the plugin comes from |
-| --- | --- | --- |
-| Claude Code | `.claude-plugin/marketplace.json` | the `repobuddy` npm package, with built scripts |
-| Codex | `.claude-plugin/marketplace.json` | the `repobuddy` npm package, with built scripts |
-| Copilot CLI | `.github/plugin/marketplace.json` | this repository, so scripts run through `npx` |
+Install the plugin from [`cyber-uni/marketplace`](https://github.com/cyber-uni/marketplace), which lists it as
+`repobuddy`. Claude Code and Codex install it from the `repobuddy` npm package, with built scripts. Copilot CLI and
+Cursor install it from this repository, so its scripts run through `npx`.
 
 Each harness installs the plugin into its own config directory, not into your project. Uninstalling removes it and its
 settings entries.
@@ -25,62 +21,80 @@ settings entries.
 
 ```sh
 # install
-claude plugin marketplace add repobuddy/repobuddy
-claude plugin install repobuddy@repobuddy
+claude plugin marketplace add cyber-uni/marketplace
+claude plugin install repobuddy@cyber-uni
 
 # update
-claude plugin marketplace update repobuddy
-claude plugin update repobuddy@repobuddy
+claude plugin marketplace update cyber-uni
+claude plugin update repobuddy@cyber-uni
 
 # uninstall
-claude plugin uninstall repobuddy@repobuddy
-claude plugin marketplace remove repobuddy
+claude plugin uninstall repobuddy@cyber-uni
 ```
 
-Inside a session, `/plugin marketplace add repobuddy/repobuddy` and `/plugin install repobuddy@repobuddy` do the same.
+Inside a session, `/plugin marketplace add cyber-uni/marketplace` and `/plugin install repobuddy@cyber-uni` do the same.
 
 **Codex**
 
 ```sh
 # install
-codex plugin marketplace add repobuddy/repobuddy
-codex plugin add repobuddy@repobuddy
+codex plugin marketplace add cyber-uni/marketplace
+codex plugin add repobuddy@cyber-uni
 
 # update
-codex plugin marketplace upgrade repobuddy
-codex plugin add repobuddy@repobuddy
+codex plugin marketplace upgrade cyber-uni
+codex plugin add repobuddy@cyber-uni
 
 # uninstall
-codex plugin remove repobuddy@repobuddy
-codex plugin marketplace remove repobuddy
+codex plugin remove repobuddy@cyber-uni
 ```
 
 **GitHub Copilot CLI**
 
 ```sh
 # install
-copilot plugin marketplace add repobuddy/repobuddy
-copilot plugin install repobuddy@repobuddy
+copilot plugin marketplace add cyber-uni/marketplace
+copilot plugin install repobuddy@cyber-uni
 
 # update
-copilot plugin update repobuddy@repobuddy
+copilot plugin update repobuddy@cyber-uni
 
 # uninstall
+copilot plugin uninstall repobuddy@cyber-uni
+```
+
+The `cyber-uni` marketplace lists other plugins too, so uninstalling `repobuddy` leaves it in place. Remove it with
+`plugin marketplace remove cyber-uni` when you use none of them.
+
+**Cursor** has no command-line install. A workspace admin imports `cyber-uni/marketplace` from
+Dashboard, Plugins, Team Marketplaces, Add Marketplace, Import from Repo.
+
+### Move from the repobuddy marketplace
+
+This repository was its own marketplace, named `repobuddy`, until 4.7.0. It no longer carries that catalog, so a
+plugin installed from it receives no update. Uninstall that plugin, remove the marketplace, then install from
+`cyber-uni/marketplace` as above:
+
+```sh
+claude plugin uninstall repobuddy@repobuddy
+claude plugin marketplace remove repobuddy
+
+codex plugin remove repobuddy@repobuddy
+codex plugin marketplace remove repobuddy
+
 copilot plugin uninstall repobuddy@repobuddy
 copilot plugin marketplace remove repobuddy
 ```
 
-**Cursor** has no command-line install. A workspace admin imports the catalog from
-Dashboard, Plugins, Team Marketplaces, Add Marketplace, Import from Repo.
+On Cursor, a workspace admin removes the `repobuddy/repobuddy` team marketplace.
 
 ### cyber-agentkit
 
 Several skills load their instructions with the `reference` skill of the
 [`cyber-agentkit`](https://github.com/cyber-uni/cyber-agentkit) plugin, so a plugin, a repository, or a user can
-customize them. `repobuddy` declares `cyber-agentkit` as a plugin dependency. Claude Code resolves it when you install
-`repobuddy` from `cyber-uni/marketplace`, which lists both plugins. It is the only harness that installs plugin
-dependencies. On Cursor, Codex, and GitHub Copilot CLI, install `cyber-agentkit` by hand from its marketplace,
-`cyber-uni/marketplace`. Without it, a skill that ships a default reads that default, and no customization applies.
+customize them. `repobuddy` declares `cyber-agentkit` as a plugin dependency, and `cyber-uni/marketplace` lists both.
+Claude Code installs it with `repobuddy`; it is the only harness that installs plugin dependencies. On Cursor, Codex,
+and GitHub Copilot CLI, install `cyber-agentkit@cyber-uni` by hand. Without it, a skill that ships a default reads that default, and no customization applies.
 
 ## Skills CLI
 
@@ -123,7 +137,7 @@ the npm package. A skill installed from git has no built script, so it runs the 
 | `agent-readiness` | `agent-readiness.mjs` | `npx -y repobuddy@^1.12.0 agent-readiness` |
 
 The `gh-api-guard` hook of `init-buddy` has no `npx` fallback, because a hook runs on every `gh api` or `glab api`
-call. Install the plugin from the Claude Code or Codex marketplace to use it. The scripts of `review-permissions` and
+call. Install the plugin in Claude Code to use it. The scripts of `review-permissions` and
 `to-question` are committed to the repository, so a git install has them.
 
 The commands are listed on [Skill scripts](/repobuddy/cli/skill-scripts/).

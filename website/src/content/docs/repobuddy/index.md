@@ -32,15 +32,15 @@ Then run `buddy --help`. See [the `buddy` CLI](/repobuddy/cli/).
 
 | Route | Command | Skill scripts |
 | --- | --- | --- |
-| Claude Code | `/plugin marketplace add repobuddy/repobuddy`, then `/plugin install repobuddy@repobuddy` | built, from the npm package |
-| Codex | `codex plugin marketplace add repobuddy/repobuddy`, then `codex plugin add repobuddy@repobuddy` | built, from the npm package |
-| GitHub Copilot CLI | `copilot plugin marketplace add repobuddy/repobuddy`, then `copilot plugin install repobuddy@repobuddy` | run through `npx` |
-| Cursor | A workspace admin imports the repository as a team marketplace | |
+| Claude Code | `/plugin marketplace add cyber-uni/marketplace`, then `/plugin install repobuddy@cyber-uni` | built, from the npm package |
+| Codex | `codex plugin marketplace add cyber-uni/marketplace`, then `codex plugin add repobuddy@cyber-uni` | built, from the npm package |
+| GitHub Copilot CLI | `copilot plugin marketplace add cyber-uni/marketplace`, then `copilot plugin install repobuddy@cyber-uni` | run through `npx` |
+| Cursor | A workspace admin imports `cyber-uni/marketplace` as a team marketplace | run through `npx` |
 | Skills CLI, for other agents | `npx skills add repobuddy/repobuddy` | run through `npx` |
 
-Claude Code and Codex read the catalog in `.claude-plugin/marketplace.json`, which installs the plugin from the
-`repobuddy` npm package. Copilot CLI reads `.github/plugin/marketplace.json`, which installs it from this repository.
-See [Install the skills](/repobuddy/skills/install/) for each route's install, update, and uninstall commands.
+The plugin is listed in [`cyber-uni/marketplace`](https://github.com/cyber-uni/marketplace). If you added this
+repository as a marketplace before 4.7.0, it no longer updates the plugin: see
+[Move from the repobuddy marketplace](/repobuddy/skills/install/#move-from-the-repobuddy-marketplace). See [Install the skills](/repobuddy/skills/install/) for each route's install, update, and uninstall commands.
 
 ## Choose a starting page
 

@@ -1,23 +1,21 @@
 # Plugin manifests and version sync
 
 `packages/buddy/plugin.json` is the canonical manifest (Agent Plugins Specification v1.0.0). The
-`.claude-plugin/`, `.cursor-plugin/`, and `.codex-plugin/` manifests beside it, and the two local marketplace catalogs
-(`.claude-plugin/marketplace.json`, `.github/plugin/marketplace.json`), are **generated** by
-`npx universal-plugin plugin build` — never hand-edit them, except the Claude catalog's `source` (see below). Copilot
-CLI reads `plugin.json` directly. `packages/buddy/.agents/universal-plugin.json` declares `packagePath: "."`, which
-this repo's release wiring reads; do not set `packagePath` in `plugin.json`.
+`.claude-plugin/`, `.cursor-plugin/`, and `.codex-plugin/` manifests beside it are **generated** by
+`npx universal-plugin plugin build` — never hand-edit them. Copilot CLI reads `plugin.json` directly.
+`packages/buddy/.agents/universal-plugin.json` declares `packagePath: "."`, which this repo's release wiring reads; do
+not set `packagePath` in `plugin.json`.
+
+This repository carries no marketplace catalog. The plugin is listed in
+[`cyber-uni/marketplace`](https://github.com/cyber-uni/marketplace), which owns its catalog entries and their `source`;
+change them there, not here. `plugin build` refreshes only the catalogs that already exist at the repository root, so
+do not add one back: a catalog here would be a second install path to keep in sync.
 
 The `version` script runs `scripts/sync-plugin-manifests.mjs` after `changeset version`: it runs
 `universal-plugin plugin version --from-package` (changesets decides the number; the command carries it into the
 manifests and stamps the `npx repobuddy@<version>` pins in the skills, then rebuilds), using the `universal-plugin`
 devDependency of `packages/buddy`. `scripts/check-plugin-version.mjs` (`check-plugin-version` in `verify`)
-fails when `packages/buddy/package.json`'s version disagrees with the manifest, any vendor manifest, or either
-catalog's `repobuddy` entry.
-
-`plugin build` only writes a local-path catalog `source`. This repo ships its Claude Code/Codex catalog entry from the
-published `repobuddy` npm package instead (only the tarball carries the built, gitignored skill script bundles), so
-`sync-plugin-manifests.mjs` restores that `source` in `.claude-plugin/marketplace.json` after every rebuild — the one
-generated field intentionally kept out of sync with the tool's output.
+fails when `packages/buddy/package.json`'s version disagrees with the manifest or any vendor manifest.
 
 `plugin build` also bundles the six skill scripts listed under `scripts` in `plugin.json`. Unlike the tsdown bundles,
 they are committed, and their bytes follow the rolldown version the lockfile pins for `universal-plugin`.
