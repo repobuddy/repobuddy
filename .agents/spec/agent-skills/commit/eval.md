@@ -28,6 +28,13 @@ neighbours that share its vocabulary.
 
 ## Known weaknesses
 
+**Revision 2 (2026-11-14) is not frozen.** It adds the scenarios under `Revision 2` in
+`commit.feature` and renames the Validate section to Done when; no cold spec-judge round has graded
+them yet. Until one returns ALIGNED, the suite carries no `@frozen` tag. The shipped skill also carries
+`evals/evals.yaml` for `/skill test` (cyber-agentkit): trigger cases from the Outline here, and three
+outcome cases that run real git in a sandbox, which cover the negative assertions a narrated
+transcript cannot prove for splitting, refusing a red check, and a message-only request.
+
 The suite was frozen after four cold spec-judge rounds (2026-11-12); the fourth returned ALIGNED. Its
 advisory F3 was left open: `reads the allowed types, scope, and header length from the commitlint
 config` pipes `git log -1` to commitlint although its When writes the message without asking for a
@@ -50,7 +57,7 @@ while the snapshot check fails` (verifies the staged snapshot), `it makes no com
 (asks the developer), `it does not unstage or restage src/config.ts` and `it makes no commit` (writes the message for what the developer staged), `it commits neither unit that needs the line` (stops and reports), and `it
 commits the change with no .changeset/ file` (carries no changeset outside a published package, and for a private package).
 
-`leaves the repository in the state its Validate section checks` asserts repository state (reflog,
+`leaves the repository in the state its Done when section checks` asserts repository state (reflog,
 upstream, stash list, `git show --stat`). It carries the proof for the negative assertions above only
 under an execution harness that runs real git; under a judged run it is narrated like the rest.
 

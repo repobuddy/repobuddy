@@ -1,4 +1,3 @@
-@frozen
 Feature: commit — stage and commit one unit of work, unattended and without interactive git
 
   The skill commits one unit of work at a time. It follows the repository's rules over its own
@@ -337,19 +336,19 @@ Feature: commit — stage and commit one unit of work, unattended and without in
     When the agent commits a change to a published package
     Then the commit adds no file under .changeset/ and does not change CHANGELOG.md
 
-  # ── the shipped skill and its Validate section ──
+  # ── the shipped skill and its Done when section ──
 
   @behavior
   Scenario: ships a skill file whose frontmatter and bundled reference copies are valid
     Given the commit skill as shipped in packages/buddy/skills/commit
     When its SKILL.md and references/ are read
-    Then SKILL.md has a Validate section
+    Then SKILL.md ends with a Done when section of C-numbered criteria
     And its frontmatter name equals its directory name
     And the description in its frontmatter is at most 120 characters
     And references/commit.message.default.md and references/commit.release-notes.default.md equal packages/buddy/references/commit.message.md and commit.release-notes.md, less their extends line
 
   @behavior
-  Scenario: leaves the repository in the state its Validate section checks
+  Scenario: leaves the repository in the state its Done when section checks
     Given a repository whose branch tracks origin/main at commit abc123
     And the working tree changes src/parser.ts for a bugfix and docs/guide.md for an unrelated docs edit
     When the agent commits the work
@@ -358,3 +357,90 @@ Feature: commit — stage and commit one unit of work, unattended and without in
     And git rev-parse @{upstream} still gives abc123
     And git stash list holds no entry the agent pushed
     And each of the two new commits lists exactly one of src/parser.ts and docs/guide.md in git show --stat
+
+  # ── Revision 2 — commit-work's splitting and lean run as the baseline ──
+
+  @behavior
+  Scenario: plans every commit before staging the first
+    Given the working tree changes src/parser.ts and test/parser.test.ts for a bugfix
+    And docs/guide.md for an unrelated docs edit
+    And src/format.ts only for whitespace
+    When the agent commits the work
+    Then before its first git add it states a plan of three commits and the files of each
+    And it makes the three commits the plan names
+
+  @behavior
+  Scenario: commits a formatting-only change apart from logic
+    Given src/format.ts changes only whitespace and line breaks
+    And src/parser.ts changes behavior for a bugfix
+    When the agent commits the work
+    Then src/format.ts is in a commit of its own whose type is style or chore
+    And that commit holds no change to src/parser.ts
+
+  @behavior
+  Scenario: commits a dependency bump apart from a behavior change
+    Given package.json and pnpm-lock.yaml bump zod from 3.22.0 to 3.23.0
+    And src/schema.ts adds a new validation rule
+    When the agent commits the work
+    Then package.json and pnpm-lock.yaml are in one commit
+    And src/schema.ts is in another
+
+  @behavior
+  Scenario: keeps a change's tests in the change's commit
+    Given src/parser.ts fixes a bug and test/parser.test.ts adds the test that covers it
+    When the agent commits the work
+    Then src/parser.ts and test/parser.test.ts are in the same commit
+
+  @behavior
+  Scenario: reads the diff stat before any full diff
+    Given forty changed files under packages/a and packages/b
+    When the agent plans the commits
+    Then it runs git --no-pager diff --stat before any git --no-pager diff without --stat
+    And it runs no git --no-pager diff over the whole tree
+
+  @behavior
+  Scenario: runs the smallest check that covers the unit
+    Given a monorepo whose full validation command is pnpm verify
+    And the unit changes only packages/a/src/index.ts
+    And packages/a has its own test script
+    When the agent checks the unit is done
+    Then it runs packages/a's tests and lint on the changed file
+    And it does not run pnpm verify for this unit alone
+
+  @behavior
+  Scenario: does not rerun a check that passed on unchanged content
+    Given the agent ran packages/a's tests earlier in the session and they passed
+    And packages/a has not changed since
+    When the agent commits packages/a's change
+    Then it does not run packages/a's tests again
+    And it says which check it reused
+
+  @behavior
+  Scenario: commits nothing when the staged diff holds a secret
+    Given the unit adds src/client.ts with the line const token = "ghp_a1B2c3D4e5F6g7H8i9J0kLmNoPqRsTuVwXyZ"
+    When the agent reads what is staged
+    Then it makes no commit
+    And it reports src/client.ts and the line that holds the token
+
+  @behavior
+  Scenario: takes debug logging out of the unit
+    Given the bugfix in src/parser.ts also adds console.log("here") that the fix does not need
+    When the agent commits the bugfix
+    Then the commit does not add console.log("here")
+
+  @behavior
+  Scenario: reports each commit, the checks run, and what was left
+    Given the working tree changes src/parser.ts for a bugfix and docs/guide.md for an unrelated docs edit
+    And notes.txt is a scratch file outside both units
+    When the agent finishes committing
+    Then its reply lists each commit's short hash and subject with what changed and why
+    And it names the checks it ran
+    And it names notes.txt as left uncommitted and why
+
+  @behavior
+  Scenario: loads the references as files, not through the reference skill
+    Given the commit skill as shipped in packages/buddy/skills/commit
+    When its SKILL.md is read
+    Then it reads references/commit.message.default.md and references/commit.release-notes.default.md as files
+    And it applies the sections of .agents/references/<name>.md over them when that file exists
+    And it does not load the reference skill

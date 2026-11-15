@@ -51,11 +51,58 @@ skill's job; it names the `changesets` skill from repobuddy/buddy-changesets.
 **It decides instead of asking.** Each choice is settled from the rules and the references. It asks
 only when they cannot decide; with no one to answer, it stops and reports what is left uncommitted.
 
+### Revision 2: commit-work's splitting and lean run as the baseline
+
+The owner found that the first version used many tokens and split work worse than the community
+`commit-work`. Revision 2 takes `commit-work`'s splitting and its lean run as the baseline and keeps
+every feature above on top of it. Where the two disagree, the table says which side wins and why.
+
+**Taken from `commit-work`:**
+
+- **Plan every commit before staging the first.** Read `git status --porcelain` and
+  `git --no-pager diff --stat`, assign each file (or hunk) to a unit, and only then stage. The first
+  version found units one at a time and re-read the whole tree for each.
+- **Split on named axes.** Formatting or whitespace apart from logic; a refactor apart from the feature
+  or fix that follows it; a dependency bump apart from a behavior change; unrelated areas apart. The
+  one-sentence test still settles a case the axes do not.
+- **Read only as much diff as the split needs.** The stat first; the full diff only of the files whose
+  unit the stat and the path do not settle, and only for a split inside a file.
+- **The smallest check that covers the unit.** Run the fastest check that reads the unit's files (the
+  affected package's tests, lint on those files), not the full validation command for every commit. Run
+  the full command once, before the last commit of the run, when the change is broad. A check already
+  passed in this session on content that has not changed since is not run again.
+- **Sanity-check the staged diff.** Before committing, look for a secret or token, debug logging, and
+  formatting churn the unit did not ask for. A secret stops the commit; debug logging and churn are
+  taken out of the unit.
+- **What and why.** The one-sentence description says what changed, and the message body says why.
+- **A report.** The reply lists each commit (short hash, subject, what and why in one line), the checks
+  run, and what was left uncommitted and why.
+
+**Where they conflict:**
+
+| # | `commit-work` | Revision 2 | Wins | Why |
+|---|---|---|---|---|
+| D1 | `git add -p`, `git restore --staged -p`, `git commit -v` | Stage by name or by patch with `git apply --cached`; `git commit -F` | repobuddy | An agent cannot drive an interactive prompt or an editor, and falls back to `git add .` |
+| D2 | Asks single or multiple commits, the style, and the rules | Decides: several commits when the changes are unrelated; the rules come from the repository and the references | repobuddy, with `commit-work`'s default | It runs unattended; `commit-work`'s own default is the answer it would get |
+| D3 | Splits tests from production code | A change's tests go in its commit; a test-only change is its own unit | repobuddy | A commit is independently revertable; reverting a fix without its tests, or tests without the fix, leaves a broken tree |
+| D4 | Verifies after staging, "before moving on" | Verifies before committing; never commits with a red check | repobuddy, scoped to `commit-work`'s smallest check | A commit that fails its checks is not done; the scope keeps it cheap |
+| D5 | Conventional Commits, fixed | `commit.message` reference, Conventional Commits by default, rules from commitlint | repobuddy | A repository overrides the convention one section at a time |
+| D6 | No index check, no snapshot check, no hook recovery, no release notes | All kept, each run only when its condition holds | repobuddy | They are the features the owner asked to keep; conditional, they cost nothing on the common path |
+
+**Leaner than the first version, without dropping a feature:**
+
+- The two references are read as files: the bundled default in the skill's `references/`, then
+  `.agents/references/<name>.md` when it exists, each of its sections replacing the default's section of
+  the same heading. Loading the `reference` skill to do the same cost a skill load on every commit.
+  The override behavior is unchanged.
+- `references/splitting.md` is read only for a split inside one file or a snapshot check.
+- The checks after a commit run once, after the last commit, not after each one.
+- Hooks are found once per run.
+
 ### Non-goals
 
 - Stack-specific verification (Storybook, endpoints). One generic line: exercise a runtime surface once.
-- Split detection by file pattern or directory. The one-sentence test ("an 'and' means two commits")
-  decides.
+- Split detection by a fixed file-pattern table. The axes above and the one-sentence test decide.
 - A new config file format. `AGENTS.md`, `SKILL.local.md`, and the two references cover overrides.
 - Writing changesets, pushing, opening pull requests, squashing, or any history rewrite.
 
@@ -72,8 +119,8 @@ left staged work in the index. A *repository* supplies rules, hooks, and referen
 
 | # | Use case (surface: `/commit`) | Actor / goal | Entry point | Extensions |
 |---|---|---|---|---|
-| 1 | **Commit one unit** | Agent: turn a finished change into one commit | Trigger: a unit is done, or the developer says "commit". Outcome: one commit holding only that unit | 1–14 |
-| 2 | **Split into units** | Agent: turn a mixed working tree into several commits | Trigger: "split these into commits", or the one-sentence test fails. Outcome: one commit per unit | 1–13 |
+| 1 | **Commit one unit** | Agent: turn a finished change into one commit | Trigger: a unit is done, or the developer says "commit". Outcome: one commit holding only that unit | 1–20 |
+| 2 | **Split into units** | Agent: turn a mixed working tree into several commits | Trigger: "split these into commits", or the one-sentence test fails. Outcome: a plan of every unit, then one commit per unit | 1–13, 15–20 |
 
 **Extensions:**
 
@@ -91,6 +138,12 @@ left staged work in the index. A *repository* supplies rules, hooks, and referen
 12. **The repository has commit hooks.** The skill says what they run and runs those checks before committing.
 13. **One changed run holds both units.** The file's content for this commit is written outside the repository and staged directly with `git update-index --cacheinfo`.
 14. **Asked only for a message.** What is staged is the unit: the message is written for it and shown, and the commit is made only when asked.
+15. **The tree mixes formatting and logic.** The formatting-only change is its own commit, before the logic.
+16. **The tree mixes a dependency bump and a behavior change.** The bump is its own commit.
+17. **A change comes with its tests.** The tests go in the change's commit, not in a commit of their own.
+18. **The staged diff holds a secret or token.** Nothing is committed; the file and line are reported. Debug logging the unit did not ask for is taken out of the unit instead.
+19. **A check already passed on the same content in this session.** It is not run again; the reply says which check it reused.
+20. **The run ends.** The reply lists each commit (short hash, subject, what and why), the checks run, and what was left uncommitted and why.
 
 ## Control Flow
 
@@ -102,8 +155,9 @@ graph TD
     Q -->|No| I{Index holds changes outside this unit?}
     I -->|Yes, whole files| I1[git restore --staged those files]
     I -->|Yes, partly staged| I2[Stop and report]
-    I -->|No| D
-    I1 --> D{Definition of done holds?}
+    I -->|No| P
+    I1 --> P[Plan every unit from status and diff --stat, by the split axes]
+    P --> D{Definition of done holds, by the smallest covering check?}
     D -->|No| D1[Stage nothing; report]
     D -->|Yes| R[Load commit.release-notes]
     R --> R0{Needs a changeset that is missing?}
@@ -118,7 +172,9 @@ graph TD
     T -->|Cannot tell, someone present| T3[Ask which unit the change belongs to]
     T3 --> S
     T -->|Cannot tell, no one to ask| T2[Commit nothing unplaced; report]
-    T -->|Yes| V{Unstaged changes could affect checks?}
+    T -->|Yes| X{Staged diff holds a secret?}
+    X -->|Yes| X1[Commit nothing; report the file and line]
+    X -->|No| V{Unstaged changes could affect checks?}
     V -->|Yes| V1[stash --keep-index, check, restore]
     V -->|No| MR
     V1 --> MR{Message rules source?}
@@ -129,7 +185,9 @@ graph TD
     M --> H{Hook rejects?}
     H -->|Yes| H1[Fix the cause; git commit again]
     H1 --> H
-    H -->|No| C[git log -1 --stat; Validate; next unit]
+    H -->|No| N{Units left in the plan?}
+    N -->|Yes| S
+    N -->|No| C[Done when checks once; report each commit]
 ```
 
 ## Scenario map
@@ -172,4 +230,15 @@ graph TD
 | `R0 → S` (private) | a change to a `"private": true` package in a changesets repository | `carries no changeset for a change to a private package` |
 | `R` (none) | no `.changeset/config.json` | `adds no release notes in a repository without changesets` |
 | `—` (artifact) | the shipped skill's frontmatter and its bundled reference copies | `ships a skill file whose frontmatter and bundled reference copies are valid` |
-| `C` (Validate) | two units on a branch that tracks origin | `leaves the repository in the state its Validate section checks` |
+| `C` (Done when) | two units on a branch that tracks origin | `leaves the repository in the state its Done when section checks` |
+| `P` | a bugfix, its test, a docs edit, and a reformat of another file | `plans every commit before staging the first` |
+| `P` (formatting) | a reformat of one file and a logic change in another | `commits a formatting-only change apart from logic` |
+| `P` (dependency) | a dependency bump and a behavior change | `commits a dependency bump apart from a behavior change` |
+| `P` (tests) | a bugfix and the test that covers it | `keeps a change's tests in the change's commit` |
+| `P` (lean read) | forty changed files across two packages | `reads the diff stat before any full diff` |
+| `D` (smallest check) | a one-package change in a monorepo with a full verify command | `runs the smallest check that covers the unit` |
+| `D` (reuse) | the unit's tests passed earlier in the session on the same content | `does not rerun a check that passed on unchanged content` |
+| `X → X1` | a staged file that adds an API token | `commits nothing when the staged diff holds a secret` |
+| `X` (debug) | a staged console.log the unit did not ask for | `takes debug logging out of the unit` |
+| `C` (report) | two units committed | `reports each commit, the checks run, and what was left` |
+| `—` (artifact) | the shipped skill's SKILL.md | `loads the references as files, not through the reference skill` |
