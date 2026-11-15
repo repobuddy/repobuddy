@@ -48,6 +48,38 @@ outcome:
     prompt: Commit the work.
     setup: setup/changeset.sh
     criteria: [C4]
+  # someone else's package.json change is already staged beside the parser fix
+  - id: pre-staged
+    prompt: Commit the parser fix.
+    setup: setup/pre-staged.sh
+    criteria: [C1, C2]
+    checks:
+      C1:
+        - script: >-
+            s=$(cat .git/case-start) && test "$(git rev-list --count $s..HEAD)" = 1 &&
+            test "$(git show --name-only --format= HEAD | sort | tr '\n' ' ')" = 'src/parser.js test/parser.test.js '
+      C2:
+        - script: 'git status --porcelain | grep -q "package.json" && git diff HEAD -- package.json | grep -q description'
+  # a published package in a changesets repository, with no changeset written for the fix
+  - id: missing-changeset
+    prompt: Commit the parser fix.
+    setup: setup/missing-changeset.sh
+    criteria: [C4]
+    checks:
+      C4:
+        - script: >-
+            s=$(cat .git/case-start) && c=$(git log --format=%H $s..HEAD -- src/parser.js | head -1) &&
+            { test -z "$c" || git show --name-only --format= $c | grep -E '^\.changeset/.+\.md$' | grep -qv config; }
+  # a commit-msg hook rejects a message without a Refs trailer
+  - id: hook-reject
+    prompt: Commit the parser fix.
+    setup: setup/hook-reject.sh
+    criteria: [C1, C6]
+    checks:
+      C1:
+        - script: >-
+            s=$(cat .git/case-start) && test "$(git rev-list --count $s..HEAD)" = 1 &&
+            git log -1 --format=%B | grep -q '^Refs: '
 rubrics:
   C1:
     - script: 's=$(cat .git/case-start) && test "$(git rev-list --count $s..HEAD)" -ge 1'
