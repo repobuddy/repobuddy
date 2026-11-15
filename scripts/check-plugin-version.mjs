@@ -7,7 +7,7 @@
  *
  * `universal-plugin` ships no published check command for this (its `doctor` diagnostics live
  * only in a skill's bundled script, not the npm CLI's command tree), so this compares the
- * versions directly. Run `pnpm version` (which chains `node scripts/sync-plugin-manifests.mjs`)
+ * versions directly. Run `pnpm version` (which chains `universal-plugin plugin version --from-package`)
  * to resync everything this checks.
  */
 
@@ -36,7 +36,7 @@ if (mismatches.length > 0) {
 	for (const [file, version] of mismatches) {
 		console.error(`  ${file}: ${version ?? '(missing)'}`)
 	}
-	console.error('Run `pnpm version` to resync (or `node scripts/sync-plugin-manifests.mjs` directly).')
+	console.error('Run `pnpm --filter repobuddy exec universal-plugin plugin version --from-package --root .` to resync.')
 	process.exit(1)
 }
 

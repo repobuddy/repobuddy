@@ -46,7 +46,7 @@
 		"two-chalk": "pnpm --filter two-chalk",
 		"verify": "turbo run check check:preset check-plugin-version check-skill-references check-build-drift knip lint coverage e2e size pack:check",
 		"verify:ci": "turbo run check check:preset check-plugin-version check-skill-references check-build-drift knip lint coverage e2e size pack:check --concurrency=1",
-		"version": "changeset version && node scripts/sync-plugin-manifests.mjs",
+		"version": "changeset version && pnpm --filter repobuddy exec universal-plugin plugin version --from-package --root . && pnpm format",
 		"vt": "pnpm --filter ./packages/vitest",
 		"web": "pnpm --filter ./website"
 	},
