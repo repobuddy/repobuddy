@@ -67,6 +67,27 @@ a time in `.agents/references/<name>.md`:
 
 Without `cyber-agentkit` installed, the skill reads its bundled defaults and no customization applies.
 
+### Interfaces
+
+`repobuddy` ships an interface for each reference: `website.init.interface`, `website.deploy.interface`, and
+`website.update.interface`. Each lists, in order, the sections a version of the reference holds, and marks as required
+the sections another reference points to by heading:
+
+| Reference | Required sections |
+| --- | --- |
+| `website.init` | `Step 3: Resolve versions`, `Step 6: Deploy` |
+| `website.deploy` | `Step 2: Locate the site and its framework`, `Step 3: Work out the build command` |
+| `website.update` | none |
+
+To check another plugin's version, install it with `repobuddy` and run, for each reference:
+
+```sh
+reference load website.init --default <repobuddy>/skills/website --trace
+```
+
+`<repobuddy>` is the installed `repobuddy` plugin or package folder. A `warning: interface-check:` line names each
+section the version fails. No such line means it passes.
+
 ## Requirements
 
 Node.js and the repo's package manager. Network access to look up package versions. Turning on hosting uses the host's

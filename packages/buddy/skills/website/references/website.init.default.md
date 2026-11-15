@@ -1,5 +1,6 @@
 ---
 description: How the website skill adds an Astro Starlight docs site to a monorepo as a private workspace package.
+implements: website.init@1
 ---
 
 ## Purpose

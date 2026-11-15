@@ -48,6 +48,20 @@ Each command's instructions are a reference, loaded by name with the `reference`
 
 Without cyber-agentkit installed, the skill reads its bundled defaults and no customization applies.
 
+### Interfaces
+
+`repobuddy` ships an interface for each name: `website.init.interface`, `website.deploy.interface`, and `website.update.interface`, in the package's `references/` folder. Each lists, in order, the `##` sections a version of the name holds, and marks the ones it must hold: the sections another name refers to by heading. `website.init` must hold `Step 3: Resolve versions` and `Step 6: Deploy`. `website.deploy` must hold `Step 2: Locate the site and its framework` and `Step 3: Work out the build command`. `website.update` has no required section. The shipped defaults declare `implements: website.<command>@1`.
+
+To check another plugin's version, install that plugin and `repobuddy` in a repository, then run:
+
+```sh
+reference load website.init --default <repobuddy>/skills/website --trace
+```
+
+Here `<repobuddy>` is the installed `repobuddy` plugin or package folder. The command composes the version over the skill's default, as the skill loads it. A `warning: interface-check:` line names each section it fails: a required section left out or marked `**Unsupported.**`, or sections out of order. No such line means the version passes. Run the same for `website.deploy` and `website.update`.
+
+`reference check website.init` checks a version that declares `implements` and replaces the default (`merge: replace`). It does not read the skill's default, so it does not check a version that patches some sections of the default.
+
 ## How to invoke
 
 Run `/website init` where slash commands are supported, or ask directly, for example "add a docs website to this monorepo" or "set up Starlight in apps/web". Run `/website deploy`, or ask "publish the docs to GitLab Pages". Run `/website update`, or ask "add a page to the docs". A bare `/website` lists the commands.
