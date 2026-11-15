@@ -94,3 +94,12 @@ simulated judge; `validate-skill` and `sync-skill-references.mjs --check` are th
 
 Running many judges at once hits the harness's 20-subagent limit, since each judge starts its own
 simulator; two run-1 cases came back unmeasured that way and were re-run. Keep waves under ten judges.
+
+**Run 3 (2026-11-15, revision 2, `/skill test` from cyber-agentkit 2.6.1).** Run from a standalone copy
+of the skill (`<scratch>/skills/commit`): run in place, inside the `repobuddy` plugin, the plugin copy
+did not load, and a run asked to "use the commit skill" answered that no commit skill was installed, so
+every with-skill run was a baseline. First standalone pass, 51 runs: 11 of 13 cases. `red-check` failed
+C5 twice (the agent rewrote the failing code and committed it), and "amend my last commit message"
+fired. Both were fixed in the skill (a red test stops the unit; the description says "each new git
+commit"), and a rerun of the four fire cases, three near misses, `red-check`, and `message-only` passed
+all nine. `split` and `changeset` passed in the first pass and were not rerun.

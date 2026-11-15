@@ -1,0 +1,78 @@
+# Each case is only a setup.sh: it writes the repository, makes a start commit recorded in .git/case-start,
+# and writes the uncommitted work. The prompt runs it first, so each run starts from a dirty tree in real git.
+runs: 3
+threshold: 2
+trigger:
+  - { prompt: 'commit this', expect: fire }
+  - { prompt: 'split these changes into separate commits', expect: fire }
+  - { prompt: 'write a commit message for what I staged', expect: fire }
+  - { prompt: 'the fix is done and the tests pass, commit it', expect: fire }
+  - { prompt: 'push my branch and open a pull request', expect: skip }
+  - { prompt: 'add a changeset for this change', expect: skip }
+  - { prompt: 'squash the last three commits', expect: skip }
+  - { prompt: 'amend my last commit message', expect: skip }
+  - { prompt: 'undo my last commit', expect: skip }
+outcome:
+  # a bugfix with its test, a whitespace-only reformat, a docs edit, and an untracked scratch file
+  - id: split
+    prompt: >-
+      Run `sh setup.sh` once; it prepares this repository and is not part of the work. Then commit the work
+      in the working tree. notes.txt is my scratch file, not part of the work.
+    files: files/split
+    criteria: [C1, C2, C3, C6, C7]
+    checks:
+      C1:
+        - script: >-
+            s=$(cat .git/case-start) && test "$(git rev-list --count $s..HEAD)" = 3 &&
+            for c in $(git rev-list $s..HEAD); do git show --name-only --format= $c | sort | tr '\n' ' '; echo; done > .git/case-commits &&
+            grep -qx 'src/parser.js test/parser.test.js ' .git/case-commits &&
+            grep -qx 'src/format.js ' .git/case-commits && grep -qx 'README.md ' .git/case-commits
+  # the change is not done: its new test fails
+  - id: red-check
+    prompt: >-
+      Run `sh setup.sh` once; it prepares this repository and is not part of the work. Then commit the parser change.
+    files: files/red-check
+    criteria: [C5]
+    checks:
+      C5:
+        - script: 'test "$(git rev-parse HEAD)" = "$(cat .git/case-start)"'
+        - regex: '([Ff]ail|not ok)'
+  # part of src/parser.js is staged; only a message is asked for
+  - id: message-only
+    prompt: >-
+      Run `sh setup.sh` once; it prepares this repository and is not part of the work. Then write a commit
+      message for what I staged.
+    files: files/message-only
+    criteria: [C3]
+    checks:
+      C3:
+        - script: 'test "$(git rev-parse HEAD)" = "$(cat .git/case-start)" && test "$(git write-tree)" = "$(cat .git/case-index)"'
+        - regex: '\b(fix|feat)(\([a-z-]+\))?: '
+  # a published package in a changesets repository, its changeset already written
+  - id: changeset
+    prompt: >-
+      Run `sh setup.sh` once; it prepares this repository and is not part of the work. Then commit the work.
+    files: files/changeset
+    criteria: [C4]
+rubrics:
+  C1:
+    - script: 's=$(cat .git/case-start) && test "$(git rev-list --count $s..HEAD)" -ge 1'
+  C2:
+    - script: 'git status --porcelain | grep -qx "?? notes.txt"'
+  C3:
+    - script: >-
+        s=$(cat .git/case-start) && git log --format=%s $s..HEAD > .git/case-subjects && test -s .git/case-subjects &&
+        ! grep -vE '^(feat|fix|refactor|perf|test|docs|build|ci|chore|style|revert)(\([a-z0-9-]+\))?!?: [^A-Z].*[^.]$' .git/case-subjects
+  C4:
+    - script: >-
+        s=$(cat .git/case-start) && c=$(git log --format=%H $s..HEAD -- src/parser.js | head -1) && test -n "$c" &&
+        git show --name-only --format= $c | grep -qx '.changeset/quiet-owl.md'
+  C5:
+    - script: 'test "$(git rev-parse HEAD)" = "$(cat .git/case-start)"'
+  C6:
+    - script: >-
+        test -z "$(git stash list)" &&
+        ! git reflog --format=%gs | grep -E '^(commit \(amend\)|rebase|reset: moving to [^H])'
+  C7:
+    - regex: '\b[0-9a-f]{7,12}\b'
+    - contains: notes.txt
