@@ -1,5 +1,6 @@
 ---
 description: How the website skill changes an existing docs site — pages, sidebar, versions, and config — without breaking its build or deploy.
+implements: website.update@1
 ---
 
 ## Purpose

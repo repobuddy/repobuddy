@@ -1,5 +1,6 @@
 ---
 description: How the website skill publishes a static site from CI to the static hosting of the repo's git host.
+implements: website.deploy@1
 ---
 
 ## Purpose
