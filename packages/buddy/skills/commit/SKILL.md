@@ -15,14 +15,18 @@ Repository rules take precedence over this skill: the **Commit Discipline** sect
 
 ## References
 
-Read two references as files, once per run: the bundled default in this skill's `references/`, then
-`.agents/references/<name>.md` when it exists. Each section of the override replaces the default's
-section of the same heading; a new section is added.
+Load these with the `reference` skill in the `cyber-agentkit` plugin, once per run, so every override
+of them applies (repository, user, and plugin):
 
-- `commit.message` (`references/commit.message.default.md`): how to write the message. Conventional
-  Commits, with the types, scopes, subject case, and header length read from the commitlint config.
-- `commit.release-notes` (`references/commit.release-notes.default.md`): what a commit of a change to a
-  published package carries. Its changeset when the repository has `.changeset/config.json`.
+- `commit.message`: how to write the message. The default is Conventional Commits, with the types,
+  scopes, subject case, and header length read from the repository's commitlint config.
+- `commit.release-notes`: what a commit of a change to a published package carries. The default is its
+  changeset, when the repository has `.changeset/config.json`, and nothing otherwise.
+
+When the `reference` command cannot run, read the bundled default in this skill's folder,
+`references/commit.message.default.md` or `references/commit.release-notes.default.md`. Then read
+`.agents/references/<name>.md` when it exists: each of its sections replaces the default's section of
+the same heading, and a new section is added.
 
 Read [references/splitting.md](references/splitting.md) only for a split inside one file or a staged
 snapshot check.

@@ -91,10 +91,10 @@ every feature above on top of it. Where the two disagree, the table says which s
 
 **Leaner than the first version, without dropping a feature:**
 
-- The two references are read as files: the bundled default in the skill's `references/`, then
-  `.agents/references/<name>.md` when it exists, each of its sections replacing the default's section of
-  the same heading. Loading the `reference` skill to do the same cost a skill load on every commit.
-  The override behavior is unchanged.
+- The two references are loaded once per run, not once per commit. They are still loaded through
+  cyber-agentkit's `reference` skill: reading the files by hand sees only the bundled default and
+  `.agents/references/`, and misses the user and plugin tiers the `reference` skill composes. The
+  by-hand read stays the fallback when the `reference` command cannot run.
 - `references/splitting.md` is read only for a split inside one file or a snapshot check.
 - The checks after a commit run once, after the last commit, not after each one.
 - Hooks are found once per run.
@@ -241,4 +241,4 @@ graph TD
 | `X → X1` | a staged file that adds an API token | `commits nothing when the staged diff holds a secret` |
 | `X` (debug) | a staged console.log the unit did not ask for | `takes debug logging out of the unit` |
 | `C` (report) | two units committed | `reports each commit, the checks run, and what was left` |
-| `—` (artifact) | the shipped skill's SKILL.md | `loads the references as files, not through the reference skill` |
+| `—` (artifact) | the shipped skill's SKILL.md | `loads the references through the reference skill, once per run` |

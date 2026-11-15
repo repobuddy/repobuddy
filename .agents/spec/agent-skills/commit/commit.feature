@@ -438,9 +438,9 @@ Feature: commit — stage and commit one unit of work, unattended and without in
     And it names notes.txt as left uncommitted and why
 
   @behavior
-  Scenario: loads the references as files, not through the reference skill
+  Scenario: loads the references through the reference skill, once per run
     Given the commit skill as shipped in packages/buddy/skills/commit
     When its SKILL.md is read
-    Then it reads references/commit.message.default.md and references/commit.release-notes.default.md as files
-    And it applies the sections of .agents/references/<name>.md over them when that file exists
-    And it does not load the reference skill
+    Then it says to load commit.message and commit.release-notes with the reference skill in the cyber-agentkit plugin
+    And it says to load them once per run
+    And it names references/commit.message.default.md and references/commit.release-notes.default.md as the fallback when the reference command cannot run

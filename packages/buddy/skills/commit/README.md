@@ -36,9 +36,9 @@ Not for pushing, opening a pull request, or amending, squashing, or undoing a co
 Rules in the **Commit Discipline** section of `AGENTS.md` or `CLAUDE.md`, or in a `SKILL.local.md` beside the skill,
 take precedence over its defaults.
 
-The message and release-note rules are references: the skill reads its bundled default, and a repository overrides
-one section of it in `.agents/references/<name>.md`, in the format of the `reference` skill from
-[cyber-agentkit](https://github.com/cyber-uni/cyber-agentkit):
+The message and release-note rules are references, loaded with the `reference` skill from
+[cyber-agentkit](https://github.com/cyber-uni/cyber-agentkit). A repository overrides one section in
+`.agents/references/<name>.md`:
 
 - `commit.message`: Conventional Commits by default, with the types, scopes, subject case, and header length read from
   the repository's commitlint config.
