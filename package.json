@@ -15,7 +15,7 @@
 		"build:doc": "pnpm build",
 		"check": "biome check . --error-on-warnings",
 		"check-plugin-version": "node scripts/check-plugin-version.mjs",
-		"check-build-drift": "node scripts/check-build-drift.mjs",
+		"check-build-drift": "pnpm --filter repobuddy exec universal-plugin plugin build --check --root .",
 		"check-skill-references": "node scripts/sync-skill-references.mjs --check",
 		"check:fix": "biome check . --fix",
 		"clean": "turbo run clean",

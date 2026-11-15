@@ -19,6 +19,7 @@ fails when `packages/buddy/package.json`'s version disagrees with the manifest o
 
 `plugin build` also bundles the six skill scripts listed under `scripts` in `plugin.json`. Unlike the tsdown bundles,
 they are committed, and their bytes follow the rolldown version the lockfile pins for `universal-plugin`.
-`scripts/check-build-drift.mjs` (`check-build-drift` in `verify`) rebuilds and fails when any of them differs from git.
-After a dependency update changes them, run `pnpm --filter repobuddy build` and commit the result. The release PR will
-not do it: changesets/action resets the tree before `pnpm run version`.
+`check-build-drift` in `verify` runs `universal-plugin plugin build --check`, which fails when any of them, or a vendor
+manifest, differs from what the build writes. After a dependency update changes them, run
+`pnpm --filter repobuddy build` and commit the result. The release PR will not do it: changesets/action resets the tree
+before `pnpm run version`.
