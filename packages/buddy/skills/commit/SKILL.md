@@ -91,8 +91,7 @@ Before staging a unit, its change is finished:
       saying why and the trailers the harness or repository supplies, and run `git commit -F <file>`.
       When a hook rejects it, the commit did not happen: fix the cause (the message, or the code and its
       checks), stage what the fix touched, and commit again. Never `--amend`.
-5. **Report:** each commit's short hash and subject with what changed and why in one line, the checks
-   run or reused, and each file left uncommitted with the reason.
+5. **Report** what C7 lists.
 
 ## Done when
 
@@ -111,5 +110,5 @@ that fails.
 - **C6.** `git reflog` since the run started shows a `commit:` entry for each new commit and no
   `commit (amend)`, `rebase`, or `reset` that moves HEAD to another commit; `git rev-parse @{upstream}`
   is unchanged; `git stash list` holds no entry the run pushed.
-- **C7.** The reply lists each commit's short hash, subject, and what and why, the checks run, and each
-  file left uncommitted with the reason.
+- **C7.** The reply lists each commit's short hash, subject, and what changed and why in one line, the
+  checks run or reused, and each file left uncommitted with the reason.
