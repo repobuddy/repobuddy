@@ -70,13 +70,13 @@ The message and release-note rules are references, loaded with the `reference` s
 [cyber-agentkit](https://github.com/cyber-uni/cyber-agentkit). A repository overrides one section in
 `.agents/references/<name>.md`:
 
-- `commit.message`: Conventional Commits by default, with the types, scopes, subject case, and header length read from
-  the repository's commitlint config.
+- `commit.message`: Conventional Commits by default, with the rules of the repository's commit-message linter when it
+  has one.
 - `commit.release-notes`: by default, a change to a published package is committed with its changeset when the
   repository uses [changesets](https://github.com/changesets/changesets). The skill does not write changesets; the
   `changesets` skill from [repobuddy/buddy-changesets](https://github.com/repobuddy/buddy-changesets) does.
 
-For example, to allow a `release` type without commitlint:
+For example, to allow a `release` type:
 
 ```markdown
 ---

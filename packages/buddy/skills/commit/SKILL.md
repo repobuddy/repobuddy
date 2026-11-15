@@ -17,8 +17,8 @@ Repository rules take precedence over this skill: the **Commit Discipline** sect
 Load these with the `reference` skill in the `cyber-agentkit` plugin, once per run, so every override
 of them applies (repository, user, and plugin):
 
-- `commit.message`: how to write the message. The default is Conventional Commits, with the types,
-  scopes, subject case, and header length read from the repository's commitlint config.
+- `commit.message`: how to write the message. The default is Conventional Commits, with the rules of
+  the repository's commit-message linter when it has one.
 - `commit.release-notes`: what a commit of a change to a published package carries. The default is its
   changeset, when the repository has `.changeset/config.json`, and nothing otherwise.
 
@@ -75,9 +75,9 @@ Before staging a unit, its change is finished:
    the split axes. Read the full diff only of a file whose unit the path and the stat do not settle, or
    that holds two units. Never diff the whole tree when the stat lists more than a few files. State the
    plan, each commit and its files, before the first `git add`.
-3. **Find the hooks**, once: `.husky/`, `.pre-commit-config.yaml`, `lefthook.yml`, or
-   `git config core.hooksPath`. Say what runs on `pre-commit` and `commit-msg`, and run those checks
-   with the unit's checks.
+3. **Find the hooks**, once: `git rev-parse --git-path hooks` prints the folder git runs them from.
+   When it holds a `pre-commit` or `commit-msg` hook, say what it runs, and run those checks with the
+   unit's checks. With neither, skip this step.
 4. For each unit in the plan:
    1. **Check done:** the [Definition of done](#definition-of-done).
    2. **Stage it:** `git add <files>`, or a patch for part of a file (see `references/splitting.md`).
@@ -103,8 +103,8 @@ that fails.
   one sentence with no "and", and a change's tests are in the change's commit.
 - **C2.** Every change the run did not commit, and every file unstaged in step 1, still shows in
   `git status --porcelain`.
-- **C3.** Each message passes `node_modules/.bin/commitlint` when it is installed, otherwise follows
-  `commit.message`, and ends with the trailers the harness or repository supplies.
+- **C3.** Each message follows `commit.message`, and ends with the trailers the harness or repository
+  supplies.
 - **C4.** When `commit.release-notes` asks for a changeset, the commit of that change lists the
   `.changeset/<name>.md` file.
 - **C5.** No commit was made while a check of its unit failed, and no commit adds a secret or token.
