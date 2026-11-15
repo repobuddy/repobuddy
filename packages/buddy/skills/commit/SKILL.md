@@ -1,13 +1,12 @@
 ---
 name: commit
-description: "Commit changes, split them into commits, or write a commit message. Run it for each new git commit instead of plain git."
+description: "Commit uncommitted changes, split them into commits, or write a commit message for staged work. Run it for each new git commit instead of plain git."
 ---
 
 # Commit
 
-Use when asked to commit, to split changes into commits, or to write a commit message, and when a unit
-of work is finished and the repository's rules say to commit it. Not for pushing, opening a pull request,
-or amending, rewording, squashing, or undoing a commit already made; those belong to other skills even
+Also run it when a unit of work is finished and the repository's rules say to commit it. Pushing, opening a
+pull request, and amending, rewording, squashing, or undoing a commit already made belong to other skills, even
 when the working tree has uncommitted changes.
 
 Repository rules take precedence over this skill: the **Commit Discipline** section of `AGENTS.md` or
