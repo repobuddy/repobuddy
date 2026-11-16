@@ -403,3 +403,40 @@ inference.
   policies." The four archetypes (Expedite, Fixed date, Intangible, Standard) are on the glossary itself. "Usually
   somewhere between daily and weekly" describes the Kanban meeting, not delivery, so it is weak support for "no time
   box". No Anderson text read.
+
+## Scrum.org material supplied by the owner
+
+Both entries were read from PDFs the owner supplied, so the quotes are exact, not summarized. They are not re-fetched pages.
+
+### E42 Scrum.org (Jocham): a fixed goal over a changing plan, two levels of done, release not gated by the Review
+
+- Date: 2026-11-16. Status: supports H3 loosely and X2/X3 separation. Confidence: medium (a practitioner report by a
+  co-author of the Expansion Pack; opinion with one anecdote, and the Scrum Guide quotes are second-hand).
+- Source: Ralph Jocham, [AI - More Feedback, Less Direction](https://www.scrum.org/resources/blog/ai-more-feedback-less-direction),
+  2026-11-15 (PDF supplied by the owner). Type: organisation blog.
+- Notes:
+  - Goal against plan: "The Sprint Goal still stays fixed inside the Sprint, because a goal that moves with every signal
+    gives the team no direction. Scope can shift beneath it". "A threat to the plan is a scope conversation with the
+    Product Owner. A signal that kills the goal is a reason to cancel the Sprint."
+  - Two levels of done: "The Definition of Output Done settles quality before anything moves on. The Definition of
+    Outcome Done sits one level up. It asks whether what shipped moved the metric it was meant to move". His reference
+    to the Scrum Guide Expansion Pack: Output Done is "increment successfully built; verification", Outcome Done is
+    "business outcome achieved; validation". The Expansion Pack itself was not read.
+  - Release against time box, quoting the Scrum Guide: "an Increment may be delivered to stakeholders prior to the end
+    of the Sprint"; "The Sprint Review should never be considered a gate to releasing value". He expects Sprint length
+    to shrink.
+  - Goal as a filter: "Holding the Product Goal as a real filter was always the Product Owner's job"; "testing whether
+    a Product Goal can reject a backlog item". Anecdote: a refinement where "the team brought in 150+ items" and the one
+    that mattered was "checkout is broken" (from the image).
+  - Ownership: with many people able to change the product, "only one is accountable for where it goes"; "If coherence
+    is not owned, the product becomes a collage" (quoting Barla).
+  - The post never mentions epics, features, or backlog structure.
+
+### E43 Scrum.org: What is Professional Scrum? (infographic)
+
+- Date: 2026-11-16. Status: context only. Confidence: weak (a marketing graphic).
+- Source: Scrum.org, What is Professional Scrum? (PDF supplied by the owner). Type: organisation infographic.
+- Notes: names the Product Goal and the Sprint Goal ("COMMITMENT to achieve the Sprint Goal, Product Goal and
+  Definition of Done") and "Outcome oriented Scrum Teams work on problems that, when solved, deliver value". Scrum's
+  commitments are goals, not item types, which agrees with the topic's finding that the Scrum Guide has no epic, story,
+  feature, or initiative. It mentions Evidence-Based Management, whose guide was not read.
