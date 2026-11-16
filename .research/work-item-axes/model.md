@@ -36,11 +36,15 @@ Each rule names the evidence that supports it and how strong that is.
   weeks stays one feature (E30); Patton keeps one backbone item across release lanes (E25); delivery and learning run
   on separate rhythms (E44). No primary text states it outright (E34).
 - **R2. An epic's close condition is its outcome measure,** which arrives after the releases that deliver it (E18, E42,
-  E44). Linear closes a project by hand and Asana closes only automatic goals by rule (E13, E03).
+  E44). No tracker closes an epic on its outcome: Jira, GitHub, GitLab, Linear, and Asana close it by hand, and Azure
+  DevOps adds an opt-in rule that closes a parent when its children complete (E50, E63, E69, E13, E03, E58). See the
+  close table in [mapping.md](mapping.md).
 - **R3. An epic may mix kinds.** No primary support and no contradiction. The nearest cases are SAFe's enabler epic and
   Resend's Foundation front (E33, E22). Low confidence.
-- **R4. A time box is never a parent.** Linear's cycle and Shape Up's appetite are independent of projects and bets
-  (E17, E36).
+- **R4. A time box is never a parent.** Linear's cycle, Jira's sprint, GitHub's iteration, and Shape Up's appetite are
+  independent of the items they hold (E17, E49, E62, E36). Azure DevOps nests releases inside the iteration path (E53)
+  and GitLab lets one milestone serve as a release or a time box (E65); the model keeps X2 and X3 apart anyway, and
+  those two systems show the merge is a policy choice.
 - **R5. Certainty is a gate on an item at any level.** Shape Up's shaped pitch and bet, Linear's triage and status,
   and Ballarin's spec gate all gate items rather than nest them (E36, E19, E44). Low-medium confidence.
 - **R6. An issue is sized to one review sitting.** From E44 (a practitioner book, medium to weak). It sizes the

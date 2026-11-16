@@ -156,6 +156,11 @@ Entries E01-E44. Quotes come through a summarizing model; re-read before the pap
   results as outcomes, not deliverables; delivery runs at machine pace while the outcome measure arrives weeks after
   the releases; the spec is the gate from discovery to delivery; and the bottom level is sized by what one person can
   review in one sitting. This supports P1 loosely and adds a sizing rule for an agent-run repo.
+- **Tracker release and time-box terms, sourced raw (E45-E70).** Jira, GitHub, Linear, and SAFe hold release, time box,
+  and tree as separate things. Azure DevOps nests releases in the iteration path and GitLab lets a milestone act as a
+  release or a time box, so two systems merge X2 and X3 by design. No tracker closes an epic on its outcome: all close
+  by hand, with computed progress, except Azure DevOps's opt-in parent auto-close. The cell-by-cell mapping is in
+  [mapping.md](mapping.md).
 - **Computed close is rare.** Asana goals set to automatic, Linear milestones and opt-in parent auto-close, and
   Linear Releases close by rule. Everything else closes by hand, which extends the tracker table's finding.
 
