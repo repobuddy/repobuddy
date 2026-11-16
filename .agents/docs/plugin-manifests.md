@@ -11,14 +11,15 @@ This repository carries no marketplace catalog. The plugin is listed in
 change them there, not here. `plugin build` refreshes only the catalogs that already exist at the repository root, so
 do not add one back: a catalog here would be a second install path to keep in sync.
 
-The `version` script runs `scripts/sync-plugin-manifests.mjs` after `changeset version`: it runs
-`universal-plugin plugin version --from-package` (changesets decides the number; the command carries it into the
-manifests and stamps the `npx repobuddy@<version>` pins in the skills, then rebuilds), using the `universal-plugin`
-devDependency of `packages/buddy`. `scripts/check-plugin-version.mjs` (`check-plugin-version` in `verify`)
+The `version` script runs `universal-plugin plugin version --from-package` after `changeset version` (changesets
+decides the number; the command carries it into the manifests and stamps the `npx repobuddy@<version>` pins in the
+skills, then rebuilds), using the `universal-plugin` devDependency of `packages/buddy`, then `pnpm format`, since the
+tool writes JSON arrays one element per line. `scripts/check-plugin-version.mjs` (`check-plugin-version` in `verify`)
 fails when `packages/buddy/package.json`'s version disagrees with the manifest or any vendor manifest.
 
 `plugin build` also bundles the six skill scripts listed under `scripts` in `plugin.json`. Unlike the tsdown bundles,
 they are committed, and their bytes follow the rolldown version the lockfile pins for `universal-plugin`.
-`scripts/check-build-drift.mjs` (`check-build-drift` in `verify`) rebuilds and fails when any of them differs from git.
-After a dependency update changes them, run `pnpm --filter repobuddy build` and commit the result. The release PR will
-not do it: changesets/action resets the tree before `pnpm run version`.
+`check-build-drift` in `verify` runs `universal-plugin plugin build --check`, which fails when any of them, or a vendor
+manifest, differs from what the build writes. After a dependency update changes them, run
+`pnpm --filter repobuddy build` and commit the result. The release PR will not do it: changesets/action resets the tree
+before `pnpm run version`.
