@@ -8,7 +8,9 @@ texts, axis-separating sources). E01-E22 were re-read against raw pages the same
 - **E01-E22 re-read with curl on 2026-11-16.** Linear, Resend, and the Asana forum, marketing, developer, and article
   pages were readable raw. `help.asana.com` and the Atlassian Community pages are JavaScript shells: their quotes
   rest on a summarizer or a snippet and stay marked so. Entries changed by the re-read say so in their Notes.
-- **E23-E41 re-read:** pending.
+- **E23-E41 re-read with curl on 2026-11-16.** SAFe and Patton need a plain `curl/8` user agent (a browser agent is
+  blocked); Scrum.org stays blocked, so E37 rests on a summarizer. Patton's PDF and the `?p=1183` blurb were not
+  re-read. Entries changed by the re-read say so in their Notes.
 
 **Caveat on every quote.** Pages were fetched through a small summarizing model, so a quoted phrase is that model's
 rendering, not a raw re-read. Entries marked `snippet` rest on a search-result summary, not a fetched page. Re-read
@@ -226,8 +228,9 @@ inference.
 - Date: 2026-11-16. Status: supports H1. Confidence: strong (author's own text).
 - Source: Cohn, [Stories, Epics, and Themes](https://www.mountaingoatsoftware.com/blog/stories-epics-and-themes).
   Type: author blog.
-- Notes: "As defined by the XP teams that invented user stories, an epic is a large user story." "there is no precise
-  threshold at which an item becomes an epic." Themes "are not necessarily larger than epics".
+- Notes: re-read raw. "As defined by the XP teams that invented user stories, an epic is a large user story." The
+  body says "There's no magic threshold at which we call a particular story an epic"; the image caption says "no
+  precise threshold at which an item becomes an epic". Themes "are not necessarily larger than epics".
 
 ### E24 Cohn: a feature is a story big enough to release; initiative is year-scale
 
@@ -236,37 +239,46 @@ inference.
 - Sources: [Stories, Epics, and Themes](https://www.mountaingoatsoftware.com/blog/stories-epics-and-themes);
   [video transcript: do names matter](https://www.mountaingoatsoftware.com/videos/data/agile-epic-user-story-and-feature-do-names-matter.txt).
   Type: author blog, transcript.
-- Notes: "a feature is a user story that is big enough to be released"; suggests a tag, not a level. "initiative is use
-  to means something taking perhaps a year to do." "Sometimes saga is used to mean something bigger than an epic."
+- Notes: re-read raw. "a feature is a user story that is big enough to be released or perhaps big enough that users
+  will notice and be happier"; suggests a tag, not a level. "Sometimes saga is used to mean something bigger than an
+  epic, and initiative is use to means something taking perhaps a year to do." He adds "Something this big shouldn't
+  be on your product backlog".
 
 ### E25 Patton: the story map separates the backbone from release lanes
 
 - Date: 2026-11-16. Status: supports H3 and X1/X2 independence. Confidence: strong (original essay), medium for slicing.
 - Source: Patton, [The new backlog](https://www.jpattonassociates.com/the-new-backlog/). Type: author article.
-- Notes: "I don't prioritize the backbone. It just 'is.'" "horizontal swim lanes for each release." Levels in the map:
+- Notes: re-read raw. "I don't prioritize the backbone. It just 'is.'" "creating horizontal swim lanes for each
+  release", then "I move the stories up and down into each lane". The page has no explicit statement about slicing
+  releases across the backbone, and does not say a lane changes an item's level. Levels in the map:
   goals and benefits, users, capabilities, activities (the backbone), tasks, stories. "The really big stories can be
   considered 'epics'", kept for context; he prefers "activity". The essay never says a lane changes an item's level.
   The book and "It's all in how you slice it" were not read. A workshop blurb
   ([Why map](https://jpattonassociates.com/?p=1183)) says "slicing a map to find small viable product releases".
 
-### E26 Pichler: an epic is a coarse story; a feature is bigger and goes on the roadmap
+### E26 Pichler: an epic is a coarse story; he roadmaps features and capabilities, not epics
 
-- Date: 2026-11-16. Status: contradicts E24; weakens H2 mildly. Confidence: strong for the epic text; weak for the
-  "feature bigger than an epic" line (a search snippet; the fetch did not return it).
+- Date: 2026-11-16. Status: fits Cohn's epic (E23); weakens H2 mildly. Confidence: strong.
+- Correction: the earlier "a feature is bigger than an epic" line was a search-snippet attribution. The raw pages do not
+  say it, so it is struck. Pichler's own wording makes an epic a sketch of a feature or more, the opposite direction.
 - Sources: Pichler, [Epics and ready stories](https://www.romanpichler.com/blog/epics-and-ready-stories/);
   [My product strategy model](https://www.romanpichler.com/blog/my-product-strategy-model/amp/). Type: author blog.
-- Notes: "Epics are big, coarse-grained user stories." "An epic sketches a feature or bigger piece of functionality."
-  Author comment: "I include capabilities and features on a product roadmap, but not epcis [sic]."
+- Notes: "Epics are big, coarse-grained user stories. An epic sketches a feature or bigger piece of functionality. It
+  acts as a placeholder for more detailed stories." The roadmap line is Pichler's 2018 reader-comment reply on the
+  epics-and-ready-stories page, not the strategy page: "I include capabilities and features on a product roadmap, but
+  not epcis [sic]."
 
 ### E27 Pichler: goals are outcomes, features sketch the output, releases carry goals
 
 - Date: 2026-11-16. Status: supports the value/output split; silent on span. Confidence: strong.
-- Sources: [Agile product roadmap](https://www.romanpichler.com/blog/agile-product-roadmap/);
-  [Release planning advice](https://www.romanpichler.com/blog/release-planning-advice/amp/);
+- Sources: [Release planning advice](https://www.romanpichler.com/blog/release-planning-advice/amp/);
   [My product strategy model](https://www.romanpichler.com/blog/my-product-strategy-model/amp/). Type: author blog.
 - Notes: "product goals, which describe the outcomes the product should create"; "the features sketch the output
-  required to achieve a goal"; "I regard a release as a version of a product." The order on X1 is goal > feature >
-  epic > story. He does not use "initiative" and never says whether one goal spans releases.
+  required to achieve a goal" (strategy page); "I regard a release as a version of a product", and "goals that describe
+  the outcomes or benefits your product should create. I call these goals product goals (and sometimes release goal)"
+  (release-planning page). The order goal > feature > epic > story is an inference, not stated. The agile-product-roadmap
+  page was dropped: it has neither "outcome" nor "output". He does not use "initiative" and never says whether one goal
+  spans releases.
 
 ### E28 Fowler: story and feature are the same concept; no epic page
 
@@ -287,9 +299,10 @@ inference.
 - Date: 2026-11-16. Status: supports H3. Confidence: strong (author's own bliki); the best single settler.
 - Sources: Fowler, [Feature Toggle](https://martinfowler.com/bliki/FeatureToggle.html);
   [Feature Toggles article](https://martinfowler.com/articles/feature-toggles.html). Type: bliki, article.
-- Notes: "Imagine you are releasing into production every two weeks," "but need to build a feature that's going to take
-  three months to complete." Release toggles implement "separating [feature] release from [code] deployment" and are
-  "the last thing you should do"; he prefers smaller releases first.
+- Notes: re-read raw. "Imagine you are releasing into production every two weeks, but need to build a feature that's
+  going to take three months to complete." The bliki heading is "Release flags are the last thing you should do". The
+  article says release toggles implement "separating [feature] release from [code] deployment" and are
+  "transitionary by nature". The earlier "prefers smaller releases first" is not in the bliki and is dropped.
 
 ### E31 Cagan and SVPG: outcomes versus outputs; the team objective carries ownership
 
@@ -313,24 +326,28 @@ inference.
 
 - Date: 2026-11-16. Status: supports H1. Confidence: strong for definitions.
 - Source: SAFe, [Epic](https://framework.scaledagile.com/epic). Type: framework spec.
-- Notes: "An Epic is a significant solution development initiative." "Business epics deliver value directly to the
+- Notes: re-read raw; all quotes exact. "An Epic is a significant solution development initiative." "Business epics deliver value directly to the
   customer." "Enabler epics enhance the architectural runway to support future business or technical needs." Epics
   need Portfolio Leadership approval and "an MVP, a Lean business case, and an estimate of costs". The page is silent on
   PI span.
 
-### E34 SAFe sizes capability and feature to one PI; the "epic spans PIs" claim is secondary only
+### E34 SAFe sizes capability and feature to one PI; no primary SAFe page says an epic spans PIs
 
-- Date: 2026-11-16. Status: partial. Confidence: strong for the quotes; weak for the span claim.
+- Date: 2026-11-16. Status: partial. Confidence: strong for the quotes; the span claim is unsupported.
 - Source: SAFe, [Features and capabilities](https://framework.scaledagile.com/features-and-capabilities/). Type: framework spec.
-- Notes: a capability is "sized to be delivered within a PI"; a feature is something an ART can complete "within a PI";
-  features come from "splitting epics or capabilities". "Epic spans multiple PIs" appears only in study guides, so the
-  SAFe support for H3 in `topic.md` is the weakest link until a primary quote is found.
+- Notes: re-read raw. A capability "represents large solution functionality whose implementation often spans multiple
+  ARTs and is sized to be delivered within a PI". A feature is "sized to be delivered by an Agile Release Train within a
+  PI". Features come "from splitting epics or capabilities". A search of `/epic`, `/features-and-capabilities`,
+  `/portfolio-kanban`, `/lean-portfolio-management`, and `/program-increment` for "multiple PIs", "several PIs",
+  "across PIs" found nothing; the only "spans multiple" hit is ARTs. "Epic spans multiple PIs" appears only in study
+  guides, so H3 has no primary SAFe support.
 
 ### E35 SAFe: develop on cadence, release on demand
 
 - Date: 2026-11-16. Status: supported. Confidence: medium-high (part behind a login wall).
 - Source: SAFe, [Release on demand](https://framework.scaledagile.com/release-on-demand). Type: framework spec.
-- Notes: "Develop on cadence. Release on demand." "releases are decoupled from the work to deploy the functionality."
+- Notes: re-read raw (a preview; the login wall was not confirmed). "Develop on cadence. Release on demand."
+  "Critically, releases are decoupled from the work to deploy the functionality."
   The PI is a time box (X3); release (X2) is its own decision.
 
 ### E36 Shape Up: appetite is the time box, the bet is the commitment, and there is no backlog
@@ -341,8 +358,9 @@ inference.
   [Circuit breaker](https://basecamp.com/shapeup/2.3-chapter-09); [Shipping](https://basecamp.com/shapeup/3.6-chapter-15).
   Type: book.
 - Notes: "fixed time, variable scope". A bet is "the decision to commit a team to a project for one cycle". The
-  circuit breaker cancels "projects that don't ship in one cycle by default". "Shipping means merging into the main
-  codebase". Certainty is a gate (shaped pitch, then bet), not a hierarchy. Shape Up binds release to the cycle
+  circuit breaker cancels "projects that don't ship in one cycle by default" (glossary; exact). "Shipping means merging
+  into the main codebase and expecting not to touch it again" is on the circuit-breaker page (2.3), not the Shipping
+  page (3.6). Chapters 1.5, 2.2, and 3.6 were not checked for quotes. Certainty is a gate (shaped pitch, then bet), not a hierarchy. Shape Up binds release to the cycle
   (X2 = X3). Re-betting a multi-cycle effort as a new project is an inference.
 
 ### E37 Scrum.org: an epic or feature can span several sprints
@@ -357,16 +375,18 @@ inference.
 - Date: 2026-11-16. Status: supported. Confidence: medium (re:Work is primary; whatmatters.com is Doerr-affiliated).
 - Sources: Google re:Work, [Set goals with OKRs](https://rework.withgoogle.com/en/guides/set-goals-with-okrs);
   [What Matters](https://www.whatmatters.com/faqs/okr-meaning-definition-example). Type: practitioner guide, vendor site.
-- Notes: "Key results should describe outcomes, not activities." "Google sets annual and quarterly OKRs." An objective
-  can be "long lived, rolled over for a year or longer" without becoming another level. Doerr's own book was not read.
+- Notes: re:Work: "Key results should describe outcomes, not activities." "Google sets annual and quarterly OKRs."
+  whatmatters.com (not re:Work): an Objective "can be long lived, rolled over for a year or longer", so it need not
+  become another level. Doerr's own book was not read.
 
 ### E39 Continuous Delivery separates release from deploy, though the pages do not use those words
 
 - Date: 2026-11-16. Status: partial. Confidence: medium.
 - Sources: Fowler, [Continuous Delivery](https://martinfowler.com/bliki/ContinuousDelivery.html);
   [continuousdelivery.com](https://www.continuousdelivery.com/). Type: bliki, author site.
-- Notes: software that "can be released to production at any time"; a retailer rolled out to employees, then premium
-  customers, then everyone. The Humble and Farley book was not read.
+- Notes: on Fowler's bliki only (continuousdelivery.com has neither): software that "can be released to production at
+  any time"; a retailer rolled out "first to its employees, then to an invited set of premium customers, and finally to
+  all customers". The Humble and Farley book was not read.
 
 ### E40 SemVer marks the kind of change, not a value level or time box
 
@@ -380,5 +400,6 @@ inference.
 - Date: 2026-11-16. Status: partial. Confidence: weak.
 - Source: Kanban University, [glossary](https://kanban.university/glossary/). Type: community body.
 - Notes: "A specific level of service applied to the treatment of a work item established through a defined set of
-  policies." The four archetypes (expedite, fixed date, intangible, standard) come from a snippet. Cadence is "usually
-  somewhere between daily and weekly". No Anderson text read.
+  policies." The four archetypes (Expedite, Fixed date, Intangible, Standard) are on the glossary itself. "Usually
+  somewhere between daily and weekly" describes the Kanban meeting, not delivery, so it is weak support for "no time
+  box". No Anderson text read.
