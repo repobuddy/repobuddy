@@ -3,7 +3,6 @@
 	"extends": ["github>repobuddy/renovate-preset"],
 	"dependencyDashboard": true,
 	"ignoreUnstable": true,
-	"minimumReleaseAge": "1 day",
 	"internalChecksFilter": "strict",
 	"platformAutomerge": true,
 	"packageRules": [
