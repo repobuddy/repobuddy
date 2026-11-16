@@ -124,7 +124,7 @@ in the paper.
 
 ### Second pass, 2026-11-16 (evidence in `evidence.md`)
 
-Entries E01-E41. Quotes come through a summarizing model; re-read before the paper cites them.
+Entries E01-E43. Quotes come through a summarizing model; re-read before the paper cites them.
 
 - **The practitioner texts disagree on the word "feature", which supports H1.** It is a story big enough to release
   (Cohn, E24) and the same as a story (Fowler, E28). Pichler roadmaps features and capabilities, not epics (E26).
@@ -149,6 +149,9 @@ Entries E01-E41. Quotes come through a summarizing model; re-read before the pap
 - **Asana has no epic, initiative, or sprint object** (E07). Its goal stack is OKR-style X1 and the only computed
   close (E02, E03). Asana's own article puts initiative above epic (E08) while its Guide calls an initiative a
   project (E01), and staff mapped epic three ways (E09).
+- **Scrum's commitments are goals, and its sources keep goal and plan apart (E42, E43).** The goal stays fixed while
+  scope moves beneath it; done has an item level (Output Done) and an outcome level (Outcome Done); the Review is not
+  a gate to release. This is practitioner opinion with second-hand Scrum Guide quotes, so it supports P1 loosely.
 - **Computed close is rare.** Asana goals set to automatic, Linear milestones and opt-in parent auto-close, and
   Linear Releases close by rule. Everything else closes by hand, which extends the tracker table's finding.
 
