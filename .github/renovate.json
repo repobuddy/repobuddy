@@ -29,11 +29,6 @@
 			"matchManagers": ["github-actions"],
 			"matchUpdateTypes": ["minor", "patch", "digest"],
 			"automerge": true
-		},
-		{
-			"description": "Runtime dependencies of published packages stay manual: the bump ships to consumers and needs a patch changeset.",
-			"matchDepTypes": ["dependencies", "peerDependencies"],
-			"automerge": false
 		}
 	]
 }
