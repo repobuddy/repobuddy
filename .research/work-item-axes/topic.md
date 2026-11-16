@@ -58,14 +58,14 @@ Hypotheses:
 ## Source angles
 
 - Methodology frameworks: Scrum Guide, SAFe, Cohn and XP, Shape Up, Kanban. A first pass is done; see Findings.
-- Tracker vendor docs: Jira, GitHub, GitLab, Azure DevOps, Linear. A first pass is done. **Asana is not yet covered.
-  Linear needs depth**: initiatives and sub-initiatives, projects, project milestones, cycles, issues and
-  sub-issues, labels.
-- Practitioner evidence and critique. A first pass is done. Primary Pichler, Patton, Fowler, and Cagan texts are
-  still missing.
-- New for the paper: sources that separate the axes explicitly, such as story mapping (release slices against the
-  backbone), SAFe's enabler and business split, OKR (objective and key result) as a value axis, and release-train
-  and versioning practice.
+- Tracker vendor docs: Jira, GitHub, GitLab, Azure DevOps, Linear. A first pass is done. Asana and Linear were covered on 2026-11-16 (E01-E22). Not yet read: Linear's roadmap page and the full bodies of
+  several truncated Asana help articles.
+- Practitioner evidence and critique. A second pass on 2026-11-16 read Cohn, Pichler, Patton (2008 essay), Fowler,
+  and SVPG; Patton's book, Cagan's book, and a Pichler text that separates initiative, epic, and feature are still
+  missing.
+- Sources that separate the axes explicitly: story mapping, SAFe's enabler and business split, OKR, release-train
+  and versioning practice, Shape Up, Kanban. Read on 2026-11-16 (E33-E41); no primary text names a release train as
+  an axis.
 
 ## Findings
 
@@ -122,6 +122,36 @@ No tracker closes an epic on its own. Sources:
 Fetched pages were summarized by a small model, so the quotes above are its wording. Re-read each before using it
 in the paper.
 
+### Second pass, 2026-11-16 (evidence in `evidence.md`)
+
+Entries E01-E41. Quotes come through a summarizing model; re-read before the paper cites them.
+
+- **The practitioner texts disagree on level order, which supports H1.** "Feature" is a story big enough to release
+  (Cohn, E24), the same as a story (Fowler, E28), and bigger than an epic (Pichler, E26). Cohn's feature can be
+  smaller than an epic; Pichler's epic sits below the feature.
+- **H3 holds by structure; no primary text states it.** Patton keeps one backbone item while its stories are sliced
+  across release lanes (E25). Fowler's three-month feature released every two weeks stays one feature (E30). SAFe
+  separates release on demand from the PI (E35). Nothing says spanning releases promotes a feature to an initiative.
+  The sizing rules that tie a level to one release or one PI (Cohn's feature, SAFe's feature, E24 and E34) govern
+  when to split, not value.
+- **H3's SAFe support is the weakest link.** "An epic spans PIs" is not on the SAFe pages read (E34), only in study
+  guides.
+- **H2 has no primary support and no contradiction.** Cohn and Pichler define epics in user terms; no text addresses
+  an all-engineering epic. SAFe's enabler epic (E33) and Resend's Foundation front (E22) are the nearest cases.
+- **X2 and X3 are two axes that some methods bind.** SAFe, Continuous Delivery, Fowler, and Linear separate them
+  (E35, E39, E30, E17, E21). Shape Up binds ship to the cycle by its circuit breaker (E36).
+- **X5 looks like a gate or a state, not a level.** Shape Up has shaped pitch and bet (E36). Linear has triage and
+  status, and puts vague ideas in documents (E19, E21). Linear scales the precision of a date to certainty (E14).
+- **Linear separates the axes best.** Cycle (X3), project (X1), and release (X2) are independent objects; kind is a
+  label; ownership is a field on each level (E11, E16, E17, E21). Only initiative to sub-issue is a containment tree,
+  and each level there carries X1. Linear's Method sizes a project at 1-3 weeks and 1-3 people (E18), so its project
+  is nearer a shaped bet than an epic, though its Jira map says epic.
+- **Asana has no epic, initiative, or sprint object** (E07). Its goal stack is OKR-style X1 and the only computed
+  close (E02, E03). Asana's own article puts initiative above epic (E08) while its Guide calls an initiative a
+  project (E01), and staff mapped epic three ways (E09).
+- **Computed close is rare.** Asana goals set to automatic, Linear milestones and opt-in parent auto-close, and
+  Linear Releases close by rule. Everything else closes by hand, which extends the tracker table's finding.
+
 ## Contradictions
 
 - Epic as a big story (Cohn) against epic as a funded portfolio initiative (SAFe).
@@ -129,14 +159,23 @@ in the paper.
   the original).
 - Initiative sits above epic in Jira and Linear. In SAFe the epic is "a significant solution development
   initiative", so the word is a synonym there.
+- "Feature" is releasable (Cohn), a story (Fowler), and above epic (Pichler).
+- Asana: an initiative is a project (Guide) and sits above the epic (agile article).
+- Linear: a project is a "shared outcome" and an epic in the Jira map, yet is sized at 1-3 weeks by its Method.
+- SAFe sizes features to one PI and separates release from the PI.
 - Keep epics with a better definition, or abolish them in favour of themes and story maps
   ([Muth](https://www.freecodecamp.org/news/epics-are-dead-heres-what-we-should-do-instead-279bada1e644), Jarrell).
 
 ## Open questions
 
-- Is X2 (release) one axis with X3 (time box), or two? Continuous delivery separates them; release trains merge them.
-- Does X5 (certainty) have levels, or is it a state of an item on any level?
-- Where does Asana's goal, portfolio, and project stack sit on the axes?
+- Is X2 (release) one axis with X3 (time box), or two? Leaning two, bound by policy in Shape Up and release trains
+  (medium-high confidence, E35, E36, E39).
+- Does X5 (certainty) have levels, or is it a state of an item on any level? Leaning state or gate (low-medium).
+- Where does Asana's goal, portfolio, and project stack sit on the axes? Goal is X1 with X3; portfolio is X4
+  grouping; project is containment. See E01-E07; the portfolio status claim is a snippet.
+- Find a primary SAFe quote that an epic spans PIs, or drop that half of H3's SAFe support.
+- Read what is missing: Patton's book, Cohn's *Agile Estimating and Planning*, Cagan's *Inspired*, Doerr, Humble and
+  Farley, Linear's roadmap page.
 - Carried from the `epic` spec:
   - Q6. Should Revise open a linked successor epic when new scope arrives after the outcome is reached? The
     recommendation is yes.
