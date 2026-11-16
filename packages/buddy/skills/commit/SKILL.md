@@ -48,6 +48,9 @@ write the message for it by `commit.message`, show it, and commit only when aske
 - **Never commit with red checks.** Never `--no-verify`. When a test, type-check, or build fails, stage
   nothing and report the failure: do not change the unit's code to make it pass unless the request
   asked for that change. Lint and format errors in the unit are fixed, not reported.
+- **Sandbox blocks:** when the harness blocks `git add` or `git commit` (a read-only `.git`, or a refusal
+  that names the sandbox or a permission), stop and report each affected change as "uncommitted: blocked by
+  sandbox". Never change the sandbox, git config, or hooks to get around it.
 - **Never rewrite history:** never push, force-push, rebase, or amend.
 - **Decide, do not ask:** settle each choice, including how many commits, from these rules, the
   repository's rules, and the references. Ask only when they cannot decide, such as one changed line
@@ -115,3 +118,5 @@ that fails.
   checks run or reused, and each file left uncommitted with the reason.
 - **C8.** In a merge, cherry-pick, revert, or rebase in progress, or with an unmerged path, no commit was made, and the
   reply names the state.
+- **C9.** When the harness blocked `git add` or `git commit`, no commit was made, each affected change is reported
+  as "uncommitted: blocked by sandbox", and the sandbox, git config, and hooks are unchanged.
