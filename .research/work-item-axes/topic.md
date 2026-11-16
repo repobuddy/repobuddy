@@ -126,16 +126,16 @@ in the paper.
 
 Entries E01-E41. Quotes come through a summarizing model; re-read before the paper cites them.
 
-- **The practitioner texts disagree on level order, which supports H1.** "Feature" is a story big enough to release
-  (Cohn, E24), the same as a story (Fowler, E28), and bigger than an epic (Pichler, E26). Cohn's feature can be
-  smaller than an epic; Pichler's epic sits below the feature.
+- **The practitioner texts disagree on the word "feature", which supports H1.** It is a story big enough to release
+  (Cohn, E24) and the same as a story (Fowler, E28). Pichler roadmaps features and capabilities, not epics (E26).
+  The earlier reading that Pichler's feature is bigger than an epic did not survive the raw re-read.
 - **H3 holds by structure; no primary text states it.** Patton keeps one backbone item while its stories are sliced
   across release lanes (E25). Fowler's three-month feature released every two weeks stays one feature (E30). SAFe
   separates release on demand from the PI (E35). Nothing says spanning releases promotes a feature to an initiative.
   The sizing rules that tie a level to one release or one PI (Cohn's feature, SAFe's feature, E24 and E34) govern
   when to split, not value.
-- **H3's SAFe support is the weakest link.** "An epic spans PIs" is not on the SAFe pages read (E34), only in study
-  guides.
+- **H3 has no primary SAFe support.** "An epic spans PIs" is on none of five SAFe pages searched (E34), only in
+  study guides. Drop it, or find a primary quote.
 - **H2 has no primary support and no contradiction.** Cohn and Pichler define epics in user terms; no text addresses
   an all-engineering epic. SAFe's enabler epic (E33) and Resend's Foundation front (E22) are the nearest cases.
 - **X2 and X3 are two axes that some methods bind.** SAFe, Continuous Delivery, Fowler, and Linear separate them
@@ -159,9 +159,10 @@ Entries E01-E41. Quotes come through a summarizing model; re-read before the pap
   the original).
 - Initiative sits above epic in Jira and Linear. In SAFe the epic is "a significant solution development
   initiative", so the word is a synonym there.
-- "Feature" is releasable (Cohn), a story (Fowler), and above epic (Pichler).
+- "Feature" is a releasable story (Cohn) and a story (Fowler); Pichler roadmaps features, not epics.
 - Asana: an initiative is a project (Guide) and sits above the epic (agile article).
-- Linear: a project is a "shared outcome" and an epic in the Jira map, yet is sized at 1-3 weeks by its Method.
+- Linear: a project is a "shared outcome" and an epic in the Jira map, yet its Method sizes it at 1-3 weeks and a
+  feature "often become[s] the project itself" (E18); a review says projects span several cycles (E22).
 - SAFe sizes features to one PI and separates release from the PI.
 - Keep epics with a better definition, or abolish them in favour of themes and story maps
   ([Muth](https://www.freecodecamp.org/news/epics-are-dead-heres-what-we-should-do-instead-279bada1e644), Jarrell).
@@ -173,7 +174,8 @@ Entries E01-E41. Quotes come through a summarizing model; re-read before the pap
 - Does X5 (certainty) have levels, or is it a state of an item on any level? Leaning state or gate (low-medium).
 - Where does Asana's goal, portfolio, and project stack sit on the axes? Goal is X1 with X3; portfolio is X4
   grouping; project is containment. See E01-E07; the portfolio status claim is a snippet.
-- Find a primary SAFe quote that an epic spans PIs, or drop that half of H3's SAFe support.
+- Raw re-read of E01-E41 is done on 2026-11-16 except `help.asana.com` (JavaScript-only), the Atlassian threads, and
+  Scrum.org (E37). Patton's PDF and the `?p=1183` blurb are unread.
 - Read what is missing: Patton's book, Cohn's *Agile Estimating and Planning*, Cagan's *Inspired*, Doerr, Humble and
   Farley, Linear's roadmap page.
 - Carried from the `epic` spec:
