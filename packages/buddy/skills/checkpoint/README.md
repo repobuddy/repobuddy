@@ -28,7 +28,7 @@ for a Skills CLI install in Copilot CLI and the Cursor editor:
 
 | Harness | From the repobuddy plugin | Installed by the Skills CLI |
 | --- | --- | --- |
-| Claude Code | `/repobuddy:checkpoint` | ask in words ("use the checkpoint skill to resume …"): `/checkpoint` is an alias of the built-in `/rewind` |
+| Claude Code | `/repobuddy:checkpoint` (pnpm install: `pnpm-repobuddy-checkpoint`) | ask in words ("use the checkpoint skill to resume …"): `/checkpoint` is an alias of the built-in `/rewind` |
 | Codex CLI | `$repobuddy:checkpoint` | `$checkpoint` |
 | Copilot CLI | ask in words (namespacing not documented) | `/checkpoint` |
 | Cursor | ask in words (namespacing not documented) | `/checkpoint` in the editor's Agent chat; ask in words in the `agent` CLI |
