@@ -1,7 +1,14 @@
 # Evidence: the axes of work-item levels
 
 Entries are in claim-ID order. All were gathered on 2026-11-16 by four subagent angles (Asana, Linear, practitioner
-texts, axis-separating sources).
+texts, axis-separating sources). E01-E22 were re-read against raw pages the same day (see "Re-read status").
+
+## Re-read status
+
+- **E01-E22 re-read with curl on 2026-11-16.** Linear, Resend, and the Asana forum, marketing, developer, and article
+  pages were readable raw. `help.asana.com` and the Atlassian Community pages are JavaScript shells: their quotes
+  rest on a summarizer or a snippet and stay marked so. Entries changed by the re-read say so in their Notes.
+- **E23-E41 re-read:** pending.
 
 **Caveat on every quote.** Pages were fetched through a small summarizing model, so a quoted phrase is that model's
 rendering, not a raw re-read. Entries marked `snippet` rest on a search-result summary, not a fetched page. Re-read
@@ -15,7 +22,9 @@ inference.
 
 - Date: 2026-11-16. Status: supported. Confidence: supporting.
 - Source: Asana Guide, [Asana hierarchy](https://help.asana.com/s/article/asana-hierarchy). Type: vendor help.
-- Notes: "Goals are where you'll track your team's high-level objectives." The Guide says "Each of your team's
+- Notes: re-read only through a summarizer (`help.asana.com` is a JavaScript shell); sub-goals were confirmed only
+  from a video caption, "Setting and tracking high-level objectives with goals and sub-goals". "Goals are where
+  you'll track your team's high-level objectives." The Guide says "Each of your team's
   initiatives should be part of a project", so Asana's own `initiative` is a project, not a level above one.
 
 ### E02 Goals are OKR-style: objective, key result, with an owner and a timeframe
@@ -27,7 +36,7 @@ inference.
 
 ### E03 A goal's progress is computed or manual, chosen per goal
 
-- Date: 2026-11-16. Status: supported. Confidence: weak (snippet; the help body was truncated).
+- Date: 2026-11-16. Status: supported. Confidence: weak (snippet; the help body is a JavaScript shell, unverifiable raw).
 - Source: Asana Guide, [Progress, status, and connecting work to goals](https://help.asana.com/s/article/progress-status-and-connecting-work-to-goals).
   Type: vendor help.
 - Notes: automatic goals draw on sub-goals, projects, portfolios, or tasks; "Numeric measures such as revenue must be
@@ -46,7 +55,8 @@ inference.
 - Sources: Asana developers, [Object hierarchy](https://developers.asana.com/docs/object-hierarchy);
   Asana Guide, [Portfolio progress and reporting](https://help.asana.com/s/article/portfolio-progress-and-reporting)
   (snippet). Type: vendor API docs, vendor help.
-- Notes: "Portfolios are collections of projects (or other portfolios)." Status choices: on track, at risk, off track,
+- Notes: "Portfolios are collections of projects (or other portfolios)." (verified raw). The status list and the
+  manual-status claim could not be re-read (JavaScript shell). Status choices: on track, at risk, off track,
   on hold, complete, dropped. No source derives portfolio status from children.
 
 ### E06 Project, section, task, subtask, milestone, custom field
@@ -91,7 +101,8 @@ inference.
   Atlassian Community [migration thread](https://community.atlassian.com/t5/Jira-questions/How-Can-I-Migrate-Asana-Projects-to-JIRA-To-Manage-Them-In-Scrum/qaq-p/2905549)
   and [Atlas "Initiative" thread](https://community.atlassian.com/forums/Jira-questions/Why-a-quot-Project-quot-in-Atlas-is-called-quot-Initiative-quot/qaq-p/2979073).
   Type: partner copy, practitioner forum.
-- Notes: reported wording "To create an epic in Asana, you'll create a portfolio." Most blogs map Asana project to Jira
+- Notes: not re-readable: the partner URL returns 404, and the Asana help and Atlassian pages are JavaScript shells
+  (only the thread titles were confirmed). Reported wording "To create an epic in Asana, you'll create a portfolio." Most blogs map Asana project to Jira
   epic; one maps Atlas project to Jira initiative. Re-verify against `help.asana.com/s/article/asana-for-agile-and-scrum`.
 
 ## Linear
@@ -111,21 +122,25 @@ inference.
   [Method introduction](https://linear.app/method/introduction). Type: vendor docs, vendor method essay.
 - Notes: "Projects group issues together around a shared outcome." "Issues can only be associated with one project at a
   time." Method: "Every project should have a named owner who's responsible for writing the project brief and
-  delivery." Lead team sets ownership.
+  delivery." The lead-team text is on the Initiatives page ("Designate a lead team to assign ownership over an initiative to a
+  specific team") and on Project status ("A project uses the statuses available to its lead team"), not on Projects.
 
 ### E13 Project close is manual; progress is computed
 
 - Date: 2026-11-16. Status: supported; the absence of auto-complete is not proven. Confidence: supporting, low on absence.
 - Sources: [Project status](https://linear.app/docs/project-status); [Project graph](https://linear.app/docs/project-graph).
   Type: vendor docs.
-- Notes: any user sets status by hand. The graph gives computed progress and a forecast with "a buffer of about ±40%".
+- Notes: status changes by hand: "To change a project's status, open the project, select its status in the overview
+  or project details sidebar, and choose a new status". The page does not say who may. The graph offers "an optimistic
+  and pessimistic completion date that includes a buffer of about ±40%".
 
 ### E14 A project's target date is chosen at the precision of the team's certainty
 
 - Date: 2026-11-16. Status: supported. Confidence: supporting.
 - Source: [Projects](https://linear.app/docs/projects). Type: vendor doc.
-- Notes: dates at "year, half-year, quarter, month, or day precision"; pick "the timeframe that matches your level of
-  certainty about the end date". Certainty (X5) is a property of the date, and the date is a target, not a time box.
+- Notes: "Select start and target dates that match your level of certainty. Options are available to choose a year,
+  half-year, quarter, month or precise day." This covers start and target dates. Certainty (X5) is a property of the
+  date, and the date is a target, not a time box.
   Relevant to spec question Q7.
 
 ### E15 Project milestones are stages inside a project; progress is computed from issues
@@ -159,10 +174,12 @@ inference.
 - Date: 2026-11-16. Status: supported. Confidence: strong (Linear's own method).
 - Sources: [Scope projects](https://linear.app/method/scope-projects);
   [How we run projects at Linear](https://linear.app/now/how-we-run-projects-at-linear). Type: method essay.
-- Notes: "Design projects so that they can be completed in 1–3 weeks with a team of 1–3 people." "If there is no way to
-  scope down the project, then break it down into stages." Staff: "If multiple people work on it, and it takes over two
-  weeks, that's a project"; roadmap features "can split into several projects". So Linear's project is close to a small
-  shaped bet, while its Jira mapping calls it an epic. Supports H3.
+- Notes: "Design projects so that they can be completed in 1–3 weeks with a team of 1–3 people." (verified raw). The
+  earlier quote "break it down into stages" was not found on the page and is dropped. Staff: "If multiple people work
+  on it, and it takes over two weeks, that's a project" (verified). On roadmaps: "we break those themes further into
+  concrete features that we can build. Those features often become the projects themselves." So a feature becomes one
+  project, not several. Linear's project is close to a small shaped bet, while its Jira mapping calls it an epic. This
+  fits H3 only loosely: it shows Linear keeps a project small, not that a multi-release outcome stays one item.
 
 ### E19 Issues are tasks; user stories are rejected
 
@@ -188,16 +205,19 @@ inference.
 - Notes: label groups add one nesting level, one label per group per issue. No native issue-type field found. Releases
   (Business and Enterprise) "connect your CI/CD tool to Linear to know which issues ship in each release"; a continuous
   release is created complete from commit references. The Releases page carried a note aimed at AI agents about an MCP
-  server; it was ignored.
+  server. The re-read did not reproduce that note: the only MCP text on the page is sidebar navigation. Treat the
+  note as unconfirmed.
 
-### E22 Practitioners put kind inside a time box, and keep projects short
+### E22 Practitioners put kind inside a time box; some projects span several cycles
 
 - Date: 2026-11-16. Status: supported. Confidence: weak to supporting (a handbook, plus snippets).
 - Sources: Resend, [How we plan our cycles](https://resend.com/handbook/engineering/how-we-plan-our-cycles);
-  [Plum](https://build.plumhq.com/how-we-use-linear) (snippet); [cadence review](https://cadence.withremote.ai/blog/linear-review) (snippet).
+  [Plum](https://build.plumhq.com/how-we-use-linear) (404 on re-read, unverifiable);
+  [cadence review](https://cadence.withremote.ai/blog/linear-review).
   Type: company handbook, blogs.
 - Notes: Resend: "Our cycle is typically divided into two main fronts: "Foundation" and "New Projects."" Enabler versus
-  feature (X6) is used inside a cycle (X3), and projects do not map to it.
+  feature (X6) is used inside a cycle (X3), and projects do not map to it. The cadence review says "Projects are scoped pieces of work that span
+  multiple cycles (a feature, a migration)", which sits against Linear's own 1-3 week sizing in E18.
 
 ## Practitioner texts
 
