@@ -466,3 +466,236 @@ Both entries were read from PDFs the owner supplied, so the quotes are exact, no
   - Ownership (ch. 3, 18): "Every decision in a Sprint needs a name behind it". Flight Levels (Leopold) are
     strategic, coordination, and operational.
   - "Release Planning and the coordination board are not in the Scrum Guide, which leaves out the medium term."
+
+## Tracker release and time-box terms (second sourcing pass)
+
+Read raw with curl on 2026-11-16 from the vendors' server-rendered docs (Atlassian, Microsoft Learn, GitHub Docs,
+GitLab Docs), so the quotes are exact. They fill the release, time-box, and close cells of the tracker mapping.
+Microsoft's pages carried stray authoring text addressed to authors; it was ignored.
+
+### E45 Jira: a version is a field and a separate object; it may span several sprints
+
+- Date: 2026-11-16. Status: supported. Confidence: supporting.
+- Source: Atlassian, [Configure versions in a scrum space](https://support.atlassian.com/jira-software-cloud/docs/configure-versions-in-a-scrum-project/).
+  Type: vendor help.
+- Notes: "A version is a set of features and fixes released together as a single update to your app." Dragging work items
+  into a version "helps you plan your upcoming versions, which may span multiple sprints." A version is something work
+  items are assigned to, not a parent.
+
+### E46 Jira: releases are points in time linked by the Fix versions field
+
+- Date: 2026-11-16. Status: supported. Confidence: supporting.
+- Source: Atlassian, [Enable releases and versions](https://support.atlassian.com/jira-software-cloud/docs/enable-releases-and-versions/).
+  Type: vendor help.
+- Notes: "Releases represent points in time for your space." Enabling them adds "a new Fix versions field" to work
+  types. "You can select more than one version", so one work item can sit in several. A version has a Driver.
+
+### E47 Jira: releasing a version is a manual action
+
+- Date: 2026-11-16. Status: supported. Confidence: supporting.
+- Source: Atlassian, [Release a version](https://support.atlassian.com/jira-software-cloud/docs/release-a-version-in-your-classic-project/).
+  Type: vendor help.
+- Notes: "select the version's current status (for example, Unreleased) and then select Release. Choose what to do with
+  any unresolved work items, and enter a release date." The page lists a pre-release checklist ("code is checked in,
+  reviewed, and merged; builds are passing"). No auto-release was found.
+
+### E48 Jira: the release hub reports a version's status and warns; it does not close
+
+- Date: 2026-11-16. Status: supported. Confidence: supporting.
+- Sources: Atlassian, [Check the release status of a version](https://support.atlassian.com/jira-software-cloud/docs/check-the-release-status-of-a-version/);
+  [Check the progress of a version](https://support.atlassian.com/jira-software-cloud/docs/check-the-progress-of-a-version/).
+  Type: vendor help.
+- Notes: "The release hub is useful for seeing the status of a version at a point in time." It warns of items "marked as
+  done but have open pull requests or unreviewed code". The release burndown shows "the estimated number of sprints
+  needed to complete the remaining work".
+
+### E49 Jira: a sprint is a time box and a field, on scrum boards only
+
+- Date: 2026-11-16. Status: supported. Confidence: supporting.
+- Source: Atlassian, [What is a sprint?](https://support.atlassian.com/jira-software-cloud/docs/what-is-a-sprint/).
+  Type: vendor help.
+- Notes: "A sprint - also known as an iteration - is a short period in which the development team implements and
+  delivers a discrete and potentially shippable application increment". "Only Scrum teams can use sprints." "you ...
+  assign issues to sprints" and search by the Sprint field, so it is a field, not a parent.
+
+### E50 Jira: an epic spans many sprints and closes by hand without touching its children
+
+- Date: 2026-11-16. Status: supported. Confidence: supporting.
+- Sources: Atlassian, [What is an epic?](https://support.atlassian.com/jira-software-cloud/docs/what-is-an-epic/);
+  [Manage epics in a scrum space](https://support.atlassian.com/jira-software-cloud/docs/manage-epics-in-a-scrum-project/);
+  [Complete a sprint](https://support.atlassian.com/jira-software-cloud/docs/complete-a-sprint/). Type: vendor help.
+- Notes: "Epics are almost always delivered over a set of sprints." Children link by the Parent field. To close:
+  "change the epic's status to 'Done'. This will set the epic's Epic Status field to 'Done', but will not affect the
+  epic's workflow or its Status field, and none of the epic's work items will be affected." Completing a sprint is also
+  manual: an unfinished parent "will be moved to a future sprint or to the Backlog".
+
+### E51 Jira: a cross-space release exists only in Plans and sits outside the work-item tree
+
+- Date: 2026-11-16. Status: supported. Confidence: supporting.
+- Source: Atlassian, [How do single-space and cross-space releases differ?](https://support.atlassian.com/jira-software-cloud/docs/how-do-single-project-and-cross-project-releases-differ/).
+  Type: vendor help.
+- Notes: "A cross-space release lets you align and track several single-space releases as one release across different
+  work streams." "Cross-space releases are only used for planning purposes inside your plan." Plans need Premium or
+  Enterprise. This is a release above a release, held outside the tree.
+
+### E52 Jira: not sourced
+
+- Date: 2026-11-16. Status: gap. Confidence: n/a.
+- Notes: whether a version auto-releases when its items are Done; the Advanced Roadmaps release pages; the version and
+  epic burndown report pages; team-managed spaces, which may differ from company-managed.
+
+### E53 Azure DevOps: iteration paths are sprints and nest "to support releases, subreleases, and sprints"
+
+- Date: 2026-11-16. Status: supported. Confidence: supporting.
+- Source: Microsoft Learn, [Define iteration paths (sprints) and configure team iterations](https://learn.microsoft.com/en-us/azure/devops/organizations/settings/set-iteration-paths-sprints).
+  Type: vendor help.
+- Notes: "Iteration Paths, also known as sprints, assign work items to specific time-boxed intervals." "You can create
+  a flat or hierarchical structure of iteration paths to support releases, subreleases, and sprints." Release and time
+  box share one field here, so Azure DevOps binds X2 to X3 by design.
+
+### E54 Azure DevOps: area paths hold ownership, iteration paths hold time; both are fields
+
+- Date: 2026-11-16. Status: supported. Confidence: supporting.
+- Source: Microsoft Learn, [Area and iteration paths](https://learn.microsoft.com/en-us/azure/devops/organizations/settings/about-areas-iterations).
+  Type: vendor help.
+- Notes: "Area paths group work items by team, product, or feature area. Iteration paths group work into sprints,
+  milestones, or other time-related periods. Both fields support hierarchical paths." Dates "aren't set by default".
+
+### E55 Azure DevOps: the tree is Epic, Feature, Requirement, Task, with no release type
+
+- Date: 2026-11-16. Status: supported. Confidence: supporting.
+- Source: Microsoft Learn, [About work items and work item types](https://learn.microsoft.com/en-us/azure/devops/boards/work-items/about-work-items).
+  Type: vendor help.
+- Notes: "Epics group Features, Features group Requirements (User Stories, Product Backlog Items, Issues, or
+  Requirements), and Requirements group Tasks. You connect items across the hierarchy with parent-child links." No
+  release work item type appears in the tree. Absence from the page is not proof of absence from the product.
+
+### E56 Azure DevOps: a pipeline "release" is a deployment construct, not a planning object
+
+- Date: 2026-11-16. Status: supported. Confidence: supporting.
+- Source: Microsoft Learn, [Classic release pipelines](https://learn.microsoft.com/en-us/azure/devops/pipelines/release/).
+  Type: vendor help.
+- Notes: "A release is a construct that holds a versioned set of artifacts specified in a CI/CD pipeline." "A release
+  can be deployed multiple times to the same stage." Deployments are gated by approvals. No link to the epic tree on
+  this page.
+
+### E57 Azure DevOps: Delivery Plans show epics and features spanning iterations
+
+- Date: 2026-11-16. Status: supported. Confidence: supporting.
+- Source: Microsoft Learn, [Use team delivery plans](https://learn.microsoft.com/en-us/azure/devops/boards/plans/review-team-plans).
+  Type: vendor help.
+- Notes: "View work items spanning several iterations"; "View rollup progress of Features and Epics". Dates sit in
+  start and target date fields. The Target Date field's own definition page returned a 404.
+
+### E58 Azure DevOps: a parent can auto-close when all children complete (opt-in, Services only)
+
+- Date: 2026-11-16. Status: supported. Confidence: supporting.
+- Source: Microsoft Learn, [Set work item automation rules](https://learn.microsoft.com/en-us/azure/devops/boards/backlogs/automate-work-item-state-transitions).
+  Type: vendor help.
+- Notes: "When all child tasks reach a completed state (such as Closed or Done), the parent work item closes
+  automatically." "This feature is only available in Azure DevOps Services." Rules are set "at the team backlog
+  level". The page does not say whether they reach Feature and Epic levels.
+
+### E59 GitHub: a Release is a tag-based package, separate from milestones and issues
+
+- Date: 2026-11-16. Status: supported. Confidence: supporting.
+- Source: GitHub Docs, [About releases](https://docs.github.com/en/repositories/releasing-projects-on-github/about-releases).
+  Type: vendor docs.
+- Notes: "Releases are based on Git tags, which mark a specific point in your repository's history." The release pages
+  never mention milestones or issues.
+
+### E60 GitHub: a milestone groups issues in one repository; progress is computed
+
+- Date: 2026-11-16. Status: supported. Confidence: supporting.
+- Sources: GitHub Docs, [About milestones](https://docs.github.com/en/issues/using-labels-and-milestones-to-track-work/about-milestones);
+  [Best practices for Projects](https://docs.github.com/en/issues/planning-and-tracking-with-projects/learning-about-projects/best-practices-for-projects).
+  Type: vendor docs.
+- Notes: "You can use milestones to track progress on groups of issues or pull requests in a repository." The page
+  shows the due date and "completion percentage". It names no start date and never calls a milestone a release or a
+  sprint. "To track how smaller issues fit into the larger goal, use milestones or labels."
+
+### E61 GitHub: a milestone's state is set by hand or API; the percentage is computed
+
+- Date: 2026-11-16. Status: partial. Confidence: supporting.
+- Sources: GitHub Docs, [REST: Milestones](https://docs.github.com/en/rest/issues/milestones);
+  [Creating and editing milestones](https://docs.github.com/en/issues/using-labels-and-milestones-to-track-work/creating-and-editing-milestones-for-issues-and-pull-requests).
+  Type: vendor API docs, vendor docs.
+- Notes: "The state of the milestone. Either open or closed." The UI page lists create, edit, and delete only. Whether
+  it auto-closes at 100% is not stated.
+
+### E62 GitHub: an iteration is a Projects custom field, separate from the milestone
+
+- Date: 2026-11-16. Status: supported. Confidence: supporting.
+- Source: GitHub Docs, [About iteration fields](https://docs.github.com/en/issues/planning-and-tracking-with-projects/understanding-fields/about-iteration-fields).
+  Type: vendor docs.
+- Notes: "You can create an iteration field to associate items with specific repeating blocks of time." Rollover is
+  manual: "you can bulk-move all items from one iteration to another." Iterations are not closed. Milestone is
+  built-in issue metadata; iteration is a project field.
+
+### E63 GitHub: sub-issues form the tree; each carries its own milestone and project fields
+
+- Date: 2026-11-16. Status: supported; the span claim is inferred. Confidence: supporting.
+- Sources: GitHub Docs, [Adding sub-issues](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/adding-sub-issues);
+  [Parent issue and sub-issue progress fields](https://docs.github.com/en/issues/planning-and-tracking-with-projects/understanding-fields/about-parent-issue-and-sub-issue-progress-fields).
+  Type: vendor docs.
+- Notes: "You can add up to 100 sub-issues per parent issue and create up to eight levels of nested sub-issues." A
+  sub-issue can have its own "projects, and milestones". The "Sub-issue progress" field counts completed sub-issues.
+  No source says closing the children closes the parent, so treat close as manual.
+
+### E64 GitLab: a Release is a tag snapshot tied to one or more milestones
+
+- Date: 2026-11-16. Status: supported. Confidence: supporting.
+- Source: GitLab Docs, [Releases](https://docs.gitlab.com/user/project/releases/). Type: vendor docs.
+- Notes: "When a release is created, GitLab automatically tags your code, archives a snapshot, and generates
+  audit-ready evidence." "You can associate a release with one or more project milestones."
+
+### E65 GitLab: a milestone can serve as a release or a time box, by convention
+
+- Date: 2026-11-16. Status: supported. Confidence: supporting.
+- Source: GitLab Docs, [Milestones](https://docs.gitlab.com/user/project/milestones/). Type: vendor docs.
+- Notes: "Milestones can be used to track releases." "Set the milestone due date to represent the release date".
+  "Support time-based planning with optional start and due dates." The docs also say to use "Milestones for Program
+  Increments, which span 8-12 weeks. Iterations for Sprints, which span 2 weeks."
+
+### E66 GitLab: a milestone has one per item, a computed percentage, and closes by date or by hand
+
+- Date: 2026-11-16. Status: supported. Confidence: supporting.
+- Source: GitLab Docs, [Milestones](https://docs.gitlab.com/user/project/milestones/). Type: vendor docs.
+- Notes: "Every issue, epic, or merge request can be assigned one milestone." "A milestone closes after its due date.
+  You can also close a milestone manually. When a milestone is closed, its open issues remain open." Percentage is
+  closed work items over total.
+
+### E67 GitLab: an iteration is a group-level time box in cadences, for issues only
+
+- Date: 2026-11-16. Status: supported. Confidence: supporting.
+- Source: GitLab Docs, [Iterations](https://docs.gitlab.com/user/group/iterations/) (Premium). Type: vendor docs.
+- Notes: "An iteration in GitLab refers to a time-boxed workflow that groups issues to be worked on during a specific
+  period of time, usually lasting 1-3 weeks." Iterations need start and end dates and cannot overlap in a cadence.
+  "When iteration roll-over is turned on, at the end of the current iteration, all open issues are moved to the next
+  iteration." The work-items page lists "Iteration (for issues)".
+
+### E68 GitLab: an epic is the parent, spans milestones and iterations through its children
+
+- Date: 2026-11-16. Status: supported. Confidence: supporting.
+- Sources: GitLab Docs, [Epics](https://docs.gitlab.com/user/group/epics/); [Work items](https://docs.gitlab.com/user/work_items/).
+  Type: vendor docs.
+- Notes: "An epic is the parent of one or more issues." Child epics are Ultimate only. "An epic can be assigned one
+  group milestone. The epic's own milestone does not affect its dates." "An epic can inherit its start and due dates
+  from its child items". Epics "Coordinate work across multiple iterations" and "Manage large initiatives across
+  multiple milestones and issues".
+
+### E69 GitLab: an epic closes by hand; progress is computed from its children
+
+- Date: 2026-11-16. Status: supported. Confidence: supporting.
+- Sources: GitLab Docs, [Manage epics](https://docs.gitlab.com/user/group/epics/manage_epics/);
+  [Child items](https://docs.gitlab.com/user/work_items/child_items/). Type: vendor docs.
+- Notes: "Close an epic": select "Close epic" or use "/close". No sentence says it closes when its children close.
+  "the epic progress percentage is displayed." Epic health status is set by hand.
+
+### E70 GitHub and GitLab: not sourced
+
+- Date: 2026-11-16. Status: gap. Confidence: n/a.
+- Notes: GitHub: a UI page for closing a milestone; auto-close at 100%; whether closing all sub-issues closes the
+  parent; an explicit sentence that a parent may span milestones; a vendor link between a Release and a milestone.
+  GitLab: whether closing all children closes an epic; whether an iteration closes by date or by action (inferred
+  from "closed iteration" reports); the Roadmap and cadence API pages.
