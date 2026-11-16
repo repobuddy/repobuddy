@@ -124,7 +124,7 @@ in the paper.
 
 ### Second pass, 2026-11-16 (evidence in `evidence.md`)
 
-Entries E01-E43. Quotes come through a summarizing model; re-read before the paper cites them.
+Entries E01-E44. Quotes come through a summarizing model; re-read before the paper cites them.
 
 - **The practitioner texts disagree on the word "feature", which supports H1.** It is a story big enough to release
   (Cohn, E24) and the same as a story (Fowler, E28). Pichler roadmaps features and capabilities, not epics (E26).
@@ -152,6 +152,10 @@ Entries E01-E43. Quotes come through a summarizing model; re-read before the pap
 - **Scrum's commitments are goals, and its sources keep goal and plan apart (E42, E43).** The goal stays fixed while
   scope moves beneath it; done has an item level (Output Done) and an outcome level (Outcome Done); the Review is not
   a gate to release. This is practitioner opinion with second-hand Scrum Guide quotes, so it supports P1 loosely.
+- **A practitioner book keeps goal, plan, and release on separate rhythms (E44).** Value is an outcome ladder with key
+  results as outcomes, not deliverables; delivery runs at machine pace while the outcome measure arrives weeks after
+  the releases; the spec is the gate from discovery to delivery; and the bottom level is sized by what one person can
+  review in one sitting. This supports P1 loosely and adds a sizing rule for an agent-run repo.
 - **Computed close is rare.** Asana goals set to automatic, Linear milestones and opt-in parent auto-close, and
   Linear Releases close by rule. Everything else closes by hand, which extends the tracker table's finding.
 
