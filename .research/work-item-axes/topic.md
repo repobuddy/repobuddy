@@ -176,6 +176,9 @@ Entries E01-E44. Quotes come through a summarizing model; re-read before the pap
 
 ## Open questions
 
+The working model is in [model.md](model.md) and its mapping onto each system in [mapping.md](mapping.md); the
+owner accepted both as the working basis on 2026-11-16. The questions below are the ones still open.
+
 - Is X2 (release) one axis with X3 (time box), or two? Leaning two, bound by policy in Shape Up and release trains
   (medium-high confidence, E35, E36, E39).
 - Does X5 (certainty) have levels, or is it a state of an item on any level? Leaning state or gate (low-medium).
