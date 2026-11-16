@@ -440,3 +440,29 @@ Both entries were read from PDFs the owner supplied, so the quotes are exact, no
   Definition of Done") and "Outcome oriented Scrum Teams work on problems that, when solved, deliver value". Scrum's
   commitments are goals, not item types, which agrees with the topic's finding that the Scrum Guide has no epic, story,
   feature, or initiative. It mentions Evidence-Based Management, whose guide was not read.
+
+### E44 Ballarin, Scrum with AI: goal ladder, delivery against learning rhythm, spec as the discovery gate
+
+- Date: 2026-11-16. Status: supports X1 as outcome-bound, X2/X3 separation, and X5 as a gate. Confidence: medium to
+  weak (a practitioner book by a Scrum trainer whose firm sells the training; no data of its own on levels; its cited
+  figures are second-hand).
+- Source: Alex Ballarin, [Scrum with AI](https://itnove.com/book/scrum-with-ai), 2026 (PDF supplied by the owner;
+  read whole, so the quotes are exact). Type: book.
+- Notes:
+  - Goal ladder (ch. 15): Strategic Goal, Intermediate Goals, Immediate Tactical Goals; "the Product Goal is an
+    Intermediate Goal for the product; the Sprint Goal, the Immediate Tactical Goal". A key result "is an outcome for
+    customers or a benefit for the company, not a deliverable." The logic model separates "What you do" (resources,
+    activities, outputs) from "What changes" (outcomes, impact).
+  - Two rhythms (ch. 12): "One is the rhythm of delivery ... The other is the rhythm of learning and deciding".
+    "The Sprint lasts as long as the answer takes to come back, not as long as the code takes to write." An Increment
+    "can be delivered as soon as it meets the Definition of Done, and a Sprint can hold several". "Each bet in the
+    Sprint carries both, plus the date when the outcome measure will arrive", with a bet log.
+  - Outcome against feature (ch. 11): "'New members book a class in their first week' is an outcome. 'Sports watch
+    integration in March' is a feature, and it only makes sense if it serves an outcome." The story map puts the journey
+    on top and cuts the first release across it (attributed to Patton, 2014, not read).
+  - Spec gate (ch. 9, 5): "An item moves from discovery to delivery when it has its spec"; "the specification (the
+    spec) is the refined backlog item". Discovery yields "a hypothesis with its measure", not a feature.
+  - Bottom-level size (ch. 5): "each spec produces a change that can be reviewed in one sitting", sliced vertically.
+  - Ownership (ch. 3, 18): "Every decision in a Sprint needs a name behind it". Flight Levels (Leopold) are
+    strategic, coordination, and operational.
+  - "Release Planning and the coordination board are not in the Scrum Guide, which leaves out the medium term."
