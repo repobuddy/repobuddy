@@ -1,6 +1,6 @@
 {
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
-	"extends": ["github>unional/renovate-preset"],
+	"extends": ["github>repobuddy/renovate-preset"],
 	"dependencyDashboard": true,
 	"ignoreUnstable": true,
 	"minimumReleaseAge": "1 day",
@@ -33,11 +33,6 @@
 		{
 			"description": "Runtime dependencies of published packages stay manual: the bump ships to consumers and needs a patch changeset.",
 			"matchDepTypes": ["dependencies", "peerDependencies"],
-			"automerge": false
-		},
-		{
-			"description": "Majors stay manual regardless of dep type.",
-			"matchUpdateTypes": ["major"],
 			"automerge": false
 		}
 	]
