@@ -255,12 +255,14 @@ The bypass is for those cases, not for routine merges. An agent merges with `gh 
 A changesets Version Packages PR opened with the default `GITHUB_TOKEN` gets its `pull_request` runs
 created but parked as `action_required`, so its required checks never report and the PR cannot merge
 without an admin override. Keep the release secretless: the shared `pnpm-release-changeset-oidc.yml`
-release workflows approve those parked runs after opening the PR, which needs the calling job to grant
-`actions: write`:
+in `repobuddy/.github` approves those parked runs after opening the PR, which needs the calling job to
+grant `actions: write`. Every owner calls this one copy, pinned at the released tag `v2`. Never pin
+`@main`, and never the retired `v1`; move a caller on `v1`, or on `cyberuni/.github` or
+`stable-packages/.github`, to `repobuddy/.github@v2`:
 
 ```yaml
 release:
-  uses: <org>/.github/.github/workflows/pnpm-release-changeset-oidc.yml@<ref>
+  uses: repobuddy/.github/.github/workflows/pnpm-release-changeset-oidc.yml@v2
   permissions:
     id-token: write
     contents: write
@@ -284,7 +286,7 @@ them. Tell the user, and offer one of:
      `pr-number` and `published` outputs;
    - add `actions: write` to the job's `permissions:`;
    - copy the step `Approve the version packages PR's pending runs` from
-     [`pnpm-release-changeset-oidc.yml`](https://github.com/repobuddy/.github/blob/main/.github/workflows/pnpm-release-changeset-oidc.yml)
+     [`pnpm-release-changeset-oidc.yml`](https://github.com/repobuddy/.github/blob/v2/.github/workflows/pnpm-release-changeset-oidc.yml)
      unchanged, right after the `changesets/action` step. It assumes the default version branch,
      `changeset-release/<branch>`; if the job sets the action's `branch` input, change `VERSION_BRANCH`
      to match.
