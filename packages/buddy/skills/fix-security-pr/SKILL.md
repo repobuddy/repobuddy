@@ -1,8 +1,6 @@
 ---
 name: fix-security-pr
-description: "Use this skill when a PR fails security or vulnerability checks (audit, CVE, Dependabot, Snyk, or advisory blocks)."
-metadata:
-  internal: true
+description: Fix a PR that fails an audit, CVE, Dependabot, or Snyk check so CI passes. Say "fix the security PR" or "unblock the Dependabot PR".
 ---
 
 # Fix Security PR
@@ -194,3 +192,12 @@ If CI passes, the PR is unblocked. If another security failure appears, return t
 **Private registry:** If `npm audit` / `pnpm audit` fails to reach the registry, check for `.npmrc` or `.pnpmrc` with a private registry URL. The fix process is the same; just ensure the registry is reachable in CI.
 
 **Dependabot already auto-merged:** Check if the PR is still open before starting. If it merged and CI still fails on `main`, the vulnerability is in the base branch — treat it as a direct fix to `main`, not a PR fix.
+
+## Done when
+
+- **C1.** The fix is a version bump of the vulnerable package, or an override or resolution at the repository root for a
+  transitive one; no other dependency changed.
+- **C2.** The local audit at the level CI uses reports no remaining advisory, or the reply names each advisory with no
+  safe version.
+- **C3.** No audit ignore or package removal was made without the reply telling the user first.
+- **C4.** The reply names the advisory, the safe version, and the state of the new CI run.

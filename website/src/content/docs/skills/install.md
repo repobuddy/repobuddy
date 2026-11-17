@@ -145,5 +145,4 @@ The commands are listed on [Skill scripts](/repobuddy/cli/skill-scripts/).
 ## Related skill collections
 
 [`repobuddy/buddy-changesets`](https://github.com/repobuddy/buddy-changesets) (changeset authoring and release setup)
-and [`repobuddy/agent-security`](https://github.com/repobuddy/agent-security) (security PR remediation) install the
-same way.
+installs the same way.

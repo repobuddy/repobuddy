@@ -9,9 +9,8 @@
 
 - An importable API. The `exports` field names only `./package.json`.
 - Runtime dependencies.
-- Changeset authoring and security-PR remediation skills. They live in
-  [repobuddy/buddy-changesets](https://github.com/repobuddy/buddy-changesets) and
-  [repobuddy/agent-security](https://github.com/repobuddy/agent-security).
+- Changeset authoring skills. They live in
+  [repobuddy/buddy-changesets](https://github.com/repobuddy/buddy-changesets).
 
 ## Rejected directions
 
