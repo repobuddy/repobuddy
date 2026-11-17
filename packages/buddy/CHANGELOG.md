@@ -1,5 +1,18 @@
 # repobuddy
 
+## 4.8.0
+
+### Minor Changes
+
+- 1ed7648: Add the `fix-security-pr` skill, absorbed from `repobuddy/agent-security`, so one install carries it.
+- de2adb3: Bare `checkpoint` in a session that resumed or wrote exactly one checkpoint, and stayed on its goal, now updates that checkpoint with no prompt. The README documents keeping it current with `/loop` or a `Stop` hook.
+
+### Patch Changes
+
+- 439aaa3: The `commit` skill now amends the latest commit when it is on no remote and the fix belongs to its unit, instead of adding a fix commit. It still never rewrites a pushed commit.
+- d115cfa: The `commit` skill reports a change as "uncommitted: blocked by sandbox" when the harness blocks `git add` or `git commit`, and never changes the sandbox, git config, or hooks to get around it.
+- aa1f7ee: The `commit` skill stops and reports when a merge, cherry-pick, revert, or rebase is in progress, or a path is unmerged, instead of committing.
+
 ## 4.7.0
 
 ### Minor Changes
