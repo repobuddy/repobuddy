@@ -84,6 +84,10 @@ outcome:
     prompt: Commit the work in the working tree.
     setup: setup/mid-merge.sh
     criteria: [C8, C2]
+  - id: sandbox-blocked
+    prompt: Commit the parser fix.
+    setup: setup/sandbox-blocked.sh
+    criteria: [C9, C2]
 rubrics:
   C1:
     - script: 's=$(cat .git/case-start) && test "$(git rev-list --count $s..HEAD)" -ge 1'
@@ -108,3 +112,6 @@ rubrics:
     - contains: notes.txt
   C8:
     - script: 'test "$(git rev-parse HEAD)" = "$(cat .git/case-start)" && test -e .git/MERGE_HEAD'
+  C9:
+    - script: 'test "$(git rev-parse HEAD)" = "$(cat .git/case-start)"'
+    - regex: 'uncommitted: blocked by sandbox'

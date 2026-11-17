@@ -60,6 +60,7 @@ Not for pushing, opening a pull request, or amending, squashing, or undoing a co
 - Verifies the staged snapshot, not the working tree, when unstaged changes could hide a failure.
 - Writes the message with `git commit -F`, keeping trailers such as `Co-Authored-By`.
 - Never `--no-verify` or `--amend`.
+- When the harness's sandbox blocks `git add` or `git commit`, stops and reports each change as "uncommitted: blocked by sandbox", and never changes the sandbox, git config, or hooks.
 - Reports each commit's hash, subject, and why.
 
 ## Customize
