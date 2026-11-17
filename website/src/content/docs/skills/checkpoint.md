@@ -38,8 +38,17 @@ CLI install in Copilot CLI and the Cursor editor:
 skill hands back use the same form.
 
 Natural phrasing routes too: "let's stop here" creates a checkpoint, "pick up the auth refactor" resumes, "what checkpoints do I have" lists them. A bare `/checkpoint`
-runs `resume` in a new or just-cleared session. In a session with work, it runs `create` in a git repo that has no
-checkpoint yet, and shows help in a repo that has some or outside a git repo.
+runs `resume` in a new or just-cleared session. In a session that resumed or wrote exactly one checkpoint and stayed on
+its goal, it updates that checkpoint with no prompt. In other sessions with work, it runs `create` in a git repo that has
+no checkpoint yet, and shows help in a repo that has some or outside a git repo.
+
+### Keep a checkpoint current
+
+The skill cannot wake itself, but Claude Code can run the bare invocation on a schedule. In a session on one
+checkpoint, `/loop 20m /repobuddy:checkpoint` updates it every 20 minutes while the session is idle. A `Stop` hook can
+ask for an update after every turn, but it costs a model turn per reply. The hook recipe is in the
+[skill README](https://github.com/repobuddy/repobuddy/blob/main/packages/buddy/skills/checkpoint/README.md#keep-a-checkpoint-current-automatically).
+A drifted session asks instead of updating, which stalls an unattended run.
 
 ### create
 
