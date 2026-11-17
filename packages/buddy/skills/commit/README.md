@@ -45,7 +45,8 @@ Not for pushing, opening a pull request, or amending, squashing, or undoing a co
 
 ## What it does
 
-- Checks the index first and never commits files someone else staged along with this unit.
+- Stops first when a merge, cherry-pick, revert, or rebase is in progress or a path is unmerged, and commits nothing.
+- Checks the index and never commits files someone else staged along with this unit.
 - Plans every commit from `git status` and `git diff --stat` before staging the first, reading full diffs only where
   the split needs them.
 - Splits formatting from logic, a refactor from the change after it, and a dependency bump from a behavior change.

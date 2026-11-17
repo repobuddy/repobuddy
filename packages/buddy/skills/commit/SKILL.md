@@ -68,16 +68,21 @@ Before staging a unit, its change is finished:
 
 ## Workflow
 
-1. **Check the index:** `git --no-pager diff --cached --stat`. When a file staged that is not this
+1. **Check the repository state:** an operation is in progress when `git rev-parse --git-path MERGE_HEAD`,
+   `CHERRY_PICK_HEAD`, or `REVERT_HEAD` names a file that exists, when `git rev-parse --git-path rebase-merge`
+   or `rebase-apply` names a folder that exists, or when `git diff --name-only --diff-filter=U` lists a path.
+   Then commit nothing, state which one it is, and stop: committing would finish an operation the user
+   has not concluded, or commit conflict markers. A request for only a message is not a commit, so it goes on.
+2. **Check the index:** `git --no-pager diff --cached --stat`. When a file staged that is not this
    run's work also has unstaged changes, someone chose part of it: commit nothing, and report it.
-2. **Plan:** `git status --porcelain` and `git --no-pager diff --stat`. Assign each file to a unit by
+3. **Plan:** `git status --porcelain` and `git --no-pager diff --stat`. Assign each file to a unit by
    the split axes. Read the full diff only of a file whose unit the path and the stat do not settle, or
    that holds two units. Never diff the whole tree when the stat lists more than a few files. State the
    plan, each commit and its files, before the first `git add`.
-3. **Find the hooks**, once: `git rev-parse --git-path hooks` prints the folder git runs them from.
+4. **Find the hooks**, once: `git rev-parse --git-path hooks` prints the folder git runs them from.
    When it holds a `pre-commit` or `commit-msg` hook, say what it runs, and run those checks with the
    unit's checks. With neither, skip this step.
-4. For each unit in the plan:
+5. For each unit in the plan:
    1. **Check done:** the [Definition of done](#definition-of-done).
    2. **Stage it:** `git add <files>`, or a patch for part of a file (see `references/splitting.md`).
    3. **Read what is staged:** `git --no-pager diff --cached`. A secret or token stops the run: commit
@@ -88,7 +93,7 @@ Before staging a unit, its change is finished:
       files, and say why.
    5. **Commit:** write the message by `commit.message` to a file outside the repository, with the body
       saying why and the trailers the harness or repository supplies, and run `git commit -F <file>`.
-5. **Report** what C7 lists.
+6. **Report** what C7 lists.
 
 ## Done when
 
@@ -108,3 +113,5 @@ that fails.
   is unchanged; `git stash list` holds no entry the run pushed.
 - **C7.** The reply lists each commit's short hash, subject, and what changed and why in one line, the
   checks run or reused, and each file left uncommitted with the reason.
+- **C8.** In a merge, cherry-pick, revert, or rebase in progress, or with an unmerged path, no commit was made, and the
+  reply names the state.
