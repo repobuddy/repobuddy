@@ -88,6 +88,30 @@ outcome:
     prompt: Commit the parser fix.
     setup: setup/sandbox-blocked.sh
     criteria: [C9, C2]
+  # the latest commit has a typo and is on no remote: it is amended
+  - id: amend-unpushed
+    prompt: My last commit has a typo in README.md ("recieve" should be "receive").
+      Fix it.
+    setup: setup/amend-unpushed.sh
+    criteria: [C6]
+    checks:
+      C6:
+        - script: >-
+            s=$(cat .git/case-start) && test "$(git rev-list --count $s..HEAD)" = 1 &&
+            git show HEAD:README.md | grep -q 'receive' && ! git show HEAD:README.md | grep -q 'recieve' &&
+            git reflog --format=%gs | grep -q '^commit (amend)' && test -z "$(git stash list)"
+  # the same commit is on a remote: it is not rewritten
+  - id: amend-pushed
+    prompt: My last commit has a typo in README.md ("recieve" should be "receive").
+      Fix it.
+    setup: setup/amend-pushed.sh
+    criteria: [C6]
+    checks:
+      C6:
+        - script: >-
+            git merge-base --is-ancestor "$(cat .git/case-unit)" HEAD &&
+            test "$(git rev-parse refs/remotes/origin/main)" = "$(cat .git/case-unit)" &&
+            ! git reflog --format=%gs | grep -E '^(commit \(amend\)|rebase|reset: moving to [^H])'
 rubrics:
   C1:
     - script: 's=$(cat .git/case-start) && test "$(git rev-list --count $s..HEAD)" -ge 1'

@@ -6,8 +6,9 @@ description: "Commit uncommitted changes, split them into commits, or write a co
 # Commit
 
 Also run it when a unit of work is finished and the repository's rules say to commit it. Pushing, opening a
-pull request, and amending, rewording, squashing, or undoing a commit already made belong to other skills, even
-when the working tree has uncommitted changes.
+pull request, and rewording, squashing, or undoing a commit already made belong to other skills, even
+when the working tree has uncommitted changes. So does amending, except the latest commit when it is unpushed
+and the fix belongs to its unit (see Rules).
 
 Repository rules take precedence over this skill: the **Commit Discipline** section of `AGENTS.md` or
 `CLAUDE.md`, and a `SKILL.local.md` beside this skill.
@@ -51,7 +52,11 @@ write the message for it by `commit.message`, show it, and commit only when aske
 - **Sandbox blocks:** when the harness blocks `git add` or `git commit` (a read-only `.git`, or a refusal
   that names the sandbox or a permission), stop and report each affected change as "uncommitted: blocked by
   sandbox". Never change the sandbox, git config, or hooks to get around it.
-- **Never rewrite history:** never push, force-push, rebase, or amend.
+- **Never rewrite pushed history:** never push, force-push, or rebase. Amend the latest commit, or fold a fix
+  into it, only when it is on no remote (`git branch -r --contains HEAD` prints nothing, or no upstream is set)
+  and the fix belongs to its unit: stage the fix by name, then `git commit --amend -F <file>` with the message
+  rewritten by `commit.message`. A fix to a pushed commit, or to an older one, is a new commit; rewriting it
+  needs the user's say-so.
 - **Decide, do not ask:** settle each choice, including how many commits, from these rules, the
   repository's rules, and the references. Ask only when they cannot decide, such as one changed line
   two units both need: do not rewrite it to fit one of them. With no one to answer, commit the units it
@@ -112,8 +117,8 @@ that fails.
   `.changeset/<name>.md` file.
 - **C5.** No commit was made while a check of its unit failed, and no commit adds a secret or token.
 - **C6.** `git reflog` since the run started shows a `commit:` entry for each new commit and no
-  `commit (amend)`, `rebase`, or `reset` that moves HEAD to another commit; `git rev-parse @{upstream}`
-  is unchanged; `git stash list` holds no entry the run pushed.
+  `rebase` or `reset` that moves HEAD to another commit, and a `commit (amend)` only of an unpushed latest
+  commit whose unit the fix belongs to; `git rev-parse @{upstream}` is unchanged; `git stash list` holds no entry the run pushed.
 - **C7.** The reply lists each commit's short hash, subject, and what changed and why in one line, the
   checks run or reused, and each file left uncommitted with the reason.
 - **C8.** In a merge, cherry-pick, revert, or rebase in progress, or with an unmerged path, no commit was made, and the
