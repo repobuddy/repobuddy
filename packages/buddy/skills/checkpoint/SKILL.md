@@ -36,12 +36,17 @@ Take the first rule that matches, and load only the reference for the subcommand
    are not work. A single earlier user turn of any kind, or any tool work, makes the session non-fresh.
    `resume` already handles a repo with no checkpoint: it says so and stops, and the user can ask for
    help from there.
-4. **`create` when the repo has no checkpoint.** A bare `/checkpoint` with no request around it, in a
+4. **`create` to update the session's one checkpoint.** A bare `/checkpoint` with no request around it, in
+   a session with work, where the session resumed exactly one checkpoint, or wrote exactly one earlier, and
+   every request since belongs to that checkpoint's `## Goal`. Route to `create` with that checkpoint's
+   slug as the focus, and do not ask. If the session also did work outside that goal, or resumed or
+   wrote more than one checkpoint, this rule does not match: go on to the next rule.
+5. **`create` when the repo has no checkpoint.** A bare `/checkpoint` with no request around it, in a
    session with work, inside a git repo, checks for checkpoints with
    `ls "$(git rev-parse --show-toplevel)/.agents/repobuddy/checkpoints/"*.md`.
    If that lists nothing, there is nothing to resume: route to `create` as if the user had typed
    `/checkpoint create`.
-5. **`help`.** A bare `/checkpoint` in a session with work in a repo that has checkpoints, a bare one
+6. **`help`.** A bare `/checkpoint` in a session with work in a repo that has checkpoints, a bare one
    outside a git repo, or a request no rule above matches, shows the help below. Do not guess.
 
 ## Help
@@ -49,8 +54,9 @@ Take the first rule that matches, and load only the reference for the subcommand
 Show this, then ask which subcommand the user wants. Write each example with the skill's name as this
 harness invokes it, from [references/command.md](references/command.md), in place of `/checkpoint`:
 
-- `checkpoint`: with nothing after it, runs `resume` in a new or just-cleared session; in a session with
-  work, runs `create` when the repo has no checkpoint yet, and shows this list otherwise.
+- `checkpoint`: with nothing after it, runs `resume` in a new or just-cleared session; in a session on one
+  checkpoint and no other topic, updates that checkpoint; in other sessions with work, runs `create` when
+  the repo has no checkpoint yet, and shows this list otherwise.
 - `checkpoint create [focus] [--commit]`: sorts the session's work into topics, skips the finished ones,
   and writes one checkpoint per live topic (or one for all, asked). A topic that matches an existing
   checkpoint rewrites it, so this is also how to update one. Example: `/checkpoint create the flaky
