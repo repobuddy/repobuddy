@@ -109,7 +109,7 @@ Lead with what all three agree on: unanimous findings are the ones to fix first.
 ## References
 
 ```bash
-npx cyber-skills@0.4.3 governance show skill-design
+node <this-skill-dir>/scripts/cyber-skills.mjs governance show skill-design
 ```
 
 - Refactoring catalog and smell names — https://refactoring.com/catalog/

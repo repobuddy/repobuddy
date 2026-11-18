@@ -19,18 +19,14 @@ change. Covers pnpm, Yarn Berry, npm, and bun.
 
 ## Script
 
-All file edits go through `scripts/min-release-age.mjs` in this skill's directory. Never edit the
+All file edits go through the `release-age` command, run from this skill's directory. Never edit the
 exemption list by hand.
 
 ```bash
-node <this-skill-dir>/scripts/min-release-age.mjs status  [--json] [--check]
-node <this-skill-dir>/scripts/min-release-age.mjs lift    <pkg>[@version|@tag] [--name-wide] [--until <ISO>]
-node <this-skill-dir>/scripts/min-release-age.mjs restore [--dry-run]
+node <this-skill-dir>/scripts/repobuddy.mjs release-age status  [--json] [--check]
+node <this-skill-dir>/scripts/repobuddy.mjs release-age lift    <pkg>[@version|@tag] [--name-wide] [--until <ISO>]
+node <this-skill-dir>/scripts/repobuddy.mjs release-age restore [--dry-run]
 ```
-
-The script ships in the `repobuddy` npm package. If `scripts/min-release-age.mjs` is missing (the skill
-was installed from git) or cannot be run, use `npx -y repobuddy@4.8.0 release-age <command>` with the
-same arguments.
 
 It detects the package manager from `packageManager`, then from lockfiles. Pass `--pm pnpm|yarn|npm|bun`
 when detection is wrong. Each lift is written as a marker comment followed by its entry:
@@ -88,8 +84,8 @@ Entries without a marker are permanent policy. Never add, remove, or rewrite the
    - `script`, `image`: where the job runs the script and, for templates that set one, its runner image. Read from the job when it is installed, otherwise the provider's defaults
 2. If `ci.installed` is true, report where the job is and stop.
 3. If `provider` does not match what the user expects (for example, the repo is mirrored or several CI systems are present), confirm the target with the user.
-4. Every reference copies `scripts/min-release-age.mjs` into the repo. If the skill has no `scripts/`
-   folder, take the file from the package instead: run `npm pack repobuddy@2.2.0` in a temp directory,
+4. Every reference copies `scripts/min-release-age.mjs` into the repo. If the skill has no
+   `scripts/min-release-age.mjs` (the skill was installed from git), take the file from the package instead: run `npm pack repobuddy@2.2.0` in a temp directory,
    extract the tarball, and copy `package/skills/min-release-age/scripts/min-release-age.mjs`.
 5. Load **only** the file named in `ci.reference` and follow it:
 

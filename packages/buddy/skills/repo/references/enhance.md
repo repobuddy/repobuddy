@@ -60,7 +60,7 @@ your scratch or temp folder, never into the repository:
 - the section as found: from its heading to the next heading of the same or higher level;
 - the history file, as it is.
 
-When the skill cannot be reached, run `npx -y cyber-agentkit@2.3.0 prose-update classify
+When the skill cannot be reached, run `node <this-skill-dir>/scripts/cyber-agentkit.mjs prose-update classify
 --offered-from <file> --found-from <file> --history-from <file> --format json`, keeping stderr out of
 the JSON. Read the top-level `outcome`, and the part for the section's own heading; a part for a
 subheading the section does not have is noise.

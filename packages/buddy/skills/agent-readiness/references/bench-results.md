@@ -12,7 +12,7 @@ and each run's gzipped transcript beside it. `bench --yes --baseline` also wrote
 ## Converting
 
 ```bash
-node <this-skill-dir>/scripts/agent-readiness.mjs bench convert <results.json> --arm <label> [--task-set <dir>] [--out <file>]
+node <this-skill-dir>/scripts/repobuddy.mjs agent-readiness bench convert <results.json> --arm <label> [--task-set <dir>] [--out <file>]
 ```
 
 It reads a version 1 or 2 results file and writes a version-3 run record, to `--out` or stdout. ACED

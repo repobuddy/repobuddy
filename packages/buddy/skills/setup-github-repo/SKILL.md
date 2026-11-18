@@ -39,19 +39,10 @@ Run the detect script from the repo root. `<this-skill-dir>` is the absolute pat
 holding this SKILL.md, not the current working directory:
 
 ```bash
-SKILL_DIR=<this-skill-dir>
-if [ -f "$SKILL_DIR/scripts/detect-state.mjs" ]; then
-  ACK=$(node "$SKILL_DIR/scripts/detect-state.mjs")
-else
-  ACK=$(npx -y repobuddy@4.8.0 detect-state)
-fi
+ACK=$(node <this-skill-dir>/scripts/repobuddy.mjs detect-state)
 STATE=$(printf '%s' "$ACK" | jq -r .artifact)
 printf '%s\n' "$ACK"
 ```
-
-The script ships in the `repobuddy` npm package. If `scripts/detect-state.mjs` is missing (the skill
-was installed from git) or cannot be run, use `npx -y repobuddy@4.8.0 detect-state` with the same
-arguments.
 
 The script writes the state artifact **outside the repo tree** — under the OS temp dir, at the
 path the ack reports as `artifact`. Never write it into the repo: it is a scratch snapshot, and a
@@ -354,17 +345,8 @@ ruleset; keep that for the deadlocks above.
 The scaffold script detects which workflows to offer based on filesystem signals. Run it:
 
 ```bash
-SKILL_DIR=<this-skill-dir>
-if [ -f "$SKILL_DIR/scripts/scaffold-workflows.mjs" ]; then
-  node "$SKILL_DIR/scripts/scaffold-workflows.mjs" --state "$STATE" --yes
-else
-  npx -y repobuddy@4.8.0 scaffold-workflows --state "$STATE" --yes
-fi
+node <this-skill-dir>/scripts/repobuddy.mjs scaffold-workflows --state "$STATE" --yes
 ```
-
-The script ships in the `repobuddy` npm package. If `scripts/scaffold-workflows.mjs` is missing (the
-skill was installed from git) or cannot be run, use `npx -y repobuddy@4.8.0 scaffold-workflows` with
-the same arguments.
 
 Use `--yes` for agent runs (non-interactive). Omit `--yes` for human runs — the script prompts on stderr. Read JSON stdout for `created` and `skipped`; add `--verbose` for progress on stderr.
 
