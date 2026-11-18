@@ -48,8 +48,8 @@ optional setting only on a yes. GitHub Pages is left to the GitHub UI.
 ## Requirements
 
 - `gh`, logged in, and a git remote.
-- `detect-state.mjs` and `scaffold-workflows.mjs`. They fall back to `npx -y repobuddy@^1.15.0 detect-state` and
-  `scaffold-workflows` (needs network). See [Skill scripts](/repobuddy/cli/skill-scripts/).
+- Node.js for `repobuddy.mjs detect-state` and `repobuddy.mjs scaffold-workflows`. From a git install they run
+  `npx -y repobuddy@<version>` (needs network). See [Skill scripts](/repobuddy/cli/skill-scripts/).
 - A required status check appears in GitHub only after CI has run once.
 
 ## Example

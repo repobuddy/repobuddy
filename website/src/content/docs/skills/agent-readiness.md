@@ -67,7 +67,8 @@ and [`setup-npm-trusted-publishing`](/repobuddy/skills/setup-npm-trusted-publish
 
 ## Requirements
 
-- Node.js to run the script. Falls back to `npx -y repobuddy@^1.12.0 agent-readiness` (needs network). See
+- Node.js to run `repobuddy.mjs agent-readiness`. From a git install it runs `npx -y repobuddy@<version>` (needs
+  network). See
   [Skill scripts](/repobuddy/cli/skill-scripts/).
 - `bench` needs ACED (the plugin, or `npx` with network) and the `claude` CLI.
 

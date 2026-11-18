@@ -55,10 +55,11 @@ running them. To audit an existing allow list, use [`review-permissions`](/repob
 
 ## Requirements
 
-- Node.js for `detect-env.mjs`. Falls back to `npx -y repobuddy@^1.8.0 env` (needs network). See
+- Node.js for `repobuddy.mjs env`. From a git install it runs `npx -y repobuddy@<version>` (needs network). See
   [Skill scripts](/repobuddy/cli/skill-scripts/).
 - Network access and a package manager to install the CLIs.
-- The `gh-api-guard` hook has no `npx` fallback: install the plugin or copy the script from the npm package.
+- The `gh-api-guard` hook is a built bundle, so a git install lacks it: install the plugin or copy the script from the
+  npm package.
 - `auto-mode.mjs` (read, discover, word, and write the auto-mode settings) and `permission-candidates.mjs` (the allow
   and deny candidates) are committed with the skill, so a git install has them. `auto-mode.mjs discover` needs `gh`
   logged in to GitHub.

@@ -8,7 +8,7 @@ instruction packs that a coding agent loads when a request matches. Each skill c
 filing an issue, merging dependency PRs, or setting up branch protection. Ask in plain words ("add badges to the
 readme") or run the slash command (`/add-badges`).
 
-Skills that need a deterministic step run a bundled script. See [Skill scripts](/repobuddy/cli/skill-scripts/).
+Skills that need a deterministic step run a command through a forwarding script. See [Skill scripts](/repobuddy/cli/skill-scripts/).
 [Install the skills](/repobuddy/skills/install/) first.
 
 ## Repo setup

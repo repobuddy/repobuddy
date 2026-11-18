@@ -120,24 +120,29 @@ npx skills remove --all
 `update` also offers to delete a skill that the repository no longer ships. `remove` leaves the empty skill directories
 behind. Add `-g` to install to your user directory instead of the project.
 
-Skills installed this way come from git and have no built scripts. See [Scripts and npx](#scripts-and-npx).
+Skills installed this way come from git and run their commands through npx. See [Scripts and npx](#scripts-and-npx).
 
 ## Scripts and npx
 
-Some skills run a script for the deterministic part of their work. Those scripts are built at release and ship only in
-the npm package. A skill installed from git has no built script, so it runs the same command through
-`npx -y repobuddy@<version>`. That needs network access.
+Some skills run a command for the deterministic part of their work. Each carries a committed forwarding script,
+`scripts/repobuddy.mjs`, and runs `node <skill-dir>/scripts/repobuddy.mjs <command>`. The forwarder walks up from its
+own real path. Inside the `repobuddy` package (an npm install or a development checkout) it runs that package's CLI.
+Anywhere else, such as a git install or a copied skill folder, it runs `npx -y repobuddy@<version>`. That needs network
+access.
 
-| Skill | Script | Falls back to |
-| --- | --- | --- |
-| `init-buddy` | `detect-env.mjs` | `npx -y repobuddy@^1.8.0 env` |
-| `min-release-age` | `min-release-age.mjs` | `npx -y repobuddy@^1.8.0 release-age` |
-| `setup-github-repo` | `detect-state.mjs`, `scaffold-workflows.mjs` | `npx -y repobuddy@^1.15.0 detect-state`, `scaffold-workflows` |
-| `setup-npm-trusted-publishing` | `npm-trust.mjs` | `npx -y repobuddy@^1.9.0 npm-trust` |
-| `agent-readiness` | `agent-readiness.mjs` | `npx -y repobuddy@^1.12.0 agent-readiness` |
+| Skill | Command |
+| --- | --- |
+| `init-buddy` | `repobuddy.mjs env` |
+| `min-release-age` | `repobuddy.mjs release-age` |
+| `setup-github-repo` | `repobuddy.mjs detect-state`, `repobuddy.mjs scaffold-workflows` |
+| `setup-npm-trusted-publishing` | `repobuddy.mjs npm-trust` |
+| `agent-readiness` | `repobuddy.mjs agent-readiness` |
 
-The `gh-api-guard` hook of `init-buddy` has no `npx` fallback, because a hook runs on every `gh api` or `glab api`
-call. Install the plugin in Claude Code to use it. The scripts of `review-permissions` and
+`min-release-age` also copies a `min-release-age.mjs` bundle into a consumer repository's CI. That bundle is built
+only for the npm package, so from git the skill takes it from `npm pack` instead.
+
+The `gh-api-guard` hook of `init-buddy` is a built bundle, because a hook runs on every `gh api` or `glab api` call.
+It is available from the npm package or the plugin, not from a git install. The scripts of `review-permissions` and
 `to-question` are committed to the repository, so a git install has them.
 
 The commands are listed on [Skill scripts](/repobuddy/cli/skill-scripts/).

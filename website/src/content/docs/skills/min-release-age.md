@@ -51,7 +51,8 @@ pipelines, or requesting tokens. If you decline, the job is still committed and 
 
 ## Requirements
 
-- Node.js for `min-release-age.mjs`. Falls back to `npx -y repobuddy@^1.8.0 release-age` (needs network). See
+- Node.js for `repobuddy.mjs release-age`. From a git install it runs `npx -y repobuddy@<version>` (needs network).
+  The skill copies `min-release-age.mjs` into CI; from git it takes that file from `npm pack`. See
   [Skill scripts](/repobuddy/cli/skill-scripts/).
 - On GitHub, Forgejo, and Gitea, set a `MIN_RELEASE_AGE_TOKEN` secret if the restore PR must trigger required checks.
 - GitLab, Bitbucket, and Azure need a schedule or pipeline registration and a token or permission, per the skill README.

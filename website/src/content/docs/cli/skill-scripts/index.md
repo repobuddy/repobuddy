@@ -3,17 +3,13 @@ title: Skill script commands
 description: Hidden buddy subcommands that run the scripts behind the repobuddy skills.
 ---
 
-Some repobuddy skills run a script for the part of their work that has one right answer. The npm package ships each
-script as a bundled `.mjs` file inside the skill folder. The same scripts are also `buddy` subcommands.
+Some repobuddy skills run a command for the part of their work that has one right answer. Each such skill carries a
+committed forwarding script, `scripts/repobuddy.mjs`, and runs it as
+`node <skill-dir>/scripts/repobuddy.mjs <command> <args>`. The commands are also `buddy` subcommands.
 
-A skill installed from git has no bundled scripts, because the bundles are built at publish time. Such a skill runs
-the subcommand through npx instead, for example:
-
-```sh
-npx -y repobuddy@^1.8.0 env
-```
-
-This needs network access the first time.
+The forwarder walks up from its own real path. Inside the `repobuddy` package (an npm install or a development
+checkout) it runs that package's CLI. Anywhere else, such as a git install or a copied skill folder, it runs
+`npx -y repobuddy@<version>`, which needs network access the first time.
 
 ## How they differ from the other commands
 
@@ -36,7 +32,8 @@ This needs network access the first time.
 
 `release-age`, `npm-trust`, and `agent-readiness` print their usage and exit `2` when run without a subcommand.
 
-The `init-buddy` skill also ships a `gh-api-guard.mjs` hook script. It is not a `buddy` subcommand.
+The `init-buddy` skill also ships a `gh-api-guard.mjs` hook script. It is built for the npm package and the plugin,
+and it is not a `buddy` subcommand.
 
 ## Related
 
