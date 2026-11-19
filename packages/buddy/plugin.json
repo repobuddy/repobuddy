@@ -37,7 +37,32 @@
 				"skills/init-buddy/scripts/permission-candidates.mjs": "src/skills/permission-candidates.ts",
 				"skills/to-question/scripts/check-format.mjs": "src/skills/check-format.ts",
 				"skills/to-question/scripts/question-path.mjs": "src/skills/question-path.ts",
-				"skills/review-permissions/scripts/scan-permissions.mjs": "src/skills/scan-permissions.ts"
+				"skills/review-permissions/scripts/scan-permissions.mjs": "src/skills/scan-permissions.ts",
+				"skills/agent-readiness/scripts/repobuddy.mjs": { "forward": "repobuddy" },
+				"skills/init-buddy/scripts/repobuddy.mjs": { "forward": "repobuddy" },
+				"skills/min-release-age/scripts/repobuddy.mjs": { "forward": "repobuddy" },
+				"skills/setup-github-repo/scripts/repobuddy.mjs": { "forward": "repobuddy" },
+				"skills/setup-npm-trusted-publishing/scripts/repobuddy.mjs": { "forward": "repobuddy" },
+				"skills/agent-readiness/scripts/aced-bench.mjs": {
+					"forward": "aced-bench",
+					"package": "cyber-aced",
+					"version": "0.4.2"
+				},
+				"skills/repo/scripts/cyber-agentkit.mjs": {
+					"forward": "cyber-agentkit",
+					"package": "cyber-agentkit",
+					"version": "2.3.0"
+				},
+				"skills/setup-npm-trusted-publishing/scripts/cyber-skills.mjs": {
+					"forward": "cyber-skills",
+					"package": "cyber-skills",
+					"version": "0.4.3"
+				},
+				"skills/code-review/scripts/cyber-skills.mjs": {
+					"forward": "cyber-skills",
+					"package": "cyber-skills",
+					"version": "0.4.3"
+				}
 			}
 		}
 	}

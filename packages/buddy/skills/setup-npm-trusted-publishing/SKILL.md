@@ -46,18 +46,9 @@ Ask the user which applies; do not assume.
 directory:
 
 ```bash
-SKILL_DIR=<this-skill-dir>
-if [ -f "$SKILL_DIR/scripts/npm-trust.mjs" ]; then
-  RUN="node $SKILL_DIR/scripts/npm-trust.mjs"
-else
-  RUN="npx -y repobuddy@4.8.0 npm-trust"
-fi
+RUN="node <this-skill-dir>/scripts/repobuddy.mjs npm-trust"
 $RUN plan --org <login> --verbose
 ```
-
-The script ships in the `repobuddy` npm package. If `scripts/npm-trust.mjs` is missing (the skill was
-installed from git) or cannot be run, use `npx -y repobuddy@4.8.0 npm-trust <command>` with the same
-arguments.
 
 Writes `.github/npm-trust-plan.json` and prints a JSON ack. **Do not parse stdout for the plan** — read the artifact:
 
@@ -138,6 +129,6 @@ The second action is a one-way narrowing that breaks every remaining token-based
 
 ## References
 
-- `npx cyber-skills@0.4.3 governance show agent-tool-output` — stdout/stderr contract for the bundled script
+- `node <this-skill-dir>/scripts/cyber-skills.mjs governance show agent-tool-output` — stdout/stderr contract for the bundled script
 - https://docs.npmjs.com/trusted-publishers/ — trusted publisher concepts and web UI equivalent
 - https://docs.npmjs.com/cli/v11/commands/npm-trust/ — `npm trust` subcommands and flags

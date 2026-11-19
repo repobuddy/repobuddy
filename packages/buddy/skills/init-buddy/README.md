@@ -220,9 +220,9 @@ the skill alone:
 npx skills add repobuddy/repobuddy --skill init-buddy
 ```
 
-A skill installed with `skills add` comes from git. The `auto-mode.mjs` and
-`permission-candidates.mjs` scripts are committed, so they are there. `detect-env.mjs` is built only
-for the npm package, so the skill runs it through `npx -y repobuddy@4.8.0` instead, which needs
-network access. The plugin install
-ships the script with the skill. The `gh-api-guard` hook has no `npx` fallback, because a hook runs on every
-`gh api` or `glab api` call; install the plugin, or copy the script out of the npm package, to use it.
+The skill runs the `repobuddy` CLI through `scripts/repobuddy.mjs`, which is committed, so a skill
+installed with `skills add` from git has it too. It runs the CLI of the `repobuddy` package it sits in,
+or else fetches the matching release through npx, which needs network access.
+The `auto-mode.mjs` and `permission-candidates.mjs` scripts are committed too. The `gh-api-guard`
+hook has no `npx` fallback, because a hook runs on every `gh api` or `glab api` call; install the
+plugin, or copy the script out of the npm package, to use it.

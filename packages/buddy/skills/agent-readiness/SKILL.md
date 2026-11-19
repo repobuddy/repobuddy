@@ -32,17 +32,14 @@ hands over to ACED's measured layer, which spends money only after a yes.
 ## Script
 
 ```bash
-node <this-skill-dir>/scripts/agent-readiness.mjs score [--dir <repo>] [--json] [--run-knip] [--check [--min-level <1-5>]]
-node <this-skill-dir>/scripts/agent-readiness.mjs score --package <path> [--json] [--check [--min-level <1-4>]]
-node <this-skill-dir>/scripts/agent-readiness.mjs bench convert <results.json> --arm <label> [--task-set <dir>] [--out <file>]
-node <this-skill-dir>/scripts/agent-readiness.mjs suggest [--dir <repo>] [--area <id>] [<comparison.json>...] [--json]
+node <this-skill-dir>/scripts/repobuddy.mjs agent-readiness score [--dir <repo>] [--json] [--run-knip] [--check [--min-level <1-5>]]
+node <this-skill-dir>/scripts/repobuddy.mjs agent-readiness score --package <path> [--json] [--check [--min-level <1-4>]]
+node <this-skill-dir>/scripts/repobuddy.mjs agent-readiness bench convert <results.json> --arm <label> [--task-set <dir>] [--out <file>]
+node <this-skill-dir>/scripts/repobuddy.mjs agent-readiness suggest [--dir <repo>] [--area <id>] [<comparison.json>...] [--json]
 ```
 
 `<this-skill-dir>` is the directory holding this SKILL.md, not the current working directory.
 
-The script ships in the `repobuddy` npm package. If `scripts/agent-readiness.mjs` is missing (the skill
-was installed from git) or cannot be run, use `npx -y repobuddy@4.8.0 agent-readiness score` with the
-same arguments.
 
 `score` reads files and asks `git` which files are tracked and ignored. It builds, installs, and runs
 nothing, so it takes seconds and costs no tokens. There are two exceptions. `--run-knip` opts in to
@@ -300,7 +297,7 @@ Compare one area's changes at a time, or the effect of each cannot be told apart
 1. **Hand over.** With the ACED plugin installed, load its `bench` skill by name and give it the suite
    `repobuddy.readiness`, and the arms when the user named them. It checks fit, shows the plan, asks
    for an explicit yes, runs, and reports the verdict. Follow it; add nothing to its numbers.
-2. **Without the plugin,** run ACED's engine with `npx -y -p cyber-aced@0.4.2 aced-bench`, under the
+2. **Without the plugin,** run ACED's engine with `node <this-skill-dir>/scripts/aced-bench.mjs`, under the
    same rule: `plan --suite repobuddy.readiness --arm <label>=<subject> … --out <plan.json>` spends
    nothing; show the user every line of the plan, including its ceiling, the permission mode, and its
    warnings; run `run --plan <plan.json> --consent` only after their explicit yes to that plan; then
@@ -312,7 +309,7 @@ Compare one area's changes at a time, or the effect of each cannot be told apart
    3-5 tasks of this repo's own: a seeded bug, a small feature, a question whose answer the `check` can
    grep. Write no task yourself.
 
-**Moving a `.agents/readiness/bench/` folder.** `agent-readiness.mjs bench` now only prints this handover. A repo with
+**Moving a `.agents/readiness/bench/` folder.** `agent-readiness bench` now only prints this handover. A repo with
 `.agents/readiness/bench/` moves it with `git mv .agents/readiness/bench
 .agents/aced/bench/repobuddy.readiness`, points any check paths in `tasks.json` at the new folder, and
 records a new baseline with ACED: the engine reads only schema version 3. `bench convert` turns a

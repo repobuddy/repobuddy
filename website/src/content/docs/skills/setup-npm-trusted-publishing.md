@@ -48,7 +48,8 @@ token-based publish, so it never happens in the same pass as registering trust.
 
 ## Requirements
 
-`npm`, `gh`, and `npm-trust.mjs`, which falls back to `npx -y repobuddy@^1.9.0 npm-trust` (needs network). See
+`npm`, `gh`, and `repobuddy.mjs npm-trust`, which from a git install runs `npx -y repobuddy@<version>` (needs
+network). See
 [Skill scripts](/repobuddy/cli/skill-scripts/).
 
 ## Example

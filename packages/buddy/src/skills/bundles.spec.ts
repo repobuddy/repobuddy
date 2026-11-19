@@ -6,7 +6,8 @@ import { describe, expect, it } from '@jest/globals'
 
 const ROOT = join(import.meta.dirname, '..', '..')
 const MIN_RELEASE_AGE = join(ROOT, 'skills', 'min-release-age', 'scripts', 'min-release-age.mjs')
-const DETECT_ENV = join(ROOT, 'skills', 'init-buddy', 'scripts', 'detect-env.mjs')
+const INIT_BUDDY_FORWARDER = join(ROOT, 'skills', 'init-buddy', 'scripts', 'repobuddy.mjs')
+const BIN_BUNDLE = join(ROOT, 'esm', 'bin.js')
 const GH_API_GUARD = join(ROOT, 'skills', 'init-buddy', 'scripts', 'gh-api-guard.mjs')
 const AUTO_MODE = join(ROOT, 'skills', 'init-buddy', 'scripts', 'auto-mode.mjs')
 const PERMISSION_CANDIDATES = join(ROOT, 'skills', 'init-buddy', 'scripts', 'permission-candidates.mjs')
@@ -24,12 +25,12 @@ describe('built skill bundles', () => {
 		expect(r.stderr).toMatch(/usage: min-release-age\.mjs/)
 	})
 
-	it('detect-env.mjs runs standalone and prints parseable JSON', () => {
-		if (!existsSync(DETECT_ENV)) {
-			console.warn(`skipping: ${DETECT_ENV} does not exist — run \`pnpm build\` first`)
+	it("the init-buddy forwarder runs this checkout's `env` command and prints parseable JSON", () => {
+		if (!existsSync(BIN_BUNDLE)) {
+			console.warn(`skipping: ${BIN_BUNDLE} does not exist — run \`pnpm build\` first`)
 			return
 		}
-		const r = spawnSync('node', [DETECT_ENV, '--json'], { encoding: 'utf8' })
+		const r = spawnSync('node', [INIT_BUDDY_FORWARDER, 'env', '--json'], { encoding: 'utf8' })
 		expect(r.status).toBe(0)
 		const parsed = JSON.parse(r.stdout)
 		expect(parsed).toHaveProperty('os')

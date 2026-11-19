@@ -77,6 +77,8 @@ the skill alone:
 npx skills add repobuddy/repobuddy --skill min-release-age
 ```
 
-A skill installed with `skills add` comes from git and has no built `scripts/` folder. It runs its
-script through `npx -y repobuddy@4.8.0` instead, which needs network access. The plugin install
-ships the script with the skill.
+The skill runs the `repobuddy` CLI through `scripts/repobuddy.mjs`, which is committed, so a skill
+installed with `skills add` from git has it too. It runs the CLI of the `repobuddy` package it sits in,
+or else fetches the matching release through npx, which needs network access.
+The `min-release-age.mjs` script that the CI job copies is built only for the npm package; from git,
+the skill takes it from the package instead.

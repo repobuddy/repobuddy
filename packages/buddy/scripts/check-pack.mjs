@@ -24,18 +24,25 @@ const packageDir = dirname(dirname(fileURLToPath(import.meta.url)))
 /** Each built script, and an invocation that proves it starts: the exit code it must return. */
 const SCRIPTS = [
 	{ path: 'skills/min-release-age/scripts/min-release-age.mjs', args: ['no-such-command'], exit: 2 },
-	{ path: 'skills/init-buddy/scripts/detect-env.mjs', args: ['--json', '--host', 'github'], exit: 0 },
 	// Reads hook JSON from stdin; with none (empty stdin) it prints nothing and exits 0.
 	{ path: 'skills/init-buddy/scripts/gh-api-guard.mjs', args: [], exit: 0 },
 	// Committed bundles compiled by `plugin build`; they reject bad usage before reading anything.
 	{ path: 'skills/init-buddy/scripts/auto-mode.mjs', args: ['no-such-command'], exit: 2 },
 	{ path: 'skills/init-buddy/scripts/permission-candidates.mjs', args: ['--bogus'], exit: 2 },
 	{ path: 'skills/epic/scripts/epic-plan.mjs', args: ['no-such-command'], exit: 2 },
-	// These reject bad usage before shelling out to `gh`, so they run without a git remote or auth.
-	{ path: 'skills/setup-github-repo/scripts/detect-state.mjs', args: ['--dir'], exit: 1 },
-	{ path: 'skills/setup-github-repo/scripts/scaffold-workflows.mjs', args: ['no-such-command'], exit: 1 },
-	{ path: 'skills/setup-npm-trusted-publishing/scripts/npm-trust.mjs', args: ['no-such-command'], exit: 2 },
-	{ path: 'skills/agent-readiness/scripts/agent-readiness.mjs', args: ['no-such-command'], exit: 2 },
+	// Forwarders written by `plugin build`. Inside the unpacked package each one must find that
+	// package's own CLI, not fall back to `npx`. These commands reject bad usage before shelling out
+	// to `gh`, so they run without a git remote or auth.
+	{ path: 'skills/init-buddy/scripts/repobuddy.mjs', args: ['env', '--json', '--host', 'github'], exit: 0 },
+	{ path: 'skills/min-release-age/scripts/repobuddy.mjs', args: ['release-age', 'no-such-command'], exit: 2 },
+	{ path: 'skills/setup-github-repo/scripts/repobuddy.mjs', args: ['detect-state', '--dir'], exit: 1 },
+	{ path: 'skills/setup-github-repo/scripts/repobuddy.mjs', args: ['scaffold-workflows', 'no-such-command'], exit: 1 },
+	{
+		path: 'skills/setup-npm-trusted-publishing/scripts/repobuddy.mjs',
+		args: ['npm-trust', 'no-such-command'],
+		exit: 2,
+	},
+	{ path: 'skills/agent-readiness/scripts/repobuddy.mjs', args: ['agent-readiness', 'no-such-command'], exit: 2 },
 ]
 
 const temp = mkdtempSync(join(tmpdir(), 'repobuddy-pack-'))
@@ -57,7 +64,12 @@ try {
 			failures.push(`${path}: missing from the tarball (run \`pnpm build\` first)`)
 			continue
 		}
-		const run = spawnSync('node', [file, ...args], { cwd: temp, encoding: 'utf8' })
+		// An empty PATH keeps a forwarder that missed the package from reaching `npx` and passing anyway.
+		const run = spawnSync(process.execPath, [file, ...args], {
+			cwd: temp,
+			encoding: 'utf8',
+			env: { ...process.env, PATH: '' },
+		})
 		if (run.status !== exit) {
 			failures.push(`${path}: exited ${run.status}, expected ${exit}\n${run.stderr.trim()}`)
 		}

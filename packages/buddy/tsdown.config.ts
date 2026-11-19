@@ -39,8 +39,10 @@ const escapeBom: Rolldown.Plugin = {
 // `tsc` was also typechecking as a side effect of building. tsdown does not typecheck,
 // so the package gained an explicit `typecheck` script; it must stay in `verify`.
 //
-// 2. The skill scripts (`src/skills/*.ts`) → `skills/<skill>/scripts/*.mjs`. A skill folder is
-// what an installer copies, so each bundle inlines everything except node builtins. The bundles are
+// 2. The skill scripts that must run without the CLI → `skills/<skill>/scripts/*.mjs`:
+// `min-release-age.mjs`, which the skill copies into a repo's CI, and the `gh-api-guard.mjs` hook.
+// Skills run every other command through the `repobuddy.mjs` forwarder that `plugin build` writes.
+// A skill folder is what an installer copies, so each bundle inlines everything except node builtins. The bundles are
 // gitignored and ship only in the npm package; `pack:check` confirms the tarball carries them and
 // that they run. They are minified because agents read only the banner. `clean: false` because the
 // rest of each skill folder is hand-written.
@@ -118,26 +120,6 @@ export default defineConfig([
 		banner: { js: skillBanner('src/skills/min-release-age.ts') },
 	},
 	{
-		entry: { 'detect-env': 'src/skills/detect-env.ts' },
-		outDir: 'skills/init-buddy/scripts',
-		format: 'esm',
-		platform: 'node',
-		target: 'node22',
-		outExtensions: () => ({ js: '.mjs' }),
-		clean: false,
-		dts: false,
-		minify: true,
-		plugins: [escapeBom],
-		banner: { js: skillBanner('src/skills/detect-env.ts') },
-		// See the matching comment on the `bin.ts` target above: this bundle reaches
-		// `buddy-agent-harness`'s CLI-version fallback through `./mcp.js`, and ships with no
-		// `package.json` beside it.
-		define: { __PACKAGE_VERSION__: '"0.0.0"' },
-		// Same `jsonc-parser` UMD problem as the `bin.ts` target above: `buddy-agent-harness`
-		// imports it directly since 0.13, so `listMcpServers` pulls it into this bundle too.
-		alias: { 'jsonc-parser': 'jsonc-parser/lib/esm/main.js' },
-	},
-	{
 		entry: { 'gh-api-guard': 'src/skills/gh-api-guard.ts' },
 		outDir: 'skills/init-buddy/scripts',
 		format: 'esm',
@@ -149,57 +131,5 @@ export default defineConfig([
 		minify: true,
 		plugins: [escapeBom],
 		banner: { js: skillBanner('src/skills/gh-api-guard.ts') },
-	},
-	{
-		entry: { 'detect-state': 'src/skills/detect-state.ts' },
-		outDir: 'skills/setup-github-repo/scripts',
-		format: 'esm',
-		platform: 'node',
-		target: 'node22',
-		outExtensions: () => ({ js: '.mjs' }),
-		clean: false,
-		dts: false,
-		minify: true,
-		plugins: [escapeBom],
-		banner: { js: skillBanner('src/skills/detect-state.ts') },
-	},
-	{
-		entry: { 'scaffold-workflows': 'src/skills/scaffold-workflows.ts' },
-		outDir: 'skills/setup-github-repo/scripts',
-		format: 'esm',
-		platform: 'node',
-		target: 'node22',
-		outExtensions: () => ({ js: '.mjs' }),
-		clean: false,
-		dts: false,
-		minify: true,
-		plugins: [escapeBom],
-		banner: { js: skillBanner('src/skills/scaffold-workflows.ts') },
-	},
-	{
-		entry: { 'npm-trust': 'src/skills/npm-trust.ts' },
-		outDir: 'skills/setup-npm-trusted-publishing/scripts',
-		format: 'esm',
-		platform: 'node',
-		target: 'node22',
-		outExtensions: () => ({ js: '.mjs' }),
-		clean: false,
-		dts: false,
-		minify: true,
-		plugins: [escapeBom],
-		banner: { js: skillBanner('src/skills/npm-trust.ts') },
-	},
-	{
-		entry: { 'agent-readiness': 'src/skills/agent-readiness.ts' },
-		outDir: 'skills/agent-readiness/scripts',
-		format: 'esm',
-		platform: 'node',
-		target: 'node22',
-		outExtensions: () => ({ js: '.mjs' }),
-		clean: false,
-		dts: false,
-		minify: true,
-		plugins: [escapeBom],
-		banner: { js: skillBanner('src/skills/agent-readiness.ts') },
 	},
 ])

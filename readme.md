@@ -100,9 +100,8 @@ npx skills add repobuddy/repobuddy
 npx skills add repobuddy/repobuddy --skill issue --skill setup-github-repo
 ```
 
-Some skills run scripts that are built at release and ship only in the npm package. Installed from
-git as above, they run those scripts through `npx -y repobuddy@<version>` instead, which needs network
-access. See [Scripts and npx](https://repobuddy.github.io/repobuddy/skills/install/#scripts-and-npx).
+Some skills run a committed forwarding script, `scripts/repobuddy.mjs`. Installed from git as above, it runs
+`npx -y repobuddy@<version>`, which needs network access; inside the npm package it runs the package's own CLI. See [Scripts and npx](https://repobuddy.github.io/repobuddy/skills/install/#scripts-and-npx).
 
 Update with `npx skills update`; uninstall with `npx skills remove <skill>` or `npx skills remove --all`.
 

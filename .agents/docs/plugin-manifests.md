@@ -19,6 +19,12 @@ fails when `packages/buddy/package.json`'s version disagrees with the manifest o
 
 `plugin build` also bundles the six skill scripts listed under `scripts` in `plugin.json`. Unlike the tsdown bundles,
 they are committed, and their bytes follow the rolldown version the lockfile pins for `universal-plugin`.
+
+The `forward` entries under `scripts` are CLI forwarders (`skills/<skill>/scripts/<bin>.mjs`). A skill runs a CLI as
+`node <this-skill-dir>/scripts/<bin>.mjs <args>`, never through `npx`, `upx`, or `pnpm exec`. Each forwarder runs the
+CLI of the package it sits in, else `npx -y <package>@<version>`. `repobuddy.mjs` takes the version from `plugin.json`,
+and `plugin version` restamps it. A forwarder for another package pins the version its entry names. To run a new
+command from a skill, add a forwarder entry for that skill and rebuild; do not add a tsdown bundle.
 `check-build-drift` in `verify` runs `universal-plugin plugin build --check`, which fails when any of them, or a vendor
 manifest, differs from what the build writes. After a dependency update changes them, run
 `pnpm --filter repobuddy build` and commit the result. The release PR will not do it: changesets/action resets the tree

@@ -24,14 +24,11 @@ for the read-only commands the agent runs most, and a deny list for the commands
 
 ## Detect
 
-Run the detection script from this skill's directory:
+Run the detection command from this skill's directory:
 
 ```bash
-node <this-skill-dir>/scripts/detect-env.mjs [--host <kind[=hostname]>]... [--probe] [--json]
+node <this-skill-dir>/scripts/repobuddy.mjs env [--host <kind[=hostname]>]... [--probe] [--json]
 ```
-
-The script ships in the `repobuddy` npm package. If `scripts/detect-env.mjs` is missing (the skill was
-installed from git) or cannot be run, use `npx -y repobuddy@4.8.0 env` with the same arguments.
 
 - It reads the hosts from the repo's git remotes. Pass `--host` when there is no repo, when the user names a host, or to add a self-hosted instance (`--host gitlab=git.corp.example`).
 - If a host shows as `unknown`, re-run with `--probe`. It asks that host's API which product it runs.

@@ -61,7 +61,7 @@ The help text names the program `repobuddy` whichever bin name you run.
 | See which `buddy` plugins are installed | [`buddy plugins list`](/repobuddy/cli/plugins-list/) |
 | Find `buddy` plugins on npm | [`buddy plugins search`](/repobuddy/cli/plugins-search/) |
 | Change logging, print the version, or print the loaded config | [Global options](/repobuddy/cli/global-options/) |
-| Run a skill's script without the skill's bundled copy | [Skill script commands](/repobuddy/cli/skill-scripts/) |
+| Run a skill's command directly | [Skill script commands](/repobuddy/cli/skill-scripts/) |
 
 A plugin adds its own commands. For example, `@repobuddy/typescript` adds `buddy ts`. See
 [Add a plugin](/repobuddy/cli/guides/plugins/).
