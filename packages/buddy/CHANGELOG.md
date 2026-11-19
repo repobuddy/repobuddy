@@ -1,5 +1,56 @@
 # repobuddy
 
+## 4.8.0
+
+### Minor Changes
+
+- 1ed7648: Add the `fix-security-pr` skill, absorbed from `repobuddy/agent-security`, so one install carries it.
+- de2adb3: Bare `checkpoint` in a session that resumed or wrote exactly one checkpoint, and stayed on its goal, now updates that checkpoint with no prompt. The README documents keeping it current with `/loop` or a `Stop` hook.
+
+### Patch Changes
+
+- 439aaa3: The `commit` skill now amends the latest commit when it is on no remote and the fix belongs to its unit, instead of adding a fix commit. It still never rewrites a pushed commit.
+- d115cfa: The `commit` skill reports a change as "uncommitted: blocked by sandbox" when the harness blocks `git add` or `git commit`, and never changes the sandbox, git config, or hooks to get around it.
+- aa1f7ee: The `commit` skill stops and reports when a merge, cherry-pick, revert, or rebase is in progress, or a path is unmerged, instead of committing.
+
+## 4.7.0
+
+### Minor Changes
+
+- d1addaf: `commit` plans every commit before staging the first, and splits formatting from logic, a refactor from the change after it, and a dependency bump from a behavior change, keeping a change's tests in its commit. It uses fewer tokens: it reads the diff stat before any full diff, runs the smallest check that covers each unit, reuses a check already passed on the same content, loads its references once per run, and runs its final checks once. It also reads the staged diff for secrets and debug logging, reports each commit with what and why, and ships `/skill test` evals.
+- ef515f0: `epic` judges the plan, not just files it. It routes to Create, Revise, Review, Handoff, Promote, and Demote. Create and Revise settle the plan one section at a time, judge it against the planning criteria EP1 to EP14 (`project-tracker.criteria.epic`, overridable), and fix what fails before presenting. They run a research step through `research.method`, which uses `research-workbench`'s `deep-research` by default. `project-tracker.executors` says what a person and an agent can do on the tracker. The epic template gains key terms, open questions, a run order, risks, and item IDs. The tracker capabilities gain `Board`, `Transfer`, `Depend`, and `Sync body`, and a new `epic-plan.mjs` script reads the blocked-by graph, batches blocker changes, syncs the child list, and checks a filed epic.
+- 799ec9e: Install the `repobuddy` plugin from `cyber-uni/marketplace`. This repository no longer carries its own marketplace catalogs (`.claude-plugin/marketplace.json`, `.github/plugin/marketplace.json`), so a harness that added `repobuddy/repobuddy` as a marketplace receives no update after this release. `cyber-uni/marketplace` also lists `cyber-agentkit`, the plugin `repobuddy` depends on.
+  
+  To move, remove the old marketplace and add `cyber-uni/marketplace`:
+  
+  ```sh
+  # Claude Code
+  claude plugin uninstall repobuddy@repobuddy
+  claude plugin marketplace remove repobuddy
+  claude plugin marketplace add cyber-uni/marketplace
+  claude plugin install repobuddy@cyber-uni
+  
+  # Codex
+  codex plugin remove repobuddy@repobuddy
+  codex plugin marketplace remove repobuddy
+  codex plugin marketplace add cyber-uni/marketplace
+  codex plugin add repobuddy@cyber-uni
+  
+  # GitHub Copilot CLI
+  copilot plugin uninstall repobuddy@repobuddy
+  copilot plugin marketplace remove repobuddy
+  copilot plugin marketplace add cyber-uni/marketplace
+  copilot plugin install repobuddy@cyber-uni
+  ```
+  
+  On Cursor, a workspace admin removes the `repobuddy/repobuddy` team marketplace and imports `cyber-uni/marketplace` instead.
+- 5b33113: Ship `website.init.interface`, `website.deploy.interface`, and `website.update.interface`: the sections any version of each `website` reference holds, and the ones it must hold. The skill's defaults declare `implements: website.<command>@1`. The skill's README and website page say how to check another plugin's version with `reference load <name> --default <repobuddy>/skills/website --trace`.
+
+### Patch Changes
+
+- b67a0c1: `checkpoint` hands back resume lines in the current harness's form, such as `/repobuddy:checkpoint resume <slug>` in Claude Code, where a bare `/checkpoint` runs the built-in `/rewind`.
+- 1cbb415: `setup-github-repo`: the release example calls `repobuddy/.github/.github/workflows/pnpm-release-changeset-oidc.yml@v2`, the one shared home for every owner, instead of an `<org>/.github` placeholder. The skill says to pin the released tag `v2`, never `@main` or the retired `v1`, and to move callers off `cyberuni/.github` and `stable-packages/.github`. The approval-step link points at the `v2` tag.
+
 ## 4.6.0
 
 ### Minor Changes

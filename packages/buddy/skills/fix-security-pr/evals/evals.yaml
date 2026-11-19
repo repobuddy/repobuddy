@@ -1,0 +1,27 @@
+runs: 3
+threshold: 2
+trigger:
+  - { prompt: 'fix the security PR', expect: fire }
+  - { prompt: 'pnpm audit fails in CI on this PR, can you fix it', expect: fire }
+  - { prompt: 'unblock the Dependabot PR, it fails on a GHSA advisory', expect: fire }
+  - { prompt: 'Snyk flags lodash in my pull request, resolve it', expect: fire }
+  - { prompt: 'merge the pending dependency update PRs', expect: skip }
+  - { prompt: 'scan my repository for vulnerabilities and report them', expect: skip }
+  - { prompt: 'review this pull request for correctness', expect: skip }
+  - { prompt: 'set up Dependabot for this repository', expect: skip }
+outcome:
+  - id: no-safe-version
+    prompt: The security check on my PR fails. The CI log is in ci.log. Fix it.
+    setup: setup/no-safe-version.sh
+    criteria: [C1, C2, C3, C4]
+    checks:
+      C1:
+        - script: 'test -z "$(git status --porcelain | grep -v -E "package.json|pnpm-lock.yaml|ci.log")"'
+      C2:
+        - regex: '(?i)(no (safe|patched|fixed) version|no (fix|patch) (is )?available)'
+      C4:
+        - regex: 'old-parser'
+        - regex: '(?i)(GHSA|advisory)'
+      C3:
+        - script: 'test "$(git diff --name-only $(cat .git/case-start) | grep -c -E "audit|nsprc|ignore")" = 0'
+        - regex: '(?i)no (safe|patched|fixed) version'

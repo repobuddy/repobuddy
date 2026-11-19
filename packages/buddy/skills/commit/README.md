@@ -2,7 +2,7 @@
 
 Plans how a working tree splits into commits, then stages and commits one unit of work at a time, safely enough for an
 agent to run unattended. It hands back the commits and a report of each one, the checks it ran, and what it left
-uncommitted. It never pushes, amends, or opens an editor, a pager, or a prompt.
+uncommitted. It never pushes, rewrites a pushed commit, or opens an editor, a pager, or a prompt.
 
 ## Research
 
@@ -41,11 +41,12 @@ Where this skill and commit-work conflict:
 - "write a commit message for what is staged": it writes and shows the message, and commits only when asked
 - A unit of work is finished and the repository's `AGENTS.md` says to commit it.
 
-Not for pushing, opening a pull request, or amending, squashing, or undoing a commit already made.
+Also for a small fix to the latest commit when it is unpushed: it amends. Not for pushing, opening a pull request, or squashing or undoing a commit already made, or rewriting a pushed one.
 
 ## What it does
 
-- Checks the index first and never commits files someone else staged along with this unit.
+- Stops first when a merge, cherry-pick, revert, or rebase is in progress or a path is unmerged, and commits nothing.
+- Checks the index and never commits files someone else staged along with this unit.
 - Plans every commit from `git status` and `git diff --stat` before staging the first, reading full diffs only where
   the split needs them.
 - Splits formatting from logic, a refactor from the change after it, and a dependency bump from a behavior change.
@@ -58,7 +59,8 @@ Not for pushing, opening a pull request, or amending, squashing, or undoing a co
 - Reads the staged diff for a secret, debug logging, or formatting churn before committing.
 - Verifies the staged snapshot, not the working tree, when unstaged changes could hide a failure.
 - Writes the message with `git commit -F`, keeping trailers such as `Co-Authored-By`.
-- Never `--no-verify` or `--amend`.
+- Never `--no-verify`. Amends the latest commit only when it is on no remote and the fix belongs to its unit; a pushed commit is never rewritten, and a rejected commit never happened, so it is committed again, not amended.
+- When the harness's sandbox blocks `git add` or `git commit`, stops and reports each change as "uncommitted: blocked by sandbox", and never changes the sandbox, git config, or hooks.
 - Reports each commit's hash, subject, and why.
 
 ## Customize

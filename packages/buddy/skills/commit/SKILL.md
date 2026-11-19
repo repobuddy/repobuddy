@@ -6,8 +6,9 @@ description: "Commit uncommitted changes, split them into commits, or write a co
 # Commit
 
 Also run it when a unit of work is finished and the repository's rules say to commit it. Pushing, opening a
-pull request, and amending, rewording, squashing, or undoing a commit already made belong to other skills, even
-when the working tree has uncommitted changes.
+pull request, and rewording, squashing, or undoing a commit already made belong to other skills, even
+when the working tree has uncommitted changes. So does amending, except the latest commit when it is unpushed
+and the fix belongs to its unit (see Rules).
 
 Repository rules take precedence over this skill: the **Commit Discipline** section of `AGENTS.md` or
 `CLAUDE.md`, and a `SKILL.local.md` beside this skill.
@@ -48,7 +49,14 @@ write the message for it by `commit.message`, show it, and commit only when aske
 - **Never commit with red checks.** Never `--no-verify`. When a test, type-check, or build fails, stage
   nothing and report the failure: do not change the unit's code to make it pass unless the request
   asked for that change. Lint and format errors in the unit are fixed, not reported.
-- **Never rewrite history:** never push, force-push, rebase, or amend.
+- **Sandbox blocks:** when the harness blocks `git add` or `git commit` (a read-only `.git`, or a refusal
+  that names the sandbox or a permission), stop and report each affected change as "uncommitted: blocked by
+  sandbox". Never change the sandbox, git config, or hooks to get around it.
+- **Never rewrite pushed history:** never push, force-push, or rebase. Amend the latest commit, or fold a fix
+  into it, only when it is on no remote (`git branch -r --contains HEAD` prints nothing, or no upstream is set)
+  and the fix belongs to its unit: stage the fix by name, then `git commit --amend -F <file>` with the message
+  rewritten by `commit.message`. A fix to a pushed commit, or to an older one, is a new commit; rewriting it
+  needs the user's say-so.
 - **Decide, do not ask:** settle each choice, including how many commits, from these rules, the
   repository's rules, and the references. Ask only when they cannot decide, such as one changed line
   two units both need: do not rewrite it to fit one of them. With no one to answer, commit the units it
@@ -68,16 +76,21 @@ Before staging a unit, its change is finished:
 
 ## Workflow
 
-1. **Check the index:** `git --no-pager diff --cached --stat`. When a file staged that is not this
+1. **Check the repository state:** an operation is in progress when `git rev-parse --git-path MERGE_HEAD`,
+   `CHERRY_PICK_HEAD`, or `REVERT_HEAD` names a file that exists, when `git rev-parse --git-path rebase-merge`
+   or `rebase-apply` names a folder that exists, or when `git diff --name-only --diff-filter=U` lists a path.
+   Then commit nothing, state which one it is, and stop: committing would finish an operation the user
+   has not concluded, or commit conflict markers. A request for only a message is not a commit, so it goes on.
+2. **Check the index:** `git --no-pager diff --cached --stat`. When a file staged that is not this
    run's work also has unstaged changes, someone chose part of it: commit nothing, and report it.
-2. **Plan:** `git status --porcelain` and `git --no-pager diff --stat`. Assign each file to a unit by
+3. **Plan:** `git status --porcelain` and `git --no-pager diff --stat`. Assign each file to a unit by
    the split axes. Read the full diff only of a file whose unit the path and the stat do not settle, or
    that holds two units. Never diff the whole tree when the stat lists more than a few files. State the
    plan, each commit and its files, before the first `git add`.
-3. **Find the hooks**, once: `git rev-parse --git-path hooks` prints the folder git runs them from.
+4. **Find the hooks**, once: `git rev-parse --git-path hooks` prints the folder git runs them from.
    When it holds a `pre-commit` or `commit-msg` hook, say what it runs, and run those checks with the
    unit's checks. With neither, skip this step.
-4. For each unit in the plan:
+5. For each unit in the plan:
    1. **Check done:** the [Definition of done](#definition-of-done).
    2. **Stage it:** `git add <files>`, or a patch for part of a file (see `references/splitting.md`).
    3. **Read what is staged:** `git --no-pager diff --cached`. A secret or token stops the run: commit
@@ -88,7 +101,7 @@ Before staging a unit, its change is finished:
       files, and say why.
    5. **Commit:** write the message by `commit.message` to a file outside the repository, with the body
       saying why and the trailers the harness or repository supplies, and run `git commit -F <file>`.
-5. **Report** what C7 lists.
+6. **Report** what C7 lists.
 
 ## Done when
 
@@ -104,7 +117,11 @@ that fails.
   `.changeset/<name>.md` file.
 - **C5.** No commit was made while a check of its unit failed, and no commit adds a secret or token.
 - **C6.** `git reflog` since the run started shows a `commit:` entry for each new commit and no
-  `commit (amend)`, `rebase`, or `reset` that moves HEAD to another commit; `git rev-parse @{upstream}`
-  is unchanged; `git stash list` holds no entry the run pushed.
+  `rebase` or `reset` that moves HEAD to another commit, and a `commit (amend)` only of an unpushed latest
+  commit whose unit the fix belongs to; `git rev-parse @{upstream}` is unchanged; `git stash list` holds no entry the run pushed.
 - **C7.** The reply lists each commit's short hash, subject, and what changed and why in one line, the
   checks run or reused, and each file left uncommitted with the reason.
+- **C8.** In a merge, cherry-pick, revert, or rebase in progress, or with an unmerged path, no commit was made, and the
+  reply names the state.
+- **C9.** When the harness blocked `git add` or `git commit`, no commit was made, each affected change is reported
+  as "uncommitted: blocked by sandbox", and the sandbox, git config, and hooks are unchanged.

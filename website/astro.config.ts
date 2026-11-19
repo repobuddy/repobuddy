@@ -78,6 +78,7 @@ export default defineConfig({
 									label: 'Dependencies and releases',
 									items: [
 										{ label: 'merge-dep-prs', slug: 'skills/merge-dep-prs' },
+										{ label: 'fix-security-pr', slug: 'skills/fix-security-pr' },
 										{ label: 'min-release-age', slug: 'skills/min-release-age' },
 										{ label: 'setup-npm-trusted-publishing', slug: 'skills/setup-npm-trusted-publishing' },
 									],

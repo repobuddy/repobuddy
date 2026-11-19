@@ -28,7 +28,7 @@ for a Skills CLI install in Copilot CLI and the Cursor editor:
 
 | Harness | From the repobuddy plugin | Installed by the Skills CLI |
 | --- | --- | --- |
-| Claude Code | `/repobuddy:checkpoint` | ask in words ("use the checkpoint skill to resume …"): `/checkpoint` is an alias of the built-in `/rewind` |
+| Claude Code | `/repobuddy:checkpoint` (pnpm install: `pnpm-repobuddy-checkpoint`) | ask in words ("use the checkpoint skill to resume …"): `/checkpoint` is an alias of the built-in `/rewind` |
 | Codex CLI | `$repobuddy:checkpoint` | `$checkpoint` |
 | Copilot CLI | ask in words (namespacing not documented) | `/checkpoint` |
 | Cursor | ask in words (namespacing not documented) | `/checkpoint` in the editor's Agent chat; ask in words in the `agent` CLI |
@@ -38,9 +38,48 @@ The skill hands back lines in the same form. Sources are in [`references/command
 
 Natural phrasing routes too: "let's stop here" creates a checkpoint, "pick up the auth refactor" resumes, "what checkpoints do I have" lists them. A bare
 `/checkpoint` runs `resume` in a new or just-cleared session, since there is no work to `create` from. In a
-session with work, it runs `create` when the repo has no checkpoint yet and shows the help when it has some.
+session that resumed or wrote exactly one checkpoint and has not strayed from its goal, it updates that
+checkpoint, with no prompt and no new file. A session that drifted across topics, or touched several
+checkpoints, runs `create` when the repo has no checkpoint yet and shows the help when it has some.
 The name differs from the `/resume` built into Claude Code, Codex, Copilot
 CLI and Gemini CLI. In Claude Code the bare `/checkpoint` is still taken by `/rewind`, hence the table.
+
+## Keep a checkpoint current automatically
+
+The skill can't wake itself, but Claude Code can run it on a schedule, and a bare invocation in a
+one-checkpoint session needs no answer, so it runs unattended.
+
+- **On an interval or when idle: `/loop`.** In a session on one checkpoint, type
+  `/loop 20m /repobuddy:checkpoint`. The prompt fires every 20 minutes while the session is idle, and each
+  firing updates the checkpoint. Without an interval, `/loop /repobuddy:checkpoint` lets the model pace
+  itself with a scheduled wakeup. The loop lives only as long as the session.
+- **After each turn: a `Stop` hook.** A hook runs a shell command, not a skill, so it can only ask the
+  model to run the skill. Add this to `.claude/settings.local.json`; the command prints the block
+  decision once per turn and lets the following stop through:
+
+  ```json
+  {
+    "hooks": {
+      "Stop": [
+        {
+          "hooks": [
+            {
+              "type": "command",
+              "command": "jq -e '.stop_hook_active' >/dev/null && exit 0; echo '{\"decision\":\"block\",\"reason\":\"Run /repobuddy:checkpoint to update this session checkpoint.\"}'"
+            }
+          ]
+        }
+      ]
+    }
+  }
+  ```
+
+  This costs a model turn after every reply, so prefer `/loop` unless you want an update each turn.
+  A `PreCompact` hook the same way saves state just before auto-compact.
+- Other harnesses: use their own scheduler or hook to submit the same bare prompt, where they have one.
+
+Both only work in a session that matches the update rule; in a drifted session the bare call asks
+instead, which stalls an unattended run.
 
 ## `create`
 
@@ -90,7 +129,7 @@ which checkpoints into the mission's plan brief instead.
 
 ## No `update`
 
-`create` is the update. A topic that matches an existing checkpoint is merged into it, and `resume` keeps
+`create` is the update; a bare invocation in a one-checkpoint session runs it for you. A topic that matches an existing checkpoint is merged into it, and `resume` keeps
 the checkpoint current as it works. "Update the checkpoint" routes to `create`.
 
 ## `list`

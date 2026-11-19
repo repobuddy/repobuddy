@@ -15,6 +15,7 @@
 | --- | --- |
 | [`agent-readiness`] | Score how ready a repo is for coding agents — a gated level, the three fixes worth the most, and the tokens every session loads — hold a level in CI, then fix the findings one area per commit, and benchmark what agents cost before and after; `--package` scores how easily consumers' agents can use a library |
 | [`commit`] | Commit one unit of work at a time, safe to run unattended — checks the change is done, stages files or hunks by name with no interactive git, verifies the staged snapshot, follows the repo's commitlint rules, and recovers from a hook rejection without `--no-verify` |
+| [`fix-security-pr`] | Fix a PR that fails a security check — reads the audit, CVE, Dependabot, or Snyk failure, bumps the dependency or adds an override, verifies the audit, and pushes |
 | [`epic`] | Plan an epic and its child issues — outcome first, unknowns as spikes — promote an issue to an epic, or demote an initiative, moving the work to the tracker that holds epics when the routing says so |
 | [`initiative`] | Set an initiative's goal and one metric — measure, baseline, target — and file its epics as shells for `epic` to break down, or promote an epic by creating the initiative above it |
 | [`issue`] | File a bug, feature, or task on GitHub, or on the tracker a routing names — searches for duplicates first |
@@ -124,7 +125,6 @@ These companion repositories provide additional skills often used alongside `rep
 | Repository | Skills |
 | --- | --- |
 | [`repobuddy/buddy-changesets`] | Changeset authoring and release setup |
-| [`repobuddy/agent-security`] | Security PR remediation |
 
 Install from a related repo the same way:
 
@@ -178,6 +178,7 @@ npx skills add repobuddy/buddy-changesets
 [Skills CLI]: https://github.com/vercel-labs/skills
 [universal plugin]: https://github.com/agentplugins/agent-plugins-spec
 [`agent-readiness`]: ./packages/buddy/skills/agent-readiness/SKILL.md
+[`fix-security-pr`]: ./packages/buddy/skills/fix-security-pr/SKILL.md
 [`epic`]: ./packages/buddy/skills/epic/SKILL.md
 [`initiative`]: ./packages/buddy/skills/initiative/SKILL.md
 [`issue`]: ./packages/buddy/skills/issue/SKILL.md
@@ -196,7 +197,6 @@ npx skills add repobuddy/buddy-changesets
 [`website`]: ./packages/buddy/skills/website/SKILL.md
 [`to-question`]: ./packages/buddy/skills/to-question/SKILL.md
 [`repobuddy/buddy-changesets`]: https://github.com/repobuddy/buddy-changesets
-[`repobuddy/agent-security`]: https://github.com/repobuddy/agent-security
 [biome]: https://biomejs.dev/
 [codecov-biome-image]: https://codecov.io/gh/repobuddy/repobuddy/badge.svg?flag=biome
 [codecov-biome-url]: https://codecov.io/gh/repobuddy/repobuddy
