@@ -1,8 +1,8 @@
 /*
  * Plans and applies npm trusted publishing (OIDC) config across one or many repos.
  *
- *   node scripts/npm-trust.mjs plan  [--package <name> --repo <owner/name> | --repo <owner/name> | --org <login> | --all-orgs] [--file <workflow>] [--dir <repo>] [--verbose]
- *   node scripts/npm-trust.mjs apply [--otp=<code>] [--dir <repo>] [--verbose]
+ *   node scripts/repobuddy.mjs npm-trust plan  [--package <name> --repo <owner/name> | --repo <owner/name> | --org <login> | --all-orgs] [--file <workflow>] [--dir <repo>] [--verbose]
+ *   node scripts/repobuddy.mjs npm-trust apply [--otp=<code>] [--dir <repo>] [--verbose]
  *
  * `plan` resolves scope to a package list and writes `.github/npm-trust-plan.json`.
  * `apply` executes the plan, one `npm trust github` call per package.
@@ -49,7 +49,7 @@ export async function main(argv: string[] = process.argv.slice(2)): Promise<void
 			if (!result.ok) process.exit(1)
 		} else {
 			process.stderr.write(
-				'usage: npm-trust.mjs plan|apply [--package|--repo|--org|--all-orgs] [--otp=code] [--verbose]\n',
+				'usage: repobuddy.mjs npm-trust plan|apply [--package|--repo|--org|--all-orgs] [--otp=code] [--verbose]\n',
 			)
 			process.exit(2)
 		}
@@ -58,8 +58,3 @@ export async function main(argv: string[] = process.argv.slice(2)): Promise<void
 		process.exit(1)
 	}
 }
-
-// Resolve the entry check against the built bundle's filename, since this module runs as
-// `skills/setup-npm-trusted-publishing/scripts/npm-trust.mjs`, not under its source name.
-/* istanbul ignore next -- process.argv entrypoint guard, exercised only when the bundle runs as a child process */
-if (process.argv[1]?.endsWith('npm-trust.mjs')) await main()

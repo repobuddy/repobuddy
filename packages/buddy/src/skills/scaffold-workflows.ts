@@ -1,10 +1,10 @@
 /*
  * Scaffolds GitHub Actions workflow files based on detected repo state.
- * Reads the state artifact produced by detect-state.mjs. Defaults to the same temp path
+ * Reads the state artifact produced by `repobuddy.mjs detect-state`. Defaults to the same temp path
  * detect-state writes to; pass --state to point at another one.
  * Skips files that already exist.
  *
- *   node scripts/scaffold-workflows.mjs [--state <path>] [--dir <repo>] [--workflows pull-request,release,dependabot-automerge,codeql] [--yes] [--verbose]
+ *   node scripts/repobuddy.mjs scaffold-workflows [--state <path>] [--dir <repo>] [--workflows pull-request,release,dependabot-automerge,codeql] [--yes] [--verbose]
  *
  * stdout: JSON ack. stderr: progress with --verbose, an interactive prompt without --yes.
  * Exit 0 on success (including a user-declined prompt), 1 when the state file is missing or usage is bad.
@@ -15,7 +15,7 @@ import { scaffoldWorkflows } from '../setup-github-repo/scaffold-workflows.js'
 function usage(message: string): never {
 	process.stderr.write(`${message}\n`)
 	process.stderr.write(
-		'usage: scaffold-workflows.mjs [--state <path>] [--dir <repo>] [--workflows <list>] [--yes] [--verbose]\n',
+		'usage: repobuddy.mjs scaffold-workflows [--state <path>] [--dir <repo>] [--workflows <list>] [--yes] [--verbose]\n',
 	)
 	process.exit(1)
 }
@@ -62,8 +62,3 @@ export async function main(argv: string[] = process.argv.slice(2)): Promise<void
 		process.exit(1)
 	}
 }
-
-// Resolve the entry check against the built bundle's filename, since this module runs as
-// `skills/setup-github-repo/scripts/scaffold-workflows.mjs`, not under its source name.
-/* istanbul ignore next -- process.argv entrypoint guard, exercised only when the bundle runs as a child process */
-if (process.argv[1]?.endsWith('scaffold-workflows.mjs')) await main()

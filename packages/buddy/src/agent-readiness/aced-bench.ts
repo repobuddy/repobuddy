@@ -57,7 +57,7 @@ export function handover(dir: string): string {
 			`This repo still has ${LEGACY_BENCH_DIR}/. Move it with \`git mv ${LEGACY_BENCH_DIR} ${SUITE_DIR}\`,`,
 			'point any check paths in tasks.json at the new folder, and record a new baseline with ACED:',
 			'its engine reads only schema version 3. Convert a results file you want to keep comparing with',
-			'`agent-readiness.mjs bench convert`.',
+			'`repobuddy.mjs agent-readiness bench convert`.',
 		)
 	}
 	return `${lines.join('\n')}\n`
