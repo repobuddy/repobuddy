@@ -1,6 +1,6 @@
 # `checkpoint list`: show the checkpoints
 
-Arguments: `[repo path]`.
+Arguments: `[<repo path>]`.
 
 Show the checkpoints and stop. Never open, resume or continue one, never write the `resumed:` marker, and
 never `cd`. `checkpoint resume` uses the same listing when it has to ask which checkpoint to open.

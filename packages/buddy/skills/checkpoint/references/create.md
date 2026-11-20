@@ -1,6 +1,6 @@
 # `checkpoint create`: pause a session into checkpoints
 
-Arguments: `[what the next session should focus on] [--commit]`.
+Arguments: `[<what the next session should focus on>] [--commit]`.
 
 Write this session's unfinished work to checkpoint files so a fresh session, in any harness, on any
 machine the files reach, can continue without going back over settled ground. Capture *enough to

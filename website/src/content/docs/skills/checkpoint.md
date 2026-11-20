@@ -17,9 +17,9 @@ the earlier `pause-session` and `resume-session` skills. The old names were remo
 ## Invoke
 
 ```
-/checkpoint create [what the next session should focus on] [--commit]
-/checkpoint resume [checkpoint slug | path | repo path]
-/checkpoint list [repo path]
+/checkpoint create [<what the next session should focus on>] [--commit]
+/checkpoint resume [<checkpoint slug> | <path> | <repo path>]
+/checkpoint list [<repo path>]
 /checkpoint help
 ```
 

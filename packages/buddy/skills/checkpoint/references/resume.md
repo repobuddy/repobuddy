@@ -1,6 +1,6 @@
 # `checkpoint resume`: resume a session from its checkpoint
 
-Arguments: `[checkpoint slug or path | repo path]`.
+Arguments: `[<checkpoint slug> | <path> | <repo path>]`.
 
 Pick up work that `checkpoint create` checkpointed: find the checkpoint, reload its context, and continue
 from its `## NEXT` without going back over what it records as settled. The checkpoint may have been
