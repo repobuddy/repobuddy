@@ -1,6 +1,7 @@
 ---
 name: issue
 description: "Files a bug, feature, or task as an issue on the project's tracker; searches for duplicates first."
+argument-hint: "[--as-prompt] [description]"
 ---
 
 # Issue
@@ -10,6 +11,13 @@ Files one well-formed item of tracked work (a bug, a feature, or a task) on the 
 Use when asked to file an issue, create a ticket, file a bug, open a feature request, add a task, or report a problem.
 
 This skill files a **single issue**. It is not for an epic or an initiative, and not for a comment on an item that already exists (that is `to-question`). Never file a security vulnerability (a flaw that lets someone run code, or read or change data, they are not allowed to) as a public issue: send it to the repository's private channel (a GitHub security advisory, or the contact in `SECURITY.md`) and stop. Check for this first, before step 1.
+
+## Modes
+
+- **File** (the default): file the issue on the tracker.
+- **`--as-prompt`**: hand the filing to another agent. Take it when the request passes `--as-prompt`, or asks for a prompt, a hand-off, or a request to file the issue from another agent or session. Run every step as in File mode, then reply with the prompt from step 5 in place of the create. Nothing is written to the tracker, so the `Ownership` operation does not run. The security check and the level check still run: a security vulnerability never becomes a prompt; send it to the private channel and stop. Several issues from one request each get their own prompt.
+
+  Where File mode would stop because this session cannot reach the tracker (Trackers step 7 finds the tool missing, older, or logged out, or the user has no permission to create there), go on: note why, and in step 3 record the search as not run. For a dependency with no intake document (What the issue is about, step 4), go on with the dependency's own tracker as the target, using this skill's templates and, for a `github.com` or GitLab address, the bundled reference for that host with that repository as the destination.
 
 ## Categories
 
@@ -85,13 +93,15 @@ With an intake document, run its `Before filing` steps first, confirming with th
 
 Run the tracker's `Kinds` operation so the type or label is known. Summarize what will be created: title, category, key points of the description, the type or label the tracker will use, and any environment details.
 
-Then run the tracker's `Ownership` operation (its format is in `project-tracker.capabilities.interface`):
+In `--as-prompt` mode, show the summary, ask only when the level check found the item too big or too small, and go to step 5. Otherwise run the tracker's `Ownership` operation (its format is in `project-tracker.capabilities.interface`):
 
 - **`owned`**, and the level check found nothing: show the summary and go to step 5 in the same turn. Do not wait for a reply.
 - **`owned`**, and the level check found the item too big or too small: show the summary with the suggestion and ask, as for a tracker the user does not own.
 - **`not owned`**, or unknown (no `Ownership` section, a section marked unsupported, a failed command, or an answer the section does not map): ask for confirmation. Do not proceed without it.
 
 ### 5. Create
+
+In `--as-prompt` mode, do not run `Create`: write the prompt as [Hand off](#hand-off-as-prompt) says, and go to step 6.
 
 With an intake document, check each item of its `Criteria` first. State each as met or not met, with how you know. Create only when every item is met, or the user waives the unmet ones by name; otherwise stop and say which are unmet.
 
@@ -103,7 +113,21 @@ Keep the body free of internal file names, commit SHAs, and implementation detai
 
 ### 6. Report
 
-Give the URL of the new issue. When a routing or an intake document chose the tracker, add nothing. When the tracker was found without a routing (Trackers step 3 onward), end with one line that offers the draft instead of naming the skill, for example: "Save GitHub as the tracker for all work in this repo? (y)". Offer it only when the `project-tracker` set-up draft would route all work to the tracker just used (it is the only kept tracker that matches, with no conflicting signal); otherwise end with one line suggesting `project-tracker`. A yes hands the draft to `project-tracker` set-up, which writes the routing after that yes; a no or no answer writes nothing. Ask once per filing session: after the offer has been made, a later filing in the same session adds no line.
+In `--as-prompt` mode, reply with the prompt and one line above it that names the agent it suits (one with the target repository checked out, or logged in to its tracker). Add no routing line. Otherwise, give the URL of the new issue. When a routing or an intake document chose the tracker, add nothing. When the tracker was found without a routing (Trackers step 3 onward), end with one line that offers the draft instead of naming the skill, for example: "Save GitHub as the tracker for all work in this repo? (y)". Offer it only when the `project-tracker` set-up draft would route all work to the tracker just used (it is the only kept tracker that matches, with no conflicting signal); otherwise end with one line suggesting `project-tracker`. A yes hands the draft to `project-tracker` set-up, which writes the routing after that yes; a no or no answer writes nothing. Ask once per filing session: after the offer has been made, a later filing in the same session adds no line.
+
+## Hand off as prompt
+
+The prompt is one fenced block the user copies whole; use a fence longer than any run of backticks in the body. The receiving agent has none of this session's context, so the block states, in this order:
+
+1. **Target**: the tracker (GitHub or GitLab), the host, and the destination (`<owner>/<repo>`, or the GitLab project), with its visibility.
+2. **Kind**: the type or label `Kinds` returned; when it did not run, the category, for the receiver to map with its own `Kinds`.
+3. **Title** and **body**, exactly as the summary showed them, the body built as step 5 says, intake `Template` sections included.
+4. **Searches run**: each query, each hit (number, title, state, URL), and that the user judged none a match; or that no search ran, and why.
+5. **Before filing**: run the search again with those queries and one of the receiver's own, since time has passed. A hit that is the same issue: file nothing, and report its URL. With an intake document, check each of its `Criteria` and file only when all are met.
+6. **How to file**: write the body to a file and pass the file to the tracker's `Create` command (for GitHub, `gh issue create --repo <owner>/<repo> --title "<title>" --body-file <file>` with `--type` or `--label`); never pass the body through the shell. On a failed create, check for an issue left behind before any retry. Filing is approved: change the title or body only to fit the tracker.
+7. **Report back**: the URL of the new issue, or of the duplicate found.
+
+Keep out of the block what step 5 keeps out of the body, and any detail from this session the target's visibility does not allow.
 
 ## Level check
 
@@ -117,6 +141,7 @@ Read the issue level's `Too big` and `Too small` sections in `project-tracker.le
 - Do not file an epic or initiative here, or a security vulnerability publicly
 - Do not file an issue about a dependency in the current repository's tracker
 - Do not close, retype, or move an existing item
+- In `--as-prompt` mode, do not write anything to the tracker
 
 ## Validate
 
@@ -130,5 +155,6 @@ Read the issue level's `Too big` and `Too small` sections in `project-tracker.le
 - [ ] At least two searches with different keywords ran before any create command
 - [ ] The summary was shown before any create command, and a create without the user's confirmation ran only when `Ownership` answered `owned` and the level check found nothing
 - [ ] The body of a task or feature carries no bug-only section; a public issue carries no private-tracker detail
-- [ ] The URL of the new issue, or of the existing duplicate, was returned
+- [ ] The URL of the new issue, or of the existing duplicate, was returned; in `--as-prompt` mode, one prompt per issue was returned instead
+- [ ] In `--as-prompt` mode, no `Ownership` or `Create` ran, and the prompt named the target, kind, title, body, the searches and their hits, the re-search, filing from a file, and the URL to report back
 - [ ] Without a routing, the closing line offered the draft at most once per session, and nothing was written without a yes

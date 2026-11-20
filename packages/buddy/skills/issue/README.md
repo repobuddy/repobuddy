@@ -8,6 +8,7 @@ Files one item of tracked work (a bug, a feature, or a task) on the repository's
 - "open a feature request"
 - "add a task to track the migration"
 - "report this problem upstream"
+- "give me a prompt to file this from the agent that has that repo" (`--as-prompt`)
 
 ## What it does
 
@@ -20,11 +21,15 @@ Files one item of tracked work (a bug, a feature, or a task) on the repository's
 7. **Creates the issue.** On GitHub the category is the issue type (`Bug`, `Feature`, `Task`); a repository without issue types gets the `bug` or `enhancement` label instead.
 8. **Reports the URL.**
 
+## Hand off with `--as-prompt`
+
+With `--as-prompt`, it does all of the above up to the summary, then writes nothing to the tracker. It replies with one copyable prompt for another agent, for example one with the target repository checked out or logged in to its tracker. The prompt names the tracker and repository, gives the exact title and body, lists the duplicate searches already run and what they found, and tells the receiving agent to search again before filing, to file the body from a file, and to report back the issue URL. Since nothing is filed, it does not ask for your go-ahead, unless the item looks too big or too small. It still never turns a security vulnerability into a prompt. When this session cannot reach the tracker, it still writes the prompt and says the search was not run.
+
 If the item looks too big or too small for one issue, it says so and suggests another level. It never changes the level itself.
 
 ## Safety
 
-- It never creates an issue without a duplicate search and your confirmation.
+- It never creates an issue without a duplicate search and your confirmation. With `--as-prompt` it creates nothing.
 - It uses only labels and issue types the repository has.
 - It never files a security vulnerability publicly; it points to the private channel.
 - It keeps internal file names, commit SHAs, and anything from a private tracker out of the body.
@@ -39,7 +44,7 @@ Invoke `issue` (`/issue`) where you invoked `file-issue`. Bitbucket is no longer
 
 ## How to invoke
 
-Ask for it directly, or run `/issue` where slash commands are supported.
+Ask for it directly, or run `/issue` where slash commands are supported. Add `--as-prompt` for a prompt to hand to another agent.
 
 ## Install
 
