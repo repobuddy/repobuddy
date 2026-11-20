@@ -138,4 +138,4 @@ rubrics:
     - script: 'test "$(git rev-parse HEAD)" = "$(cat .git/case-start)" && test -e .git/MERGE_HEAD'
   C9:
     - script: 'test "$(git rev-parse HEAD)" = "$(cat .git/case-start)"'
-    - regex: '[Uu]ncommitted: [Bb]locked by sandbox'
+    - regex: '[Uu]ncommitted[:,]? *[-—]? *[Bb]locked by sandbox'
