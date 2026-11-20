@@ -47,7 +47,7 @@ npm and bun cannot exempt a single version, so the skill asks before it exempts 
 
 - **Tracking in public is fine.** The exemption is already visible in the config file. A version pin trusts only a release that already exists, and the lockfile holds its integrity hash.
 - **Keep the reason out of it.** Commits and PRs name the package, not why it was needed. An undisclosed vulnerability belongs in a private advisory.
-- **About the CI job:** it runs on a schedule only (plus manual dispatch where the provider has it) and can only delete marked lines. The GitHub template pins its checkout action by SHA. On GitHub, Forgejo, and Gitea, a PR opened with the automatic token does not trigger CI, so set a `MIN_RELEASE_AGE_TOKEN` secret if the restore PR must pass required checks.
+- **About the CI job:** it runs on a schedule only (plus manual dispatch where the provider has it) and can only delete marked lines. A PR opened with the automatic token does not trigger CI. On GitHub, where the `repobuddy` app is installed, the job calls a shared workflow pinned to `repobuddy/.github@v2` that opens the PR with an app token, so no token secret is needed. Without the app, and on Forgejo and Gitea, set a `MIN_RELEASE_AGE_TOKEN` secret if the restore PR must pass required checks; the GitHub fallback template pins its checkout action by SHA.
 
 ## How to invoke
 
@@ -59,7 +59,7 @@ A config change with a lift marker plus the updated lockfile (and, on the first 
 
 | Provider | Job | Script | Also needed |
 |---|---|---|---|
-| GitHub Actions | `.github/workflows/min-release-age.yml` | `.github/scripts/` | optional token secret |
+| GitHub Actions | `.github/workflows/min-release-age.yml` | none with the `repobuddy` app; `.github/scripts/` without it | with the app, nothing; without it, an optional token secret |
 | GitLab CI | `.gitlab/ci/min-release-age.yml`, included from `.gitlab-ci.yml` | `ci/` by default; Setup CI asks for the path and the runner image | pipeline schedule with `MIN_RELEASE_AGE=restore`, and a token or job-token push access |
 | Bitbucket Pipelines | `custom: min-release-age` in `bitbucket-pipelines.yml` | `ci/` | schedule in repository settings, repository access token |
 | Azure Pipelines | `.azure-pipelines/min-release-age.yml` | `ci/` | pipeline registration, build-service permissions |
