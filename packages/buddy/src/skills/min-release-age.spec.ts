@@ -72,6 +72,20 @@ test('status: unset gate, permanent exemptions, and a detected+installed CI job'
 	assert.match(out, /cleanup job: installed \(github,/)
 })
 
+test('status: the shipped GitHub job calls the shared app-token workflow and counts as installed', async () => {
+	const asset = readFileSync(join(import.meta.dirname, '../../skills/min-release-age/assets/ci/github.yml'), 'utf8')
+	assert.match(asset, /uses: repobuddy\/\.github\/\.github\/workflows\/min-release-age\.yml@v2/)
+	assert.match(asset, /secrets: inherit/)
+	assert.doesNotMatch(asset, /MIN_RELEASE_AGE_TOKEN/)
+
+	const dir = repo('pnpm-workspace.yaml', 'minimumReleaseAge: 1440\n')
+	execSync(`git -C ${dir} init -q && git -C ${dir} remote add origin git@github.com:acme/widgets.git`)
+	mkdirSync(join(dir, '.github', 'workflows'), { recursive: true })
+	writeFileSync(join(dir, '.github', 'workflows', 'min-release-age.yml'), asset)
+	await main(['status', '--dir', dir])
+	assert.match(stdout.join(''), /cleanup job: installed \(github, \.github\/workflows\/min-release-age\.yml\)/)
+})
+
 test('status: --now pins the reference time', async () => {
 	const dir = repo(
 		'pnpm-workspace.yaml',

@@ -84,7 +84,8 @@ Entries without a marker are permanent policy. Never add, remove, or rewrite the
    - `script`, `image`: where the job runs the script and, for templates that set one, its runner image. Read from the job when it is installed, otherwise the provider's defaults
 2. If `ci.installed` is true, report where the job is and stop.
 3. If `provider` does not match what the user expects (for example, the repo is mirrored or several CI systems are present), confirm the target with the user.
-4. Every reference copies `scripts/min-release-age.mjs` into the repo. If the skill has no
+4. Every reference copies `scripts/min-release-age.mjs` into the repo, except the GitHub recipe for a repo with the
+   `repobuddy` app, which calls a shared workflow instead. If the skill has no
    `scripts/min-release-age.mjs` (the skill was installed from git), take the file from the package instead: run `npm pack repobuddy@2.2.0` in a temp directory,
    extract the tarball, and copy `package/skills/min-release-age/scripts/min-release-age.mjs`.
 5. Load **only** the file named in `ci.reference` and follow it:
