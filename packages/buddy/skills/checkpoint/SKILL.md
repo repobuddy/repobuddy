@@ -1,7 +1,7 @@
 ---
 name: checkpoint
 description: "Pauses a session into topic checkpoints or resumes one, in this repo or another."
-argument-hint: "create [focus] [--commit] | resume [slug|path|repo] | list [repo] | help"
+argument-hint: "create [<what to focus on>] [--commit] | resume [<slug> | <path> | <repo path>] | list [<repo path>] | help"
 ---
 
 # Checkpoint
@@ -14,9 +14,9 @@ the request, then loads that subcommand's instructions and follows them. It does
 
 | Subcommand | Use it when | Instructions |
 |---|---|---|
-| `create [focus] [--commit]` | The user wants to stop and pick the work up later, in another session, harness, machine, or repo | [references/create.md](references/create.md) |
-| `resume [slug\|path\|repo]` | The user wants to continue work a checkpoint holds, or to see another repo's checkpoints | [references/resume.md](references/resume.md) |
-| `list [repo]` | The user wants to see the checkpoints, not open one | [references/list.md](references/list.md) |
+| `create [<what to focus on>] [--commit]` | The user wants to stop and pick the work up later, in another session, harness, machine, or repo | [references/create.md](references/create.md) |
+| `resume [<slug> \| <path> \| <repo path>]` | The user wants to continue work a checkpoint holds, or to see another repo's checkpoints | [references/resume.md](references/resume.md) |
+| `list [<repo path>]` | The user wants to see the checkpoints, not open one | [references/list.md](references/list.md) |
 | `help` | The user asks what the skill does, or invokes it bare in a session with work in a repo that already has checkpoints | the **Help** section below |
 
 ## Routing
@@ -57,13 +57,13 @@ harness invokes it, from [references/command.md](references/command.md), in plac
 - `checkpoint`: with nothing after it, runs `resume` in a new or just-cleared session; in a session on one
   checkpoint and no other topic, updates that checkpoint; in other sessions with work, runs `create` when
   the repo has no checkpoint yet, and shows this list otherwise.
-- `checkpoint create [focus] [--commit]`: sorts the session's work into topics, skips the finished ones,
+- `checkpoint create [<what to focus on>] [--commit]`: sorts the session's work into topics, skips the finished ones,
   and writes one checkpoint per live topic (or one for all, asked). A topic that matches an existing
   checkpoint rewrites it, so this is also how to update one. Example: `/checkpoint create the flaky
   login test`.
-- `checkpoint resume [slug|path|repo]`: opens a checkpoint and continues from its next step without
+- `checkpoint resume [<slug> | <path> | <repo path>]`: opens a checkpoint and continues from its next step without
   reopening settled decisions. Example: `/checkpoint resume flaky-login-test`.
-- `checkpoint list [repo]`: shows the checkpoints (this repo's, or the given repo's) with their next
+- `checkpoint list [<repo path>]`: shows the checkpoints (this repo's, or the given repo's) with their next
   steps, and stops without opening one. Example: `/checkpoint list`.
 - `checkpoint help`: this list.
 

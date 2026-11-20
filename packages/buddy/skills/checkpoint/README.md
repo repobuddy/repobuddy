@@ -17,9 +17,9 @@ topic that drifted into another repo is checkpointed in that repo, ready for a s
 ## Usage
 
 ```
-/checkpoint create [what the next session should focus on] [--commit]
-/checkpoint resume [checkpoint slug or path | repo path]
-/checkpoint list [repo path]
+/checkpoint create [<what the next session should focus on>] [--commit]
+/checkpoint resume [<checkpoint slug> | <path> | <repo path>]
+/checkpoint list [<repo path>]
 /checkpoint help
 ```
 
