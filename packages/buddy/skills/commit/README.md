@@ -41,7 +41,7 @@ Where this skill and commit-work conflict:
 - "write a commit message for what is staged": it writes and shows the message, and commits only when asked
 - A unit of work is finished and the repository's `AGENTS.md` says to commit it.
 
-Also for a small fix to the latest commit when it is unpushed: it amends. Not for pushing, opening a pull request, or squashing or undoing a commit already made, or rewriting a pushed one.
+Also for a small fix to the latest commit when it is unpushed: it amends. Not for pushing, opening a pull request, or squashing, rewording, or undoing a commit already made, or rewriting a pushed one.
 
 ## What it does
 

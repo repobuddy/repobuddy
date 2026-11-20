@@ -1,6 +1,6 @@
 ---
 name: commit
-description: "Commit uncommitted changes, split them into commits, or write a commit message for staged work. Run it for each new git commit instead of plain git."
+description: "Commit uncommitted changes, split them into new commits, or write a commit message for staged work. Run it for each new git commit instead of plain git, not to squash, reword, or undo existing commits."
 ---
 
 # Commit
