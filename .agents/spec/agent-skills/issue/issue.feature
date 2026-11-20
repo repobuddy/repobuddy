@@ -334,11 +334,12 @@ Feature: issue — file one bug, feature, or task on the tracker
     And it runs no search and no create command
 
   @behavior
-  Scenario: suggests project-tracker once in the report when no routing exists
+  Scenario: offers no routing in the report when the host's tracker was used
     Given the project has no project-tracker.routing
     And the origin remote is github.com
     When issue creates a confirmed issue and reports its URL
-    Then the report has one line suggesting the project-tracker skill to set up routing
+    Then the report does not offer to save GitHub as the tracker
+    And the report does not mention project-tracker
 
   @behavior
   Scenario: adds no suggestion to the report when a routing chose the tracker
@@ -436,6 +437,7 @@ Feature: issue — file one bug, feature, or task on the tracker
     And the origin remote is bitbucket.org
     When issue resolves the tracker
     Then it says no tracker is set up for that host
+    And it suggests project-tracker set-up
     And it runs no create command
 
   @behavior

@@ -1,6 +1,6 @@
 # project-tracker
 
-Records which issue tracker holds each kind of work, so [`issue`](../issue/README.md) files where your team decided instead of guessing. A team may keep bugs in GitHub issues and epics in a private tracker; this skill writes that down once, as the project's `project-tracker.routing` reference.
+Records which issue tracker holds each kind of work, so [`issue`](../issue/README.md) files where your team decided instead of guessing. A team may keep bugs in GitHub issues and epics in a private tracker; this skill writes that down once, as the project's `project-tracker.routing` reference. When all work goes to the tracker of the `origin` host (GitHub or GitLab), you need no routing: that tracker is the default.
 
 ## When to use
 
@@ -11,12 +11,12 @@ Records which issue tracker holds each kind of work, so [`issue`](../issue/READM
 
 ## What it does
 
-- **Set up** lists the installed `project-tracker.capabilities.<tracker>` references and drafts a routing from what it can read: the remote host, which trackers are linked to the repo and not only installed, what each tracker holds, and any line in `AGENTS.md` that says where work goes. It shows each route with its signal and asks one confirmation, and asks a question only where the signals conflict or say nothing. Each level (issue, epic, initiative) and category (bug, feature, task) is pinned as `<plugin>/project-tracker.capabilities.<tracker>`. It also asks, for each pair of trackers, whether moving an item closes the source as moved or keeps it open as a mirror. It writes `.agents/references/project-tracker.routing.md` after you confirm.
-- **Show** describes each route and move in plain words.
+- **Set up** lists the installed `project-tracker.capabilities.<tracker>` references and drafts a routing from what it can read: the remote host, which trackers are linked to the repo and not only installed, what each tracker holds, and any line in `AGENTS.md` that says where work goes. It shows each route with its signal and asks one confirmation, and asks a question only where the signals conflict or say nothing. When the only signal is the host's tracker, it says that tracker is already used by default and writes nothing: a routing is written only for a different tracker or for work split across trackers. Each level (issue, epic, initiative) and category (bug, feature, task) is pinned as `<plugin>/project-tracker.capabilities.<tracker>`. It also asks, for each pair of trackers, whether moving an item closes the source as moved or keeps it open as a mirror. It writes `.agents/references/project-tracker.routing.md` after you confirm.
+- **Show** describes each route and move in plain words. With no routing, it names the host's tracker in use, for example "GitHub, from the origin host".
 - **Change** edits the routes you name and keeps the rest.
-- **Check** reports a route whose tracker is missing, held by two plugins, on a contract version the skill does not know, a level and category that no route covers, or a route the signals no longer support (for example, an Asana route after the project link is removed). It writes nothing.
+- **Check** reports a route whose tracker is missing, held by two plugins, on a contract version the skill does not know, a level and category that no route covers, or a route the signals no longer support (for example, an Asana route after the project link is removed). With no routing on a GitHub or GitLab host, it reports the host's tracker in use and no problem. It writes nothing.
 
-Without a routing, `issue` files on the tracker of the `origin` remote and offers the draft routing as one closing question, once per session. With one, `issue` files on the routed tracker.
+Without a routing, `issue`, `epic`, and `initiative` file on the tracker of the `origin` host. A host with no tracker they can use, such as Bitbucket, needs a routing: they stop and point here. With a routing, they file on the routed tracker.
 
 ## Safety
 

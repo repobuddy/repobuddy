@@ -39,8 +39,10 @@ the [project-tracker](../project-tracker/README.md) skill) pins a tracker to eac
 With a routing, `issue` takes the first row that matches the issue level and the category, loads the
 pinned reference instead of detecting the tracker from the `origin` host, and files there. It never
 guesses: a pin that resolves to nothing or to two plugins, or a level and category no row matches,
-stops the skill with the problem named. Without a routing it behaves as before, and its report ends
-with one line suggesting `project-tracker`. The table format is in `project-tracker.capabilities.interface`.
+stops the skill with the problem named. Without a routing it files on the `origin` host's tracker,
+which is the default, so its report offers no routing and does not name `project-tracker`
+([#990](https://github.com/repobuddy/repobuddy/issues/990)). A host with no tracker, Bitbucket
+included, stops with a pointer to `project-tracker` set-up. The table format is in `project-tracker.capabilities.interface`.
 
 **The person's own tracker files without a confirmation turn.** The capabilities reference's
 optional `Ownership` section answers `owned` or `not owned` for the tracker's scope (GitHub:
@@ -114,7 +116,7 @@ use cases 1–5 and drawn in the Control Flow:
 5. **A duplicate exists.** The reporter confirms a search hit is the same issue: nothing is created; the existing URL is given.
 6. **The reporter does not confirm.** Nothing is created. The skill asks only when the tracker's `Ownership` does not answer `owned`, or the item is the wrong size.
 7. **The item is a security vulnerability.** The skill points to the private channel and creates nothing.
-8. **The host has no tracker set up** (Bitbucket or anything else). The skill says so and creates nothing.
+8. **The host has no tracker set up** (Bitbucket or anything else). The skill says so, points to `project-tracker` set-up, and creates nothing.
 9. **The item is the wrong size.** The confirmation suggests another level; the issue is still filed at this one if the reporter does not change it. Variants: the repo has no issue types (label instead of type), the host is GitLab (labels, through the bundled GitLab reference).
 10. **The category is unclear.** The skill asks for it before gathering anything else.
 11. **More than one capabilities reference matches the host.** The skill asks which to use and loads neither until answered.
@@ -146,7 +148,7 @@ graph TD
     RP -->|No| RP2[Name the pin and the problem,<br/>suggest project-tracker check, stop]
     RP -->|Yes| D[Load the pinned reference]
     RT -->|No| C{Host of the origin remote}
-    C -->|other host| F[Say no tracker is set up<br/>and stop]
+    C -->|other host| F[Say no tracker is set up,<br/>suggest project-tracker set-up, stop]
     C -->|gitlab| R
     C -->|github.com| R{How many capabilities<br/>references match the host?}
     R -->|Two or more| R2[Ask which to use and wait]
@@ -181,9 +183,7 @@ graph TD
     X -->|Yes| S{Does the newest-issues list<br/>show a stray issue?}
     S -->|Yes| S2[Report the stray<br/>and do not retry]
     S -->|No| S3[Retry or report the failure]
-    Q --> U{Was the tracker chosen<br/>without a routing?}
-    U -->|Yes| U2[Add one line suggesting<br/>project-tracker]
-    U -->|No| U3[Add nothing]
+    Q --> U[Add nothing after the URL]
 ```
 
 A tracker other than GitHub, GitLab included, meets `N` through its own reference's `Kinds` and `Create` sections, which stand where this graph says type or label. The `X` check follows the
@@ -262,7 +262,7 @@ A handed-over finding enters at `G`, and the typed scenarios' Givens do not pin 
 | `RR → RR2 (No)` | a routing with no row for the category | `stops when no route matches the category` |
 | `RP → RP2 (No)` | the pinned plugin holds no such reference, or the bare pin names two plugins | `stops when a route's pin does not resolve to one reference` |
 | `RP → RP2 (No)` | the routing file exists and the reference command cannot run | `stops when a routing exists and the reference command cannot run` |
-| `U → U2 (Yes)` | no routing exists | `suggests project-tracker once in the report when no routing exists` |
-| `U → U3 (No)` | a routing exists and the item is filed | `adds no suggestion to the report when a routing chose the tracker` |
+| `Q → U` | no routing exists and origin is github.com | `offers no routing in the report when the host's tracker was used` |
+| `Q → U` | a routing exists and the item is filed | `adds no suggestion to the report when a routing chose the tracker` |
 | `BP → BP2 (Yes)` | the routed tracker is public and the repository is private | `keeps private-tracker details out of an item filed on a public routed tracker` |
 | `BP → BP3 (No)` | the routed tracker is private | `keeps a private-tracker reference in an item filed on a private routed tracker` |

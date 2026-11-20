@@ -5,7 +5,7 @@ description: "Sets up, shows, changes, or checks which tracker holds each kind o
 
 # Project tracker
 
-Records which issue tracker holds each level and category of work, so `issue`, `epic`, and `initiative` file where the team decided and never guess. The record is the project's `project-tracker.routing` reference. This skill writes and checks it; the level skills read it.
+Records which issue tracker holds each level and category of work, so `issue`, `epic`, and `initiative` file where the team decided and never guess. The record is the project's `project-tracker.routing` reference. This skill writes and checks it; the level skills read it. Without a routing, the level skills use the host's tracker, so a routing exists only for a different tracker or for work split across trackers.
 
 Use when asked to set up where issues go, route bugs and features to different trackers, show the tracker routing, change which tracker holds something, or check that the routing still works. This skill does not file, move, or retype an item (that is `issue` and `epic`), and it writes no capabilities reference for a tracker.
 
@@ -24,28 +24,32 @@ When the `reference` command cannot run, at any step of any mode, say it is need
 
 ## Modes
 
-Pick the mode from the request. With none clear, ask. For show, change, and check: when `reference load project-tracker.routing --format json` reports status `missing`, say none exists, offer set-up, and write nothing.
+Pick the mode from the request. With none clear, ask.
+
+The **host tracker** is the tracker the level skills use when no routing exists: GitHub when the host of `git remote get-url origin` is `github.com`, GitLab when it is `gitlab.com` or a host `glab auth status --hostname <host>` accepts. Any other host, Bitbucket included, has no host tracker: its work needs a routing.
+
+For show, change, and check: when `reference load project-tracker.routing --format json` reports status `missing`, write nothing. With a host tracker, say no routing exists and that work goes to the host tracker by default, naming it and its source (for example "GitHub, from the origin host"); for change, offer set-up to send some or all work elsewhere. With no host tracker, say no routing exists and nothing can be filed until one does, and offer set-up.
 
 ### Set up
 
 1. When a routing exists, show it, offer **Change**, and write nothing.
-2. List what is installed: run `reference search project-tracker.capabilities`. Keep only hits whose `match` is `prefix`; drop the interface itself, `project-tracker.capabilities.interface`, and every other hit.
-3. Run `reference load <name> --format json --metadata` on each kept name and read the version in `metadata`: `implements` (`project-tracker.capabilities@<version>`), or `contract` when there is no `implements`. When it is missing or is not a version `project-tracker.capabilities.interface` declares, leave that tracker out of the choices and say which one and why.
-4. When nothing is left, say no capabilities reference is installed and write nothing.
-5. Build a draft from what can be read, before asking anything. The draft picks only among the trackers kept in step 3; it never names one that is not installed. Read these signals:
-   - **Host**: the host of `git remote get-url origin`, as `issue` Trackers step 3 reads it. The kept tracker whose `Detect` matches the host is the host's tracker.
+2. Read the host tracker, as [Modes](#modes) says.
+3. List what is installed: run `reference search project-tracker.capabilities`. Keep only hits whose `match` is `prefix`; drop the interface itself, `project-tracker.capabilities.interface`, and every other hit.
+4. Run `reference load <name> --format json --metadata` on each kept name and read the version in `metadata`: `implements` (`project-tracker.capabilities@<version>`), or `contract` when there is no `implements`. When it is missing or is not a version `project-tracker.capabilities.interface` declares, leave that tracker out of the choices and say which one and why.
+5. When nothing is left, say no capabilities reference is installed and write nothing. With a host tracker, add that work goes to it by default and needs no routing.
+6. Build a draft from what can be read, before asking anything. The draft picks only among the trackers kept in step 4; it never names one that is not installed. Read these signals:
+   - **Host**: the host tracker from step 2. The kept tracker whose `Detect` matches the host is its reference.
    - **Linked**: for each kept tracker, whether its `Detect` section resolves a scope for this repository (for Asana, a configured project), as opposed to the tracker being installed only. Run only the checks `Detect` names and write nothing.
    - **What it holds**: the levels, categories, and visibility in its `Tracker` section, and the issue types its `Kinds` section reads. A level or category no tracker holds stays out of the draft.
    - **What the repo says**: a line in `AGENTS.md` or `CLAUDE.md` that names where work goes, such as "Use GitHub issues for feature planning by default". Count it only when it names a kept tracker.
 
-   Show each route with the signal behind it, and say which kept trackers are installed but not linked. Ask a question only where signals conflict (a linked tracker and a different host tracker, or a repo line against the host) or say nothing (no host tracker, no linked tracker, no repo line); a route all signals agree on is not asked. Only one kept tracker matches and nothing conflicts: draft one catch-all route to it.
-6. Ask only what the draft left open: which tracker holds each level and category where signals conflict or were silent. Read the visibility, levels, and categories each tracker holds from its `Tracker` section.
-7. Pin each choice. A name that came back as `<plugin>/<name>` is already a pin; when two plugins ship the tracker, list both and ask which, then pin that one. A bare name: run `reference where <name>` and pin `<plugin>/<name>` with the plugin its `used` list names. A tracker that only the project's own `.agents/references/` defines has no plugin: pin the bare name.
-8. Ask what happens to the source when an item moves between each pair of routed trackers that has no `Moves` row yet: `moved` (close the source as moved) or `mirror` (keep it open). Offer `moved` as the default. Never ask for or write a row that moves an item from a private tracker to a public one (see `Routing` in `project-tracker.capabilities.interface`): refuse that pair and say a private tracker's details do not go into a public one.
-9. Show the routes and moves in plain words, with the signal behind each route, and ask for one confirmation covering the draft and the answers. When declined, write nothing and say so.
-10. Write the content to a temporary file in the format `project-tracker.capabilities.interface` gives (specific rows first, a catch-all last), then run `reference create project-tracker.routing --template <file>`. It writes `.agents/references/project-tracker.routing.md` and never overwrites.
-
-A draft that `issue` hands over (one catch-all route to one tracker it already showed) needs no further question: re-run steps 2 to 4, check the draft's tracker is still among the kept ones, and when the user's yes to `issue`'s offer is on record, go to step 10 with no `Moves` rows. Otherwise run the steps in full.
+   Show each route with the signal behind it, and say which kept trackers are installed but not linked. Ask a question only where signals conflict (a linked tracker and a different host tracker, or a repo line against the host) or say nothing (no host tracker, no linked tracker, no repo line); a route all signals agree on is not asked.
+7. When the host tracker is the only signal, or every route the draft holds goes to it, say that tracker is already used by default, name any kept trackers that are installed but not linked, and write nothing: a routing is written only for a tracker other than the host's, or for work split across trackers. A request that names a different tracker or a split goes on.
+8. Ask only what the draft left open: which tracker holds each level and category where signals conflict or were silent. Read the visibility, levels, and categories each tracker holds from its `Tracker` section. In set-up, when the answers send every route to the host tracker, stop as step 7 says.
+9. Pin each choice. A name that came back as `<plugin>/<name>` is already a pin; when two plugins ship the tracker, list both and ask which, then pin that one. A bare name: run `reference where <name>` and pin `<plugin>/<name>` with the plugin its `used` list names. A tracker that only the project's own `.agents/references/` defines has no plugin: pin the bare name.
+10. Ask what happens to the source when an item moves between each pair of routed trackers that has no `Moves` row yet: `moved` (close the source as moved) or `mirror` (keep it open). Offer `moved` as the default. Never ask for or write a row that moves an item from a private tracker to a public one (see `Routing` in `project-tracker.capabilities.interface`): refuse that pair and say a private tracker's details do not go into a public one.
+11. Show the routes and moves in plain words, with the signal behind each route, and ask for one confirmation covering the draft and the answers. When declined, write nothing and say so.
+12. Write the content to a temporary file in the format `project-tracker.capabilities.interface` gives (specific rows first, a catch-all last), then run `reference create project-tracker.routing --template <file>`. It writes `.agents/references/project-tracker.routing.md` and never overwrites.
 
 ### Show
 
@@ -53,7 +57,7 @@ Describe each route as a level and category going to a tracker, and each move as
 
 ### Change
 
-Ask which levels or categories change, then run set-up steps 2 to 9 for them: list the trackers again, ask only about the levels and categories named, and ask the move policy only for pairs with no row yet. Write the whole routing back with every route and move the user did not touch unchanged: `reference create` never overwrites, so replace the file at the path of the `repo` entry in the `files` that `reference where project-tracker.routing` prints.
+Ask which levels or categories change, then run set-up steps 2 to 6 and 8 to 11 for them: list the trackers again, ask only about the levels and categories named, and ask the move policy only for pairs with no row yet. Write the whole routing back with every route and move the user did not touch unchanged: `reference create` never overwrites, so replace the file at the path of the `repo` entry in the `files` that `reference where project-tracker.routing` prints.
 
 ### Check
 
@@ -63,9 +67,9 @@ Write nothing. Walk every route: run `reference load <pin> --format json --metad
 - **ambiguous**: status `ambiguous`, code `reference-ambiguous`; list the qualified names in `options`.
 - **unknown version**: neither `implements` nor `contract` in `metadata` gives a version `project-tracker.capabilities.interface` declares; name the tracker and the version.
 - **uncovered**: a level and category (any of issue, epic, initiative with bug, feature, task) that no route matches.
-- **stale**: a route that the signals in set-up step 5 no longer support. Re-read them and report: a route to a tracker whose `Detect` no longer resolves a scope for this repository (for Asana, the project link was removed), or a catch-all route to a tracker other than the host's while no other signal supports it, such as a pinned host tracker that no longer matches `origin`. Name the route and the signal that changed. Report it as a note only: the routing may be deliberate.
+- **stale**: a route that the signals in set-up step 6 no longer support. Re-read them and report: a route to a tracker whose `Detect` no longer resolves a scope for this repository (for Asana, the project link was removed), or a catch-all route to a tracker other than the host's while no other signal supports it, such as a pinned host tracker that no longer matches `origin`. Name the route and the signal that changed. Report it as a note only: the routing may be deliberate.
 
-When there are none, say the routing is clean. Suggest **Change** for any problem.
+When there are none, say the routing is clean. With no routing, check reports the host tracker in use and no problem, as [Modes](#modes) says; only a host with no host tracker makes a missing routing a problem. Suggest **Change** for any problem.
 
 ## What NOT to Do
 
@@ -81,5 +85,7 @@ When there are none, say the routing is clean. Suggest **Change** for any proble
 - [ ] Trackers were listed by the `project-tracker.capabilities` prefix and only `match: prefix` hits were kept
 - [ ] The draft named only trackers from the kept installed references, each route with its signal
 - [ ] No routing file was written without the user's confirmation, and no question was asked about a route all signals agreed on
+- [ ] No routing was written that sends all work to the host tracker
+- [ ] With no routing, show and check named the host tracker in use, and check reported no problem when the host has one
 - [ ] No `Moves` row goes from a private tracker to a public one
 - [ ] Check wrote no file, and reported a stale route as a note

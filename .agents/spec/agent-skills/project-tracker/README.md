@@ -11,8 +11,9 @@ concept:
 
 A team may keep bugs in GitHub issues, feature requests in another tracker, and epics in a private
 one. The level skills (`issue` today, `epic` and `initiative` later) must know which tracker holds
-what, and must not guess. Without a recorded answer, an agent files everything on the host of the
-`origin` remote, or picks a tracker by luck.
+what, and must not guess. Without a recorded answer, they file everything on the tracker of the
+`origin` host (GitHub or GitLab): the default, right whenever the team keeps all its work there. A
+host with no tracker, Bitbucket included, has no default.
 
 `project-tracker` records the answer. It is a **routing skill** ([ADR 0002](../../design/decisions/0002-routing-skills-are-named-noun-first.md))
 with four modes: **set up**, **show**, **change**, and **check** the project's **routing**, the
@@ -87,7 +88,7 @@ owner* is affected when a move could carry their details into a public tracker.
 
 | # | Use case (surface: `/project-tracker`) | Actor / goal | Entry point | Extensions |
 |---|---|---|---|---|
-| 1 | **Set up** | Maintainer: record which tracker holds each level and category, and what a move does to its source | Trigger: asks to set up where issues, epics, or features go. Inputs: answers about trackers and move policy. Outcome: `project-tracker.routing` written | 1–3, 5–9 |
+| 1 | **Set up** | Maintainer: record which tracker holds each level and category, and what a move does to its source | Trigger: asks to set up where issues, epics, or features go. Inputs: answers about trackers and move policy. Outcome: `project-tracker.routing` written | 1–3, 5–9, 14 |
 | 2 | **Show** | Maintainer: see where each kind of work goes | Trigger: asks where issues go or to show the routing. Outcome: the routes and moves in plain words, nothing written | 1, 4 |
 | 3 | **Change** | Maintainer: send one kind of work elsewhere without redoing the rest | Trigger: asks to move bugs to another tracker. Outcome: the routing rewritten with every untouched route and move kept | 1–5, 7–9 |
 | 4 | **Check** | Maintainer: learn whether the routing still works after an install, an upgrade, or a removal | Trigger: asks to check the routing. Outcome: each problem named with its route and pin, or a clean report; nothing written | 1, 4, 10–13 |
@@ -97,7 +98,7 @@ owner* is affected when a move could carry their details into a public tracker.
 1. **The `reference` command cannot run.** The skill says so and stops; nothing can be listed or read.
 2. **No capabilities reference is left** after fuzzier hits and unknown contract versions are dropped. The skill says none is installed and writes nothing.
 3. **A reference's contract version is unknown or missing.** The skill leaves it out of the choices and says why. Change goes through the same listing, so it applies there too.
-4. **No routing exists** (show, change, check). The skill says so and offers set-up.
+4. **No routing exists** (show, change, check). On a GitHub or GitLab host, the skill names the host's tracker in use by default, and check reports no problem; on any other host, Bitbucket included, it says none exists and offers set-up.
 5. **The user declines the summary.** Nothing is written.
 6. **A routing already exists** (set up). The skill shows it and offers change; it overwrites nothing.
 7. **Two plugins ship the same tracker.** The skill asks which, and pins the qualified name.
@@ -107,6 +108,7 @@ owner* is affected when a move could carry their details into a public tracker.
 11. **A route's pin is a bare name two plugins hold** (check): reported as ambiguous.
 12. **A route's reference has a contract version the skill does not know** (check): reported with the tracker and the version.
 13. **A level and category pair matches no route** (check): reported as uncovered.
+14. **The host's tracker is the only signal** (set up). The skill says that tracker is already used by default and writes nothing: a routing exists only for a different tracker or for work split across trackers ([#990](https://github.com/repobuddy/repobuddy/issues/990)).
 
 **The coverage universe.** Check asks about nine cells: the three levels (issue, epic, initiative)
 crossed with the three categories (bug, feature, task). A cell is covered when some route matches it.
@@ -136,7 +138,9 @@ graph TD
     G -->|Yes| H{Any reference left?}
     G2 --> H
     H -->|None| H2[Say none is installed<br/>and write nothing]
-    H -->|Some| I[Ask which tracker holds each level and<br/>category; for Change, only those the user names]
+    H -->|Some| HT{Set up, and every drafted route<br/>goes to the host's tracker?}
+    HT -->|Yes| HT2[Say the host's tracker is<br/>the default, write nothing]
+    HT -->|No| I[Ask which tracker holds each level and<br/>category; for Change, only those the user names]
     I --> J{How is the chosen<br/>tracker provided?}
     J -->|By one plugin| J1[Pin plugin/name<br/>plugin read with reference where]
     J -->|By two plugins| J2[Ask which plugin<br/>pin the qualified name]
@@ -151,7 +155,9 @@ graph TD
     M --> N{Does the user confirm?}
     N -->|No| N2[Write nothing]
     N -->|Yes| O[Write project-tracker.routing<br/>specific rows first, catch-all last]
-    E -->|No| E2[Say none exists<br/>and offer Set up]
+    E -->|No| EH{Does the origin host<br/>have a tracker?}
+    EH -->|GitHub or GitLab| EH2[Name the host's tracker in use;<br/>no problem, write nothing]
+    EH -->|Other host| E2[Say none exists<br/>and offer Set up]
     E -->|Yes| P{Mode}
     P -->|Show| P1[Print routes and moves in plain words]
     P -->|Change| F
@@ -190,6 +196,8 @@ the notes together at `X1`; it writes nothing.
 | `A` (engage) | a repo where `issue` and `to-question` are also installed | `engages to set up, show, change, or check tracker routing, not to file or comment` |
 | `F → G` | the search returns a prefix hit and a description hit | `lists installed capabilities by prefix and drops the fuzzier matches` |
 | `G → G2 (No)` | one reference declares contract 2 | `leaves out a capabilities reference whose contract version it does not know` |
+| `HT → HT2 (Yes)` | origin is github.com and github is the only signal | `writes no routing when the host's tracker is the only signal` |
+| `HT → I (No)` | epics go to another tracker, the rest to github | `writes a routing when work is split between the host's tracker and another` |
 | `H → H2 (None)` | the only reference left after filtering is none | `says no capabilities are installed and writes nothing` |
 | `J → J1 (By one plugin)` | one plugin ships the tracker | `pins a tracker one plugin ships as plugin/name` |
 | `J → J2 (By two plugins)` | two plugins ship the tracker | `asks which plugin when two ship the same tracker and pins the qualified name` |
@@ -206,7 +214,8 @@ the notes together at `X1`; it writes nothing.
 
 | Edge | Path (Given) | Scenario |
 |---|---|---|
-| `E → E2 (No)` | any of show, change, check, with no routing | `says no routing exists and offers set-up` |
+| `EH → EH2 (GitHub or GitLab)` | show or check, no routing, origin is github.com | `reports the host's tracker in use when no routing exists` |
+| `EH → E2 (Other host)` | any of show, change, check, no routing, origin is bitbucket.org | `says no routing exists and offers set-up on a host with no tracker` |
 | `P → P1 (Show)` | a routing with two routes and one move | `shows each route and move in plain words and writes nothing` |
 | `P → F (Change)` | a routing with three routes and one move | `changes one route, lists trackers again, and keeps every other route and move` |
 | `R → R1 (Nothing found)` | a pin naming a plugin that holds no such reference | `reports a route whose capabilities reference is missing` |
