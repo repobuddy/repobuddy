@@ -19,6 +19,6 @@
 		"jest-watch-toggle-config": "^3.0.0",
 		"jest-watch-typeahead": "^3.0.0",
 		"ts-jest": "29.4.15",
-		"typescript": "^6.0.0"
+		"typescript": "^7.0.0"
 	}
 }
