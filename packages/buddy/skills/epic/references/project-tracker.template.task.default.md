@@ -3,7 +3,6 @@ description: Body template for a task issue (a chore, a refactor, a migration).
 tags: [work-template, task, issue]
 aliases: [repobuddy.work-template.task]
 ---
-
 ## Description
 
 The work, in one or two sentences.

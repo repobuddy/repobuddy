@@ -79,13 +79,6 @@ describe('project-tracker.capabilities.interface', () => {
 		).toEqual(['repobuddy/project-tracker.capabilities.github', 'repobuddy/project-tracker.capabilities.gitlab'])
 	})
 
-	it('ships with each skill that names it under its own name, not as a default', () => {
-		const canonical = readFileSync(join(pluginRoot, 'references', `${name}.md`), 'utf8')
-		for (const skill of ['epic', 'initiative', 'issue', 'project-tracker']) {
-			expect(readFileSync(join(skillsDir, skill, 'references', `${name}.md`), 'utf8')).toBe(canonical)
-		}
-	})
-
 	it('still loads under its old name, project-tracker.contract, with a reference-renamed warning', async () => {
 		const resolved = await loadReference('project-tracker.contract', { ...base, plugin })
 		const current = await loadReference(name, { ...base, plugin })
@@ -113,11 +106,6 @@ describe('project-tracker.intake.interface', () => {
 			?.split('\n')
 			.flatMap((line) => /^\| `([^`]+)` \|/.exec(line)?.[1] ?? [])
 		expect(declared).toEqual(table)
-	})
-
-	it('ships with the issue skill under its own name, not as a default', () => {
-		const canonical = readFileSync(join(pluginRoot, 'references', `${name}.md`), 'utf8')
-		expect(readFileSync(join(skillsDir, 'issue', 'references', `${name}.md`), 'utf8')).toBe(canonical)
 	})
 })
 

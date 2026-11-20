@@ -3,7 +3,6 @@ description: What a scaffold.recipe.<name> reference must contain, and the contr
 tags: [scaffold, contract]
 contract: 1
 ---
-
 ## Version
 
 This is contract **1**. A recipe declares the version it follows in its frontmatter as `contract: 1`. A skill that knows contract 1 loads a recipe with `contract: 1` and stops on any other value or on none, saying which recipe and which version. A change that adds a section or an optional field keeps the number; a change that renames or removes a section raises it.

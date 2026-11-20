@@ -3,7 +3,6 @@ description: The checks that define an issue, an epic, and an initiative, and wh
 tags: [work-levels, issue, epic, initiative]
 aliases: [repobuddy.work-levels]
 ---
-
 ## Issue
 
 ### Is

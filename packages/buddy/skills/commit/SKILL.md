@@ -15,8 +15,8 @@ Repository rules take precedence over this skill: the **Commit Discipline** sect
 
 ## References
 
-Load these with the `reference` skill in the `cyber-agentkit` plugin, once per run, so every override
-of them applies (repository, user, and plugin):
+Load `commit.message` and `commit.release-notes` with the `reference` skill of `cyber-agentkit`, once
+per run, so every override of them applies (repository, user, and plugin):
 
 - `commit.message`: how to write the message. The default is Conventional Commits, with the rules of
   the repository's commit-message linter when it has one.

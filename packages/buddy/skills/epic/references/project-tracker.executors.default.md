@@ -2,7 +2,6 @@
 description: Who can carry out an epic's steps on this tracker; what an agent cannot do, what it does only after a confirmation, and which steps are irreversible.
 tags: [project-tracker, executors, epic]
 ---
-
 ## Executors
 
 - **person**: a named person, by tracker handle, such as `@octocat`. A person can do every step, including those in the tracker's web UI.

@@ -2,7 +2,6 @@
 description: How a plan researches its idea, feasibility, and prior art before its intent is final, and where the result lives.
 tags: [research, epic]
 ---
-
 ## Method
 
 Run the `deep-research` skill of the `research-workbench` plugin on the drafted intent: the outcome sentence and the main jobs or use cases. Ask it to cover:

@@ -2,7 +2,6 @@
 description: What the commit skill puts in a commit of a change to a published package. Patch a section in .agents/references/commit.release-notes.md.
 tags: [commit, release-notes, changesets]
 ---
-
 ## Release notes
 
 When the repository has `.changeset/config.json`, a commit that changes a published package carries

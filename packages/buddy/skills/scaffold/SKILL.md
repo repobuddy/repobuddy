@@ -13,7 +13,7 @@ Use when asked to scaffold a repo, start a new project or package, set up a repo
 
 Each `reference <subcommand> ...` here is the `reference` command of `cyber-agentkit`, not a program on PATH. Run it as the `Run the command` section of that plugin's `reference` skill (`cyber-agentkit:reference` in Claude Code) says: `node <reference skill folder>/scripts/reference.mjs <subcommand> ...`, or the `npx -y cyber-agentkit@<version> reference` form it gives when the script cannot start. The command **cannot run** when neither starts.
 
-Load these with the `reference` skill in the `cyber-agentkit` plugin:
+Load `scaffold.contract` with the `reference` skill of `cyber-agentkit`:
 
 - `scaffold.contract`: the sections a recipe has, the order of work, and which `contract:` versions it knows.
 
