@@ -1,5 +1,40 @@
 # repobuddy
 
+## 4.9.0
+
+### Minor Changes
+
+- 3c1692b: Add an `--as-prompt` mode to the `issue` skill. It does the usual work (category, details, environment, duplicate
+  search, title, and templated body), then replies with one copyable prompt for another agent to file the issue, in place
+  of creating it. The prompt names the target tracker, the exact title and body, and the searches already run, and tells
+  the receiving agent to search again, file the body from a file, and report back the URL.
+- c04e848: `min-release-age`: on GitHub, Setup CI now calls the shared `repobuddy/.github` `min-release-age.yml` workflow, which opens the restore PR with a `repobuddy` GitHub App token. Required checks run on that PR, and the repo needs no `MIN_RELEASE_AGE_TOKEN` secret and no copy of the script. Repos without the app keep the token-secret workflow, now shipped as `assets/ci/github-token.yml`.
+- be4205d: Skills now run CLIs through a committed forwarding script, `scripts/<bin>.mjs`, written by `universal-plugin plugin build`.
+  `agent-readiness`, `init-buddy`, `min-release-age`, `setup-github-repo`, and `setup-npm-trusted-publishing` run
+  `node <skill-dir>/scripts/repobuddy.mjs <command>`. The forwarder runs the CLI of the `repobuddy` package it sits in,
+  or `npx -y repobuddy@<version>` when there is none. A skill installed from git now has the script it needs, with no
+  separate fallback step. The pinned `cyber-aced`, `cyber-agentkit`, and `cyber-skills` calls run through forwarders too.
+  
+  The per-command bundles `detect-env.mjs`, `detect-state.mjs`, `scaffold-workflows.mjs`, `npm-trust.mjs`, and
+  `agent-readiness.mjs` are no longer shipped. Run `repobuddy <command>` for each of them instead.
+  `min-release-age.mjs` and the `gh-api-guard.mjs` hook still ship.
+
+### Patch Changes
+
+- 9fd0071: `checkpoint` usage now writes placeholders as `<value>` (`resume [<slug> | <path> | <repo path>]`, `list [<repo path>]`, `create [<what to focus on>]`), so they no longer read as literal words to type; `--commit` and the subcommand names stay bare.
+- c7539ec: The `commit` skill now checks, before making a new commit, whether the latest commit is unpushed and the fix belongs to it, and amends it when both hold.
+- 8e6db6a: `commit` skill evals: the `amend-unpushed` and `amend-pushed` prompts ask for the commit, so the skill runs on them.
+- 8e6db6a: `commit` skill evals: the `sandbox-blocked` check accepts "Uncommitted: blocked by sandbox" with a capital letter, as the skill's replies write it.
+- f35e1ff: `commit` skill evals: the `sandbox-blocked` check accepts "uncommitted: blocked by sandbox" with a comma or dash in place of the colon, so the case fails only when the agent commits or never reports the block.
+- 60f52fa: The `commit` skill's description now says it does not squash, reword, or undo existing commits, so it no longer fires on "squash the last three commits".
+- 6b25a7a: Bundle each skill's interface copy as `references/<id>.interface.default.md`, the name cyber-agentkit reads, so the `epic`, `initiative`, `issue`, and `project-tracker` skills get it through the `reference` skill instead of reading it by hand. Each skill's load lines now name what they load in the form cyber-agentkit's `reference defaults` reads.
+- 63d28ee: The `scaffold` and `agent-readiness` skills now say how to run their `reference ...` calls: they are cyber-agentkit's `reference` command, run through its `reference` skill, not a program on PATH. `agent-readiness` goes on without migrating when the command cannot run.
+- 63d28ee: The `epic`, `initiative`, `issue`, and `project-tracker` skills now say how to run their `reference ...` calls: they are cyber-agentkit's `reference` command, not a program on PATH, run through its `reference` skill. Each step that runs one now says what to do when the command cannot run, instead of leaving the agent to guess.
+- 8c7097d: Build the plugin manifests with `universal-plugin` 0.22.0. The generated output is unchanged.
+- be4205d: Build the plugin manifests with `universal-plugin` 0.23.0. The generated output is unchanged.
+- 9314cdc: Rebuild the skill CLI forwarders with `universal-plugin` 0.23.1. A skill installed from git, where the package has no
+  build output, now falls back to `npx` instead of crashing on the missing `esm/bin.js`.
+
 ## 4.8.0
 
 ### Minor Changes
