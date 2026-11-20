@@ -91,7 +91,7 @@ outcome:
   # the latest commit has a typo and is on no remote: it is amended
   - id: amend-unpushed
     prompt: My last commit has a typo in README.md ("recieve" should be "receive").
-      Fix it.
+      Fix it and commit the fix.
     setup: setup/amend-unpushed.sh
     criteria: [C6]
     checks:
@@ -103,7 +103,7 @@ outcome:
   # the same commit is on a remote: it is not rewritten
   - id: amend-pushed
     prompt: My last commit has a typo in README.md ("recieve" should be "receive").
-      Fix it.
+      Fix it and commit the fix.
     setup: setup/amend-pushed.sh
     criteria: [C6]
     checks:
