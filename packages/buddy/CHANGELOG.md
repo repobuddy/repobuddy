@@ -1,5 +1,33 @@
 # repobuddy
 
+## 5.0.0
+
+### Major Changes
+
+- a19b849: Rename "lift" to "exempt" in the `min-release-age` skill and the `buddy release-age` command, because "lift" read as
+  dropping the whole gate when it only exempts one package version for a limited time.
+  
+  - The command `release-age lift <pkg>` is now `release-age exempt <pkg>`. `lift` still works as an undocumented alias.
+  - New exemptions are written as `# min-release-age: exempt <spec> until <ISO>`. Old `# min-release-age: lift ...`
+    markers are still read, and `restore` still removes them once they expire.
+  - JSON output changes: `status` reports `exemptions` instead of `lifts`, and each item's `kind` is `exempt` or
+    `permanent` instead of `lift` or `permanent`. Each `restore` entry has `exemption` instead of `lift`.
+  - Text output says "exempted" and "expired exemption(s)" in place of "lifted" and "expired lift(s)".
+  
+  A cleanup job reads `exempt` markers only when it runs this version or later. The GitHub job that calls the shared
+  `repobuddy/.github` workflow picks the CLI with its `repobuddy-version` input. Until that input (or the workflow's
+  default) allows this major, new exemptions are never removed automatically. A job that runs a vendored copy of
+  `min-release-age.mjs` (GitHub without the app, GitLab, Bitbucket, Azure, Forgejo) needs that copy refreshed: re-run
+  Setup CI, or copy the new script.
+
+### Minor Changes
+
+- 0ef7c7c: `project-tracker` treats the `origin` host's tracker (GitHub or GitLab) as the default. Set-up writes a routing only for a different tracker or for work split across trackers; when the host's tracker is the only signal, it says so and writes nothing. Show and check, with no routing, name the host's tracker in use, and check no longer reports the missing routing as a problem. `issue` no longer ends a filing with an offer to save the host's tracker as the routing. A host with no tracker, such as Bitbucket, still needs a routing: `issue`, `epic`, and `initiative` stop and point to `project-tracker` set-up.
+
+### Patch Changes
+
+- 5240df5: Name skill script commands as they run today in usage and error text, such as `usage: repobuddy.mjs env ...`, instead of the per-command bundles that were removed, and drop the entry guards that could no longer match.
+
 ## 4.9.0
 
 ### Minor Changes
