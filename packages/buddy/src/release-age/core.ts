@@ -5,11 +5,11 @@ import { MANAGERS, type PackageManager } from './managers.js'
 
 // ── status ────────────────────────────────────────────────────────────────────
 
-interface LiftExemption {
+interface TimedExemption {
 	value: string
 	line: number
 	until: string | null
-	kind: 'lift' | 'permanent'
+	kind: 'exempt' | 'permanent'
 	expired: boolean
 }
 
@@ -23,7 +23,7 @@ export interface StatusResult {
 	defaultApplied: boolean
 	defaultNote: string | undefined
 	versionPin: boolean
-	lifts: LiftExemption[]
+	exemptions: TimedExemption[]
 	permanent: string[]
 	ci: ReturnType<typeof detectCi>
 }
@@ -32,9 +32,9 @@ export function status(dir: string, pm: PackageManager, now: Date = new Date()):
 	const cfg = MANAGERS[pm]
 	const { path, lines } = load(dir, pm)
 	const raw = readAge(pm, lines)
-	const exemptions = readExemptions(pm, lines).map((e) => ({
+	const all = readExemptions(pm, lines).map((e) => ({
 		...e,
-		kind: (e.until ? 'lift' : 'permanent') as 'lift' | 'permanent',
+		kind: (e.until ? 'exempt' : 'permanent') as 'exempt' | 'permanent',
 		expired: e.until ? new Date(e.until) <= now : false,
 	}))
 	return {
@@ -47,13 +47,13 @@ export function status(dir: string, pm: PackageManager, now: Date = new Date()):
 		defaultApplied: raw === undefined,
 		defaultNote: raw === undefined ? cfg.defaultNote : undefined,
 		versionPin: cfg.versionPin,
-		lifts: exemptions.filter((e) => e.kind === 'lift'),
-		permanent: exemptions.filter((e) => e.kind === 'permanent').map((e) => e.value),
+		exemptions: all.filter((e) => e.kind === 'exempt'),
+		permanent: all.filter((e) => e.kind === 'permanent').map((e) => e.value),
 		ci: detectCi(dir),
 	}
 }
 
-// ── lift ──────────────────────────────────────────────────────────────────────
+// ── exempt ────────────────────────────────────────────────────────────────────
 
 function splitSpec(spec: string): { name: string; version: string | undefined } {
 	const at = spec.lastIndexOf('@')
@@ -100,14 +100,14 @@ export function resolveSpec(spec: string, registry: Registry = npmRegistry): Res
 	return { name, version: resolved, tag }
 }
 
-export interface LiftOptions {
+export interface ExemptOptions {
 	nameWide?: boolean
 	until?: string
 	now?: Date
 	registry?: Registry
 }
 
-export type LiftResult =
+export type ExemptResult =
 	| { ok: false; error: string }
 	| { ok: true; changed: false; entry: string; spec: string; reason: string }
 	| {
@@ -121,7 +121,7 @@ export type LiftResult =
 			nameWide: boolean
 	  }
 
-export function lift(dir: string, pm: PackageManager, input: string, options: LiftOptions = {}): LiftResult {
+export function exempt(dir: string, pm: PackageManager, input: string, options: ExemptOptions = {}): ExemptResult {
 	const { nameWide = false, until, now = new Date(), registry = npmRegistry } = options
 	const cfg = MANAGERS[pm]
 	const parsed = resolveSpec(input, registry)
@@ -130,19 +130,19 @@ export function lift(dir: string, pm: PackageManager, input: string, options: Li
 	if (!cfg.versionPin && !nameWide) {
 		return {
 			ok: false,
-			error: `${pm} can only exempt a whole package name; pass --name-wide to exempt every version of ${parsed.name} until the lift expires`,
+			error: `${pm} can only exempt a whole package name; pass --name-wide to exempt every version of ${parsed.name} until the exemption expires`,
 		}
 	}
 	const current = status(dir, pm, now)
 	const entry = cfg.versionPin ? spec : parsed.name
-	const covered = [...current.permanent, ...current.lifts.map((l) => l.value)].find(
+	const covered = [...current.permanent, ...current.exemptions.map((l) => l.value)].find(
 		(v) => v === entry || v === parsed.name || (v.endsWith('/*') && parsed.name.startsWith(v.slice(0, -1))),
 	)
 	if (covered) return { ok: true, changed: false, entry, spec, reason: `already exempt by "${covered}"` }
 
 	let expiry = until ? new Date(until) : undefined
 	if (!expiry) {
-		if (!current.minutes) return { ok: false, error: `${cfg.ageKey} is not set; there is no gate to lift` }
+		if (!current.minutes) return { ok: false, error: `${cfg.ageKey} is not set; there is no gate to exempt from` }
 		const published = registry.times(parsed.name)[parsed.version]
 		if (!published) return { ok: false, error: `npm has no publish time for ${spec}` }
 		expiry = new Date(new Date(published).getTime() + current.minutes * 60_000)
@@ -151,11 +151,11 @@ export function lift(dir: string, pm: PackageManager, input: string, options: Li
 	}
 	if (Number.isNaN(expiry.getTime())) return { ok: false, error: `invalid expiry "${until}"` }
 	if (expiry <= now) {
-		return { ok: true, changed: false, entry, spec, reason: `${spec} already clears the gate; no lift needed` }
+		return { ok: true, changed: false, entry, spec, reason: `${spec} already clears the gate; no exemption needed` }
 	}
 
 	const iso = expiry.toISOString().replace(/\.\d{3}Z$/, 'Z')
-	const markerText = `min-release-age: lift ${spec} until ${iso}`
+	const markerText = `min-release-age: exempt ${spec} until ${iso}`
 	const { path, lines } = load(dir, pm)
 	insertEntry(pm, lines, entry, markerText)
 	save(path, lines)
@@ -170,7 +170,7 @@ export interface RestoreOptions {
 }
 
 interface RestoreEntry {
-	lift: string
+	exemption: string
 	until: string
 	entry?: string
 }
@@ -195,7 +195,7 @@ export function restore(dir: string, pm: PackageManager, options: RestoreOptions
 		}
 		const until = new Date(m[2])
 		if (Number.isNaN(until.getTime()) || until > now) {
-			kept.push({ lift: m[1], until: m[2] })
+			kept.push({ exemption: m[1], until: m[2] })
 			out.push(line)
 			continue
 		}
@@ -204,7 +204,7 @@ export function restore(dir: string, pm: PackageManager, options: RestoreOptions
 		if (!next.includes(name)) {
 			return { ok: false, error: `${path}:${i + 1}: marker for ${m[1]} is not followed by its entry` }
 		}
-		removed.push({ lift: m[1], until: m[2], entry: next.trim() })
+		removed.push({ exemption: m[1], until: m[2], entry: next.trim() })
 		i++
 	}
 	if (format === 'yaml') {

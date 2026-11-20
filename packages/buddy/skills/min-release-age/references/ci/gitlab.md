@@ -18,7 +18,7 @@
 6. **Push access.** Ask the user which identity pushes:
    - **Project access token** (recommended): create one with the `write_repository` scope and the Developer role, and store it as a masked, protected CI/CD variable named `MIN_RELEASE_AGE_TOKEN`. Its MR runs pipelines like any other.
    - **Job token**: needs GitLab 18.4+ and **Settings → CI/CD → Job token permissions → Allow Git push requests to the repository**. A push with the job token does not start a pipeline for the branch.
-7. Commit as `ci: expire minimum-release-age lifts automatically`.
+7. Commit as `ci: expire minimum-release-age exemptions automatically`.
 8. **Schedule.** The schedule lives in GitLab, not in the file. After the commit reaches the default branch, ask before creating it. This is a change to the project's settings:
    ```bash
    glab schedule create --cron "17 3 * * *" --description "min-release-age restore" \

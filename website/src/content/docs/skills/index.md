@@ -26,7 +26,7 @@ Skills that need a deterministic step run a command through a forwarding script.
 | --- | --- |
 | [`merge-dep-prs`](/repobuddy/skills/merge-dep-prs/) | Merge dependency-update PRs, gated on whether CI covered what the change reaches |
 | [`fix-security-pr`](/repobuddy/skills/fix-security-pr/) | Fix a PR that fails an audit, CVE, Dependabot, or Snyk check so CI passes |
-| [`min-release-age`](/repobuddy/skills/min-release-age/) | Lift the minimum-release-age gate for one package version, then restore it |
+| [`min-release-age`](/repobuddy/skills/min-release-age/) | Exempt one package version from the minimum-release-age gate, then restore it |
 | [`setup-npm-trusted-publishing`](/repobuddy/skills/setup-npm-trusted-publishing/) | Register npm trusted publishers so releases need no `NPM_TOKEN` |
 
 ## Review

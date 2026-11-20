@@ -48,20 +48,24 @@ test('yamlBlock: trailing blank lines after the block are excluded from its rang
 
 test('insertEntry: ini format on a config with no lines matching the exclude key still appends', () => {
 	const lines = ['min-release-age=2']
-	insertEntry('npm', lines, 'foo', 'min-release-age: lift foo until x')
-	assert.deepEqual(lines, ['min-release-age=2', '# min-release-age: lift foo until x', 'min-release-age-exclude[]=foo'])
+	insertEntry('npm', lines, 'foo', 'min-release-age: exempt foo until x')
+	assert.deepEqual(lines, [
+		'min-release-age=2',
+		'# min-release-age: exempt foo until x',
+		'min-release-age-exclude[]=foo',
+	])
 })
 
 test('insertEntry: toml, content before any [install] section (inside=false) still finds nothing and creates one', () => {
 	const lines = ['# a leading comment', 'other = 1']
-	insertEntry('bun', lines, 'foo', 'min-release-age: lift foo until x')
+	insertEntry('bun', lines, 'foo', 'min-release-age: exempt foo until x')
 	assert.deepEqual(lines, [
 		'# a leading comment',
 		'other = 1',
 		'',
 		'[install]',
 		'minimumReleaseAgeExcludes = [',
-		'  # min-release-age: lift foo until x',
+		'  # min-release-age: exempt foo until x',
 		'  "foo",',
 		']',
 	])
@@ -69,12 +73,12 @@ test('insertEntry: toml, content before any [install] section (inside=false) sti
 
 test('insertEntry: toml array trailing item already has a trailing comma', () => {
 	const lines = ['[install]', 'minimumReleaseAgeExcludes = [', '  "foo",', ']']
-	insertEntry('bun', lines, 'bar', 'min-release-age: lift bar until x')
+	insertEntry('bun', lines, 'bar', 'min-release-age: exempt bar until x')
 	assert.deepEqual(lines, [
 		'[install]',
 		'minimumReleaseAgeExcludes = [',
 		'  "foo",',
-		'  # min-release-age: lift bar until x',
+		'  # min-release-age: exempt bar until x',
 		'  "bar",',
 		']',
 	])
@@ -82,15 +86,24 @@ test('insertEntry: toml array trailing item already has a trailing comma', () =>
 
 test('insertEntry: toml array whose last line is blank/comment before the closing bracket', () => {
 	const lines = ['[install]', 'minimumReleaseAgeExcludes = [', '  "foo"', '  # trailing comment', ']']
-	insertEntry('bun', lines, 'bar', 'min-release-age: lift bar until x')
+	insertEntry('bun', lines, 'bar', 'min-release-age: exempt bar until x')
 	assert.match(
 		lines.join('\n'),
-		/"foo",?\n {2}# trailing comment\n {2}# min-release-age: lift bar until x\n {2}"bar",\n\]/,
+		/"foo",?\n {2}# trailing comment\n {2}# min-release-age: exempt bar until x\n {2}"bar",\n\]/,
 	)
 })
 
 test('insertEntry: yaml block with no lines after key on the same line still appends into empty file end', () => {
 	const lines: string[] = []
-	insertEntry('pnpm', lines, 'foo', 'min-release-age: lift foo until x')
-	assert.deepEqual(lines, ['minimumReleaseAgeExclude:', '  # min-release-age: lift foo until x', "  - 'foo'"])
+	insertEntry('pnpm', lines, 'foo', 'min-release-age: exempt foo until x')
+	assert.deepEqual(lines, ['minimumReleaseAgeExclude:', '  # min-release-age: exempt foo until x', "  - 'foo'"])
+})
+
+test('readExemptions: reads a marker written as `lift` by an earlier version', () => {
+	const entries = readExemptions('pnpm', [
+		'minimumReleaseAgeExclude:',
+		'  # min-release-age: lift a@1.0.0 until 2026-09-17T10:00:00Z',
+		`  - 'a@1.0.0'`,
+	])
+	assert.equal(entries[0]?.until, '2026-09-17T10:00:00Z')
 })
