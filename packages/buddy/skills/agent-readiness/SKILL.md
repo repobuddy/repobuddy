@@ -96,8 +96,9 @@ merge: patch
 `merge: patch`, the default operation of cyber-agentkit references, replaces only the `## Weights`
 section; an area it leaves out keeps its default. An older override with `merge: merge-sections` is
 still read as a patch, and the script prints a `reference-legacy-format` warning: run `reference migrate`
-with the `reference` skill in the `cyber-agentkit` plugin, show the user its plan, and run it again with
-`--write` only on their yes. `--package` does not read it. Weights never touch gates or the level, so an override cannot
+with the `reference` skill in the `cyber-agentkit` plugin (`node <reference skill folder>/scripts/reference.mjs migrate`,
+not a program on PATH), show the user its plan, and run it again with `--write` only on their yes. `--package` does not read it. When the
+command cannot run, migrate nothing, tell the user, and go on: the script still reads the override. Weights never touch gates or the level, so an override cannot
 lower the bar CI holds. The report marks each overridden weight. A malformed item stops the script
 (exit 2) rather than scoring with a guess. A legacy `.agents/readiness/weights.json` is still read
 when no project override exists; the script then prints the override file to create.
