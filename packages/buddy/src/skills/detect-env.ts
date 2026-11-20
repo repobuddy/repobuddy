@@ -1,7 +1,7 @@
 /*
  * Detect what an agent needs to work with a repository's git host.
  *
- *   node scripts/detect-env.mjs [--dir <repo>] [--host <kind[=hostname]>]... [--probe] [--json]
+ *   node scripts/repobuddy.mjs env [--dir <repo>] [--host <kind[=hostname]>]... [--probe] [--json]
  *
  * Reports:
  *   os        platform, arch, WSL, Linux distro family, and whether sudo is usable
@@ -24,7 +24,7 @@ import { type DetectResult, detect } from '../env/detect.js'
 
 function usage(message: string): never {
 	process.stderr.write(`${message}\n`)
-	process.stderr.write('usage: detect-env.mjs [--dir <repo>] [--host <kind[=hostname]>]... [--probe] [--json]\n')
+	process.stderr.write('usage: repobuddy.mjs env [--dir <repo>] [--host <kind[=hostname]>]... [--probe] [--json]\n')
 	process.exit(2)
 }
 
@@ -104,9 +104,3 @@ export async function main(argv: string[] = process.argv.slice(2)): Promise<void
 	if (opts.json) process.stdout.write(`${JSON.stringify(result, null, 2)}\n`)
 	else printSummary(result)
 }
-
-// Process-boundary guard: only fires when the bundle runs directly as a script (verified by
-// src/skills/bundles.spec.ts spawning the built bundle as a child process). Excluded narrowly
-// because exercising it in-process would require redefining what "running under jest" means.
-/* istanbul ignore next -- process.argv entrypoint guard, covered by bundles.spec.ts (child process) */
-if (process.argv[1]?.endsWith('detect-env.mjs')) await main()

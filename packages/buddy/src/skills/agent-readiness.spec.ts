@@ -59,7 +59,7 @@ test.each([
 	[['suggest', '--yes']],
 ])('rejects bad usage %j with exit 2', async (argv) => {
 	await expect(main(argv)).rejects.toThrow('exit:2')
-	expect(stderr.join('')).toMatch(/usage: agent-readiness\.mjs score/)
+	expect(stderr.join('')).toMatch(/usage: repobuddy\.mjs agent-readiness score/)
 })
 
 test('prints the human report', async () => {

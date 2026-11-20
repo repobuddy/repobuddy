@@ -16,7 +16,7 @@ checkout) it runs that package's CLI. Anywhere else, such as a git install or a 
 - `buddy` passes every argument after the subcommand name to the script unchanged. The script parses them itself.
 - They do not appear in `buddy --help`.
 - The [global options](/repobuddy/cli/global-options/) do not apply. `buddy env --help` is an unknown argument.
-- Error and usage lines name the script file, for example `usage: detect-env.mjs ...`, not `buddy env`.
+- Error and usage lines name the command as the skill runs it, for example `usage: repobuddy.mjs env ...`, not `buddy env`.
 - Exit codes are each script's own. Each page lists them.
 
 ## Commands

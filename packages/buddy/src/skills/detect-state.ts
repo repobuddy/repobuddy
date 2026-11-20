@@ -3,7 +3,7 @@
  * Writes the state artifact to a temp path (override with --out <path>) and prints a
  * JSON ack to stdout carrying that path. Human-readable table on stderr with --verbose.
  *
- *   node scripts/detect-state.mjs [--dir <repo>] [--out <path>] [--verbose]
+ *   node scripts/repobuddy.mjs detect-state [--dir <repo>] [--out <path>] [--verbose]
  *
  * stdout: JSON ack. stderr: human-readable table with --verbose. Exit 0 on success, 1 on bad usage.
  */
@@ -12,7 +12,7 @@ import { detectState } from '../setup-github-repo/detect-state.js'
 
 function usage(message: string): never {
 	process.stderr.write(`${message}\n`)
-	process.stderr.write('usage: detect-state.mjs [--dir <repo>] [--out <path>] [--verbose]\n')
+	process.stderr.write('usage: repobuddy.mjs detect-state [--dir <repo>] [--out <path>] [--verbose]\n')
 	process.exit(1)
 }
 
@@ -93,8 +93,3 @@ export async function main(argv: string[] = process.argv.slice(2)): Promise<void
 	process.stdout.write(`${JSON.stringify(result.ack)}\n`)
 	if (opts.verbose) printVerbose(result)
 }
-
-// Resolve the entry check against the built bundle's filename, since this module runs as
-// `skills/setup-github-repo/scripts/detect-state.mjs`, not under its source name.
-/* istanbul ignore next -- process.argv entrypoint guard, exercised only when the bundle runs as a child process */
-if (process.argv[1]?.endsWith('detect-state.mjs')) await main()

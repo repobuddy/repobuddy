@@ -42,7 +42,7 @@ test('rejects an unknown mode with exit 2', async () => {
 	// mocked exit here throws to unwind the stack, which the outer catch then treats as a thrown
 	// error and reports as exit 1 too. Assert on the first exit call rather than the final rejection.
 	await expect(main(['bogus'])).rejects.toThrow()
-	expect(stderr.join('')).toMatch(/usage: npm-trust\.mjs/)
+	expect(stderr.join('')).toMatch(/usage: repobuddy\.mjs npm-trust/)
 	expect(exitSpy.mock.calls[0]).toEqual([2])
 })
 
