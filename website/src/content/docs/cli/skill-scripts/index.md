@@ -16,7 +16,7 @@ checkout) it runs that package's CLI. Anywhere else, such as a git install or a 
 - `buddy` passes every argument after the subcommand name to the script unchanged. The script parses them itself.
 - They do not appear in `buddy --help`.
 - The [global options](/repobuddy/cli/global-options/) do not apply. `buddy env --help` is an unknown argument.
-- Error and usage lines name the script file, for example `usage: detect-env.mjs ...`, not `buddy env`.
+- Error and usage lines name the command as the skill runs it, for example `usage: repobuddy.mjs env ...`, not `buddy env`.
 - Exit codes are each script's own. Each page lists them.
 
 ## Commands
@@ -27,7 +27,7 @@ checkout) it runs that package's CLI. Anywhere else, such as a git install or a 
 | [`buddy detect-state`](/repobuddy/cli/skill-scripts/detect-state/) | `setup-github-repo` | Reads the repository's GitHub settings and files into a state file |
 | [`buddy scaffold-workflows`](/repobuddy/cli/skill-scripts/scaffold-workflows/) | `setup-github-repo` | Writes the GitHub Actions workflows the state file says are missing |
 | [`buddy npm-trust`](/repobuddy/cli/skill-scripts/npm-trust/) | `setup-npm-trusted-publishing` | Plans and registers npm trusted publishers |
-| [`buddy release-age`](/repobuddy/cli/skill-scripts/release-age/) | `min-release-age` | Lifts and restores the minimum-release-age gate for one package version |
+| [`buddy release-age`](/repobuddy/cli/skill-scripts/release-age/) | `min-release-age` | Exempts one package version from the minimum-release-age gate, and restores it |
 | [`buddy agent-readiness`](/repobuddy/cli/skill-scripts/agent-readiness/) | `agent-readiness` | Scores a repository's agent readiness, or benchmarks agent cost |
 
 `release-age`, `npm-trust`, and `agent-readiness` print their usage and exit `2` when run without a subcommand.

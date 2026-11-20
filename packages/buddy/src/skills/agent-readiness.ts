@@ -1,10 +1,10 @@
 /*
  * Score how ready a repository is for coding agents.
  *
- *   node scripts/agent-readiness.mjs score [--dir <repo>] [--json] [--run-knip] [--check [--min-level <1-5>]]
- *   node scripts/agent-readiness.mjs score --package <path> [--json] [--check [--min-level <1-4>]]
- *   node scripts/agent-readiness.mjs bench convert <results.json> --arm <label> [--suite <s>] [--task-set <dir>] [--out <file>]
- *   node scripts/agent-readiness.mjs suggest [--dir <repo>] [--area <id>] [<comparison.json>...] [--json]
+ *   node scripts/repobuddy.mjs agent-readiness score [--dir <repo>] [--json] [--run-knip] [--check [--min-level <1-5>]]
+ *   node scripts/repobuddy.mjs agent-readiness score --package <path> [--json] [--check [--min-level <1-4>]]
+ *   node scripts/repobuddy.mjs agent-readiness bench convert <results.json> --arm <label> [--suite <s>] [--task-set <dir>] [--out <file>]
+ *   node scripts/repobuddy.mjs agent-readiness suggest [--dir <repo>] [--area <id>] [<comparison.json>...] [--json]
  *
  * `score` reports the gated level (1-5), a score per area, the top three fixes, and the tokens every
  * agent session loads before it starts (instruction files plus installed skill descriptions, estimated
@@ -62,9 +62,9 @@ import {
 } from '../agent-readiness/score.js'
 import { findComparisons, formatSuggestions, SuggestError, suggest } from '../agent-readiness/suggest.js'
 
-const USAGE = `usage: agent-readiness.mjs score [--dir <repo> | --package <path>] [--json] [--run-knip] [--check [--min-level <n>]]
-       agent-readiness.mjs bench convert <results.json> --arm <label> [--suite <s>] [--task-set <dir>] [--out <file>]
-       agent-readiness.mjs suggest [--dir <repo>] [--area <id>] [<comparison.json>...] [--json]`
+const USAGE = `usage: repobuddy.mjs agent-readiness score [--dir <repo> | --package <path>] [--json] [--run-knip] [--check [--min-level <n>]]
+       repobuddy.mjs agent-readiness bench convert <results.json> --arm <label> [--suite <s>] [--task-set <dir>] [--out <file>]
+       repobuddy.mjs agent-readiness suggest [--dir <repo>] [--area <id>] [<comparison.json>...] [--json]`
 
 function usage(message: string): never {
 	process.stderr.write(`${message}\n${USAGE}\n`)
@@ -300,8 +300,3 @@ export async function main(argv: string[] = process.argv.slice(2)): Promise<void
 	for (const warning of config.warnings) process.stderr.write(`${warning}\n`)
 	report(opts, score(collectFacts(opts.dir, { runKnip: opts.runKnip }), { weights: config.weights }), formatReport)
 }
-
-// Resolve the entry check against the built bundle's filename, since this module runs as
-// `skills/agent-readiness/scripts/agent-readiness.mjs`, not under its source name.
-/* istanbul ignore next -- process.argv entrypoint guard, exercised only when the bundle runs as a child process */
-if (process.argv[1]?.endsWith('agent-readiness.mjs')) await main()

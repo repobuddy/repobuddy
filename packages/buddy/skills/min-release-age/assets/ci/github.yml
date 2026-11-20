@@ -1,7 +1,7 @@
 name: min-release-age
 
-# Removes minimum-release-age lifts whose window has passed and opens a PR.
-# Only lines carrying a `# min-release-age: lift … until …` marker are touched.
+# Removes minimum-release-age exemptions whose window has passed and opens a PR.
+# Only lines carrying a `# min-release-age: exempt … until …` marker (or an older `lift` one) are touched.
 #
 # The shared workflow opens the PR with a repobuddy GitHub App token, so the
 # restore PR runs required checks. It needs the REPOBUDDY_APP_ID and

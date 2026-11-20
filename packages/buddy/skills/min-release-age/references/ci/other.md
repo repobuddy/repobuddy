@@ -9,5 +9,5 @@ There is no template for this CI system (for example CircleCI, Jenkins, Travis, 
    - commit as `chore: restore minimum release age` on `chore/min-release-age-restore`, and force-push that branch
    - open or update a change request to the default branch with the host's CLI or API. For a Bitbucket, Azure Repos, Forgejo, or Gitea host, call `node ci/min-release-age.mjs open-pr --provider <host>` with the environment variables that provider's template supplies. For a GitHub host, use `gh pr create`.
 3. Show the user the job before committing. Ask which secret holds a token that can push and open change requests.
-4. If the CI system cannot push, schedule `node ci/min-release-age.mjs status --check` instead. It exits 1 when a lift has expired, so the job fails. Tell the user to run Restore by hand when it does.
-5. Commit as `ci: expire minimum-release-age lifts automatically`.
+4. If the CI system cannot push, schedule `node ci/min-release-age.mjs status --check` instead. It exits 1 when an exemption has expired, so the job fails. Tell the user to run Restore by hand when it does.
+5. Commit as `ci: expire minimum-release-age exemptions automatically`.

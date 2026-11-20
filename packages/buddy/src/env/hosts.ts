@@ -22,7 +22,7 @@ async function probe(hostname: string): Promise<HostKind | null> {
 
 function usageError(message: string): never {
 	process.stderr.write(`${message}\n`)
-	process.stderr.write('usage: detect-env.mjs [--dir <repo>] [--host <kind[=hostname]>]... [--probe] [--json]\n')
+	process.stderr.write('usage: repobuddy.mjs env [--dir <repo>] [--host <kind[=hostname]>]... [--probe] [--json]\n')
 	process.exit(2)
 }
 
