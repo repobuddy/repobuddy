@@ -7,8 +7,8 @@ description: "Commit uncommitted changes, split them into commits, or write a co
 
 Also run it when a unit of work is finished and the repository's rules say to commit it. Pushing, opening a
 pull request, and rewording, squashing, or undoing a commit already made belong to other skills, even
-when the working tree has uncommitted changes. So does amending, except the latest commit when it is unpushed
-and the fix belongs to its unit (see Rules).
+when the working tree has uncommitted changes. So does amending, except a fix to the latest commit when it
+is unpushed: this skill amends it (Workflow step 3).
 
 Repository rules take precedence over this skill: the **Commit Discipline** section of `AGENTS.md` or
 `CLAUDE.md`, and a `SKILL.local.md` beside this skill.
@@ -52,10 +52,8 @@ write the message for it by `commit.message`, show it, and commit only when aske
 - **Sandbox blocks:** when the harness blocks `git add` or `git commit` (a read-only `.git`, or a refusal
   that names the sandbox or a permission), stop and report each affected change as "uncommitted: blocked by
   sandbox". Never change the sandbox, git config, or hooks to get around it.
-- **Never rewrite pushed history:** never push, force-push, or rebase. Amend the latest commit, or fold a fix
-  into it, only when it is on no remote (`git branch -r --contains HEAD` prints nothing, or no upstream is set)
-  and the fix belongs to its unit: stage the fix by name, then `git commit --amend -F <file>` with the message
-  rewritten by `commit.message`. A fix to a pushed commit, or to an older one, is a new commit; rewriting it
+- **Never rewrite pushed history:** never push, force-push, or rebase. Amend only an unpushed latest commit,
+  as Workflow step 3 decides. A fix to a pushed commit, or to an older one, is a new commit; rewriting it
   needs the user's say-so.
 - **Decide, do not ask:** settle each choice, including how many commits, from these rules, the
   repository's rules, and the references. Ask only when they cannot decide, such as one changed line
@@ -85,8 +83,12 @@ Before staging a unit, its change is finished:
    run's work also has unstaged changes, someone chose part of it: commit nothing, and report it.
 3. **Plan:** `git status --porcelain` and `git --no-pager diff --stat`. Assign each file to a unit by
    the split axes. Read the full diff only of a file whose unit the path and the stat do not settle, or
-   that holds two units. Never diff the whole tree when the stat lists more than a few files. State the
-   plan, each commit and its files, before the first `git add`.
+   that holds two units. Never diff the whole tree when the stat lists more than a few files.
+   **Amend or new:** before planning a new commit, run `git log -1 --format='%h %s' --stat` and
+   `git branch -r --contains HEAD`. A unit amends HEAD when both hold: the second prints nothing (HEAD is on no
+   remote), and the unit fixes what HEAD changed, such as a typo in "my last commit". Otherwise it is a new
+   commit, and so is a retry of a commit a hook rejected: that commit never happened. State the plan, each
+   commit as new or amend and its files, before the first `git add`.
 4. **Find the hooks**, once: `git rev-parse --git-path hooks` prints the folder git runs them from.
    When it holds a `pre-commit` or `commit-msg` hook, say what it runs, and run those checks with the
    unit's checks. With neither, skip this step.
@@ -100,7 +102,9 @@ Before staging a unit, its change is finished:
       `references/splitting.md`). Skip it when nothing else is unstaged or the checks do not read those
       files, and say why.
    5. **Commit:** write the message by `commit.message` to a file outside the repository, with the body
-      saying why and the trailers the harness or repository supplies, and run `git commit -F <file>`.
+      saying why and the trailers the harness or repository supplies, and run `git commit -F <file>`. For a
+      unit the plan amends, rewrite HEAD's message by `commit.message` to cover the fix, and run
+      `git commit --amend -F <file>`.
 6. **Report** what C7 lists.
 
 ## Done when
