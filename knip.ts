@@ -114,6 +114,9 @@ const config: KnipConfig = {
 			ignoreDependencies: ['tslib'],
 		},
 	},
+	// `check-skill-references` runs `cyber-agentkit` inside `npx -p cyber-agentkit@<version> -c`,
+	// which installs the pinned version itself, so the root lists no dependency for it.
+	ignoreBinaries: ['cyber-agentkit'],
 	ignore: [
 		// plop templates: copied into a generated package, never executed here.
 		'plops/**',

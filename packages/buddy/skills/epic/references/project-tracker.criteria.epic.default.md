@@ -2,7 +2,6 @@
 description: The planning criteria an epic is judged against before it is filed, revised, or handed off; each with an ID, how it is decided, and the section it judges.
 tags: [project-tracker, criteria, epic]
 ---
-
 ## How to read
 
 Each criterion is `- **<ID>** [<how>] <statement>`. Each one passes or fails. `script` means `scripts/epic-plan.mjs` in the `epic` skill's folder decides it from the tracker. `read` means you decide it by reading the plan. The section after each heading is the part of the plan the criterion judges, in the order Create settles them. An ID is never reused. A team that drops a criterion removes it in its override, and its ID stays retired.

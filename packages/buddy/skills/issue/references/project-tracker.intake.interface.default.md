@@ -11,7 +11,6 @@ interface:
     - {heading: Criteria, holds: "What must be true before the issue is created"}
     - {heading: Template, holds: "Sections added to repobuddy's template, per category"}
 ---
-
 ## Version
 
 This is the `project-tracker.intake` interface, version **1**. An intake document is named `project-tracker.intake.<key>` and declares the version it follows in its frontmatter as `implements: project-tracker.intake@1`. The key is a short name the plugin picks (`x` for the library `x`), since a reference name cannot hold `/`. A skill loads a document whose version is 1, and stops on any other value or on none, saying which document and which version. A change that adds a section or an optional field keeps the number; a change that renames or removes a section raises it.

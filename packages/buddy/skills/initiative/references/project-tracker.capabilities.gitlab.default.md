@@ -4,7 +4,6 @@ tags: [project-tracker, gitlab, issue]
 implements: project-tracker.capabilities@1
 contract: 1
 ---
-
 ## Tracker
 
 - Name: `gitlab`

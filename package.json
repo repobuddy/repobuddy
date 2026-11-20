@@ -16,7 +16,7 @@
 		"check": "biome check . --error-on-warnings",
 		"check-plugin-version": "node scripts/check-plugin-version.mjs",
 		"check-build-drift": "pnpm --filter repobuddy exec universal-plugin plugin build --check --root .",
-		"check-skill-references": "node scripts/sync-skill-references.mjs --check",
+		"check-skill-references": "npx -y -p cyber-agentkit@2.11.1 -c 'for skill in packages/buddy/skills/*/; do cyber-agentkit reference defaults \"$skill\" --check --format text || exit 1; done'",
 		"check:fix": "biome check . --fix",
 		"clean": "turbo run clean",
 		"coverage": "turbo run coverage",

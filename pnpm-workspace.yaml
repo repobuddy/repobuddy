@@ -48,6 +48,8 @@ minimumReleaseAgeExclude:
   - sharp@0.35.5
   # Renovate security update: @vitest/browser@5.0.5
   - '@vitest/browser@5.0.5'
+  # min-release-age: lift cyber-agentkit@2.11.1 until 2026-11-21T09:57:00Z
+  - 'cyber-agentkit@2.11.1'
 
 packages:
   - examples/*

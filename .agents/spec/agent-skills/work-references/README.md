@@ -31,17 +31,16 @@ copy). In a template, a `##` is one section, so an override restates just that o
 `###` parts (Is, Done when, Too big, Too small), or the level loses the ones it leaves out.
 
 **One canonical copy.** The file in `packages/buddy/references/` is the source, and its frontmatter
-says `extends: [default]`. A skill also carries a copy of each reference its `SKILL.md` names in
-backticks, as its default `references/<name>.default.md`, because Skills CLI installs copy only a
-skill's folder. cyber-agentkit adds that default below the plugin's file, and the `reference` skill
+says `extends: [default]`. A skill also carries a copy of each reference its `SKILL.md` loads with
+the `reference` skill, as its default `references/<name>.default.md`, because Skills CLI installs copy
+only a skill's folder. cyber-agentkit adds that default below the plugin's file, and the `reference` skill
 reads it on its own when the command cannot run. The plugin's `extends: [default]` builds on the
 default, so a load with both gives no `default-not-selected` warning; the copy leaves that line out,
-since a default that extends itself warns `extends-self`. `scripts/sync-skill-references.mjs` writes
-the copies, and `--check` (a `verify` task) fails when one is stale, missing, under the old
-`<name>.md` name, or no longer named. An interface document is the exception: cyber-agentkit never
-composes one, so a default beside the plugin's file would warn `interface-not-composed`. The plugin
-alone serves it, and each skill carries a plain `references/<name>.md` copy that it reads itself when
-the interface does not load. The script and `verify` own that rule; no scenario repeats it.
+since a default that extends itself warns `extends-self`. cyber-agentkit's `reference defaults
+<skill>` writes the copies, and with `--check` (a `verify` task) fails when one is stale, missing,
+misnamed, or no longer named. An interface document follows the same rule: its copy is
+`references/<id>.interface.default.md`, which answers only when no other tier holds the interface.
+The command and `verify` own that rule; no scenario repeats it.
 The GitHub capabilities reference belongs to the [issue](../issue/README.md) unit, which names it.
 
 **Interface versions.** `project-tracker.capabilities.interface` is the `project-tracker.capabilities` interface, version 1;

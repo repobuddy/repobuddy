@@ -2,7 +2,6 @@
 description: How the commit skill writes a commit message. Patch a section in .agents/references/commit.message.md.
 tags: [commit, commit-message, conventional-commits]
 ---
-
 ## Convention
 
 [Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/):

@@ -3,7 +3,6 @@ description: Body template for an epic.
 tags: [work-template, epic]
 aliases: [repobuddy.work-template.epic]
 ---
-
 ## Outcome
 
 What is true when this is done, in one sentence.

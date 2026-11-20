@@ -60,7 +60,7 @@
 	},
 	"devDependencies": {
 		"@clibuilder/plugins": "0.3.0",
-		"cyber-agentkit": "^2.1.0",
+		"cyber-agentkit": "^2.11.1",
 		"@jest/globals": "^30.0.0",
 		"@repobuddy/jest": "workspace:*",
 		"buddy-agent-harness": "^1.0.0",

@@ -3,7 +3,6 @@ description: Body template for a bug issue.
 tags: [work-template, bug, issue]
 aliases: [repobuddy.work-template.bug]
 ---
-
 ## Description
 
 What is wrong, in one or two sentences.
