@@ -59,7 +59,7 @@ Also for a small fix to the latest commit when it is unpushed: it amends. Not fo
 - Reads the staged diff for a secret, debug logging, or formatting churn before committing.
 - Verifies the staged snapshot, not the working tree, when unstaged changes could hide a failure.
 - Writes the message with `git commit -F`, keeping trailers such as `Co-Authored-By`.
-- Never `--no-verify`. Amends the latest commit only when it is on no remote and the fix belongs to its unit; a pushed commit is never rewritten, and a rejected commit never happened, so it is committed again, not amended.
+- Never `--no-verify`. Before making a new commit, checks whether the fix belongs to the latest commit and that commit is on no remote; when both hold, it amends. A pushed commit is never rewritten, and a rejected commit never happened, so it is committed again, not amended.
 - When the harness's sandbox blocks `git add` or `git commit`, stops and reports each change as "uncommitted: blocked by sandbox", and never changes the sandbox, git config, or hooks.
 - Reports each commit's hash, subject, and why.
 
