@@ -48,6 +48,26 @@ Feature: project-tracker — set up, show, change, and check which tracker holds
     And it says beta and epsilon were left out because their versions are not known
 
   @behavior
+  Scenario: writes no routing when the host's tracker is the only signal
+    Given no project-tracker.routing exists
+    And the origin remote is github.com
+    And the search returns only repobuddy/project-tracker.capabilities.github with match prefix, declaring contract: 1
+    And AGENTS.md names no tracker
+    When project-tracker sets up the routing
+    Then it says GitHub is already used by default
+    And it asks no question about routes
+    And it writes no file
+
+  @behavior
+  Scenario: writes a routing when work is split between the host's tracker and another
+    Given no project-tracker.routing exists
+    And the origin remote is github.com
+    And the search returns repobuddy/project-tracker.capabilities.github and prov-a/project-tracker.capabilities.alpha, both with match prefix and contract: 1
+    When the user routes epics to alpha and everything else to github and confirms the summary
+    Then project-tracker.routing exists in the project's .agents/references folder
+    And its Routes table has a row sending epics to prov-a/project-tracker.capabilities.alpha above a catch-all to repobuddy/project-tracker.capabilities.github
+
+  @behavior
   Scenario: says no capabilities are installed and writes nothing
     Given no project-tracker.routing exists
     And the reference search returns only project-tracker.capabilities.interface with match prefix and project-tracker.contract with match description
@@ -143,8 +163,23 @@ Feature: project-tracker — set up, show, change, and check which tracker holds
     And it writes no file
 
   @behavior
-  Scenario Outline: says no routing exists and offers set-up
+  Scenario Outline: reports the host's tracker in use when no routing exists
     Given the project has no project-tracker.routing
+    And the origin remote is github.com
+    When the user asks project-tracker to <mode> the routing
+    Then it says GitHub, from the origin host, holds the work by default
+    And it does not report a missing routing as a problem
+    And it writes no file
+
+    Examples:
+      | mode  |
+      | show  |
+      | check |
+
+  @behavior
+  Scenario Outline: says no routing exists and offers set-up on a host with no tracker
+    Given the project has no project-tracker.routing
+    And the origin remote is bitbucket.org
     When the user asks project-tracker to <mode> the routing
     Then it says no routing exists
     And it offers to set one up
