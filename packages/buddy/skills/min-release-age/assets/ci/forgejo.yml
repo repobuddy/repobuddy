@@ -1,7 +1,7 @@
 name: min-release-age
 
-# Removes minimum-release-age lifts whose window has passed and opens (or updates) a pull request.
-# Only lines carrying a `# min-release-age: lift … until …` marker are touched.
+# Removes minimum-release-age exemptions whose window has passed and opens (or updates) a pull request.
+# Only lines carrying a `# min-release-age: exempt … until …` marker are touched.
 
 on:
   schedule:
@@ -30,7 +30,7 @@ jobs:
         with:
           token: ${{ secrets.MIN_RELEASE_AGE_TOKEN || secrets.GITHUB_TOKEN }}
 
-      - name: Remove expired lifts
+      - name: Remove expired exemptions
         run: |
           set -eu
           node "$SCRIPT" restore --json --body-file /tmp/mra-body.md > /tmp/mra.json

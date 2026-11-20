@@ -2,7 +2,7 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { MANAGERS, type PackageManager } from './managers.js'
 
-export const MARKER = /^\s*#\s*min-release-age: lift (\S+) until (\S+)\s*$/
+export const MARKER = /^\s*#\s*min-release-age: (?:exempt|lift) (\S+) until (\S+)\s*$/
 
 export interface Exemption {
 	value: string

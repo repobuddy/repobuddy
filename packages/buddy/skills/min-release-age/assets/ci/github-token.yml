@@ -1,8 +1,8 @@
 name: min-release-age
 
-# Removes minimum-release-age lifts whose window has passed and opens a PR.
+# Removes minimum-release-age exemptions whose window has passed and opens a PR.
 # Fallback for repos without the repobuddy GitHub App.
-# Only lines carrying a `# min-release-age: lift … until …` marker are touched.
+# Only lines carrying a `# min-release-age: exempt … until …` marker (or an older `lift` one) are touched.
 
 on:
   schedule:
@@ -30,7 +30,7 @@ jobs:
         with:
           token: ${{ env.GH_TOKEN }}
 
-      - name: Remove expired lifts
+      - name: Remove expired exemptions
         id: restore
         run: node .github/scripts/min-release-age.mjs restore --github-output
 

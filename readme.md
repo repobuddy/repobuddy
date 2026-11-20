@@ -22,7 +22,7 @@
 | [`llms-txt`] | Publish an `llms.txt` generated from a project's real public surface, with a CI drift check |
 | [`init-buddy`] | Set up the machine for the repo's git host — detects the OS and existing MCP servers, then installs and logs in `gh`, `glab`, `tea`, `fj`, or `az`, and proposes a starting harness allow list |
 | [`merge-dep-prs`] | Merge pending dependency update PRs — gates each merge on whether CI reached what the change can break, diagnoses CI failures, never merges release PRs |
-| [`min-release-age`] | Lift the minimum-release-age gate for one package version, restore it when the version ages past the window, and schedule the cleanup in CI |
+| [`min-release-age`] | Exempt one package version from the minimum-release-age gate, restore it when the version ages past the window, and schedule the cleanup in CI |
 | [`project-tracker`] | Record which tracker holds each level and category of work — bugs on GitHub, epics elsewhere — and check the routing still resolves, so `issue` files where the team decided |
 | [`review-api`] | Review a library's public API for consistency and completeness against its own conventions — drift, sibling-justified gaps, docs vs exports |
 | [`scaffold`] | Create a new repository or package from a recipe a plugin ships — lists the installed recipes, asks the recipe's inputs, runs the host's setup skill, and writes nothing before you confirm the plan |

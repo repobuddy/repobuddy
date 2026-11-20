@@ -1,8 +1,8 @@
 # Merge under `pipelines: custom:` in bitbucket-pipelines.yml, then point a schedule at it.
-# Removes minimum-release-age lifts whose window has passed and opens (or updates) a pull request.
+# Removes minimum-release-age exemptions whose window has passed and opens (or updates) a pull request.
     min-release-age:
       - step:
-          name: Remove expired minimum-release-age lifts
+          name: Remove expired minimum-release-age exemptions
           image: node:22
           script:
             - |
