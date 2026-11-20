@@ -2,12 +2,12 @@
  * Read and edit a repository's minimum-release-age exemptions.
  *
  *   node scripts/min-release-age.mjs status  [--dir <repo>] [--json] [--check]
- *   node scripts/min-release-age.mjs lift    <pkg[@version|@tag]> [--dir <repo>] [--pm <pm>] [--check] [--name-wide] [--until <ISO>] [--json]
+ *   node scripts/min-release-age.mjs exempt <pkg[@version|@tag]> [--dir <repo>] [--pm <pm>] [--check] [--name-wide] [--until <ISO>] [--json]
  *   node scripts/min-release-age.mjs restore [--dir <repo>] [--now <ISO>] [--dry-run] [--json] [--github-output] [--body-file <path>]
  *
  * `status` also reports the git host (from the origin remote), the CI systems found in the repo, and
  * which provider `setup-ci` should target and
- * the reference to load for it. --check exits 1 when any lift has expired.
+ * the reference to load for it. --check exits 1 when any exemption has expired.
  *
  * `restore` exits 0 whether or not it removed anything; read `removed` from --json or --github-output.
  * --body-file writes the change-request description for CI jobs that open one.
@@ -21,34 +21,34 @@
  *
  * Every exemption this script adds is two lines: a marker comment, then the entry.
  *
- *   # min-release-age: lift <pkg@version> until <ISO>
+ *   # min-release-age: exempt <pkg@version> until <ISO>
  *   - '<pkg@version>'
  *
  * `restore` deletes the marker and its entry once `until` has passed. Entries without a marker are
  * permanent policy and are never touched.
  *
- * `lift` takes `pkg` (latest), `pkg@tag`, or `pkg@x.y.z` and always writes the exact version.
+ * `exempt` takes `pkg` (latest), `pkg@tag`, or `pkg@x.y.z` and always writes the exact version.
  * It sets `until` to the version's publish time plus the configured window: past that moment the
  * version clears the gate on its own and the exemption does nothing. pnpm and Yarn exempt the single
- * version; npm and bun can only exempt the whole package name, which `lift` refuses without
- * `--name-wide`. A successful `lift` also reports `ci` (the same block `status` has): when
- * `ci.installed` is false, the lift is not done until the cleanup job is installed in the same change.
+ * version; npm and bun can only exempt the whole package name, which `exempt` refuses without
+ * `--name-wide`. A successful `exempt` also reports `ci` (the same block `status` has): when
+ * `ci.installed` is false, the exemption is not done until the cleanup job is installed in the same change.
  *
  * stdout: a human summary, or JSON with --json. stderr: errors.
- * Exit 0 on success, 1 on a failed lift or restore, 2 on bad usage.
+ * Exit 0 on success, 1 on a failed exempt or restore, 2 on bad usage.
  */
 
 import { appendFileSync, readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { type CiInfo, detectCi } from '../release-age/ci.js'
-import { type LiftOptions, lift, type RestoreOptions, restore, status } from '../release-age/core.js'
+import { type ExemptOptions, exempt, type RestoreOptions, restore, status } from '../release-age/core.js'
 import { detectManager, isPackageManager, type PackageManager } from '../release-age/managers.js'
 import { openPr } from '../release-age/open-pr.js'
 
 function usage(message: string): never {
 	process.stderr.write(`${message}\n`)
 	process.stderr.write(
-		'usage: min-release-age.mjs <status|lift <pkg[@version|@tag]>|restore|open-pr> [--dir <repo>] [--pm <pm>] [--name-wide] [--until <ISO>] [--now <ISO>] [--dry-run] [--json] [--github-output] [--body-file <path>] [--provider <p>] [--branch <b>]\n',
+		'usage: min-release-age.mjs <status|exempt <pkg[@version|@tag]>|restore|open-pr> [--dir <repo>] [--pm <pm>] [--name-wide] [--until <ISO>] [--now <ISO>] [--dry-run] [--json] [--github-output] [--body-file <path>] [--provider <p>] [--branch <b>]\n',
 	)
 	process.exit(2)
 }
@@ -93,8 +93,8 @@ function printStatus(s: Awaited<ReturnType<typeof status>>): void {
 		`gate: ${s.setting} = ${s.value ?? `unset — ${s.defaultNote}`}${s.minutes != null ? ` (${s.minutes} minutes)` : ''}`,
 		`exemptions: ${s.versionPin ? 'single version' : 'whole package name only'}`,
 		`permanent: ${s.permanent.length ? s.permanent.join(', ') : 'none'}`,
-		`lifts: ${s.lifts.length ? '' : 'none'}`,
-		...s.lifts.map((l) => `  ${l.value} until ${l.until}${l.expired ? ' — EXPIRED' : ''}`),
+		`exemptions: ${s.exemptions.length ? '' : 'none'}`,
+		...s.exemptions.map((l) => `  ${l.value} until ${l.until}${l.expired ? ' — EXPIRED' : ''}`),
 		`git host: ${s.ci.host}${s.ci.remote ? ` (${s.ci.remote})` : ''}`,
 		`ci systems: ${s.ci.systems.length ? s.ci.systems.join(', ') : 'none found'}`,
 		`cleanup job: ${s.ci.installed ? `installed (${s.ci.provider}, ${s.ci.job})` : `not installed — setup-ci would target ${s.ci.provider}`}`,
@@ -108,15 +108,15 @@ function cleanupLine(ci: CiInfo): string {
 		: `cleanup job: not installed — install it in this change: setup-ci for ${ci.provider} (${ci.reference})`
 }
 
-function restoreBody(result: { removed: { lift: string; until: string }[] }): string {
+function restoreBody(result: { removed: { exemption: string; until: string }[] }): string {
 	return [
-		'Removes minimum-release-age lifts whose window has passed. Each version now clears the gate on its own.',
+		'Removes minimum-release-age exemptions whose window has passed. Each version now clears the gate on its own.',
 		'',
-		...result.removed.map((r) => `- \`${r.lift}\` (expired ${r.until})`),
+		...result.removed.map((r) => `- \`${r.exemption}\` (expired ${r.until})`),
 	].join('\n')
 }
 
-function writeGithubOutput(result: { removed: { lift: string; until: string }[] }): void {
+function writeGithubOutput(result: { removed: { exemption: string; until: string }[] }): void {
 	const target = process.env['GITHUB_OUTPUT']
 	if (!target) return
 	appendFileSync(target, `removed=${result.removed.length}\nbody<<__MRA__\n${restoreBody(result)}\n__MRA__\n`)
@@ -124,9 +124,11 @@ function writeGithubOutput(result: { removed: { lift: string; until: string }[] 
 
 export async function main(argv: string[] = process.argv.slice(2)): Promise<void> {
 	const opts = parseArgs(argv)
-	const [command, spec] = opts.positional
+	const [rawCommand, spec] = opts.positional
+	// `lift` is the former name of `exempt`: still accepted, no longer documented.
+	const command = rawCommand === 'lift' ? 'exempt' : rawCommand
 	const dir = resolve(opts.dir ?? process.cwd())
-	if (!command || !['status', 'lift', 'restore', 'open-pr'].includes(command))
+	if (!command || !['status', 'exempt', 'restore', 'open-pr'].includes(command))
 		usage(`unknown command "${command ?? ''}"`)
 	if (command === 'open-pr') {
 		if (typeof opts.provider !== 'string' || typeof opts['body-file'] !== 'string') {
@@ -152,18 +154,18 @@ export async function main(argv: string[] = process.argv.slice(2)): Promise<void
 		const result = status(dir, pm, now)
 		if (opts.json) process.stdout.write(`${JSON.stringify(result, null, 2)}\n`)
 		else printStatus(result)
-		if (opts.check && result.lifts.some((l) => l.expired)) process.exit(1)
+		if (opts.check && result.exemptions.some((l) => l.expired)) process.exit(1)
 		return
 	}
 
-	let result: ReturnType<typeof lift> | (ReturnType<typeof lift> & { ci: CiInfo }) | ReturnType<typeof restore>
-	if (command === 'lift') {
-		if (!spec) usage('lift needs <pkg[@version|@tag]>')
-		const liftOptions: LiftOptions = { nameWide: Boolean(opts['name-wide']), now }
-		if (opts.until !== undefined) liftOptions.until = opts.until
+	let result: ReturnType<typeof exempt> | (ReturnType<typeof exempt> & { ci: CiInfo }) | ReturnType<typeof restore>
+	if (command === 'exempt') {
+		if (!spec) usage('exempt needs <pkg[@version|@tag]>')
+		const exemptOptions: ExemptOptions = { nameWide: Boolean(opts['name-wide']), now }
+		if (opts.until !== undefined) exemptOptions.until = opts.until
 		try {
-			const lifted = lift(dir, pm, spec, liftOptions)
-			result = lifted.ok ? { ...lifted, ci: detectCi(dir) } : lifted
+			const exempted = exempt(dir, pm, spec, exemptOptions)
+			result = exempted.ok ? { ...exempted, ci: detectCi(dir) } : exempted
 		} catch (error) {
 			result = { ok: false, error: error instanceof Error ? error.message : String(error) }
 		}
@@ -183,15 +185,15 @@ export async function main(argv: string[] = process.argv.slice(2)): Promise<void
 	else if ('changed' in result) {
 		process.stdout.write(
 			result.changed
-				? `lifted ${result.spec}${result.tag ? ` (${result.tag})` : ''} as '${result.entry}' in ${result.file} until ${result.until}${result.nameWide ? ' (whole package name)' : ''}\n`
+				? `exempted ${result.spec}${result.tag ? ` (${result.tag})` : ''} as '${result.entry}' in ${result.file} until ${result.until}${result.nameWide ? ' (whole package name)' : ''}\n`
 				: `no change: ${result.reason}\n`,
 		)
 		if ('ci' in result) process.stdout.write(`${cleanupLine(result.ci)}\n`)
 	} else if ('removed' in result) {
 		const verb = result.dryRun ? 'would remove' : 'removed'
 		process.stdout.write(
-			`${verb} ${result.removed.length} expired lift(s)${result.removed.map((r) => `\n  ${r.lift} (until ${r.until})`).join('')}\n` +
-				`${result.kept.length} active lift(s) kept\n`,
+			`${verb} ${result.removed.length} expired exemption(s)${result.removed.map((r) => `\n  ${r.exemption} (until ${r.until})`).join('')}\n` +
+				`${result.kept.length} active exemption(s) kept\n`,
 		)
 	}
 }

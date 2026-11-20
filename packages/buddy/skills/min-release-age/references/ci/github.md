@@ -14,7 +14,7 @@ app, and needs no token secret of its own.
    follow **With the repobuddy app**. Otherwise follow **Without the app**.
 2. If the repo restricts `GITHUB_TOKEN` to read-only (Settings → Actions → General → Workflow permissions), tell the
    user the workflow-level `permissions:` block still grants what it needs, unless an org policy blocks it.
-3. Commit as `ci: expire minimum-release-age lifts automatically`.
+3. Commit as `ci: expire minimum-release-age exemptions automatically`.
 
 ## With the repobuddy app
 

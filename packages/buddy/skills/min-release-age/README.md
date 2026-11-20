@@ -1,6 +1,6 @@
 # min-release-age
 
-Lifts a repository's minimum-release-age gate for one package version. It checks the release first, records when the lift expires, and removes the lift after that time. A lift always schedules its own removal: when the repo has no cleanup job yet, the lift installs a daily CI job in the same change, on GitHub, GitLab, Bitbucket, Azure Pipelines, Forgejo, or Gitea.
+Exempts one package version from a repository's minimum-release-age gate. It checks the release first, records when the exemption expires, and removes the exemption after that time. An exemption always schedules its own removal: when the repo has no cleanup job yet, it installs a daily CI job in the same change, on GitHub, GitLab, Bitbucket, Azure Pipelines, Forgejo, or Gitea.
 
 Works with pnpm, Yarn Berry, npm, and bun.
 
@@ -16,25 +16,25 @@ Works with pnpm, Yarn Berry, npm, and bun.
 
 | Mode | Result |
 |---|---|
-| *(no argument)* | Shows the gate, active lifts and their expiry, the git host and CI systems it found, and whether the cleanup job is installed. Offers to restore expired lifts or install the job. |
-| `lift <pkg>[@version\|@tag]` | Resolves the bare name to `latest` (or the given tag or version), checks the release (provenance, publisher, diff from the previous version), then adds an exemption for that exact version with an expiry marker. If no cleanup job is installed, it runs `setup-ci` in the same change. |
-| `restore` | Removes lifts whose expiry has passed. |
-| `setup-ci` | Detects the CI provider and adds a daily job that removes expired lifts and opens or updates a PR/MR. The first lift runs it for you. |
+| *(no argument)* | Shows the gate, active exemptions and their expiry, the git host and CI systems it found, and whether the cleanup job is installed. Offers to restore expired exemptions or install the job. |
+| `exempt <pkg>[@version\|@tag]` | Resolves the bare name to `latest` (or the given tag or version), checks the release (provenance, publisher, diff from the previous version), then adds an exemption for that exact version with an expiry marker. If no cleanup job is installed, it runs `setup-ci` in the same change. |
+| `restore` | Removes exemptions whose expiry has passed. |
+| `setup-ci` | Detects the CI provider and adds a daily job that removes expired exemptions and opens or updates a PR/MR. The first exemption runs it for you. |
 
-A lift is written as two lines, and only lines like these are ever removed:
+An exemption is written as two lines, and only lines like these are ever removed:
 
 ```yaml
 minimumReleaseAgeExclude:
   - '@myorg/*'                                   # permanent, never touched
-  # min-release-age: lift left-pad@1.3.1 until 2026-09-17T11:00:00Z
+  # min-release-age: exempt left-pad@1.3.1 until 2026-09-17T11:00:00Z
   - 'left-pad@1.3.1'
 ```
 
-The expiry is the version's publish time plus the gate window. After that time the version passes the gate without help, so removing the lift changes nothing about what installs. It only keeps the list short and accurate.
+The expiry is the version's publish time plus the gate window. After that time the version passes the gate without help, so removing the exemption changes nothing about what installs. It only keeps the list short and accurate.
 
-### Scope of a lift
+### Scope of an exemption
 
-| Package manager | Config file | What a lift exempts |
+| Package manager | Config file | What an exemption covers |
 |---|---|---|
 | pnpm 10.19+ | `pnpm-workspace.yaml` | that one version |
 | Yarn 4.10+ | `.yarnrc.yml` | that one version |
@@ -51,11 +51,11 @@ npm and bun cannot exempt a single version, so the skill asks before it exempts 
 
 ## How to invoke
 
-Ask for it directly, or run `/min-release-age [lift <pkg>[@version|@tag] | restore | setup-ci]` where slash commands are supported.
+Ask for it directly, or run `/min-release-age [exempt <pkg>[@version|@tag] | restore | setup-ci]` where slash commands are supported.
 
 ## What it produces
 
-A config change with a lift marker plus the updated lockfile (and, on the first lift, the cleanup job), a restore commit, or a scheduled CI job plus a copy of the script:
+A config change with an exemption marker plus the updated lockfile (and, on the first exemption, the cleanup job), a restore commit, or a scheduled CI job plus a copy of the script:
 
 | Provider | Job | Script | Also needed |
 |---|---|---|---|
@@ -66,7 +66,7 @@ A config change with a lift marker plus the updated lockfile (and, on the first 
 | Forgejo / Gitea | `.forgejo/workflows/` or `.gitea/workflows/` | `.forgejo/scripts/` or `.gitea/scripts/` | optional token secret |
 | anything else | written for the repo's own CI system | `ci/` | depends on the system |
 
-The skill detects the provider from the git remote and the CI files in the repo, and loads only that provider's instructions. It asks before creating schedules, registering pipelines, or requesting tokens. If you decline, the job is still committed, and the skill tells you which step is left; until it is done, expired lifts stay until you run `restore`.
+The skill detects the provider from the git remote and the CI files in the repo, and loads only that provider's instructions. It asks before creating schedules, registering pipelines, or requesting tokens. If you decline, the job is still committed, and the skill tells you which step is left; until it is done, expired exemptions stay until you run `restore`.
 
 ## Install
 

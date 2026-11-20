@@ -1,12 +1,12 @@
 # A separate pipeline: register it with `az pipelines create --yml-path .azure-pipelines/min-release-age.yml`.
-# Removes minimum-release-age lifts whose window has passed and opens (or updates) a pull request.
+# Removes minimum-release-age exemptions whose window has passed and opens (or updates) a pull request.
 
 trigger: none
 pr: none
 
 schedules:
   - cron: '17 3 * * *'
-    displayName: Expire minimum-release-age lifts
+    displayName: Expire minimum-release-age exemptions
     branches:
       include:
         - main
@@ -36,6 +36,6 @@ steps:
       git commit -am 'chore: restore minimum release age'
       git push --force origin "$BRANCH"
       node ci/min-release-age.mjs open-pr --provider azure --branch "$BRANCH" --body-file "$AGENT_TEMPDIRECTORY/mra-body.md"
-    displayName: Remove expired lifts
+    displayName: Remove expired exemptions
     env:
       SYSTEM_ACCESSTOKEN: $(System.AccessToken)

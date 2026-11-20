@@ -1,14 +1,14 @@
 ---
 name: min-release-age
-description: "Fixes an install that fails minimum-release-age, or lifts a package with a scheduled expiry, or restores it."
-argument-hint: "[lift <pkg>[@version|@tag] | restore | setup-ci]"
+description: "Fixes an install that fails minimum-release-age, or exempts a package with a scheduled expiry, or restores it."
+argument-hint: "[exempt <pkg>[@version|@tag] | restore | setup-ci]"
 ---
 
 # Minimum Release Age
 
-Manage a repository's minimum-release-age gate: lift it for one package version, remove the lift once
-the version has aged past the gate, and install a scheduled CI job that removes expired lifts on its
-own. A lift always schedules its own removal: the first lift in a repo installs that job in the same
+Manage a repository's minimum-release-age gate: exempt one package version from it, remove the exemption once
+the version has aged past the gate, and install a scheduled CI job that removes expired exemptions on its
+own. An exemption always schedules its own removal: the first exemption in a repo installs that job in the same
 change. Covers pnpm, Yarn Berry, npm, and bun.
 
 ## When to use
@@ -24,15 +24,15 @@ exemption list by hand.
 
 ```bash
 node <this-skill-dir>/scripts/repobuddy.mjs release-age status  [--json] [--check]
-node <this-skill-dir>/scripts/repobuddy.mjs release-age lift    <pkg>[@version|@tag] [--name-wide] [--until <ISO>]
+node <this-skill-dir>/scripts/repobuddy.mjs release-age exempt  <pkg>[@version|@tag] [--name-wide] [--until <ISO>]
 node <this-skill-dir>/scripts/repobuddy.mjs release-age restore [--dry-run]
 ```
 
 It detects the package manager from `packageManager`, then from lockfiles. Pass `--pm pnpm|yarn|npm|bun`
-when detection is wrong. Each lift is written as a marker comment followed by its entry:
+when detection is wrong. Each exemption is written as a marker comment followed by its entry:
 
 ```yaml
-  # min-release-age: lift left-pad@1.3.1 until 2026-09-17T11:00:00Z
+  # min-release-age: exempt left-pad@1.3.1 until 2026-09-17T11:00:00Z
   - 'left-pad@1.3.1'
 ```
 
@@ -43,40 +43,40 @@ Entries without a marker are permanent policy. Never add, remove, or rewrite the
 | Input | Mode |
 |---|---|
 | no argument, "status", "what's exempt" | Status |
-| `lift <pkg>`, an age-gate install failure, "let me install X now" | Lift |
+| `exempt <pkg>`, an age-gate install failure, "let me install X now" | Exempt |
 | `restore`, "put the gate back", "clear old exemptions" | Restore |
-| `setup-ci`, "restore it automatically", "add a scheduled job" | Setup CI (Lift also runs it when no job is installed) |
+| `setup-ci`, "restore it automatically", "add a scheduled job" | Setup CI (Exempt also runs it when no job is installed) |
 
 ## Status
 
-1. Run `status`. Report the package manager, the gate value, each lift with its expiry, the git host and CI systems, and whether the cleanup job is installed.
-2. If any lift is expired, offer to run Restore now.
-3. If the cleanup job is not installed, ask whether to run Setup CI for the provider `status` names. If there are active lifts, say they will not be removed until the job exists or someone runs Restore.
+1. Run `status`. Report the package manager, the gate value, each exemption with its expiry, the git host and CI systems, and whether the cleanup job is installed.
+2. If any exemption is expired, offer to run Restore now.
+3. If the cleanup job is not installed, ask whether to run Setup CI for the provider `status` names. If there are active exemptions, say they will not be removed until the job exists or someone runs Restore.
 4. Change nothing without a yes.
 
-## Lift
+## Exempt
 
-1. **Pick the version.** Default to the bare name, which the script resolves to the `latest` dist-tag. Pass `@<tag>` for another dist-tag, or `@x.y.z` when the failure names a specific version. The script refuses ranges and always writes the exact version it resolved. If the version falls outside the range the repo declares for that dependency, tell the user before lifting.
+1. **Pick the version.** Default to the bare name, which the script resolves to the `latest` dist-tag. Pass `@<tag>` for another dist-tag, or `@x.y.z` when the failure names a specific version. The script refuses ranges and always writes the exact version it resolved. If the version falls outside the range the repo declares for that dependency, tell the user before exempting.
 2. **Check the release before exempting it.** The gate exists to catch compromised releases, so check it by hand:
    - `npm view <pkg>@<version> dist.attestations maintainers time --json`: provenance is present if the package had it before, the publisher is a usual maintainer, and the publish time matches the upstream release or tag.
    - Compare against the previous version (`npm diff --diff=<pkg>@<prev> --diff=<pkg>@<version>`): no new install scripts, no unexpected network, `eval`, or obfuscated code.
-   - Report what was checked. If anything looks wrong, stop and tell the user instead of lifting.
-3. **Handle npm and bun.** They cannot exempt a single version. Tell the user that the lift exempts **every** version of the package until it expires, and run with `--name-wide` only after they agree.
-4. Run `lift <pkg@version>`. The script sets the expiry to the publish time plus the gate window. After that time the version passes the gate without the exemption.
-5. **Schedule the removal.** `lift` reports `ci`, and its summary ends with a `cleanup job:` line (if they are missing, run `status`). If `ci.installed` is false, run Setup CI now and put the job in the same change as the lift. This step is required, not an offer: without the job, an expired lift stays in the config until someone remembers to run Restore. Setup CI still asks before any change outside the repo (step 7 there). If the user declines that part, commit the job anyway, and tell them which outside step is left and that the lift stays until it is done or they run Restore.
+   - Report what was checked. If anything looks wrong, stop and tell the user instead of exempting.
+3. **Handle npm and bun.** They cannot exempt a single version. Tell the user that the exemption covers **every** version of the package until it expires, and run with `--name-wide` only after they agree.
+4. Run `exempt <pkg@version>`. The script sets the expiry to the publish time plus the gate window. After that time the version passes the gate without the exemption.
+5. **Schedule the removal.** `exempt` reports `ci`, and its summary ends with a `cleanup job:` line (if they are missing, run `status`). If `ci.installed` is false, run Setup CI now and put the job in the same change as the exemption. This step is required, not an offer: without the job, an expired exemption stays in the config until someone remembers to run Restore. Setup CI still asks before any change outside the repo (step 7 there). If the user declines that part, commit the job anyway, and tell them which outside step is left and that the exemption stays until it is done or they run Restore.
 6. Run the install so the lockfile records the version and its integrity hash. Commit the config change with the lockfile, and with the cleanup job from step 5 when it is new.
-7. **Keep the reason neutral.** Commit messages and PR text say which package was lifted, not why. If the reason is an undisclosed vulnerability, keep that detail in a private security advisory.
+7. **Keep the reason neutral.** Commit messages and PR text say which package was exempted, not why. If the reason is an undisclosed vulnerability, keep that detail in a private security advisory.
 
 ## Restore
 
 1. Run `restore --dry-run` and show what would be removed.
-2. Run `restore`. It removes only marked lifts whose expiry has passed and fails on a marker without its entry. Fix that by hand before re-running.
+2. Run `restore`. It removes only marked exemptions whose expiry has passed and fails on a marker without its entry. Fix that by hand before re-running.
 3. Run the frozen install (`pnpm install --frozen-lockfile`, `yarn install --immutable`, `npm ci`, `bun install --frozen-lockfile`) to confirm the lockfile still resolves.
 4. Commit as `chore: restore minimum release age`.
 
 ## Setup CI
 
-1. Read `ci` from `status --json` (or from the `lift --json` result when Lift sent you here):
+1. Read `ci` from `status --json` (or from the `exempt --json` result when Exempt sent you here):
    - `host`: the git host, from the `origin` remote
    - `systems`: the CI systems found in the repo
    - `provider`: the one to target
@@ -107,8 +107,8 @@ Entries without a marker are permanent policy. Never add, remove, or rewrite the
 - Setting the gate to `0`, deleting it, or passing `--config.minimumReleaseAge=0` / `--min-release-age=0` to get past a failure
 - Adding an unmarked entry, which never expires
 - Exempting a whole package name on pnpm or Yarn, where a version pin works
-- Lifting without the release check in Lift step 2
-- Finishing a lift without a cleanup job, or leaving the job for a later change
+- Exempting without the release check in Exempt step 2
+- Finishing an exemption without a cleanup job, or leaving the job for a later change
 
 ## References
 

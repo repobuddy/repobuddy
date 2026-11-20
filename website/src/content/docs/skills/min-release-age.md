@@ -1,10 +1,10 @@
 ---
 title: min-release-age
-description: Lift the minimum-release-age gate for one package version, then restore it automatically once the version ages past the window.
+description: Exempt one package version from the minimum-release-age gate, then restore it automatically once the version ages past the window.
 ---
 
 `min-release-age` exempts one package version from a repository's minimum-release-age gate after checking the release,
-records when the exemption expires, and removes it later. A lift always schedules its own removal.
+records when the exemption expires, and removes it later. An exemption always schedules its own removal.
 
 ## When to use
 
@@ -16,31 +16,31 @@ records when the exemption expires, and removes it later. A lift always schedule
 ## Invoke
 
 ```
-/min-release-age [lift <pkg>[@version|@tag] | restore | setup-ci]
+/min-release-age [exempt <pkg>[@version|@tag] | restore | setup-ci]
 ```
 
 | Mode | Result |
 | --- | --- |
-| none | Shows the gate, active lifts and expiry, the git host and CI systems found, and whether the cleanup job exists. Offers to restore expired lifts or install the job. |
-| `lift <pkg>[@version\|@tag]` | Resolves a bare name to `latest`, checks provenance, publisher, and diff from the previous version, then adds an exemption with an expiry marker. Runs `setup-ci` if no cleanup job exists. |
-| `restore` | Removes lifts whose expiry has passed. |
-| `setup-ci` | Adds a daily CI job that removes expired lifts and opens or updates a PR or MR. |
+| none | Shows the gate, active exemptions and expiry, the git host and CI systems found, and whether the cleanup job exists. Offers to restore expired exemptions or install the job. |
+| `exempt <pkg>[@version\|@tag]` | Resolves a bare name to `latest`, checks provenance, publisher, and diff from the previous version, then adds an exemption with an expiry marker. Runs `setup-ci` if no cleanup job exists. |
+| `restore` | Removes exemptions whose expiry has passed. |
+| `setup-ci` | Adds a daily CI job that removes expired exemptions and opens or updates a PR or MR. |
 
-The script also takes `status [--json] [--check]`, `lift ... [--name-wide] [--until <ISO>]`, and `restore [--dry-run]`.
+The script also takes `status [--json] [--check]`, `exempt ... [--name-wide] [--until <ISO>]`, and `restore [--dry-run]`.
 
 ## What it changes
 
-A lift is a marker comment plus an exemption line, and only marked lines are ever removed. The expiry is the version's
+An exemption is a marker comment plus the entry, and only marked lines are ever removed. The expiry is the version's
 publish time plus the gate window.
 
-| Package manager | Config file | What a lift exempts |
+| Package manager | Config file | What an exemption covers |
 | --- | --- | --- |
 | pnpm 10.19+ | `pnpm-workspace.yaml` | that one version |
 | Yarn 4.10+ | `.yarnrc.yml` | that one version |
 | npm | `.npmrc` | every version of the package until expiry |
 | bun | `bunfig.toml` | every version of the package until expiry |
 
-The first lift also installs the cleanup job and a copy of the script for the detected provider: GitHub Actions, GitLab
+The first exemption also installs the cleanup job and a copy of the script for the detected provider: GitHub Actions, GitLab
 CI, Bitbucket Pipelines, Azure Pipelines, Forgejo, Gitea, or the repo's own CI system. Commits and PRs name the package,
 never the reason.
 
@@ -62,7 +62,7 @@ pipelines, or requesting tokens. If you decline, the job is still committed and 
 ## Example
 
 ```
-/min-release-age lift left-pad@1.3.1
+/min-release-age exempt left-pad@1.3.1
 ```
 
 More detail: [skill README](https://github.com/repobuddy/repobuddy/tree/main/packages/buddy/skills/min-release-age).
