@@ -11,6 +11,8 @@ Use when asked to set up where issues go, route bugs and features to different t
 
 ## References
 
+Each `reference <subcommand> ...` here is the `reference` command of `cyber-agentkit`, not a program on PATH. Run it as the `Run the command` section of that plugin's `reference` skill (`cyber-agentkit:reference` in Claude Code) says: `node <reference skill folder>/scripts/reference.mjs <subcommand> ...`, or the `npx -y cyber-agentkit@<version> reference` form it gives when the script cannot start. The command **cannot run** when neither starts.
+
 Load these with the `reference` skill in the `cyber-agentkit` plugin:
 
 - `project-tracker.capabilities.interface`: the formats of the `Routes` and `Moves` tables (its `Routing` section), and which versions it knows. When `project-tracker.capabilities.interface` does not load, read `references/project-tracker.capabilities.interface.md` in this skill's folder instead: it is the same interface, bundled for an install without the repobuddy plugin.
@@ -18,7 +20,7 @@ Load these with the `reference` skill in the `cyber-agentkit` plugin:
 
 When a load warns `reference-legacy-format` or `reference-renamed`, a file is in a cyber-agentkit 1 form or under an old name: run `reference migrate` with the `reference` skill in the `cyber-agentkit` plugin, show the user its plan, and run it again with `--write` only on their yes. Then go on with the reference as loaded.
 
-When the `reference` command cannot run, say it is needed and stop: nothing can be listed or read, so write nothing.
+When the `reference` command cannot run, at any step of any mode, say it is needed and stop: nothing can be listed or read, so write nothing.
 
 ## Modes
 

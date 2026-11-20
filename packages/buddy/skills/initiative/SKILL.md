@@ -22,12 +22,16 @@ Pick the mode from the request. With none clear, ask.
 
 ## References
 
+Each `reference <subcommand> ...` here is the `reference` command of `cyber-agentkit`, not a program on PATH. Run it as the `Run the command` section of that plugin's `reference` skill (`cyber-agentkit:reference` in Claude Code) says: `node <reference skill folder>/scripts/reference.mjs <subcommand> ...`, or the `npx -y cyber-agentkit@<version> reference` form it gives when the script cannot start. The command **cannot run** when neither starts.
+
 Load these with the `reference` skill in the `cyber-agentkit` plugin, so a project's own override applies:
 
 - Before any mode: `project-tracker.levels` (the level checks), `project-tracker.capabilities.interface` (what a capabilities reference holds, and the routing's format), and `project-tracker.template.initiative` (the initiative's body). When `project-tracker.capabilities.interface` does not load, read `references/project-tracker.capabilities.interface.md` in this skill's folder instead: it is the same interface, bundled for an install without the repobuddy plugin.
 - For each shell: `project-tracker.template.epic`.
 
-When a load warns `reference-legacy-format` or `reference-renamed`, a file is in a cyber-agentkit 1 form or under an old name: run `reference migrate` with the `reference` skill in the `cyber-agentkit` plugin, show the user its plan, and run it again with `--write` only on their yes. Then go on with the reference as loaded.
+When the command cannot run, the `reference` skill reads each name's `references/<name>.default.md` in this skill's folder instead; say which names have none.
+
+When a load warns `reference-legacy-format` or `reference-renamed`, a file is in a cyber-agentkit 1 form or under an old name: run `reference migrate` with the `reference` skill in the `cyber-agentkit` plugin, show the user its plan, and run it again with `--write` only on their yes. Then go on with the reference as loaded. When the command cannot run, migrate nothing, tell the user, and go on.
 
 Keep every section of a template, in order; write `None` under one you have nothing for. A section a team adds or rewords is part of the template.
 
@@ -48,11 +52,11 @@ These hold on every tracker and cannot be changed by a capabilities reference or
 A tracker's operations live in a capabilities reference named `project-tracker.capabilities.<tracker>`. This skill owns the workflow; the reference owns the commands. Resolve a tracker for a level and a category: the initiative at level initiative, each shell at level epic with its own category, and a Promote source at level epic with its category. Know the category first: a routing chooses by it. A source item given by URL is on the tracker whose `Url` section parses it; when that is not the tracker its route names, say so and stop.
 
 1. Look for a routing: `reference load project-tracker.routing --format json`. Status `missing` means no routing: go to step 3. When the command cannot run, read `.agents/references/project-tracker.routing.md` directly: absent means no routing (go to step 3); present means its pins cannot be resolved, so name the first matching pin, say the `reference` command cannot run, suggest `project-tracker` check once it can, and stop.
-2. With a routing, take the first `Routes` row that matches the level and the category. No row matches: name the pair, suggest `project-tracker` change, and stop. Run `reference load <pin> --format json --metadata` on its pin. Its status is `missing` or `ambiguous` (the bare name is held by more than one plugin): name the pin and the problem, suggest `project-tracker` check, and stop. Otherwise load that reference and go to step 6.
+2. With a routing, take the first `Routes` row that matches the level and the category. No row matches: name the pair, suggest `project-tracker` change, and stop. Run `reference load <pin> --format json --metadata` on its pin. Its status is `missing` or `ambiguous` (the bare name is held by more than one plugin): name the pin and the problem, suggest `project-tracker` check, and stop. When the command cannot run, name the pin, say so, suggest `project-tracker` check once it can, and stop. Otherwise load that reference and go to step 6.
 3. Read the host of `git remote get-url origin`.
-4. List what is installed: `reference search project-tracker.capabilities`. Keep only hits whose `match` is `prefix`, which may carry a `<plugin>/` qualifier; drop the interface itself, `project-tracker.capabilities.interface`, and fuzzier ones.
+4. List what is installed: `reference search project-tracker.capabilities`. Keep only hits whose `match` is `prefix`, which may carry a `<plugin>/` qualifier; drop the interface itself, `project-tracker.capabilities.interface`, and fuzzier ones. When the command cannot run, go to step 5.
 5. Load the one whose `Detect` section matches the repository. Two matches, or a name ambiguous between plugins: report both qualified names, ask which, and load neither until answered. When the command cannot run, or nothing is left, load the bundled reference for the host from this skill's `references/` folder: `project-tracker.capabilities.github.default.md` for `github.com`, `project-tracker.capabilities.gitlab.default.md` for `gitlab.com` or a host `glab auth status --hostname <host>` accepts. Otherwise say that no tracker is set up for this repository, suggest `project-tracker`, and stop.
-6. Read the version in the `metadata` of `reference load <name> --format json --metadata`, or in the frontmatter of a bundled reference: `implements` (`project-tracker.capabilities@<version>`), or `contract` when there is no `implements`. Missing, or not a version `project-tracker.capabilities.interface` declares: name the tracker and the version, and stop.
+6. Read the version in the `metadata` of `reference load <name> --format json --metadata`, or in the frontmatter of a bundled reference: `implements` (`project-tracker.capabilities@<version>`), or `contract` when there is no `implements`. When the command cannot run, read the frontmatter of the bundled reference step 5 loaded. Missing, or not a version `project-tracker.capabilities.interface` declares: name the tracker and the version, and stop.
 7. Run its `Detect` checks; when a tool is missing, old, or logged out, say what to install, upgrade, or run, and stop.
 8. Check that the tracker holds the level (`Levels held` in its `Tracker` section). When it does not, say so and stop; do not file the initiative as an epic or a plain issue.
 
