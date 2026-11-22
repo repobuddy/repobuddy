@@ -24,6 +24,24 @@ Run `/project-tracker`, or ask in plain words. It has four modes: set up, show, 
 4. It shows the result in plain words and writes the routing only after you confirm.
 5. **Show** and **Change** read and edit the routing. **Check** reports each route that is missing, ambiguous (a bare name two plugins ship), on an unknown contract version, or a level and category that no route covers. With no routing, show and check name the host's tracker in use, for example "GitHub, from the origin host".
 
+## Jira
+
+repobuddy ships `project-tracker.capabilities.jira` for Jira Cloud, beside GitHub and GitLab. Jira is never picked from the host: set-up lists it, and work goes there only when you route it, which is how a Bitbucket repository tracks work. Record the site and project key with an override in `.agents/references/project-tracker.capabilities.jira.md`:
+
+```md
+---
+extends: [repobuddy]
+merge: combine
+---
+
+## Detect
+
+- Site: acme.atlassian.net
+- Project: ACME
+```
+
+Each user exports `JIRA_EMAIL` and an Atlassian API token as `JIRA_API_TOKEN`. The commands follow Atlassian's documentation and have not yet run against a Jira site.
+
 ## The routing file
 
 `.agents/references/project-tracker.routing.md` has two tables. The first matching row of `Routes` wins, and `any` matches everything:
