@@ -97,8 +97,11 @@ instead, which stalls an unattended run.
    whether to write one checkpoint per topic or keep them in one, with a recommendation. With one live
    topic it doesn't ask. With a focus argument it checkpoints only that topic and names the others it
    left out. In a run with no one to ask, it takes the recommendation and says why.
-4. Writes each checkpoint to `.agents/repobuddy/checkpoints/<slug>.md` at the root of the topic's
-   **home repo**, the repo its work changes. That is usually the current repo; for a topic about
+4. Writes each checkpoint to `<common git dir>/repobuddy/checkpoints/<slug>.md` of the topic's
+   **home repo**, the repo its work changes. The common git dir (`git rev-parse --git-common-dir`) is
+   shared by a plain clone, the main checkout and every linked worktree, so a checkpoint written in
+   one is seen from all of them, and removing a worktree or running `git clean -fdx` doesn't delete
+   it. That is usually the current repo; for a topic about
    another repo, the checkpoint goes into that repo, with its branch, commit and paths taken from
    there and a `repo:` field naming it. If that repo isn't on disk, it asks where it is (or, with no
    one to ask, falls back to `~/.agents/repobuddy/checkpoints/` and says so). An existing checkpoint
@@ -112,14 +115,17 @@ instead, which stalls an unattended run.
    the next session should use. A section with nothing to say is left out. Split checkpoints each
    stand alone: shared context is copied into each, and a topic that has to wait for another names it
    in `depends-on`, which `resume` shows as `waits on <slug>`.
-5. On first use in a repo, adds the checkpoint folder to that repo's `.git/info/exclude` (shared by
-   every worktree), not to your tracked `.gitignore`, so checkpoints never show up as untracked files.
+5. Never touches your working tree or `.gitignore`: the checkpoints sit in the git dir, so they
+   never show up in `git status`. A checkpoint an earlier version wrote to
+   `.agents/repobuddy/checkpoints/` in the checkout is moved to the git dir the next time its topic is
+   checkpointed.
 6. Redacts secrets and personal data. With `--commit`, it also drops absolute paths, usernames and
    hostnames, and greps the checkpoints for them before committing.
 7. Leaves your uncommitted work alone and lists it in the checkpoint, so you know it won't travel on
    its own.
-8. Commits only the checkpoints, and only with `--commit`, staging them with `git add -f` past the
-   exclude. It commits only in the current repo: a checkpoint written to another repo stays
+8. Commits only the checkpoints, and only with `--commit`: it copies them to
+   `.agents/repobuddy/checkpoints/` in the checkout and commits the copies with `git add -f`, so they
+   follow the branch to another machine. It commits only in the current repo: a checkpoint written to another repo stays
    uncommitted, and the report says so.
 9. Reports every checkpoint written with its next step, and the topics it skipped as done. For a
    checkpoint written to another repo, it gives the line to type to start a session there.
@@ -134,21 +140,25 @@ the checkpoint current as it works. "Update the checkpoint" routes to `create`.
 
 ## `list`
 
-Shows the checkpoints and stops. It never opens or continues one. It covers this repo's
-`.agents/repobuddy/checkpoints/` plus the checkpoints in `~/.agents/repobuddy/checkpoints/` whose `repo:`
-names this repo; outside a repo, the home folder; given a repo path, that repo's checkpoints, with no
-hand-off and no `cd`. Rows are newest first, each with title, branch, `updated` date, next step,
+Shows the checkpoints and stops. It never opens or continues one. It covers the checkpoints in this
+repo's common git dir, a committed or older copy in this checkout's `.agents/repobuddy/checkpoints/`,
+and the checkpoints in `~/.agents/repobuddy/checkpoints/` whose `repo:` names this repo; outside a repo, the home folder; given a repo path, that repo's checkpoints, with no
+hand-off and no `cd`. Rows are newest first, each with title, branch and the worktree it is checked out in, `updated` date, next step,
 `waits on <slug>` and, for a resumed checkpoint, whether its session is still alive. With none, it says so
 and stops. `resume` uses the same listing when it asks which one to open.
 
 ## `resume`
 
-1. Finds the checkpoint in `.agents/repobuddy/checkpoints/`, including one a session in another repo
-   paused here. It uses the one you named, or the only one there. When there are several, it lists
+1. Finds the checkpoint in the repo's common git dir, from whichever checkout you are in, including
+   one a session in another repo paused here. It uses the one you named, or the only one there. When there are several, it lists
    them newest first, with title, branch and next step, and asks, even if one matches your current
    branch. A checkpoint that waits on another topic is marked `waits on <slug>`.
 2. Checks the checkpoint against the repo. It says so first if the checkpoint's `repo:` names another
-   repo, then flags a different branch, commits that landed since the pause, and state from
+   repo. Then it goes by the checkpoint's branch: on that branch, it continues here; with the branch
+   checked out in another worktree, it names that worktree, gives the line to resume there, and
+   stops; with the branch checked out nowhere, it says so and stops, leaving how to check it out
+   (`git switch`, a new worktree) to you. It never switches branches itself. It then flags commits
+   that landed since the pause, and state from
    `## Not in git` that isn't here. If the new commits already met the goal, it asks whether to delete
    the checkpoint instead of continuing.
 3. Reloads the working method and the settled decisions, reads the dead ends so it doesn't retry a
@@ -182,6 +192,17 @@ in [`references/harness/`](references/harness/).
 
 With no checkpoint but an in-progress SDD mission plan, it hands off to cyber-sdd's `resume-mission`
 (when installed).
+
+## Worktrees and other tooling
+
+Checkpoints work the same in a plain clone, the main checkout and a linked worktree, and the skill
+assumes none of them. A checkpoint belongs to the repo, and its branch says where to continue.
+
+The skill reports where the branch is and doesn't go there. When the branch is checked out somewhere
+else, `resume` stops with `Branch <branch> is checked out at <path>.`; when no worktree has it, it
+stops with `Branch <branch> is not checked out in any worktree of this repo.`. A tool that manages
+sessions or worktrees can act on those lines from its own side, for example to move to the pane
+working in `<path>` or to create the worktree. The skill depends on no such tool.
 
 ## Why not `/resume` or `/handoff`?
 

@@ -27,17 +27,19 @@ opens the file has to be able to continue.
    of writing a second one:
    - **By origin first.** If this session resumed checkpoint X, the topic it continued is X's topic,
      and writes back to X under X's slug.
-   - **Otherwise by goal.** Before naming the topics, list the existing checkpoints in the folder of
-     each topic's home repo (step 5) and reuse the slug of the one whose `## Goal` matches. When the
+   - **Otherwise by goal.** Before naming the topics, list the existing checkpoints of each topic's
+     home repo, in the folders [list.md](list.md) reads, and reuse the slug of the one whose `## Goal` matches. When the
      match is unclear, ask. With no one to ask, give the topic a new slug and say so in the report.
    - **On a split.** When a matched topic has split in two, the part that continues the old `## Goal`
      keeps the slug, and the new part gets a new one.
 
 2. **Drop finished and extra work.** A topic that is done (committed, merged, answered, or abandoned
    on purpose) gets no checkpoint and no history. If it matched a checkpoint in step 1, delete that
-   file, so it doesn't linger or hold up a checkpoint whose `depends-on` names it. Use `git rm` only
-   when step 9 will commit the deletion (`--commit`, a committed checkpoint in the current repo);
-   otherwise use plain `rm`, so the deletion isn't staged into the user's next unrelated commit. Delete only for that reason: an old checkpoint can still be a legitimate
+   file, so it doesn't linger or hold up a checkpoint whose `depends-on` names it. Delete it from the
+   common dir with plain `rm`, and also delete its copy in the old folder (step 5), if there is one.
+   Remove a committed copy with `git rm` only when step 9 will commit the deletion (`--commit`, a
+   committed checkpoint in the current repo); otherwise use plain `rm`, so the deletion isn't staged
+   into the user's next unrelated commit. Delete only for that reason: an old checkpoint can still be a legitimate
    pause, so age alone never is one. Where a live topic builds on the finished one, cite it in one line
    under `## Touched` (the commit sha or PR). Drop tangents that left nothing to do. Summarize only
    where a cold reader needs the gist to continue, never as a play-by-play of the session.
@@ -75,30 +77,41 @@ opens the file has to be able to continue.
    dependency, a sibling package), and that topic's checkpoint belongs where a session in *that* repo
    will look. When the topic's work changes files in one other repo, that repo is its home. When it
    spans two repos, split it if it splits cleanly; otherwise its home is the repo `## NEXT` acts in.
-   - **Home is the current repo:** `<repo root>/.agents/repobuddy/checkpoints/<slug>.md`, where the
-     repo root is `git rev-parse --show-toplevel`.
-   - **Home is another repo on disk:** `<home repo root>/.agents/repobuddy/checkpoints/<slug>.md`,
-     where the root is `git -C <path in that repo> rev-parse --show-toplevel`. Find the path from the
-     session: files it read or edited there, or a path the user named.
+   - **Home is the current repo:** `<common dir>/repobuddy/checkpoints/<slug>.md`, where the common
+     dir is `git rev-parse --path-format=absolute --git-common-dir`.
+   - **Home is another repo on disk:** `<its common dir>/repobuddy/checkpoints/<slug>.md`, where the
+     common dir is `git -C <path in that repo> rev-parse --path-format=absolute --git-common-dir`.
+     Find the path from the session: files it read or edited there, or a path the user named.
    - **Home is another repo not found on disk:** ask the user where it is. With no one to ask, write to
      `~/.agents/repobuddy/checkpoints/<slug>.md` and say so in the report.
    - **No repo at all** (the session runs outside one and the topic has no home repo):
      `~/.agents/repobuddy/checkpoints/<slug>.md`.
 
+   The common dir is the one git dir that every checkout of a repo shares: a plain clone, the main
+   checkout and each linked worktree all resolve to it. So a checkpoint written from any of them is
+   found from all of them, and removing or recycling a worktree, or `git clean -fdx`, leaves it alone.
+   Being inside the git dir, it never shows in `git status` and needs no exclude entry. Create the
+   folder if it is missing. Never write the checkpoint into the working tree, except as the copy
+   `--commit` makes (step 9).
+
    `<slug>` is a short kebab-case name for the topic (`flaky-login-test`, `auth-refactor`), not a
    timestamp. A topic matched in step 1 keeps its checkpoint's slug, and step 6 merges into that file.
 
-   **Read the repo state from the home repo.** Take `branch` and `commit` from the home repo
-   (`git -C <home repo root> branch --show-current` and `rev-parse --short HEAD`), take `## Not in git`
-   from its `git status --short`, and write every path relative to its root. Set `repo:` to the home
-   repo's root folder name or its `origin` remote (`owner/name`), never an absolute path, so a resume
-   can tell whose checkpoint it is.
+   **Move a checkpoint from the old folder.** Earlier versions wrote checkpoints to
+   `<checkout root>/.agents/repobuddy/checkpoints/` in the checkout itself (the root is
+   `git rev-parse --show-toplevel`). When a topic matched a checkpoint there, step 6 merges into it and
+   writes the result to the common dir. Then remove the old file with plain `rm`, unless git tracks it
+   (`git ls-files --error-unmatch <path>` succeeds): a tracked copy is a committed one, which step 9
+   updates with `--commit` and otherwise leaves as it is. Leave the old folder's exclude entry in
+   `info/exclude` alone; it still covers the copies `--commit` makes.
 
-   **Ignore the folder locally.** In the repo that receives the checkpoint, make sure
-   `.agents/repobuddy/checkpoints/` is listed in `<git common dir>/info/exclude`, where the common dir
-   is `git -C <that repo root> rev-parse --git-common-dir`, so the one entry covers every worktree.
-   Append it only if no line already names it, and create the file if it is missing. Never add it to
-   the tracked `.gitignore`: that would change the user's repo for a local note.
+   **Read the repo state from the checkout the session works in.** Take `branch` and `commit` from the
+   home repo's checkout (`git -C <checkout root> branch --show-current` and `rev-parse --short HEAD`),
+   take `## Not in git` from its `git status --short`, and write every path relative to its root. Set
+   `repo:` to the home repo's `origin` remote (`owner/name`), or, with no `origin`, to the folder name
+   of its main checkout (the first `worktree` line of `git worktree list --porcelain`), never an
+   absolute path and never a linked worktree's folder name, so a resume from any checkout can tell
+   whose checkpoint it is. The `branch` is how `resume` finds the checkout to continue in.
 
 6. **Write each checkpoint** in the format below, in this order: **action first**, history after.
    When split, every checkpoint stands alone:
@@ -143,9 +156,13 @@ opens the file has to be able to continue.
 
 9. **Commit only with `--commit`.** By default the checkpoints are written and left uncommitted,
    because a note from a debugging session should not land on a feature branch by accident. With
-   `--commit`, stage only the checkpoint files with `git add -f <path>...` (the folder is excluded, so
-   a plain `git add` skips them) and commit them together as `docs: checkpoint <slug>[, <slug>...]`,
-   so they follow the branch to another machine or another person. A deletion staged with `git rm` in
+   `--commit`, copy each checkpoint from the common dir to `.agents/repobuddy/checkpoints/<slug>.md`
+   in the current checkout: a file in the git dir cannot be committed as it is. Stage only those
+   copies with `git add -f <path>...` (the folder may be excluded, so a plain `git add` can skip them)
+   and commit them together as `docs: checkpoint <slug>[, <slug>...]`, so they follow the branch to
+   another machine or another person. The copy in the common dir stays the one `list` and `resume`
+   read here; the committed copy is for a checkout that has no common-dir copy, such as a clone on
+   another machine. A deletion staged with `git rm` in
    step 2 goes into the same commit, or, with nothing else to commit, into its own as
    `docs: drop checkpoint <slug>[, <slug>...]`. Without `--commit`, the deletion is a plain `rm`: it
    shows in `git status` but is not in the index, and stays uncommitted.
