@@ -43,7 +43,8 @@ Take the first rule that matches, and load only the reference for the subcommand
    wrote more than one checkpoint, this rule does not match: go on to the next rule.
 5. **`create` when the repo has no checkpoint.** A bare `/checkpoint` with no request around it, in a
    session with work, inside a git repo, checks for checkpoints with
-   `ls "$(git rev-parse --show-toplevel)/.agents/repobuddy/checkpoints/"*.md`.
+   `find "$(git rev-parse --path-format=absolute --git-common-dir)/repobuddy/checkpoints" "$(git rev-parse --show-toplevel)/.agents/repobuddy/checkpoints" -maxdepth 1 -name '*.md' 2>/dev/null`,
+   which reads the common git dir every checkout shares and this checkout's own folder.
    If that lists nothing, there is nothing to resume: route to `create` as if the user had typed
    `/checkpoint create`.
 6. **`help`.** A bare `/checkpoint` in a session with work in a repo that has checkpoints, a bare one
@@ -67,9 +68,12 @@ harness invokes it, from [references/command.md](references/command.md), in plac
   steps, and stops without opening one. Example: `/checkpoint list`.
 - `checkpoint help`: this list.
 
-Checkpoints live at `<repo root>/.agents/repobuddy/checkpoints/<slug>.md`, ignored through
-`.git/info/exclude`, or at `~/.agents/repobuddy/checkpoints/` outside a repo. `--commit` commits the
-ones written to the current repo.
+Checkpoints live in the repo's common git dir, at `<common dir>/repobuddy/checkpoints/<slug>.md`, so
+a plain clone, the main checkout and every linked worktree share them; outside a repo, at
+`~/.agents/repobuddy/checkpoints/`. `--commit` copies the ones written to the current repo to
+`.agents/repobuddy/checkpoints/` in the checkout and commits the copies. `resume` continues in the
+checkout that has the checkpoint's branch: here, or it names the worktree that holds the branch and
+stops.
 
 **Another repo.** When a session in one repo drifts into work on another, `create` writes that topic's
 checkpoint into the other repo and gives the line to type to resume it from a session there.

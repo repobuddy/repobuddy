@@ -58,27 +58,36 @@ A drifted session asks instead of updating, which stalls an unattended run.
   into it, keeping its settled decisions and dead ends.
 - With several live topics, asks whether to write one checkpoint per topic or one for all, and recommends one. With a
   focus argument it checkpoints only that topic.
-- Writes `.agents/repobuddy/checkpoints/<slug>.md` at the root of the topic's home repo, with the next action first. A
-  topic about another repo is written into that repo with a `repo:` field. If that repo is not on disk it asks where it
-  is, or falls back to `~/.agents/repobuddy/checkpoints/`.
-- Adds the folder to `.git/info/exclude`, not `.gitignore`. Redacts secrets and personal data. Lists uncommitted work
-  but does not touch it.
-- `--commit` commits only the checkpoints in the current repo, with `git add -f`, after dropping absolute paths,
-  usernames, and hostnames. A checkpoint in another repo stays uncommitted.
+- Writes `<common git dir>/repobuddy/checkpoints/<slug>.md` in the topic's home repo, with the next action first. The
+  common git dir is shared by a plain clone, the main checkout and every linked worktree, so every checkout sees the
+  checkpoint, and removing a worktree or running `git clean -fdx` leaves it in place. A topic about another repo is
+  written into that repo with a `repo:` field. If that repo is not on disk it asks where it is, or falls back to
+  `~/.agents/repobuddy/checkpoints/`.
+- Moves a checkpoint an earlier version wrote to `.agents/repobuddy/checkpoints/` in the checkout into the git dir.
+  Changes neither the working tree nor `.gitignore`. Redacts secrets and personal data. Lists uncommitted work but
+  does not touch it.
+- `--commit` copies the current repo's checkpoints to `.agents/repobuddy/checkpoints/` in the checkout and commits the
+  copies with `git add -f`, after dropping absolute paths, usernames, and hostnames. A checkpoint in another repo
+  stays uncommitted.
 
 ### list
 
 - Shows the checkpoints and stops. It never opens or continues one.
-- Covers this repo's `.agents/repobuddy/checkpoints/` plus the ones in `~/.agents/repobuddy/checkpoints/` whose `repo:`
-  names this repo. Outside a repo it shows the home folder. Given a repo path, it shows that repo's checkpoints, with no
+- Covers the checkpoints in this repo's common git dir, a committed or older copy in this checkout's
+  `.agents/repobuddy/checkpoints/`, and the ones in `~/.agents/repobuddy/checkpoints/` whose `repo:` names this repo. Outside a repo it shows the home folder. Given a repo path, it shows that repo's checkpoints, with no
   hand-off and no `cd`.
-- Each row has the title, branch, `updated` date, next step, `waits on <slug>` and, for a resumed checkpoint, whether
+- Each row has the title, the branch and the worktree it is checked out in, the `updated` date, next step, `waits on <slug>` and, for a resumed checkpoint, whether
   its session is still alive. With none, it says so and stops.
 
 ### resume
 
 - Finds the checkpoint (one you name, the only one, or a newest-first list to choose from). Warns when `repo:` names
-  another repo, then flags a different branch, new commits, and state that was not in git. If the new commits already
+  another repo.
+- Resumes by branch: on the checkpoint's branch it continues in place. When another worktree has the branch, it names
+  that worktree, gives the line to resume there, and stops. When no worktree has it, it says the branch has to be
+  checked out and leaves how to you. It never switches branches, and a tool that manages worktrees or sessions can
+  act on those stop lines from its own side.
+- Flags new commits and state that was not in git. If the new commits already
   met the goal, it asks whether to delete the checkpoint.
 - Reloads the working method and settled decisions, avoids retrying listed dead ends, and runs the next step.
 - Writes a `resumed:` marker (time, harness, session id, process id, start time) into the checkpoint. The list warns

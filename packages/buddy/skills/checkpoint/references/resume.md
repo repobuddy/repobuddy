@@ -9,13 +9,14 @@ that drifted in elsewhere is already here.
 
 ## Procedure
 
-1. **Find the checkpoint.** Checkpoints live in `<repo root>/.agents/repobuddy/checkpoints/` (the
-   repo root is `git rev-parse --show-toplevel`), or in `~/.agents/repobuddy/checkpoints/` outside a
-   repo. Inside a repo, also count the checkpoints in `~/.agents/repobuddy/checkpoints/` whose `repo:`
-   names this repo: a pause that couldn't find this repo on disk left them there. Take the first rule
-   that matches:
+1. **Find the checkpoint.** Read the folders [list.md](list.md) names in its step 1: inside a repo,
+   the repo's common git dir (shared by every checkout of it), this checkout's
+   `.agents/repobuddy/checkpoints/`, and the matching ones in `~/.agents/repobuddy/checkpoints/`;
+   outside a repo, `~/.agents/repobuddy/checkpoints/`. A slug in more than one folder is the copy
+   list.md picks. Take the first rule that matches:
    1. The user gave a checkpoint path or slug: open that one.
-   2. The user gave the path of another repo: go to step 1a.
+   2. The user gave the path of another repo, one whose common dir differs from this one's (a path in
+      another worktree of this repo is this repo): go to step 1a.
    3. Exactly one checkpoint exists: open it.
    4. More than one exists: list them as [list.md](list.md) describes, and ask which one to resume. Ask
       even when one of them matches the current branch; a branch match is a hint to mention, not a
@@ -43,14 +44,35 @@ that drifted in elsewhere is already here.
    If there is neither, say so and stop. Don't reconstruct a checkpoint from guesses.
 
 2. **Read it in full, then check it against the repo.** First compare the checkpoint's `repo:` with
-   the current repo (its root folder name and its `origin` remote). If they differ, say so before
-   going on: the `branch`, `commit` and paths in the checkpoint belong to that repo, so the checks
-   below would run against the wrong history. If the user means to resume it there, hand back the
-   lines from step 1a and stop; otherwise ask how to go on. A checkpoint with no `repo:` predates the
-   field: treat it as this repo's. Then compare the checkpoint's `branch` and `commit` with the
-   current ones:
-   - On a different branch: say so, and ask before switching, because switching branches can disturb
-     the user's work.
+   the current repo: its `origin` remote (`owner/name`), the folder name of its main checkout (the
+   first `worktree` line of `git worktree list --porcelain`), and the current checkout's root folder
+   name. A match on any of them is this repo. If none matches, say so before going on: the `branch`,
+   `commit` and paths in the checkpoint belong to that repo, so the checks below would run against
+   the wrong history. If the user means to resume it there, hand back the lines from step 1a and
+   stop; otherwise ask how to go on. A checkpoint with no `repo:` predates the field: treat it as this
+   repo's.
+
+   **Then find the checkout to continue in.** The checkpoint's `branch` is the resume key, not the
+   folder the file was found in: every checkout of the repo sees the same checkpoints. Take the first
+   rule that matches:
+   - **This checkout is on the branch** (`git branch --show-current`), or the checkpoint's `branch`
+     is `none`: continue here.
+   - **Another checkout holds the branch.** `git worktree list --porcelain` has a
+     `branch refs/heads/<branch>` line under that checkout's `worktree <path>` line. Say
+     `Branch <branch> is checked out at <path>.`, then give the lines to resume there and stop. Give
+     them as step 1a does, with that path as `<repo-root>`. Don't switch this checkout: git refuses
+     to check out one branch in two places. Don't `cd` there either.
+   - **No checkout holds it.** Say `Branch <branch> is not checked out in any worktree of this
+     repo.`, and that it has to be checked out before the checkpoint can resume. Then stop. How to
+     check it out (`git switch` here, a new worktree, or something else) is up to the user or their
+     tooling: don't pick one, and don't switch branches yourself, since that can disturb the user's
+     work.
+
+   Both stop lines keep that exact wording, so a tool that wraps this skill can act on them (move to
+   that checkout, open a session there) from its own side. This skill only reports the branch and
+   the checkout that holds it.
+
+   Then compare the checkpoint's `commit` with the current one:
    - The branch has moved past `commit`: read `git log <commit>..HEAD --oneline` and check whether
      the new commits already did the `## NEXT` step or changed a settled decision. If they already
      met the goal, ask whether to delete the checkpoint (step 7) instead of continuing.
@@ -113,8 +135,9 @@ that drifted in elsewhere is already here.
 
 7. **Delete it when the work is done, not before.** A checkpoint is a handoff, not a record, but
    until the goal is met it is what survives if this session dies. Once the goal is met, move
-   anything worth keeping into a commit message, an ADR or an issue, then delete the file. Use
-   `git rm` if it was committed, and commit the deletion along with the work's final unit. Age is no
+   anything worth keeping into a commit message, an ADR or an issue, then delete the file, from the
+   common dir and from this checkout's `.agents/repobuddy/checkpoints/`. Remove a committed copy with
+   `git rm`, and commit the deletion along with the work's final unit. Age is no
    reason to delete one: an old checkpoint can still be a legitimate pause. If the session ends before
    the goal is met, run `checkpoint create`, which writes back to this checkpoint and rewrites its
    `## NEXT`, instead of leaving a stale one behind.
