@@ -63,7 +63,7 @@
 		"cyber-agentkit": "^2.11.1",
 		"@jest/globals": "^30.0.0",
 		"@repobuddy/jest": "workspace:*",
-		"buddy-agent-harness": "^1.0.0",
+		"buddy-agent-harness": "^2.0.0",
 		"clibuilder": "^12.1.0",
 		"cross-env": "^10.1.0",
 		"cyber-mux": "^0.12.0",
