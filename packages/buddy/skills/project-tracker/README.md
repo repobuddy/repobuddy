@@ -16,6 +16,8 @@ Records which issue tracker holds each kind of work, so [`issue`](../issue/READM
 - **Change** edits the routes you name and keeps the rest.
 - **Check** reports a route whose tracker is missing, held by two plugins, on a contract version the skill does not know, a level and category that no route covers, or a route the signals no longer support (for example, an Asana route after the project link is removed). With no routing on a GitHub or GitLab host, it reports the host's tracker in use and no problem. It writes nothing.
 
+repobuddy ships capabilities for GitHub, GitLab, and Jira Cloud. Jira is never picked from the host: set-up lists it, and work goes there only when you route it. Record its site and project key with an override of `project-tracker.capabilities.jira`, as its `Detect` section shows. Its commands follow Atlassian's documentation and have not yet run against a Jira site.
+
 Without a routing, `issue`, `epic`, and `initiative` file on the tracker of the `origin` host. A host with no tracker they can use, such as Bitbucket, needs a routing: they stop and point here. With a routing, they file on the routed tracker.
 
 ## Safety

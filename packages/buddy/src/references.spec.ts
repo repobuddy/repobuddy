@@ -66,17 +66,22 @@ describe('project-tracker.capabilities.interface', () => {
 		expect(declared).toEqual(table)
 	})
 
-	it('is implemented by the GitHub and GitLab capabilities references, and every shipped reference checks clean', async () => {
+	it('is implemented by the GitHub, GitLab, and Jira capabilities references, and every shipped reference checks clean', async () => {
 		const layers = await referenceLayers({ ...base, plugin, platform: process.platform })
 		const entries = checkReferences(layers)
 		expect(entries.filter((entry) => entry.kind === 'implementation').map((entry) => entry.name)).toEqual([
 			'project-tracker.capabilities.github',
 			'project-tracker.capabilities.gitlab',
+			'project-tracker.capabilities.jira',
 		])
 		expect(entries.filter((entry) => entry.status !== 'passed' || entry.warnings.length > 0)).toEqual([])
 		expect(
 			referenceImplementations('project-tracker.capabilities', layers).implementations.map(({ pin }) => pin),
-		).toEqual(['repobuddy/project-tracker.capabilities.github', 'repobuddy/project-tracker.capabilities.gitlab'])
+		).toEqual([
+			'repobuddy/project-tracker.capabilities.github',
+			'repobuddy/project-tracker.capabilities.gitlab',
+			'repobuddy/project-tracker.capabilities.jira',
+		])
 	})
 
 	it('still loads under its old name, project-tracker.contract, with a reference-renamed warning', async () => {
