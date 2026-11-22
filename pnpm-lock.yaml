@@ -261,8 +261,8 @@ importers:
         specifier: workspace:*
         version: link:../jest
       buddy-agent-harness:
-        specifier: ^1.0.0
-        version: 1.3.0(clibuilder@12.4.1(js-yaml@4.3.2))
+        specifier: ^2.0.0
+        version: 2.0.0(clibuilder@12.4.1(js-yaml@4.3.2))
       clibuilder:
         specifier: ^12.1.0
         version: 12.4.1(js-yaml@4.3.2)
@@ -4333,8 +4333,8 @@ packages:
   bser@2.1.2:
     resolution: {integrity: sha512-V2o8YS2EhrKMO9AumnkK0ynynfFlsajpYupwq7S46H5mhcanwxDkNTw3K67wPIcKTH1ffkA4vhMOtAc7gRmPZw==}
 
-  buddy-agent-harness@1.3.0:
-    resolution: {integrity: sha512-LfOgZHvDM69PVt8yuDF9IhvU5LIVN+S+011aBROW8y8Cig4B9BA+UXLVvfSvBFk4QUE4/6fg4zA5+dIeNb1UaQ==}
+  buddy-agent-harness@2.0.0:
+    resolution: {integrity: sha512-BGtzxHJVH7ukvLF+MqsHms4oOGDdh/AN6JbPje+Dq0IJnIbntUHq70WPh3spEHT+28SNXwMPiQtKAtdp1C0rIA==}
     engines: {node: '>=22'}
     hasBin: true
     peerDependencies:
@@ -10906,7 +10906,7 @@ snapshots:
     dependencies:
       node-int64: 0.4.0
 
-  buddy-agent-harness@1.3.0(clibuilder@12.4.1(js-yaml@4.3.2)):
+  buddy-agent-harness@2.0.0(clibuilder@12.4.1(js-yaml@4.3.2)):
     dependencies:
       cyber-agentkit: 2.11.1(clibuilder@12.4.1(js-yaml@4.3.2))
       jsonc-parser: 3.3.1
