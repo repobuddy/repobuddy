@@ -46,7 +46,11 @@ Also for a small fix to the latest commit when it is unpushed: it amends. Not fo
 ## What it does
 
 - Stops first when a merge, cherry-pick, revert, or rebase is in progress or a path is unmerged, and commits nothing.
-- Checks the index and never commits files someone else staged along with this unit.
+- When changes are staged and the request names no other change, commits exactly what is staged as one commit: it
+  stages, unstages, and splits nothing, and leaves unstaged and untracked changes as they are. A check that fails, or a
+  fix the staged content would need, stops the commit and is reported.
+- When the request names another change, checks the index and never commits files someone else staged along with this
+  unit.
 - Plans every commit from `git status` and `git diff --stat` before staging the first, reading full diffs only where
   the split needs them.
 - Splits formatting from logic, a refactor from the change after it, and a dependency bump from a behavior change.
