@@ -216,8 +216,12 @@ describe('listCheckpoints', () => {
 		write(commonFolder(root), 'feat', checkpoint({ branch: 'feat', updated: '2026-11-02' }, 'Feat', 'x'))
 		write(commonFolder(root), 'gone', checkpoint({ branch: 'gone', updated: '2026-11-01' }, 'Gone', 'x'))
 
-		const fromMain = listCheckpoints({ cwd: root, home, now: NOW }).checkpoints
+		const listed = listCheckpoints({ cwd: root, home, now: NOW })
+		const fromMain = listed.checkpoints
 		expect(fromMain.map((r) => r.checkedOut)).toEqual([wt, null])
+		const text = formatList(listed)
+		expect(text).toContain(`  branch: feat, at ${wt}\n`)
+		expect(text).toContain('  branch: gone, not checked out\n')
 
 		const fromWorktree = listCheckpoints({ cwd: wt, home, now: NOW })
 		expect(fromWorktree.repo?.mainName).toBe('app')
