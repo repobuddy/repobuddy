@@ -90,8 +90,8 @@ opens the file has to be able to continue.
    The common dir is the one git dir that every checkout of a repo shares: a plain clone, the main
    checkout and each linked worktree all resolve to it. So a checkpoint written from any of them is
    found from all of them, and removing or recycling a worktree, or `git clean -fdx`, leaves it alone.
-   Being inside the git dir, it never shows in `git status` and needs no exclude entry. Create the
-   folder if it is missing. Never write the checkpoint into the working tree, except as the copy
+   Being inside the git dir, it never shows in `git status` and needs no exclude entry. Never write
+   the checkpoint into the working tree, except as the copy
    `--commit` makes (step 9).
 
    `<slug>` is a short kebab-case name for the topic (`flaky-login-test`, `auth-refactor`), not a
@@ -114,6 +114,20 @@ opens the file has to be able to continue.
    whose checkpoint it is. The `branch` is how `resume` finds the checkout to continue in.
 
 6. **Write each checkpoint** in the format below, in this order: **action first**, history after.
+   Write the file with the skill's script, the whole text on stdin, never with a file tool, because
+   some harnesses' file tools refuse to write under `.git/`:
+
+   ```sh
+   node <this-skill-dir>/scripts/repobuddy.mjs checkpoint write <slug> [<path in its home repo>] [--home] <<'CHECKPOINT'
+   <the checkpoint>
+   CHECKPOINT
+   ```
+
+   Pass the path for a home repo other than the current one, and `--home` for
+   `~/.agents/repobuddy/checkpoints/`. It creates the folder, prints the path it wrote, and exits 2,
+   writing nothing, when the slug is not kebab-case or the text lacks the front matter, `## NEXT` or
+   `## Not in git`: fix the text and run it again.
+
    When split, every checkpoint stands alone:
    - **Copy the shared context.** A working method or settled decision that applies to several topics
      goes into each of their checkpoints, in the lines that topic needs. Don't point at a sibling

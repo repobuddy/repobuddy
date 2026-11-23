@@ -29,7 +29,7 @@ checkout) it runs that package's CLI. Anywhere else, such as a git install or a 
 | [`buddy npm-trust`](/repobuddy/cli/skill-scripts/npm-trust/) | `setup-npm-trusted-publishing` | Plans and registers npm trusted publishers |
 | [`buddy release-age`](/repobuddy/cli/skill-scripts/release-age/) | `min-release-age` | Exempts one package version from the minimum-release-age gate, and restores it |
 | [`buddy agent-readiness`](/repobuddy/cli/skill-scripts/agent-readiness/) | `agent-readiness` | Scores a repository's agent readiness, or benchmarks agent cost |
-| [`buddy checkpoint`](/repobuddy/cli/skill-scripts/checkpoint/) | `checkpoint` | Lists a repository's checkpoints with branch, next step, and resume liveness |
+| [`buddy checkpoint`](/repobuddy/cli/skill-scripts/checkpoint/) | `checkpoint` | Lists a repository's checkpoints with branch, next step, and resume liveness; writes a checkpoint and its resume marker |
 
 `release-age`, `npm-trust`, `agent-readiness`, and `checkpoint` print their usage and exit `2` when run without a subcommand.
 
