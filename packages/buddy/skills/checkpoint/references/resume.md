@@ -158,3 +158,5 @@ that drifted in elsewhere is already here.
 - **C6.** The opened checkpoint has a `resumed:` block with an `at` time in its front matter, and still exists while
   its goal is unmet.
 - **C7.** The run took the checkpoint's `## NEXT` action, and retried no approach its `## Dead ends` lists.
+- **C10.** When another checkout holds the checkpoint's branch, the reply says
+  `Branch <branch> is checked out at <path>.`, and no file changed in either checkout or in the checkpoint.

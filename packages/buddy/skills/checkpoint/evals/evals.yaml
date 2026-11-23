@@ -63,6 +63,15 @@ rubrics:
     - script: |
         d="$(git rev-parse --path-format=absolute --git-common-dir)/repobuddy/checkpoints"
         ! grep -q '^resumed:' "$d"/*.md && test -z "$(git status --porcelain)"
+  C10:
+    - regex: 'Branch `?parse-null`? is checked out at'
+    - script: |
+        f="$(git rev-parse --path-format=absolute --git-common-dir)/repobuddy/checkpoints/parse-null.md"
+        wt="$(git worktree list --porcelain | sed -n 's/^worktree //p' | sed -n 2p)"
+        ! grep -q '^resumed:' "$f" &&
+          test -z "$(git status --porcelain)" &&
+          test -z "$(git -C "$wt" status --porcelain)" &&
+          test "$(git branch --show-current)" = main
 outcome:
   - id: save-one-topic
     prompt: "This session I fixed the typo in README.md and committed it. I also
@@ -96,3 +105,9 @@ outcome:
     prompt: Show the checkpoint skill's help.
     files: files/help
     criteria: [C1]
+  - id: resume-other-worktree
+    prompt: Resume the parse-null checkpoint. I approve going ahead; don't ask
+      before continuing.
+    files: files/resume-other-worktree
+    setup: setup/resume-other-worktree.sh
+    criteria: [C10]
