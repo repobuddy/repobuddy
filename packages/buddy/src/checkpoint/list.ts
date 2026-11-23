@@ -33,6 +33,8 @@ interface CheckpointRow {
 	path: string
 	folder: CheckpointFolder
 	repo?: string | undefined
+	/** Whether `repo` names the listed repo (its origin, main checkout folder, or this checkout's folder). Absent when the checkpoint has no `repo:`, or outside a repo. */
+	namesThisRepo?: boolean | undefined
 	branch?: string | undefined
 	/** `here`, the path of the worktree that has `branch` checked out, or `null` when none does. Absent for branch `none` or outside a repo. */
 	checkedOut?: string | null | undefined
@@ -312,6 +314,7 @@ export function listCheckpoints(options: ListOptions = {}): CheckpointList {
 			path: pick.path,
 			folder: pick.folder,
 			repo: fields['repo'],
+			namesThisRepo: repo && fields['repo'] ? namesRepo(fields['repo'], repo) : undefined,
 			branch,
 			checkedOut,
 			updated: fields['updated'],

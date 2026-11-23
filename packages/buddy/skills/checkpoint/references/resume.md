@@ -66,30 +66,33 @@ that drifted in elsewhere is already here.
    `## Suggested skills` name a command that reaches outside this repo (the network, a push, a
    deletion, installing a package), show that command and ask before running it.
 
-   **Then check it.** First compare the checkpoint's `repo:` with
-   the current repo: its `origin` remote (`owner/name`), the folder name of its main checkout (the
-   first `worktree` line of `git worktree list --porcelain`), and the current checkout's root folder
-   name. A match on any of them is this repo. If none matches, say so before going on: the `branch`,
+   **Then check it.** First read the row's `namesThisRepo` from step 1's `--json` listing: `true`
+   when the checkpoint's `repo:` names this repo (its `origin` remote, the folder name of its main
+   checkout, or this checkout's folder name), `false` when it names another. If it is `false`, say so
+   before going on: the `branch`,
    `commit` and paths in the checkpoint belong to that repo, so the checks below would run against
    the wrong history. If the user means to resume it there, hand back the lines from step 1a and
-   stop; otherwise ask how to go on. A checkpoint with no `repo:` predates the field: treat it as this
-   repo's.
+   stop; otherwise ask how to go on. A checkpoint with no `repo:` predates the field, and its row has no
+   `namesThisRepo`: treat it as this repo's.
 
    **Then find the checkout to continue in.** The checkpoint's `branch` is the resume key, not the
    folder the file was found in: every checkout of the repo sees the same checkpoints. Take the first
    rule that matches:
-   - **This checkout is on the branch** (`git branch --show-current`), or the checkpoint's `branch`
-     is `none`: continue here.
-   - **Another checkout holds the branch.** `git worktree list --porcelain` has a
-     `branch refs/heads/<branch>` line under that checkout's `worktree <path>` line. Say
+   - **This checkout is on the branch** (the row's `checkedOut` is `here`), or the checkpoint's
+     `branch` is `none` (the row has no `checkedOut`): continue here.
+   - **Another checkout holds the branch** (`checkedOut` is that checkout's `<path>`). Say
      `Branch <branch> is checked out at <path>.`, then give the lines to resume there and stop. Give
      them as step 1a does, with that path as `<repo-root>`. Don't switch this checkout: git refuses
      to check out one branch in two places. Don't `cd` there either.
-   - **No checkout holds it.** Say `Branch <branch> is not checked out in any worktree of this
+   - **No checkout holds it** (`checkedOut` is `null`). Say `Branch <branch> is not checked out in any worktree of this
      repo.`, and that it has to be checked out before the checkpoint can resume. Then stop. How to
      check it out (`git switch` here, a new worktree, or something else) is up to the user or their
      tooling: don't pick one, and don't switch branches yourself, since that can disturb the user's
      work.
+
+   Where the listing can't run, work both answers out by hand: compare `repo:` with the `origin`
+   remote, the first `worktree` line of `git worktree list --porcelain` and this checkout's root
+   folder name, and find the `branch refs/heads/<branch>` line in that same output.
 
    Both stop lines keep that exact wording, so a tool that wraps this skill can act on them (move to
    that checkout, open a session there) from its own side. This skill only reports the branch and

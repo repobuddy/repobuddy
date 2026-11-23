@@ -188,6 +188,22 @@ describe('listCheckpoints', () => {
 		expect(list.checkpoints[1]).toMatchObject({ branch: 'main', checkedOut: 'here', next: 'Do B.' })
 	})
 
+	it('says whether each checkpoint names this repo', () => {
+		const { root, home } = makeRepo()
+		sh(root, 'remote', 'add', 'origin', 'git@github.com:acme/widget.git')
+		write(commonFolder(root), 'by-origin', checkpoint({ repo: 'acme/widget', updated: '2026-11-21' }, 'A', 'Go.'))
+		write(commonFolder(root), 'by-folder', checkpoint({ repo: 'app', updated: '2026-11-20' }, 'B', 'Go.'))
+		write(commonFolder(root), 'foreign', checkpoint({ repo: 'other/repo', updated: '2026-11-19' }, 'C', 'Go.'))
+		write(commonFolder(root), 'no-repo', checkpoint({ updated: '2026-11-18' }, 'D', 'Go.'))
+		const rows = listCheckpoints({ cwd: root, home, now: NOW }).checkpoints
+		expect(rows.map((r) => [r.slug, r.namesThisRepo])).toEqual([
+			['by-origin', true],
+			['by-folder', true],
+			['foreign', false],
+			['no-repo', undefined],
+		])
+	})
+
 	it('matches a home checkpoint by origin owner/name', () => {
 		const { root, home } = makeRepo()
 		sh(root, 'remote', 'add', 'origin', 'git@github.com:acme/widget.git')

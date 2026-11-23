@@ -72,8 +72,9 @@ Fix the flaky login test (flaky-login-test)
 With no checkpoints, it prints `No checkpoints in <folders>.` and exits `0`.
 
 With `--json`, stdout is an object with `repo` (`null` outside a repository), `folders`, and `checkpoints`. Each
-checkpoint carries `slug`, `title`, `path`, `folder`, `branch`, `checkedOut`, `updated`, `next`, `dependsOn`,
-`waitsOn`, `liveness`, and `olderCopies`.
+checkpoint carries `slug`, `title`, `path`, `folder`, `repo`, `namesThisRepo`, `branch`, `checkedOut`, `updated`, `next`, `dependsOn`,
+`waitsOn`, `liveness`, and `olderCopies`. `namesThisRepo` says whether the checkpoint's `repo:` names this repository; it is absent
+when the checkpoint has no `repo:`.
 
 ## `write`
 
