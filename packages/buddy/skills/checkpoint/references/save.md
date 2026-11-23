@@ -38,8 +38,8 @@ opens the file has to be able to continue.
    on purpose) gets no checkpoint and no history. If it matched a checkpoint in step 1, delete that
    file, so it doesn't linger or hold up a checkpoint whose `depends-on` names it. Delete it from the
    common dir with plain `rm`, and also delete its copy in the old folder (step 5), if there is one.
-   Remove a committed copy with `git rm` only when step 9 will commit the deletion (`--commit`, a
-   committed checkpoint in the current repo); otherwise use plain `rm`, so the deletion isn't staged
+   When step 9 will commit the deletion (`--commit`, a committed checkpoint in the current repo),
+   leave the committed copy to its `--drop`; otherwise use plain `rm`, so the deletion isn't staged
    into the user's next unrelated commit. Delete only for that reason: an old checkpoint can still be a legitimate
    pause, so age alone never is one. Where a live topic builds on the finished one, cite it in one line
    under `## Touched` (the commit sha or PR). Drop tangents that left nothing to do. Summarize only
@@ -171,30 +171,32 @@ opens the file has to be able to continue.
 
 9. **Commit only with `--commit`.** By default the checkpoints are written and left uncommitted,
    because a note from a debugging session should not land on a feature branch by accident. With
-   `--commit`, copy each checkpoint from the common dir to `.agents/repobuddy/checkpoints/<slug>.md`
-   in the current checkout: a file in the git dir cannot be committed as it is. Stage only those
-   copies with `git add -f <path>...`, because the folder may be excluded and a plain `git add` skips it,
-   and commit them together as `docs: checkpoint <slug>[, <slug>...]`, so they follow the branch to
-   another machine or another person. The copy in the common dir stays the one `list` and `resume`
-   read here; the committed copy is for a checkout that has no common-dir copy, such as a clone on
-   another machine. A deletion staged with `git rm` in
-   step 2 goes into the same commit, or, with nothing else to commit, into its own as
-   `docs: drop checkpoint <slug>[, <slug>...]`. Without `--commit`, the deletion is a plain `rm`: it
-   shows in `git status` but is not in the index, and stays uncommitted.
+   `--commit`, commit copies of them so they follow the branch to another machine or another person,
+   from the current checkout:
+
+   ```sh
+   node <this-skill-dir>/scripts/repobuddy.mjs checkpoint commit [<slug>...] [--drop <slug>...]
+   ```
+
+   Name each checkpoint written to the current repo, and pass `--drop <slug>` for each committed copy
+   step 2 deletes. It copies each checkpoint from the common dir to
+   `.agents/repobuddy/checkpoints/<slug>.md`, since a file in the git dir cannot be committed as it
+   is, removes each dropped copy, and commits only those paths as
+   `docs: checkpoint <slug>[, <slug>...]`, or `docs: drop checkpoint <slug>[, <slug>...]` with drops
+   alone. The user's staged and unstaged work stays out of the commit. It prints the commit and its
+   message. The copy in the common dir stays the one `list` and `resume` read here; the committed
+   copy is for a checkout that has no common-dir copy, such as a clone on another machine.
+
+   Before it commits, it checks the copies for absolute paths, the home folder, the user name and the
+   host name. On a hit it prints each line, commits nothing, and exits 1: rewrite the checkpoint as
+   repo-relative paths or descriptions with `checkpoint write`, and run it again. A hit on a common
+   word that happens to equal the user name or host name is not a leak: pass it with
+   `--allow <word>`.
 
    `--commit` covers only checkpoints written to the current repo. A checkpoint written to another
    repo (or to `~/.agents/repobuddy/checkpoints/`), or deleted there, stays uncommitted: committing
    there would put a note on a branch in a repo this session was not asked to change. The report says
    so.
-
-   Before committing, check the redaction mechanically, since prose alone misses a path:
-
-   ```sh
-   grep -nE -e '/(home|Users)/' -e '[A-Za-z]:\\' -e "$HOME" -e "$(whoami)" -e "$(hostname)" <checkpoint>...
-   ```
-
-   Rewrite every real hit as a repo-relative path or a description, and don't commit until the check
-   comes back clean. A match on a common word that happens to equal the username is not a leak.
 
 10. **Report.** List every checkpoint written, each with its path, whether it is new or updated, its
     `## NEXT` line and its `depends-on`, and say whether they were committed. Then list the topics

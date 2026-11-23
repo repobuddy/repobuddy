@@ -1,6 +1,6 @@
 ---
 title: buddy checkpoint
-description: List, write, and mark resumed the checkpoints of the checkpoint skill.
+description: List, write, mark resumed, and commit the checkpoints of the checkpoint skill.
 ---
 
 `buddy checkpoint` does the file work of the [`checkpoint` skill](/repobuddy/skills/checkpoint/):
@@ -9,6 +9,7 @@ description: List, write, and mark resumed the checkpoints of the checkpoint ski
   runs it when it has to ask which checkpoint to open. It reads files and git state and writes nothing.
 - `write` writes a checkpoint. The skill's `save` runs it.
 - `mark-resumed` writes the `resumed:` marker into a checkpoint. The skill's `resume` runs it.
+- `commit` commits copies of checkpoints in the checkout. The skill's `save --commit` runs it.
 
 Checkpoints live under `.git/`, where some harnesses' file tools refuse to write, so the skill writes them through
 this command.
@@ -19,6 +20,7 @@ this command.
 buddy checkpoint list [<repo path>] [--json]
 buddy checkpoint write <slug> [<repo path>] [--home] < checkpoint.md
 buddy checkpoint mark-resumed <path> --harness <name> --session <id> [--pid <pid>]
+buddy checkpoint commit [<slug>...] [--drop <slug>...] [--allow <word>...]
 ```
 
 ## `list`
@@ -109,12 +111,31 @@ resumed:
 
 It exits `2` when the file is missing or is not a checkpoint.
 
+## `commit`
+
+It copies each named checkpoint from `<common git dir>/repobuddy/checkpoints/` to `.agents/repobuddy/checkpoints/` in
+the checkout, force-adds the copies (the folder may be excluded), removes each `--drop` copy with `git rm`, and commits
+only those paths. Other staged or unstaged changes stay out of the commit. The message is
+`docs: checkpoint <slug>, <slug>`, or `docs: drop checkpoint <slug>` when there are only drops. It prints the short
+commit hash and the message.
+
+| Argument | Type | Default | Effect |
+| --- | --- | --- | --- |
+| `<slug>...` | kebab-case names | none | The checkpoints to commit. |
+| `--drop <slug>` | kebab-case name, repeatable | none | A committed copy to delete in the same commit. |
+| `--allow <word>` | word, repeatable | none | A word the leak check lets through, such as a username that is also a common word. |
+
+Before it copies anything, it checks each checkpoint for `/home/` or `/Users/` paths, Windows drive paths, the home
+folder, the username, and the hostname. On a hit it prints each line to stderr, commits nothing, and exits `1`.
+
+It exits `2` when no slug or drop is named, a named checkpoint is missing, or no dropped copy is committed.
+
 ## Exit codes
 
 | Code | When |
 | --- | --- |
 | `0` | The listing, the path written, or the `at` was printed. An empty listing is a success. |
-| `1` | The repo path is not in a git repository. |
+| `1` | The repo path is not in a git repository, or a checkpoint `commit` would leak a path or name. |
 | `2` | A missing or unknown subcommand, a missing or unknown argument, or a checkpoint the format does not allow. |
 
 ## Related

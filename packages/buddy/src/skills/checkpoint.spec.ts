@@ -4,13 +4,19 @@ import type { CheckpointList } from '../checkpoint/list.js'
 const listMock = jest.fn<(options: unknown) => CheckpointList>()
 const writeMock = jest.fn<(options: unknown) => string>()
 const markMock = jest.fn<(options: unknown) => { path: string; at: string }>()
+const commitMock = jest.fn<(options: unknown) => { commit: string; message: string; paths: string[] }>()
 
 class NotARepoError extends Error {}
 class InvalidCheckpointError extends Error {}
+class RedactionError extends Error {}
 jest.unstable_mockModule('../checkpoint/list.js', () => ({
 	listCheckpoints: listMock,
 	formatList: (list: CheckpointList) => `rows:${list.checkpoints.length}\n`,
 	NotARepoError,
+}))
+jest.unstable_mockModule('../checkpoint/commit.js', () => ({
+	commitCheckpoints: commitMock,
+	RedactionError,
 }))
 jest.unstable_mockModule('../checkpoint/write.js', () => ({
 	writeCheckpoint: writeMock,
@@ -27,6 +33,7 @@ beforeEach(() => {
 	listMock.mockReset()
 	writeMock.mockReset()
 	markMock.mockReset()
+	commitMock.mockReset()
 	stdout = []
 	stderr = []
 	jest.spyOn(process.stdout, 'write').mockImplementation((chunk: unknown) => {
@@ -63,6 +70,9 @@ test.each([
 	[['mark-resumed', 'a.md', '--harness', 'h', '--session', 's', '--pid', 'x']],
 	[['mark-resumed', 'a.md', 'b.md', '--harness', 'h', '--session', 's']],
 	[['mark-resumed', 'a.md', '--bogus']],
+	[['commit']],
+	[['commit', '--drop']],
+	[['commit', 'a', '--bogus']],
 ])('rejects %j with exit 2', async (argv) => {
 	await expect(main(argv)).rejects.toThrow('exit:2')
 	expect(stderr.join('')).toMatch(/usage: repobuddy\.mjs checkpoint list/)
@@ -133,4 +143,19 @@ test('reads process.argv by default', async () => {
 	} finally {
 		process.argv = argv
 	}
+})
+
+test('commit passes the slugs, drops and allowed words, and prints the commit', async () => {
+	commitMock.mockReturnValue({ commit: 'abc1234', message: 'docs: checkpoint a, b', paths: [] })
+	await main(['commit', 'a', '--drop', 'old', 'b', '--allow', 'sam'])
+	expect(commitMock).toHaveBeenCalledWith({ slugs: ['a', 'b'], drops: ['old'], allow: ['sam'], cwd: process.cwd() })
+	expect(stdout.join('')).toBe('abc1234 docs: checkpoint a, b\n')
+})
+
+test('commit exits 1 when a copy would leak a path', async () => {
+	commitMock.mockImplementation(() => {
+		throw new RedactionError('the checkpoints hold what a commit would leak')
+	})
+	await expect(main(['commit', 'a'])).rejects.toThrow('exit:1')
+	expect(stderr.join('')).toBe('repobuddy.mjs checkpoint commit: the checkpoints hold what a commit would leak\n')
 })
