@@ -1,0 +1,14 @@
+outcome:
+  # resume
+  - id: resume-next
+    prompt: Resume the parse-null checkpoint. I approve going ahead; don't ask
+      before continuing.
+    files: files/resume-next
+    setup: setup/resume-next.sh
+    criteria: [C6, C7]
+  - id: resume-other-worktree
+    prompt: Resume the parse-null checkpoint. I approve going ahead; don't ask
+      before continuing.
+    files: files/resume-other-worktree
+    setup: setup/resume-other-worktree.sh
+    criteria: [C10]

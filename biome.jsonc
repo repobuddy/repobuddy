@@ -27,7 +27,10 @@
 			"!packages/buddy/skills/*/scripts/repobuddy.mjs",
 			"!packages/buddy/skills/agent-readiness/scripts/aced-bench.mjs",
 			"!packages/buddy/skills/repo/scripts/cyber-agentkit.mjs",
-			"!packages/buddy/skills/*/scripts/cyber-skills.mjs"
+			"!packages/buddy/skills/*/scripts/cyber-skills.mjs",
+			// Eval results written by cyber-agentkit `skill test` and `skill accept`; committed, never edited.
+			"!packages/buddy/skills/*/evals/**/expected.json",
+			"!packages/buddy/skills/*/evals/**/accepted"
 		]
 	},
 	"formatter": {

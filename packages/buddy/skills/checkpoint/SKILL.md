@@ -1,6 +1,6 @@
 ---
 name: checkpoint
-description: "Pauses a session into topic checkpoints or resumes one, in this repo or another."
+description: "Saves a session's work into topic checkpoints, resumes one, or lists them, in this repo or another. Say \"save a checkpoint\", \"pause this\", \"pick up where we left off\", or \"what checkpoints do I have\"."
 argument-hint: "save [<what to focus on>] [--commit] | resume [<slug> | <path> | <repo path>] | list [<repo path>] | help"
 ---
 
@@ -44,10 +44,9 @@ Take the first rule that matches, and load only the reference for the subcommand
    wrote more than one checkpoint, this rule does not match: go on to the next rule.
 5. **`save` when the repo has no checkpoint.** A bare `/checkpoint` with no request around it, in a
    session with work, inside a git repo, checks for checkpoints with
-   `find "$(git rev-parse --path-format=absolute --git-common-dir)/repobuddy/checkpoints" "$(git rev-parse --show-toplevel)/.agents/repobuddy/checkpoints" -maxdepth 1 -name '*.md' 2>/dev/null`,
-   which reads the common git dir every checkout shares and this checkout's own folder.
-   If that lists nothing, there is nothing to resume: route to `save` as if the user had typed
-   `/checkpoint save`.
+   `node <this-skill-dir>/scripts/repobuddy.mjs checkpoint list --json`, which reads every folder a
+   checkpoint of this repo can be in. If its `checkpoints` is empty, there is nothing to resume:
+   route to `save` as if the user had typed `/checkpoint save`.
 6. **`help`.** A bare `/checkpoint` in a session with work in a repo that has checkpoints, a bare one
    outside a git repo, or a request no rule above matches, shows the help below. Do not guess.
 
