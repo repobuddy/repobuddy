@@ -75,6 +75,13 @@ rubrics:
           test -z "$(git status --porcelain)" &&
           test -z "$(git -C "$wt" status --porcelain)" &&
           test "$(git branch --show-current)" = main
+  C11:
+    - judge: >-
+        Pass when the reply opens with a summary of at most six lines that says what the work is and its goal (trimming
+        parsed CSV fields), what is done (unquoted fields trimmed), what is left (the quoted-field test, the README),
+        and the next step together with the open question on the quotes that blocks it, and when that summary names
+        no commit id or rebase state. Check results (branch, commit, state) may follow the summary; fail only when
+        they come before it or inside it, or when the open question appears only after them.
   # list (references/list.md)
   C8:
     - contains: parse-null

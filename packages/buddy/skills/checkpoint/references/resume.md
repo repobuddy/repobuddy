@@ -182,3 +182,6 @@ that drifted in elsewhere is already here.
 - **C7.** The run took the checkpoint's `## NEXT` action, and retried no approach its `## Dead ends` lists.
 - **C10.** When another checkout holds the checkpoint's branch, the reply says
   `Branch <branch> is checked out at <path>.`, and no file changed in either checkout or in the checkpoint.
+- **C11.** The reply opens, before any check result or action, with a summary of at most six lines that says what
+  the work is and its goal, what is done, what is left, and the next step, with any open question that blocks that
+  step, and names no commit id or rebase state in it. Check results may follow the summary.

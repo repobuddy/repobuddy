@@ -12,3 +12,7 @@ outcome:
     files: files/resume-other-worktree
     setup: setup/resume-other-worktree.sh
     criteria: [C10]
+  - id: resume-summary
+    prompt: Resume the trim-fields checkpoint.
+    setup: setup/resume-summary.sh
+    criteria: [C11]
