@@ -67,7 +67,8 @@ A drifted session asks instead of updating, which stalls an unattended run.
   Changes neither the working tree nor `.gitignore`. Redacts secrets and personal data. Lists uncommitted work but
   does not touch it.
 - `--commit` copies the current repo's checkpoints to `.agents/repobuddy/checkpoints/` in the checkout and commits the
-  copies with `git add -f`, after dropping absolute paths, usernames, and hostnames. A checkpoint in another repo
+  copies with `git add -f` and a message in the repo's commit convention, after dropping absolute paths, usernames,
+  and hostnames. A checkpoint in another repo
   stays uncommitted.
 
 ### list

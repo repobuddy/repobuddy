@@ -20,7 +20,7 @@ this command.
 buddy checkpoint list [<repo path>] [--json]
 buddy checkpoint write <slug> [<repo path>] [--home] < checkpoint.md
 buddy checkpoint mark-resumed <path> --harness <name> --session <id> [--pid <pid>]
-buddy checkpoint commit [<slug>...] [--drop <slug>...] [--allow <word>...]
+buddy checkpoint commit [<slug>...] [--drop <slug>...] [--allow <word>...] [--message <msg>]
 ```
 
 ## `list`
@@ -116,8 +116,9 @@ It exits `2` when the file is missing or is not a checkpoint.
 
 It copies each named checkpoint from `<common git dir>/repobuddy/checkpoints/` to `.agents/repobuddy/checkpoints/` in
 the checkout, force-adds the copies (the folder may be excluded), removes each `--drop` copy with `git rm`, and commits
-only those paths. Other staged or unstaged changes stay out of the commit. The message is
-`docs: checkpoint <slug>, <slug>`, or `docs: drop checkpoint <slug>` when there are only drops. It prints the short
+only those paths. Other staged or unstaged changes stay out of the commit. The message is the `--message` given, which
+the skill writes in the repo's commit convention, or by default `docs: checkpoint <slug>, <slug>`, or
+`docs: drop checkpoint <slug>` when there are only drops. It prints the short
 commit hash and the message.
 
 | Argument | Type | Default | Effect |
@@ -125,6 +126,7 @@ commit hash and the message.
 | `<slug>...` | kebab-case names | none | The checkpoints to commit. |
 | `--drop <slug>` | kebab-case name, repeatable | none | A committed copy to delete in the same commit. |
 | `--allow <word>` | word, repeatable | none | A word the leak check lets through, such as a username that is also a common word. |
+| `--message <msg>`, `-m` | string | `docs: checkpoint <slugs>` | The commit message. Empty is rejected with exit 2. |
 
 Before it copies anything, it checks each checkpoint for `/home/` or `/Users/` paths, Windows drive paths, the home
 folder, the username, and the hostname. On a hit it prints each line to stderr, commits nothing, and exits `1`.

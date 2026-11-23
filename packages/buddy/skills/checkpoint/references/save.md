@@ -184,9 +184,10 @@ opens the file has to be able to continue.
    ```
 
    Name each checkpoint written to the current repo, and pass `--drop <slug>` for each committed copy
-   step 2 deletes. It copies each checkpoint from the common dir to
+   step 2 deletes. Pass `--message <msg>` with a message in the repo's commit convention, read from
+   its contributing guide, commit hooks or recent `git log`; leave it out only when the repo has none. It copies each checkpoint from the common dir to
    `.agents/repobuddy/checkpoints/<slug>.md`, since a file in the git dir cannot be committed as it
-   is, removes each dropped copy, and commits only those paths as
+   is, removes each dropped copy, and commits only those paths under that message, by default
    `docs: checkpoint <slug>[, <slug>...]`, or `docs: drop checkpoint <slug>[, <slug>...]` with drops
    alone. The user's staged and unstaged work stays out of the commit. It prints the commit and its
    message. The copy in the common dir stays the one `list` and `resume` read here; the committed
