@@ -7,40 +7,36 @@ never `cd`. `checkpoint resume` uses the same listing when it has to ask which c
 
 ## Procedure
 
-1. **Pick the folders.** A repo's checkpoints live in its common git dir, shared by every checkout of
-   the repo, so the list is the same from a plain clone, the main checkout or any linked worktree.
-   Take the first rule that matches:
-   1. The user gave a repo path: read the repo's folders below, running each `git` command with
-      `-C <repo-path>`.
-   2. Inside a git repo: read this repo's folders below.
-   3. Outside a repo: `~/.agents/repobuddy/checkpoints/`.
+1. **Run the listing.** From the current directory, without `cd`:
 
-   A repo's folders are:
-   - `<common dir>/repobuddy/checkpoints/`, where the common dir is
-     `git rev-parse --path-format=absolute --git-common-dir`. This is where `create` writes.
-   - `<checkout root>/.agents/repobuddy/checkpoints/` in the checkout itself (root from
-     `git rev-parse --show-toplevel`): a committed copy that came with the branch, or a checkpoint an
-     earlier version wrote there. Mark a row from this folder `in this checkout`; the next `create`
-     on that topic moves it to the common dir.
-   - The checkpoints in `~/.agents/repobuddy/checkpoints/` whose `repo:` names the repo: a pause that
-     couldn't find the repo on disk left them there.
+   ```sh
+   node <this-skill-dir>/scripts/repobuddy.mjs checkpoint list [<repo path>]
+   ```
 
-   When a slug is in more than one folder, list it once, from the copy with the newest `updated`
-   (the common dir's on a tie), and say the other copy is older. `create` and `resume` read the same
-   copy.
+   Pass the repo path when the user gave one. The command reads every folder a checkpoint can be in and
+   writes nothing:
+   - in a repo: the common git dir (`<common dir>/repobuddy/checkpoints/`, shared by every checkout,
+     where `create` writes), this checkout's `.agents/repobuddy/checkpoints/` (a committed copy, or one an
+     earlier version wrote), and the checkpoints in `~/.agents/repobuddy/checkpoints/` whose `repo:`
+     names the repo;
+   - outside a repo: every checkpoint in `~/.agents/repobuddy/checkpoints/`. Each row then names its
+     `repo:`, since the folder mixes repos, and none says where its branch is checked out.
 
-2. **List them,** newest `updated` first. Each row has:
-   - the title, and the slug
-   - the `branch`, and where it is checked out: `here` for the current checkout, or the path of the
-     other worktree that holds it (from `git worktree list --porcelain`)
-   - the `updated` date
-   - the `## NEXT` line
-   - `waits on <slug>` when its `depends-on` names a checkpoint that still exists
-   - for a checkpoint that carries a `resumed:` block, its liveness note, worked out as **Resume
-     marker** in [resume.md](resume.md) describes. The marker only annotates: never hide, skip or block
-     a checkpoint because of it.
+   A slug in more than one folder is listed once, from the copy `create` and `resume` read, and the row
+   names the older copy. Rows come newest `updated` first, each with the title and slug, the `branch`
+   and where it is checked out (`here`, another worktree's path, or `not checked out`), `updated`, the
+   `## NEXT` line, `waits on <slug>` for a live `depends-on`, and, for a checkpoint with a `resumed:`
+   block, its liveness note as **Resume marker** in [resume.md](resume.md) defines it. `in this checkout`
+   marks a row from the checkout's own folder; the next `create` on that topic moves it to the common dir.
 
-3. **With no checkpoints,** say so and stop. Do not reconstruct one from guesses.
+   Exit 1 means the repo path is not in a git repo: say so and stop. Use `--json` only when you need a
+   field to act on, such as `resume` picking a row.
+
+2. **Show the rows** as the command printed them, in its order. The marker only annotates: never hide,
+   skip or block a checkpoint because of it. A branch match with the current checkout is a hint to
+   mention, not a choice to make.
+
+3. **With no checkpoints** (`No checkpoints in …`), say so and stop. Do not reconstruct one from guesses.
 
 4. **Stop.** Name `<command> resume <slug>` as the way to open one, with `<command>` from
    [command.md](command.md). For another repo's list, resume

@@ -72,7 +72,8 @@ A drifted session asks instead of updating, which stalls an unattended run.
 
 ### list
 
-- Shows the checkpoints and stops. It never opens or continues one.
+- Shows the checkpoints and stops. It never opens or continues one. It runs
+  [`buddy checkpoint list`](/repobuddy/cli/skill-scripts/checkpoint/), which `resume` also runs to find a checkpoint.
 - Covers the checkpoints in this repo's common git dir, a committed or older copy in this checkout's
   `.agents/repobuddy/checkpoints/`, and the ones in `~/.agents/repobuddy/checkpoints/` whose `repo:` names this repo. Outside a repo it shows the home folder. Given a repo path, it shows that repo's checkpoints, with no
   hand-off and no `cd`.
@@ -106,7 +107,8 @@ For an SDD mission topic it hands off to cyber-sdd's `pause-mission` and `resume
 
 ## Requirements
 
-`git`. No CLI, network, or script. Moving a live session to another repo uses `/cd` in Claude Code (v2.1.246+) and
+`git`, and Node.js for `list` and `resume`: they run `buddy checkpoint list` through the skill's `scripts/repobuddy.mjs`,
+which uses the installed `repobuddy` package, or `npx -y repobuddy@<version>` (network on first run) outside it. Moving a live session to another repo uses `/cd` in Claude Code (v2.1.246+) and
 Codex (0.150.0+); Copilot CLI has `/cd` without a documented instruction reload; Gemini CLI and Cursor need a fresh
 session started in the repo. Exact lines are in the skill's `references/harness/`.
 

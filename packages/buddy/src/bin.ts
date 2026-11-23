@@ -1,5 +1,6 @@
 import { app } from './app.js'
 import { main as agentReadinessMain } from './skills/agent-readiness.js'
+import { main as checkpointMain } from './skills/checkpoint.js'
 import { main as detectEnvMain } from './skills/detect-env.js'
 import { main as detectStateMain } from './skills/detect-state.js'
 import { main as releaseAgeMain } from './skills/min-release-age.js'
@@ -23,6 +24,8 @@ if (subcommand === 'release-age') {
 	await npmTrustMain(rest)
 } else if (subcommand === 'agent-readiness') {
 	await agentReadinessMain(rest)
+} else if (subcommand === 'checkpoint') {
+	await checkpointMain(rest)
 } else {
 	app.parse(process.argv)
 }

@@ -56,6 +56,7 @@ export default defineConfig({
 										{ label: 'buddy npm-trust', slug: 'cli/skill-scripts/npm-trust' },
 										{ label: 'buddy release-age', slug: 'cli/skill-scripts/release-age' },
 										{ label: 'buddy agent-readiness', slug: 'cli/skill-scripts/agent-readiness' },
+										{ label: 'buddy checkpoint', slug: 'cli/skill-scripts/checkpoint' },
 									],
 								},
 							],

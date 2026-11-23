@@ -39,6 +39,7 @@
 				"skills/to-question/scripts/question-path.mjs": "src/skills/question-path.ts",
 				"skills/review-permissions/scripts/scan-permissions.mjs": "src/skills/scan-permissions.ts",
 				"skills/agent-readiness/scripts/repobuddy.mjs": { "forward": "repobuddy" },
+				"skills/checkpoint/scripts/repobuddy.mjs": { "forward": "repobuddy" },
 				"skills/init-buddy/scripts/repobuddy.mjs": { "forward": "repobuddy" },
 				"skills/min-release-age/scripts/repobuddy.mjs": { "forward": "repobuddy" },
 				"skills/setup-github-repo/scripts/repobuddy.mjs": { "forward": "repobuddy" },
