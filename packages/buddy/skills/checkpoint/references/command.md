@@ -1,6 +1,6 @@
 # The command the user types
 
-Every line this skill hands the user to run it again, such as the resume line at the end of `create`, names
+Every line this skill hands the user to run it again, such as the resume line at the end of `save`, names
 the skill the way the current harness invokes it. The reference files write that name as `<command>`.
 Never hand back a bare `/checkpoint` in Claude Code: there it is an alias of the built-in `/rewind`, and a
 skill does not replace a built-in's alias.

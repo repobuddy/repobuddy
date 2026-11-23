@@ -2,9 +2,9 @@
 
 Arguments: `[<checkpoint slug> | <path> | <repo path>]`.
 
-Pick up work that `checkpoint create` checkpointed: find the checkpoint, reload its context, and continue
+Pick up work that `checkpoint save` checkpointed: find the checkpoint, reload its context, and continue
 from its `## NEXT` without going back over what it records as settled. The checkpoint may have been
-paused from a session in another repo: `checkpoint create` writes each topic to its home repo, so a topic
+paused from a session in another repo: `checkpoint save` writes each topic to its home repo, so a topic
 that drifted in elsewhere is already here.
 
 ## Procedure
@@ -82,9 +82,16 @@ that drifted in elsewhere is already here.
    - Any `## Not in git` item that is missing here, such as uncommitted changes from another machine
      or a process that is no longer running: name it before going on.
 
-   Once the checks pass and the user has agreed to go on, **write the marker**: add this block to the
-   front matter (replacing an older one) and remember its `at`, so `create` can tell whether another
-   session resumed the file since:
+   Once the checks pass and the user has agreed to go on, **write the marker** with the skill's script,
+   never with a file tool, because some harnesses' file tools refuse to write under `.git/`:
+
+   ```sh
+   node <this-skill-dir>/scripts/repobuddy.mjs checkpoint mark-resumed <path> --harness <name> --session <id> [--pid <pid>]
+   ```
+
+   `<path>` is the row's `path` from the listing. It adds this block to the front matter, replacing an
+   older one, reads `started` with `ps`, and prints the `at`. Remember the `at`, so `save` can tell
+   whether another session resumed the file since:
 
    ```yaml
    resumed:
@@ -95,8 +102,8 @@ that drifted in elsewhere is already here.
      started: <that process's start time, from ps -o lstart= -p <pid>>
    ```
 
-   Take `session` and `pid` from the harness reference. Where the harness exposes no PID, write only
-   `harness` and `session`; that reads as unknown. Write no hostname, username or machine id. On a
+   Take `session` and `pid` from the harness reference. Where the harness exposes no PID, leave out
+   `--pid`, so the block holds only `harness` and `session`; that reads as unknown. Write no hostname, username or machine id. On a
    committed checkpoint, commit the marker with the first unit of work, not in a separate commit.
 
    **Resume marker.** A `resumed:` block in the front matter says a session resumed the file and has
@@ -134,7 +141,8 @@ that drifted in elsewhere is already here.
    committing each coherent unit as the repo's conventions require.
 
 6. **Keep the checkpoint current while it exists.** When a decision is settled or a question
-   resolved, update the checkpoint, so that an interruption leaves a resumable file behind.
+   resolved, update the checkpoint, so that an interruption leaves a resumable file behind. Rewrite it
+   with `checkpoint write`, as step 6 of [save.md](save.md) does, keeping its `resumed:` block.
 
 7. **Delete it when the work is done, not before.** A checkpoint is a handoff, not a record, but
    until the goal is met it is what survives if this session dies. Once the goal is met, move
@@ -142,5 +150,11 @@ that drifted in elsewhere is already here.
    common dir and from this checkout's `.agents/repobuddy/checkpoints/`. Remove a committed copy with
    `git rm`, and commit the deletion along with the work's final unit. Age is no
    reason to delete one: an old checkpoint can still be a legitimate pause. If the session ends before
-   the goal is met, run `checkpoint create`, which writes back to this checkpoint and rewrites its
+   the goal is met, run `checkpoint save`, which writes back to this checkpoint and rewrites its
    `## NEXT`, instead of leaving a stale one behind.
+
+## Done when
+
+- **C6.** The opened checkpoint has a `resumed:` block with an `at` time in its front matter, and still exists while
+  its goal is unmet.
+- **C7.** The run took the checkpoint's `## NEXT` action, and retried no approach its `## Dead ends` lists.

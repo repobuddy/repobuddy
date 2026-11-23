@@ -46,7 +46,7 @@ interface CheckpointRow {
 	olderCopies: Array<{ path: string; folder: CheckpointFolder; updated?: string | undefined }>
 }
 
-interface RepoInfo {
+export interface RepoInfo {
 	/** The checkout the listing is for: the given repo path's, or the current one. */
 	root: string
 	commonDir: string
@@ -87,7 +87,7 @@ function git(dir: string, args: string[]): string | null {
 	return r.status === 0 ? r.stdout.trim() : null
 }
 
-function readRepo(dir: string): RepoInfo | null {
+export function readRepo(dir: string): RepoInfo | null {
 	const root = git(dir, ['rev-parse', '--show-toplevel'])
 	const commonDir = git(dir, ['rev-parse', '--path-format=absolute', '--git-common-dir'])
 	if (!root || !commonDir) return null

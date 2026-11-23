@@ -1,0 +1,98 @@
+runs: 3
+threshold: 2
+trigger:
+  - prompt: let's stop here, save a checkpoint so I can pick this up tomorrow
+    expect: fire
+  - prompt: pause this, I'll continue in a new session
+    expect: fire
+  - prompt: create a checkpoint of this work
+    expect: fire
+  - prompt: pick up where we left off with the parse-null checkpoint
+    expect: fire
+  - prompt: what checkpoints do I have in this repo?
+    expect: fire
+  - prompt: commit these changes
+    expect: skip
+  - prompt: stash my uncommitted changes so I can switch branches
+    expect: skip
+  - prompt: file an issue for the work we still have left
+    expect: skip
+  - prompt: list the open pull requests in this repo
+    expect: skip
+rubrics:
+  C1:
+    - regex: '\bsave\b'
+    - regex: '\bresume\b'
+    - regex: '\blist\b'
+    - regex: '\bhelp\b'
+    - script: test -z "$(git status --porcelain)"
+  C2:
+    - script: |
+        d="$(git rev-parse --path-format=absolute --git-common-dir)/repobuddy/checkpoints"
+        test "$(ls "$d"/*.md 2>/dev/null | wc -l)" -eq 1 &&
+          grep -q '^## NEXT' "$d"/*.md &&
+          grep -q '^## Not in git' "$d"/*.md
+  C3:
+    - script: |
+        test "$(git rev-list --count HEAD)" -eq 1 &&
+          test "$(git status --porcelain)" = " M src/parse.js"
+  C4:
+    - script: |
+        test "$(git rev-list --count HEAD)" -eq 2 &&
+          git diff --name-only HEAD~1 HEAD | grep -q . &&
+          ! git diff --name-only HEAD~1 HEAD | grep -v '^\.agents/repobuddy/checkpoints/' &&
+          ! git grep -nE '/(home|Users)/' HEAD -- .agents/repobuddy/checkpoints
+  C5:
+    - regex: 'checkpoint\W+resume\s+`?[a-z0-9]+(-[a-z0-9]+)*'
+  C6:
+    - script: |
+        f="$(git rev-parse --path-format=absolute --git-common-dir)/repobuddy/checkpoints/parse-null.md"
+        test -f "$f" && grep -q '^resumed:' "$f" && grep -qE '^[[:space:]]+at:' "$f"
+  C7:
+    - script: |
+        start="$(git rev-list --max-parents=0 HEAD)"
+        ! git diff --quiet "$start" -- test/parse.test.js &&
+          grep -q 'null' test/parse.test.js &&
+          ! grep -qE 'return[[:space:]]*\{[[:space:]]*\}' src/parse.js
+  C8:
+    - contains: parse-null
+    - contains: docs-refresh
+    - regex: 'parse\(null\)'
+    - regex: '[Ii]nstall section'
+  C9:
+    - script: |
+        d="$(git rev-parse --path-format=absolute --git-common-dir)/repobuddy/checkpoints"
+        ! grep -q '^resumed:' "$d"/*.md && test -z "$(git status --porcelain)"
+outcome:
+  - id: save-one-topic
+    prompt: "This session I fixed the typo in README.md and committed it. I also
+      started making parse() in src/parse.js reject null: the guard is written but
+      untested, and the next step is a test in test/parse.test.js that parse(null)
+      throws a TypeError. Let's stop here and save a checkpoint."
+    files: files/save-one-topic
+    setup: setup/save-one-topic.sh
+    criteria: [C2, C3, C5]
+  - id: save-commit
+    prompt: "This session I fixed the typo in README.md and committed it. I also
+      started making parse() in src/parse.js reject null: the guard is written but
+      untested, and the next step is a test in test/parse.test.js that parse(null)
+      throws a TypeError. Save a checkpoint with --commit so it travels with the
+      branch. I approve the commit; don't ask again."
+    files: files/save-commit
+    setup: setup/save-commit.sh
+    criteria: [C2, C4, C5]
+  - id: resume-next
+    prompt: Resume the parse-null checkpoint. I approve going ahead; don't ask
+      before continuing.
+    files: files/resume-next
+    setup: setup/resume-next.sh
+    criteria: [C6, C7]
+  - id: list-two
+    prompt: What checkpoints do I have in this repo?
+    files: files/list-two
+    setup: setup/list-two.sh
+    criteria: [C8, C9]
+  - id: help
+    prompt: Show the checkpoint skill's help.
+    files: files/help
+    criteria: [C1]

@@ -1,26 +1,36 @@
 ---
 title: buddy checkpoint
-description: List the checkpoints the checkpoint skill reads, newest first, with branch, next step, and resume liveness.
+description: List, write, and mark resumed the checkpoints of the checkpoint skill.
 ---
 
-`buddy checkpoint list` lists a repository's checkpoints for the [`checkpoint` skill](/repobuddy/skills/checkpoint/).
-The skill's `list` subcommand runs it and shows its output, and `resume` runs it when it has to ask which checkpoint
-to open. It reads files and git state and writes nothing.
+`buddy checkpoint` does the file work of the [`checkpoint` skill](/repobuddy/skills/checkpoint/):
+
+- `list` lists a repository's checkpoints. The skill's `list` subcommand runs it and shows its output, and `resume`
+  runs it when it has to ask which checkpoint to open. It reads files and git state and writes nothing.
+- `write` writes a checkpoint. The skill's `save` runs it.
+- `mark-resumed` writes the `resumed:` marker into a checkpoint. The skill's `resume` runs it.
+
+Checkpoints live under `.git/`, where some harnesses' file tools refuse to write, so the skill writes them through
+this command.
 
 ## Usage
 
 ```sh
 buddy checkpoint list [<repo path>] [--json]
+buddy checkpoint write <slug> [<repo path>] [--home] < checkpoint.md
+buddy checkpoint mark-resumed <path> --harness <name> --session <id> [--pid <pid>]
 ```
 
-## Arguments
+## `list`
+
+### Arguments
 
 | Argument | Type | Default | Effect |
 | --- | --- | --- | --- |
 | `<repo path>` | path | the current directory | A path in the repository to list. |
 | `--json` | boolean | off | Prints the listing as JSON instead of text. |
 
-## Behavior
+### Behavior
 
 - Inside a git repository, or given a path in one, it reads three folders:
   - `<common git dir>/repobuddy/checkpoints/`, shared by every checkout of the repository.
@@ -46,7 +56,7 @@ buddy checkpoint list [<repo path>] [--json]
 
   The marker only annotates a row. No checkpoint is hidden because of it.
 
-## Output
+### Output
 
 ```
 Fix the flaky login test (flaky-login-test)
@@ -63,13 +73,49 @@ With `--json`, stdout is an object with `repo` (`null` outside a repository), `f
 checkpoint carries `slug`, `title`, `path`, `folder`, `branch`, `checkedOut`, `updated`, `next`, `dependsOn`,
 `waitsOn`, `liveness`, and `olderCopies`.
 
+## `write`
+
+It reads the whole checkpoint file from stdin and writes it to `<common git dir>/repobuddy/checkpoints/<slug>.md`,
+creating the folder, and prints the path it wrote. An existing file of that slug is replaced.
+
+| Argument | Type | Default | Effect |
+| --- | --- | --- | --- |
+| `<slug>` | kebab-case name | required | The file name, such as `flaky-login-test`. |
+| `<repo path>` | path | the current directory | A path in the repository to write to. |
+| `--home` | boolean | off | Writes to `~/.agents/repobuddy/checkpoints/` instead. Outside a repository, without a repo path, that folder is used anyway. |
+
+It writes nothing and exits `2` when the slug is not kebab-case, or the text has no `---` front matter, no
+`## NEXT` section, or no `## Not in git` section.
+
+## `mark-resumed`
+
+It writes this block at the end of the checkpoint's front matter, replacing an older one, and prints the `at`:
+
+```yaml
+resumed:
+  at: 2026-11-22T10:15:00Z
+  harness: claude-code
+  session: <id>
+  pid: <pid>
+  started: <the process's start time, from ps -o lstart=>
+```
+
+| Argument | Type | Default | Effect |
+| --- | --- | --- | --- |
+| `<path>` | path | required | The checkpoint file, such as a row's `path` from `list --json`. |
+| `--harness` | name | required | The harness that resumed it, such as `claude-code`. |
+| `--session` | id | required | The harness's session id. |
+| `--pid` | process id | none | The harness's process. Without it, `pid` and `started` are left out, and `list` reads the marker as unknown. When `ps` cannot read the start time, only `started` is left out. |
+
+It exits `2` when the file is missing or is not a checkpoint.
+
 ## Exit codes
 
 | Code | When |
 | --- | --- |
-| `0` | The listing was printed, including an empty one. |
+| `0` | The listing, the path written, or the `at` was printed. An empty listing is a success. |
 | `1` | The repo path is not in a git repository. |
-| `2` | A missing or unknown subcommand, an unknown flag, or more than one path. |
+| `2` | A missing or unknown subcommand, a missing or unknown argument, or a checkpoint the format does not allow. |
 
 ## Related
 

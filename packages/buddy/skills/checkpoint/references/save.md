@@ -1,4 +1,4 @@
-# `checkpoint create`: pause a session into checkpoints
+# `checkpoint save`: pause a session into checkpoints
 
 Arguments: `[<what the next session should focus on>] [--commit]`.
 
@@ -90,8 +90,8 @@ opens the file has to be able to continue.
    The common dir is the one git dir that every checkout of a repo shares: a plain clone, the main
    checkout and each linked worktree all resolve to it. So a checkpoint written from any of them is
    found from all of them, and removing or recycling a worktree, or `git clean -fdx`, leaves it alone.
-   Being inside the git dir, it never shows in `git status` and needs no exclude entry. Create the
-   folder if it is missing. Never write the checkpoint into the working tree, except as the copy
+   Being inside the git dir, it never shows in `git status` and needs no exclude entry. Never write
+   the checkpoint into the working tree, except as the copy
    `--commit` makes (step 9).
 
    `<slug>` is a short kebab-case name for the topic (`flaky-login-test`, `auth-refactor`), not a
@@ -114,6 +114,20 @@ opens the file has to be able to continue.
    whose checkpoint it is. The `branch` is how `resume` finds the checkout to continue in.
 
 6. **Write each checkpoint** in the format below, in this order: **action first**, history after.
+   Write the file with the skill's script, the whole text on stdin, never with a file tool, because
+   some harnesses' file tools refuse to write under `.git/`:
+
+   ```sh
+   node <this-skill-dir>/scripts/repobuddy.mjs checkpoint write <slug> [<path in its home repo>] [--home] <<'CHECKPOINT'
+   <the checkpoint>
+   CHECKPOINT
+   ```
+
+   Pass the path for a home repo other than the current one, and `--home` for
+   `~/.agents/repobuddy/checkpoints/`. It creates the folder, prints the path it wrote, and exits 2,
+   writing nothing, when the slug is not kebab-case or the text lacks the front matter, `## NEXT` or
+   `## Not in git`: fix the text and run it again.
+
    When split, every checkpoint stands alone:
    - **Copy the shared context.** A working method or settled decision that applies to several topics
      goes into each of their checkpoints, in the lines that topic needs. Don't point at a sibling
@@ -158,7 +172,7 @@ opens the file has to be able to continue.
    because a note from a debugging session should not land on a feature branch by accident. With
    `--commit`, copy each checkpoint from the common dir to `.agents/repobuddy/checkpoints/<slug>.md`
    in the current checkout: a file in the git dir cannot be committed as it is. Stage only those
-   copies with `git add -f <path>...` (the folder may be excluded, so a plain `git add` can skip them)
+   copies with `git add -f <path>...`, because the folder may be excluded and a plain `git add` skips it,
    and commit them together as `docs: checkpoint <slug>[, <slug>...]`, so they follow the branch to
    another machine or another person. The copy in the common dir stays the one `list` and `resume`
    read here; the committed copy is for a checkout that has no common-dir copy, such as a clone on
@@ -213,7 +227,7 @@ branch: <home repo's current branch, or none>
 commit: <home repo's short HEAD sha at pause time, or none>
 created: <ISO date>
 updated: <ISO date>
-resumed:                        # optional; written only by `resume`, removed by `create`
+resumed:                        # optional; written only by `resume`, removed by `save`
   at: <UTC timestamp>
   harness: <harness name>
   session: <harness session id>
@@ -293,3 +307,14 @@ appears only in a checkpoint kept as one over several topics.
   Whoever opens the file is already past that point. Open `## NEXT` with the work itself.
 - **Not final-sounding.** A pause is resumable. Keep the open questions and the live frontier explicit;
   don't smooth them into a summary that hides where to begin.
+
+## Done when
+
+- **C2.** Each live topic of the current repo has one checkpoint at
+  `<common dir>/repobuddy/checkpoints/<slug>.md`, with a `## NEXT` and a `## Not in git` section, and a finished topic
+  has none.
+- **C3.** Without `--commit`, no commit was made, and `git status` shows the user's uncommitted work as it was and no
+  new file in the working tree.
+- **C4.** With `--commit`, one new commit holds only the copies under `.agents/repobuddy/checkpoints/`, and none of
+  them holds an absolute path such as `/home/<user>/`.
+- **C5.** The report names each checkpoint written and gives the `<command> resume <slug>` line for it.
