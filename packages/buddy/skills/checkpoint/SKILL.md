@@ -1,6 +1,6 @@
 ---
 name: checkpoint
-description: "Saves a session's work into topic checkpoints, resumes one, or lists them, in this repo or another. Say \"save a checkpoint\", \"pick up where we left off\", or \"what checkpoints do I have\"."
+description: "Saves a session's work into topic checkpoints, resumes one, or lists them, in this repo or another. Say \"save a checkpoint\", \"pause this\", \"pick up where we left off\", or \"what checkpoints do I have\"."
 argument-hint: "save [<what to focus on>] [--commit] | resume [<slug> | <path> | <repo path>] | list [<repo path>] | help"
 ---
 
