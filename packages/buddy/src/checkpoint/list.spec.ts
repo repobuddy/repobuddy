@@ -256,6 +256,17 @@ describe('listCheckpoints', () => {
 		expect(row?.liveness).toMatchObject({ state: 'alive', session: 's9' })
 	})
 
+	it('probes with ps by default: a live pid running another program is dead, and so is a gone pid', () => {
+		const { root, home } = makeRepo()
+		const marker = (pid: number) =>
+			`resumed:\n  at: 2026-11-22T09:00:00Z\n  harness: claude-code\n  pid: ${pid}\n  started: x\n`
+		write(commonFolder(root), 'node', checkpoint({ updated: '2026-11-02' }, 'Node', 'x', marker(process.pid)))
+		write(commonFolder(root), 'gone', checkpoint({ updated: '2026-11-01' }, 'Gone', 'x', marker(2 ** 22 + 7)))
+		const rows = listCheckpoints({ cwd: root, home, now: NOW }).checkpoints
+		expect(rows[0]?.liveness).toMatchObject({ state: 'dead', reason: expect.stringMatching(/^pid \d+ is now /) })
+		expect(rows[1]?.liveness?.state).toMatch(/^(dead|unknown)$/)
+	})
+
 	it('lists another repo given its path, with here meaning the current checkout only', () => {
 		const one = makeRepo()
 		const two = makeRepo()

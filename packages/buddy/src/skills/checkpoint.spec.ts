@@ -65,3 +65,10 @@ test('exits 1 when the repo path is not in a repo', async () => {
 	await expect(main(['list', '/x'])).rejects.toThrow('exit:1')
 	expect(stderr.join('')).toBe('repobuddy.mjs checkpoint list: /x is not in a git repo\n')
 })
+
+test('rethrows any other error', async () => {
+	listMock.mockImplementation(() => {
+		throw new Error('boom')
+	})
+	await expect(main(['list'])).rejects.toThrow('boom')
+})
