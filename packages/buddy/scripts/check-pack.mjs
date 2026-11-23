@@ -29,7 +29,6 @@ const SCRIPTS = [
 	// Committed bundles compiled by `plugin build`; they reject bad usage before reading anything.
 	{ path: 'skills/init-buddy/scripts/auto-mode.mjs', args: ['no-such-command'], exit: 2 },
 	{ path: 'skills/init-buddy/scripts/permission-candidates.mjs', args: ['--bogus'], exit: 2 },
-	{ path: 'skills/epic/scripts/epic-plan.mjs', args: ['no-such-command'], exit: 2 },
 	// Forwarders written by `plugin build`. Inside the unpacked package each one must find that
 	// package's own CLI, not fall back to `npx`. These commands reject bad usage before shelling out
 	// to `gh`, so they run without a git remote or auth.

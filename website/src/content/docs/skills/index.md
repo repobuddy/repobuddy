@@ -1,11 +1,11 @@
 ---
 title: Agent skills
-description: The 20 repobuddy skills for coding agents, grouped by what you want done, with a page for each.
+description: The 18 repobuddy skills for coding agents, grouped by what you want done, with a page for each.
 ---
 
 The [`repobuddy` package](/repobuddy/repobuddy/) is an agent plugin as well as a CLI. The plugin ships agent skills:
 instruction packs that a coding agent loads when a request matches. Each skill covers one repository chore, such as
-filing an issue, merging dependency PRs, or setting up branch protection. Ask in plain words ("add badges to the
+merging dependency PRs, committing a unit of work, or setting up branch protection. Ask in plain words ("add badges to the
 readme") or run the slash command (`/add-badges`).
 
 Skills that need a deterministic step run a command through a forwarding script. See [Skill scripts](/repobuddy/cli/skill-scripts/).
@@ -52,12 +52,15 @@ Skills that need a deterministic step run a command through a forwarding script.
 
 ## Issues and questions
 
+The `epic`, `initiative`, `issue`, and `project-tracker` skills come from the
+[`project-tracker`](https://github.com/cyber-uni/project-tracker) plugin, which installs with repobuddy.
+
 | Skill | Use it to |
 | --- | --- |
-| [`epic`](/repobuddy/skills/epic/) | Plan, revise, review, or hand off an epic and its child issues, or turn an issue or an initiative into an epic, on the tracker that holds epics |
-| [`initiative`](/repobuddy/skills/initiative/) | Set a goal and its metric, and file the epics that move it as shells, or put an epic under a new initiative |
-| [`issue`](/repobuddy/skills/issue/) | File a bug, feature, or task on the tracker for your repository, after a duplicate search |
-| [`project-tracker`](/repobuddy/skills/project-tracker/) | Set up, show, change, and check which tracker holds each level and category of work |
+| [`epic`](https://cyber-uni.github.io/project-tracker/skills/epic/) | Plan, revise, review, or hand off an epic and its child issues, or turn an issue or an initiative into an epic, on the tracker that holds epics |
+| [`initiative`](https://cyber-uni.github.io/project-tracker/skills/initiative/) | Set a goal and its metric, and file the epics that move it as shells, or put an epic under a new initiative |
+| [`issue`](https://cyber-uni.github.io/project-tracker/skills/issue/) | File a bug, feature, or task on the tracker for your repository, after a duplicate search |
+| [`project-tracker`](https://cyber-uni.github.io/project-tracker/skills/project-tracker/) | Set up, show, change, and check which tracker holds each level and category of work |
 | [`to-question`](/repobuddy/skills/to-question/) | Word a question or unblock request for Slack, Jira, GitHub, email, and others |
 
 ## Agent setup and sessions
