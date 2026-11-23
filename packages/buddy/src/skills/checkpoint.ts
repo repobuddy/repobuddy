@@ -103,6 +103,7 @@ function mark(rest: string[]): void {
 
 export async function main(
 	argv: string[] = process.argv.slice(2),
+	/* istanbul ignore next -- reads the real stdin; tests inject the checkpoint text instead */
 	readInput: () => string = () => readFileSync(0, 'utf8'),
 ): Promise<void> {
 	const [command, ...rest] = argv
