@@ -97,13 +97,7 @@ export default defineConfig({
 								{ label: 'Commits', items: [{ label: 'commit', slug: 'skills/commit' }] },
 								{
 									label: 'Issues and questions',
-									items: [
-										{ label: 'epic', slug: 'skills/epic' },
-										{ label: 'initiative', slug: 'skills/initiative' },
-										{ label: 'issue', slug: 'skills/issue' },
-										{ label: 'project-tracker', slug: 'skills/project-tracker' },
-										{ label: 'to-question', slug: 'skills/to-question' },
-									],
+									items: [{ label: 'to-question', slug: 'skills/to-question' }],
 								},
 								{
 									label: 'Agent setup and sessions',
@@ -298,6 +292,11 @@ export default defineConfig({
 		// The Packages and Compatibility pages were folded into the home page and each package's overview.
 		'/packages': '/repobuddy/',
 		'/compatibility': '/repobuddy/',
+		// The tracker skills moved to the project-tracker plugin (#1016).
+		'/skills/epic': 'https://cyber-uni.github.io/project-tracker/skills/epic/',
+		'/skills/initiative': 'https://cyber-uni.github.io/project-tracker/skills/initiative/',
+		'/skills/issue': 'https://cyber-uni.github.io/project-tracker/skills/issue/',
+		'/skills/project-tracker': 'https://cyber-uni.github.io/project-tracker/skills/project-tracker/',
 	},
 	site: 'https://repobuddy.github.io',
 	base: '/repobuddy',
