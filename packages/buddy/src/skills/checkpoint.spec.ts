@@ -123,3 +123,14 @@ test('mark-resumed passes the flags and prints the at', async () => {
 	expect(markMock).toHaveBeenLastCalledWith({ path: 'a.md', harness: 'claude-code', session: 's1', pid: undefined })
 	expect(stdout.join('')).toBe('2026-11-22T10:15:00Z\n'.repeat(2))
 })
+
+test('reads process.argv by default', async () => {
+	const argv = process.argv
+	process.argv = ['node', 'repobuddy.mjs']
+	try {
+		await expect(main()).rejects.toThrow('exit:2')
+		expect(stderr.join('')).toMatch(/^missing command\n/)
+	} finally {
+		process.argv = argv
+	}
+})
