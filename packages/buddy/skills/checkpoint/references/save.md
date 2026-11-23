@@ -28,8 +28,9 @@ opens the file has to be able to continue.
    - **By origin first.** If this session resumed checkpoint X, the topic it continued is X's topic,
      and writes back to X under X's slug.
    - **Otherwise by goal.** Before naming the topics, list the existing checkpoints of each topic's
-     home repo, in the folders [list.md](list.md) reads, and reuse the slug of the one whose `## Goal` matches. When the
-     match is unclear, ask. With no one to ask, give the topic a new slug and say so in the report.
+     home repo with the listing command from step 1 of [list.md](list.md), with `--json` and that
+     repo's path. Read each row's `path`, and reuse the slug of the one whose `## Goal` matches. When
+     the match is unclear, ask. With no one to ask, give the topic a new slug and say so in the report.
    - **On a split.** When a matched topic has split in two, the part that continues the old `## Goal`
      keeps the slug, and the new part gets a new one.
 
