@@ -23,8 +23,11 @@ Run `/commit`, or ask in plain words. It takes no arguments.
 
 1. Stops first, commits nothing, and names the state when a merge, cherry-pick, revert, or rebase is in progress or a path
    is unmerged.
-2. Checks the index. When a staged file that is not this run's work also has unstaged changes, it commits nothing
-   and reports it.
+2. Checks the index. When changes are staged and the request names no other change, such as "commit this", it commits
+   exactly what is staged as one commit: it stages, unstages, and splits nothing, and leaves unstaged and untracked
+   changes as they are. A failing check, or a fix the staged content would need, stops the commit and is reported. When
+   the request names another change and a staged file that is not this run's work also has unstaged changes, it
+   commits nothing and reports it.
 3. Plans every commit from `git status` and `git diff --stat` before staging the first, and reads full diffs only where
    the split needs them.
 4. Splits formatting from logic, a refactor from the change after it, and a dependency bump from a behavior change. A

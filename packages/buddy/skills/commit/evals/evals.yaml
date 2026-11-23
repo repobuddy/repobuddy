@@ -112,6 +112,11 @@ outcome:
             git merge-base --is-ancestor "$(cat .git/case-unit)" HEAD &&
             test "$(git rev-parse refs/remotes/origin/main)" = "$(cat .git/case-unit)" &&
             ! git reflog --format=%gs | grep -E '^(commit \(amend\)|rebase|reset: moving to [^H])'
+  # the parser fix is staged, with more of src/parser.js, a README.md edit, and notes.txt left out of the index
+  - id: staged-only
+    prompt: commit this
+    setup: setup/staged-only.sh
+    criteria: [C10, C2]
 rubrics:
   C1:
     - script: 's=$(cat .git/case-start) && test "$(git rev-list --count $s..HEAD)" -ge 1'
@@ -139,3 +144,9 @@ rubrics:
   C9:
     - script: 'test "$(git rev-parse HEAD)" = "$(cat .git/case-start)"'
     - regex: '[Uu]ncommitted[:,]? *[-—]? *[Bb]locked by sandbox'
+  C10:
+    - script: >-
+        s=$(cat .git/case-start) && test "$(git rev-list --count $s..HEAD)" = 1 &&
+        test "$(git rev-parse HEAD^{tree})" = "$(cat .git/case-index)" &&
+        git status --porcelain > .git/case-status &&
+        grep -qx ' M src/parser.js' .git/case-status && grep -qx ' M README.md' .git/case-status

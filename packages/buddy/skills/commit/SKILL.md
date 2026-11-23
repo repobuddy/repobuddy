@@ -79,8 +79,11 @@ Before staging a unit, its change is finished:
    or `rebase-apply` names a folder that exists, or when `git diff --name-only --diff-filter=U` lists a path.
    Then commit nothing, state which one it is, and stop: committing would finish an operation the user
    has not concluded, or commit conflict markers. A request for only a message is not a commit, so it goes on.
-2. **Check the index:** `git --no-pager diff --cached --stat`. When a file staged that is not this
-   run's work also has unstaged changes, someone chose part of it: commit nothing, and report it.
+2. **Check the index:** `git --no-pager diff --cached --stat`. When it lists a file and the request names
+   no change other than what is staged, such as "commit this", the staged changes are the run's one unit,
+   as they are; see [Staged work](#staged-work). When the request names another change and a file
+   staged that is not this run's work also has unstaged changes, someone chose part of it: commit
+   nothing, and report it. With nothing staged, go on.
 3. **Plan:** `git status --porcelain` and `git --no-pager diff --stat`. Assign each file to a unit by
    the split axes. Read the full diff only of a file whose unit the path and the stat do not settle, or
    that holds two units. Never diff the whole tree when the stat lists more than a few files.
@@ -107,13 +110,25 @@ Before staging a unit, its change is finished:
       `git commit --amend -F <file>`.
 6. **Report** what C7 lists.
 
+## Staged work
+
+When Workflow step 2 finds the staged changes to be the unit, the run commits exactly the index:
+
+- Stage nothing, unstage nothing, and split nothing, even when the staged changes would pass the split
+  axes as two units, or a file is staged in part. Every unstaged and untracked change stays as it is.
+- Step 3 plans no files: it only decides amend or new, for the one commit. Step 5 skips staging (5.2).
+- A check that fails stops the commit, as anywhere. So does anything that would change the staged
+  content, such as a lint or format fix, debug logging, or churn: commit nothing, and report it.
+- Run the staged snapshot check (5.4) unless its skip conditions hold.
+
 ## Done when
 
 Before reporting done, check each of these against the result, once, after the last commit. Report any
 that fails.
 
 - **C1.** `git show --stat` of each new commit lists only its unit's files, its change is described in
-  one sentence with no "and", and a change's tests are in the change's commit.
+  one sentence with no "and", and a change's tests are in the change's commit. A commit of
+  [Staged work](#staged-work) is held to C10 instead.
 - **C2.** Every change the run did not commit still shows in `git status --porcelain`.
 - **C3.** Each message follows `commit.message`, and ends with the trailers the harness or repository
   supplies.
@@ -129,3 +144,5 @@ that fails.
   reply names the state.
 - **C9.** When the harness blocked `git add` or `git commit`, no commit was made, each affected change is reported
   as "uncommitted: blocked by sandbox", and the sandbox, git config, and hooks are unchanged.
+- **C10.** When the staged changes were the unit, the run made one commit, its tree is the index as the
+  run found it, and every unstaged and untracked change is still in `git status --porcelain`.
