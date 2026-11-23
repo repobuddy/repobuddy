@@ -3,7 +3,7 @@ title: checkpoint
 description: Pause agent work into per-topic checkpoints and resume them in a fresh session, in this repo or another.
 ---
 
-`checkpoint` hands work between agent sessions. `create` writes a checkpoint per live topic that a cold session can
+`checkpoint` hands work between agent sessions. `save` writes a checkpoint per live topic that a cold session can
 continue from. `resume` picks one up and continues from its next step. It was named `session` before 4.0, and replaced
 the earlier `pause-session` and `resume-session` skills. The old names were removed with no aliases.
 
@@ -17,7 +17,7 @@ the earlier `pause-session` and `resume-session` skills. The old names were remo
 ## Invoke
 
 ```
-/checkpoint create [<what the next session should focus on>] [--commit]
+/checkpoint save [<what the next session should focus on>] [--commit]
 /checkpoint resume [<checkpoint slug> | <path> | <repo path>]
 /checkpoint list [<repo path>]
 /checkpoint help
@@ -37,9 +37,9 @@ CLI install in Copilot CLI and the Cursor editor:
 "Ask in words" means a request such as "use the checkpoint skill to resume flaky-login-test". The resume lines the
 skill hands back use the same form.
 
-Natural phrasing routes too: "let's stop here" creates a checkpoint, "pick up the auth refactor" resumes, "what checkpoints do I have" lists them. A bare `/checkpoint`
+Natural phrasing routes too: "let's stop here" saves a checkpoint, "pick up the auth refactor" resumes, "what checkpoints do I have" lists them. A bare `/checkpoint`
 runs `resume` in a new or just-cleared session. In a session that resumed or wrote exactly one checkpoint and stayed on
-its goal, it updates that checkpoint with no prompt. In other sessions with work, it runs `create` in a git repo that has
+its goal, it updates that checkpoint with no prompt. In other sessions with work, it runs `save` in a git repo that has
 no checkpoint yet, and shows help in a repo that has some or outside a git repo.
 
 ### Keep a checkpoint current
@@ -50,7 +50,7 @@ ask for an update after every turn, but it costs a model turn per reply. The hoo
 [skill README](https://github.com/repobuddy/repobuddy/blob/main/packages/buddy/skills/checkpoint/README.md#keep-a-checkpoint-current-automatically).
 A drifted session asks instead of updating, which stalls an unattended run.
 
-### create
+### save
 
 - Sorts the session's requests into topics and skips finished work, deleting a finished or abandoned topic's old
   checkpoint. Age alone never deletes one.
@@ -93,13 +93,13 @@ A drifted session asks instead of updating, which stalls an unattended run.
 - Reloads the working method and settled decisions, avoids retrying listed dead ends, and runs the next step.
 - Writes a `resumed:` marker (time, harness, session id, process id, start time) into the checkpoint. The list warns
   about a marked checkpoint and checks whether its process is alive; it asks before opening one that is alive or
-  can't be checked, and never hides it. `create` removes the marker, and warns if another session resumed the file
+  can't be checked, and never hides it. `save` removes the marker, and warns if another session resumed the file
   meanwhile.
 - Keeps the checkpoint until the work is done, then deletes it.
 - Given another repo's path, it lists that repo's checkpoints and gives the line to start a session there. It never runs `cd`.
 
-There is no `update` subcommand. `create` is the update: a topic that matches an existing checkpoint is merged into it,
-and "update the checkpoint" routes to `create`.
+There is no `update` subcommand. `save` is the update: a topic that matches an existing checkpoint is merged into it,
+and "update the checkpoint" routes to `save`.
 
 ## Hands off to
 
@@ -115,7 +115,7 @@ session started in the repo. Exact lines are in the skill's `references/harness/
 ## Example
 
 ```
-/repobuddy:checkpoint create the flaky login test --commit
+/repobuddy:checkpoint save the flaky login test --commit
 ```
 
 That is the Claude Code plugin form; use your harness's form from the table above.

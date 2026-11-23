@@ -1,4 +1,4 @@
-# `checkpoint create`: pause a session into checkpoints
+# `checkpoint save`: pause a session into checkpoints
 
 Arguments: `[<what the next session should focus on>] [--commit]`.
 
@@ -213,7 +213,7 @@ branch: <home repo's current branch, or none>
 commit: <home repo's short HEAD sha at pause time, or none>
 created: <ISO date>
 updated: <ISO date>
-resumed:                        # optional; written only by `resume`, removed by `create`
+resumed:                        # optional; written only by `resume`, removed by `save`
   at: <UTC timestamp>
   harness: <harness name>
   session: <harness session id>

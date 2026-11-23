@@ -2,9 +2,9 @@
 
 Arguments: `[<checkpoint slug> | <path> | <repo path>]`.
 
-Pick up work that `checkpoint create` checkpointed: find the checkpoint, reload its context, and continue
+Pick up work that `checkpoint save` checkpointed: find the checkpoint, reload its context, and continue
 from its `## NEXT` without going back over what it records as settled. The checkpoint may have been
-paused from a session in another repo: `checkpoint create` writes each topic to its home repo, so a topic
+paused from a session in another repo: `checkpoint save` writes each topic to its home repo, so a topic
 that drifted in elsewhere is already here.
 
 ## Procedure
@@ -83,7 +83,7 @@ that drifted in elsewhere is already here.
      or a process that is no longer running: name it before going on.
 
    Once the checks pass and the user has agreed to go on, **write the marker**: add this block to the
-   front matter (replacing an older one) and remember its `at`, so `create` can tell whether another
+   front matter (replacing an older one) and remember its `at`, so `save` can tell whether another
    session resumed the file since:
 
    ```yaml
@@ -142,5 +142,5 @@ that drifted in elsewhere is already here.
    common dir and from this checkout's `.agents/repobuddy/checkpoints/`. Remove a committed copy with
    `git rm`, and commit the deletion along with the work's final unit. Age is no
    reason to delete one: an old checkpoint can still be a legitimate pause. If the session ends before
-   the goal is met, run `checkpoint create`, which writes back to this checkpoint and rewrites its
+   the goal is met, run `checkpoint save`, which writes back to this checkpoint and rewrites its
    `## NEXT`, instead of leaving a stale one behind.

@@ -27,7 +27,7 @@
 | [`review-api`] | Review a library's public API for consistency and completeness against its own conventions — drift, sibling-justified gaps, docs vs exports |
 | [`scaffold`] | Create a new repository or package from a recipe a plugin ships — lists the installed recipes, asks the recipe's inputs, runs the host's setup skill, and writes nothing before you confirm the plan |
 | [`review-permissions`] | Audit what your agents are allowed to do — risk-rank every grant, then tighten and consolidate it |
-| [`checkpoint`] | `create` checkpoints from any agent session that a fresh session can continue from — next step first, settled decisions, open questions, in another repo when the work belongs there — and `resume` one without reopening settled decisions |
+| [`checkpoint`] | `save` checkpoints from any agent session that a fresh session can continue from — next step first, settled decisions, open questions, in another repo when the work belongs there — and `resume` one without reopening settled decisions |
 | [`repo`] | Offer the vetted sections a repo's `AGENTS.md` is missing, one at a time — today Commit Discipline, which has agents commit each finished unit unasked — and write only what you approve |
 | [`setup-github-repo`] | Set up a GitHub repo with branch protection, a merge backstop, Dependabot, and CI |
 | [`website`] | Work on a repo's docs website — `init` adds an Astro/Starlight site to a monorepo; `deploy` publishes a static site to GitHub, GitLab, or Codeberg Pages, Bitbucket, or Azure Static Web Apps; `update` changes an existing site |

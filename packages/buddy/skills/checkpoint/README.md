@@ -1,6 +1,6 @@
 # checkpoint
 
-Hand work between agent sessions. `create` writes a checkpoint per topic that a fresh session can pick
+Hand work between agent sessions. `save` writes a checkpoint per topic that a fresh session can pick
 up without going back over settled ground; `resume` picks one up and continues from its next step. A
 topic that drifted into another repo is checkpointed in that repo, ready for a session started there.
 
@@ -17,7 +17,7 @@ topic that drifted into another repo is checkpointed in that repo, ready for a s
 ## Usage
 
 ```
-/checkpoint create [<what the next session should focus on>] [--commit]
+/checkpoint save [<what the next session should focus on>] [--commit]
 /checkpoint resume [<checkpoint slug> | <path> | <repo path>]
 /checkpoint list [<repo path>]
 /checkpoint help
@@ -36,11 +36,11 @@ for a Skills CLI install in Copilot CLI and the Cursor editor:
 
 The skill hands back lines in the same form. Sources are in [`references/command.md`](references/command.md).
 
-Natural phrasing routes too: "let's stop here" creates a checkpoint, "pick up the auth refactor" resumes, "what checkpoints do I have" lists them. A bare
-`/checkpoint` runs `resume` in a new or just-cleared session, since there is no work to `create` from. In a
+Natural phrasing routes too: "let's stop here" saves a checkpoint, "pick up the auth refactor" resumes, "what checkpoints do I have" lists them. A bare
+`/checkpoint` runs `resume` in a new or just-cleared session, since there is no work to `save` from. In a
 session that resumed or wrote exactly one checkpoint and has not strayed from its goal, it updates that
 checkpoint, with no prompt and no new file. A session that drifted across topics, or touched several
-checkpoints, runs `create` when the repo has no checkpoint yet and shows the help when it has some.
+checkpoints, runs `save` when the repo has no checkpoint yet and shows the help when it has some.
 The name differs from the `/resume` built into Claude Code, Codex, Copilot
 CLI and Gemini CLI. In Claude Code the bare `/checkpoint` is still taken by `/rewind`, hence the table.
 
@@ -81,7 +81,7 @@ one-checkpoint session needs no answer, so it runs unattended.
 Both only work in a session that matches the update rule; in a drifted session the bare call asks
 instead, which stalls an unattended run.
 
-## `create`
+## `save`
 
 1. Lists every request you made in the session, in order, including the ones it hasn't started, then
    sorts them into topics: independent threads such as a bug fix, a side refactor or a research
@@ -135,8 +135,8 @@ which checkpoints into the mission's plan brief instead.
 
 ## No `update`
 
-`create` is the update; a bare invocation in a one-checkpoint session runs it for you. A topic that matches an existing checkpoint is merged into it, and `resume` keeps
-the checkpoint current as it works. "Update the checkpoint" routes to `create`.
+`save` is the update; a bare invocation in a one-checkpoint session runs it for you. A topic that matches an existing checkpoint is merged into it, and `resume` keeps
+the checkpoint current as it works. "Update the checkpoint" routes to `save`.
 
 ## `list`
 
@@ -168,7 +168,7 @@ and stops. `resume` uses the same listing when it asks which one to open.
    checkpoint current as decisions are made.
 5. Writes a `resumed:` marker (time, harness, session id, process id and start time) into the checkpoint.
    The list warns about a marked checkpoint, checking whether its process is still alive, and asks
-   before opening one that is alive or can't be checked. The marker never hides a checkpoint. `create`
+   before opening one that is alive or can't be checked. The marker never hides a checkpoint. `save`
    removes it on the next pause, and warns first if another session resumed the file in the meantime.
 6. Deletes the checkpoint once the work is done, not when it resumes, so if the resumed session dies
    before pausing again, the state is still there.
