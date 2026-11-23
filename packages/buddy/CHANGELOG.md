@@ -1,5 +1,30 @@
 # repobuddy
 
+## 5.1.0
+
+### Minor Changes
+
+- 8b59658: `checkpoint save` and `checkpoint resume` ask before deleting the checkpoint of a finished topic. A run with no one to ask keeps it and reports it as ready to delete.
+- 51b2131: Add `buddy checkpoint commit [<slug>...] [--drop <slug>...] [--allow <word>...]`, which commits copies of checkpoints after checking them for absolute paths, usernames and hostnames. The `checkpoint` skill's `save --commit` runs it instead of copying, grepping, force-adding and committing step by step.
+- 8b59658: `buddy checkpoint commit` takes `--message` (`-m`), and `checkpoint save --commit` passes a message in the repository's commit convention instead of the fixed `docs: checkpoint <slug>`, which stays the default when a repository has no convention.
+- b250851: Add `buddy checkpoint list [<repo path>] [--json]`, which lists the checkpoints the `checkpoint` skill reads, newest first. Each row shows the branch and where it is checked out, the `## NEXT` line, `waits on <slug>`, and the liveness of a `resumed:` marker. Outside a git repo it lists the home folder, `~/.agents/repobuddy/checkpoints/`, and names each row's repo. The skill's `list` subcommand now runs it instead of walking the folders itself.
+- 8b59658: `buddy checkpoint list --json` gives each checkpoint a `namesThisRepo` field, saying whether its `repo:` names the listed repository. `checkpoint resume` now reads that field and `checkedOut` from the listing instead of parsing `git worktree list` itself; its stop lines keep their wording.
+- 268c0c0: `checkpoint` stores checkpoints per repository, not per worktree, and resumes by branch.
+  
+  - `create` writes to `<common git dir>/repobuddy/checkpoints/`, which a plain clone, the main checkout, and every linked worktree share. Removing a worktree or `git clean -fdx` no longer deletes a checkpoint, and no `info/exclude` entry is needed. `--commit` copies the checkpoint into the checkout's `.agents/repobuddy/checkpoints/` and commits that copy.
+  - `resume` continues in place on the checkpoint's branch. When another worktree has the branch, it names that worktree and stops; when none has it, it says the branch has to be checked out and leaves how to the user.
+  - `list` and `resume` still read the old per-checkout folder, and `create` moves a matched checkpoint from there to the new place.
+- 8b59658: `checkpoint resume` now opens with a short summary of the work before it acts: what the work is and its goal, what is done, what is left, and the next step with any open question that blocks it. Branch state and commit ids come after it, briefly. `checkpoint save` writes a `## Done so far` section and a goal that says what the work is, and `resume` still reads checkpoints written without them. `resume` also asks before running a command from a committed checkpoint, or one that reaches outside the repo.
+- f3d041c: Rename the `checkpoint` skill's `create` subcommand to `save`, so `save | resume | list` reads as a set: it writes a new checkpoint and updates a matched one. `create` stays as an alias and still works.
+- f3d041c: Add `buddy checkpoint write <slug> [<repo path>] [--home]` and `buddy checkpoint mark-resumed <path> --harness <name> --session <id> [--pid <pid>]`. The `checkpoint` skill's `save` and `resume` now write the checkpoint and its `resumed:` marker through them, because Claude Code's file tools refuse to write under `.git/`, where checkpoints live.
+- ead4a14: Ship `project-tracker.capabilities.jira`, Jira Cloud's capabilities reference, so `project-tracker` set-up lists Jira and can route levels and categories to it, and `issue`, `epic`, and `initiative` file, search, and link there through `curl` and an API token. Issues are standard issue types, epics the `Epic` type, and initiatives a level-2 type when the project's hierarchy has one; the site and project key come from a project override. Jira is never picked from the host: a Bitbucket repository, or any other, gets Jira only after the user routes to it. Board, Transfer, Depend, and Sync body are unsupported. Its calls follow Atlassian's documentation and have not yet run against a Jira site; each is marked untested.
+
+### Patch Changes
+
+- 51b2131: The `checkpoint` skill's description names `save` and `list` and the phrases that start them, such as "save a checkpoint" and "what checkpoints do I have".
+- 51b2131: `checkpoint` finds existing checkpoints with `buddy checkpoint list`, both for a bare `/checkpoint` and when `save` matches a topic to its checkpoint, so it also sees the ones in `~/.agents/repobuddy/checkpoints/`.
+- f3d041c: `checkpoint` passes the skill check: it gains a `## Done when` list for each subcommand and evals for `save`, `resume` and `list`, and says why `save --commit` force-adds its copies.
+
 ## 5.0.0
 
 ### Major Changes
