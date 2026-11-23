@@ -6,9 +6,8 @@ argument-hint: "save [<what to focus on>] [--commit] | resume [<slug> | <path> |
 
 # Checkpoint
 
-A router for handing work between agent sessions. `save` writes the session's live topics to
-checkpoints a cold session can continue from; `resume` picks one up; `list` shows what exists. It picks the subcommand that fits
-the request, then loads that subcommand's instructions and follows them. It does no work itself.
+Pick the subcommand that fits the request, then load only its instructions and follow them. Do no work
+here.
 
 ## Subcommands
 
