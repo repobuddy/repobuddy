@@ -9,11 +9,12 @@ that drifted in elsewhere is already here.
 
 ## Procedure
 
-1. **Find the checkpoint.** Read the folders [list.md](list.md) names in its step 1: inside a repo,
-   the repo's common git dir (shared by every checkout of it), this checkout's
-   `.agents/repobuddy/checkpoints/`, and the matching ones in `~/.agents/repobuddy/checkpoints/`;
-   outside a repo, `~/.agents/repobuddy/checkpoints/`. A slug in more than one folder is the copy
-   list.md picks. Take the first rule that matches:
+1. **Find the checkpoint.** Run the listing command from step 1 of [list.md](list.md) with `--json`.
+   It reads every folder a checkpoint can be in (inside a repo, the repo's common git dir, this
+   checkout's `.agents/repobuddy/checkpoints/` and the matching ones in
+   `~/.agents/repobuddy/checkpoints/`; outside a repo, `~/.agents/repobuddy/checkpoints/`), and each
+   row's `path` is the copy to open when a slug is in more than one folder. Take the first rule that
+   matches:
    1. The user gave a checkpoint path or slug: open that one.
    2. The user gave the path of another repo, one whose common dir differs from this one's (a path in
       another worktree of this repo is this repo): go to step 1a.
@@ -108,8 +109,10 @@ that drifted in elsewhere is already here.
      paused since: it may be open in another session, or that session ended", and ask before opening
      it. Never treat unknown as dead.
 
-   Check the process with `ps -o lstart= -p <pid>` (compare with `started`) and the harness's process
-   name from its [harness reference](harness/claude-code.md). If the committed version of the file
+   The listing works this out: read the row's `liveness.state` (`alive`, `dead` or `unknown`) from its
+   `--json` output. Where it can't run, check the process yourself with `ps -o lstart= -p <pid>`
+   (compare with `started`) and the harness's process name from its
+   [harness reference](harness/claude-code.md). If the committed version of the file
    carries the block (`git show HEAD:<path>` contains `resumed:`), it may have come from another
    machine, such as a cloud agent: answer unknown and skip the PID check.
 

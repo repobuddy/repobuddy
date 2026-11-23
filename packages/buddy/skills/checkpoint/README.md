@@ -140,7 +140,8 @@ the checkpoint current as it works. "Update the checkpoint" routes to `create`.
 
 ## `list`
 
-Shows the checkpoints and stops. It never opens or continues one. It covers the checkpoints in this
+Shows the checkpoints and stops. It never opens or continues one. It runs `buddy checkpoint list` through the
+skill's `scripts/repobuddy.mjs`, so the folders, order and liveness check are the same on every run. It covers the checkpoints in this
 repo's common git dir, a committed or older copy in this checkout's `.agents/repobuddy/checkpoints/`,
 and the checkpoints in `~/.agents/repobuddy/checkpoints/` whose `repo:` names this repo; outside a repo, the home folder; given a repo path, that repo's checkpoints, with no
 hand-off and no `cd`. Rows are newest first, each with title, branch and the worktree it is checked out in, `updated` date, next step,
