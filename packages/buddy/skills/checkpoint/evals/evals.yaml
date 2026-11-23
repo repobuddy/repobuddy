@@ -50,7 +50,8 @@ rubrics:
         test -f "$f" && grep -q '^resumed:' "$f" && grep -qE '^[[:space:]]+at:' "$f"
   C7:
     - script: |
-        ! git diff --quiet HEAD -- test/parse.test.js &&
+        start="$(git rev-list --max-parents=0 HEAD)"
+        ! git diff --quiet "$start" -- test/parse.test.js &&
           grep -q 'null' test/parse.test.js &&
           ! grep -qE 'return[[:space:]]*\{[[:space:]]*\}' src/parse.js
   C8:
