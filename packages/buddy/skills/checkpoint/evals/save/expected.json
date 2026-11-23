@@ -1,7 +1,7 @@
 {
 	"version": 2,
 	"skill": "checkpoint",
-	"at": "2026-11-23T06:48:07.295Z",
+	"at": "2026-11-23T07:34:32.485Z",
 	"verification": "skill-design.aspects.verification from cyber-agentkit",
 	"runs": 3,
 	"threshold": 2,
@@ -65,19 +65,19 @@
 			"cost": {
 				"skill": {
 					"runs": 3,
-					"total": 0.3741,
-					"max": 0.1328
+					"total": 0.3705,
+					"max": 0.1245
 				},
 				"baseline": {
 					"runs": 3,
-					"total": 0.2507,
-					"max": 0.1002
+					"total": 0.2652,
+					"max": 0.1055
 				}
 			},
-			"at": "2026-11-23T06:46:12.099Z",
+			"at": "2026-11-23T07:34:32.485Z",
 			"hashes": {
 				"case": "sha256:c3ab8da8242790f5bd4047e04b96fe575f8509303620a39c402a930e33e11e46",
-				"scope": "sha256:1efad3a91f365813a4e2765abbf7e8821cf37c216899e3fbc54e1a90568e4667"
+				"scope": "sha256:526e4b1f17c4815e38ebb327dcad5cd04cc25c1f1d07e1ad8fa801591b2f8f33"
 			}
 		},
 		"save-commit": {
@@ -118,24 +118,24 @@
 			"cost": {
 				"skill": {
 					"runs": 3,
-					"total": 0.3923,
-					"max": 0.1395
+					"total": 0.3791,
+					"max": 0.1302
 				},
 				"baseline": {
 					"runs": 3,
-					"total": 0.2555,
-					"max": 0.0875
+					"total": 0.2674,
+					"max": 0.096
 				}
 			},
-			"at": "2026-11-23T06:46:12.099Z",
+			"at": "2026-11-23T07:34:32.485Z",
 			"hashes": {
 				"case": "sha256:32811d971741f437ad35fc76c9c9fe643f9517e696e546cf069d81481b6e7c68",
-				"scope": "sha256:1efad3a91f365813a4e2765abbf7e8821cf37c216899e3fbc54e1a90568e4667"
+				"scope": "sha256:526e4b1f17c4815e38ebb327dcad5cd04cc25c1f1d07e1ad8fa801591b2f8f33"
 			}
 		}
 	},
 	"inputs": {
-		"sha256:1efad3a91f365813a4e2765abbf7e8821cf37c216899e3fbc54e1a90568e4667": {
+		"sha256:526e4b1f17c4815e38ebb327dcad5cd04cc25c1f1d07e1ad8fa801591b2f8f33": {
 			"SKILL.md front matter": "sha256:c27ad2b83dd1abf7567d94b5c6b86e9a1ff36410fadb74a0aef79d17a7f90431",
 			"SKILL.md shared sections": "sha256:5ae2a2fa1e5de855677d6cfc4d1f2c6898de30a9021d0852db48c2f8e584a8d2",
 			"SKILL.md router row for references/save.md": "sha256:e23ea9635f46e264a2d5d50c9b89e2918d9b0937ba7ade2d820bf33a74b5ebee",
@@ -146,8 +146,8 @@
 			"references/harness/cursor.md": "sha256:c981ffb273b3ef1a97fa62da44bef371e5770c70a31ce8c00ba7732a8815196d",
 			"references/harness/gemini.md": "sha256:cc4aee8e181e384e12b997353d0247314891b3a6ced9b06b0718a73f33936229",
 			"references/list.md": "sha256:7529b16a031994e239bd1e6e673139261022a481b00ee7c4dd105a43a274c67e",
-			"references/resume.md": "sha256:e14d43d023e85c621afaafee045b8cd6176c078b707f5acad33cabeb4fe7cd82",
-			"references/save.md": "sha256:2d78355cdbfa1a43422c3decc017fc54ddc5acace3b925744c40b38a58411a72",
+			"references/resume.md": "sha256:0298a884d0cdb7f3b205bc572beb3f7921923c23bf50d9adfa6d638d42174233",
+			"references/save.md": "sha256:c0378a3e570bd5d744d35b01b2e5769a93137f47f33ff03b8b47f8a864112a17",
 			"evals/evals.yaml settings": "sha256:e9826190a024ec3638d6af0e137586e99401493ad1e7180bd9a9d107c2f2ee5d"
 		}
 	}

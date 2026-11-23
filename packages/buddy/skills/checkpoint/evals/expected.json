@@ -1,7 +1,7 @@
 {
 	"version": 2,
 	"skill": "checkpoint",
-	"at": "2026-11-23T06:48:07.295Z",
+	"at": "2026-11-23T07:34:32.485Z",
 	"verification": "skill-design.aspects.verification from cyber-agentkit",
 	"runs": 3,
 	"threshold": 2,
@@ -245,19 +245,19 @@
 			"cost": {
 				"skill": {
 					"runs": 3,
-					"total": 0.2113,
-					"max": 0.0712
+					"total": 0.2105,
+					"max": 0.0707
 				},
 				"baseline": {
 					"runs": 3,
-					"total": 0.175,
-					"max": 0.0756
+					"total": 0.147,
+					"max": 0.051
 				}
 			},
-			"at": "2026-11-23T06:48:07.295Z",
+			"at": "2026-11-23T07:34:32.485Z",
 			"hashes": {
 				"case": "sha256:36072a97d18efdc65ad10c71f66bab04df5bbd6d5c76907c608e0f307bba7544",
-				"scope": "sha256:95c33e60aa5e347b2dade1bfad9d12bb07b52bf2a15dd03abd268f115e780295"
+				"scope": "sha256:9e5ef346d6a1582ac39d7d39164e52fc615170259991cd86d8512c11b9875c1e"
 			}
 		}
 	},
@@ -294,7 +294,7 @@
 			"description of website": "sha256:ddb540ad745d9a00c780f0dbffaa8dba0bb32e61f16e30177e7cc36ac59f8a39",
 			"evals/evals.yaml settings": "sha256:e9826190a024ec3638d6af0e137586e99401493ad1e7180bd9a9d107c2f2ee5d"
 		},
-		"sha256:95c33e60aa5e347b2dade1bfad9d12bb07b52bf2a15dd03abd268f115e780295": {
+		"sha256:9e5ef346d6a1582ac39d7d39164e52fc615170259991cd86d8512c11b9875c1e": {
 			"SKILL.md front matter": "sha256:c27ad2b83dd1abf7567d94b5c6b86e9a1ff36410fadb74a0aef79d17a7f90431",
 			"SKILL.md body": "sha256:5ae2a2fa1e5de855677d6cfc4d1f2c6898de30a9021d0852db48c2f8e584a8d2",
 			"references/command.md": "sha256:4b2c2deb8fdc3d6f766a5fb4ec7455b4e4fc5d53dbe7e9dae282044ea56f9388",
@@ -304,8 +304,8 @@
 			"references/harness/cursor.md": "sha256:c981ffb273b3ef1a97fa62da44bef371e5770c70a31ce8c00ba7732a8815196d",
 			"references/harness/gemini.md": "sha256:cc4aee8e181e384e12b997353d0247314891b3a6ced9b06b0718a73f33936229",
 			"references/list.md": "sha256:7529b16a031994e239bd1e6e673139261022a481b00ee7c4dd105a43a274c67e",
-			"references/resume.md": "sha256:e14d43d023e85c621afaafee045b8cd6176c078b707f5acad33cabeb4fe7cd82",
-			"references/save.md": "sha256:2d78355cdbfa1a43422c3decc017fc54ddc5acace3b925744c40b38a58411a72",
+			"references/resume.md": "sha256:0298a884d0cdb7f3b205bc572beb3f7921923c23bf50d9adfa6d638d42174233",
+			"references/save.md": "sha256:c0378a3e570bd5d744d35b01b2e5769a93137f47f33ff03b8b47f8a864112a17",
 			"evals/evals.yaml settings": "sha256:e9826190a024ec3638d6af0e137586e99401493ad1e7180bd9a9d107c2f2ee5d"
 		}
 	}
