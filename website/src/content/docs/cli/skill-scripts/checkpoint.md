@@ -27,7 +27,10 @@ buddy checkpoint list [<repo path>] [--json]
   - `.agents/repobuddy/checkpoints/` in the checkout. Rows from it say `in this checkout`.
   - `~/.agents/repobuddy/checkpoints/`, keeping only checkpoints whose `repo:` names the repository: its `origin`
     `owner/name`, the folder name of its main checkout, or the folder name of the checkout.
-- Outside a repository, it reads only `~/.agents/repobuddy/checkpoints/`.
+- Outside a repository, it reads only `~/.agents/repobuddy/checkpoints/` and lists every checkpoint there. That
+  folder can hold several repositories' checkpoints, so each row adds `repo: <repo>` (`none` when the file has no
+  `repo:`), and no row says where its branch is checked out. Without `git` on the path, every directory counts as
+  outside a repository.
 - A slug found in more than one folder is listed once, from the copy with the newest `updated`. On a tie the common
   git dir's copy wins. The row names the other copies as older.
 - Rows are sorted by `updated`, newest first.

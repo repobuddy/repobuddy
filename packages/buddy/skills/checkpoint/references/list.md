@@ -19,7 +19,8 @@ never `cd`. `checkpoint resume` uses the same listing when it has to ask which c
      where `create` writes), this checkout's `.agents/repobuddy/checkpoints/` (a committed copy, or one an
      earlier version wrote), and the checkpoints in `~/.agents/repobuddy/checkpoints/` whose `repo:`
      names the repo;
-   - outside a repo: `~/.agents/repobuddy/checkpoints/`.
+   - outside a repo: every checkpoint in `~/.agents/repobuddy/checkpoints/`. Each row then names its
+     `repo:`, since the folder mixes repos, and none says where its branch is checked out.
 
    A slug in more than one folder is listed once, from the copy `create` and `resume` read, and the row
    names the older copy. Rows come newest `updated` first, each with the title and slug, the `branch`

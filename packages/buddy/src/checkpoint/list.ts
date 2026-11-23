@@ -353,6 +353,8 @@ export function formatList(list: CheckpointList): string {
 	const out: string[] = []
 	for (const row of list.checkpoints) {
 		out.push(`${row.title} (${row.slug})`)
+		// Outside a repo the home folder mixes every repo's checkpoints, so say whose each one is.
+		if (list.repo === null) out.push(`  repo: ${row.repo ?? 'none'}`)
 		if (row.branch !== undefined) {
 			const where =
 				row.checkedOut === undefined

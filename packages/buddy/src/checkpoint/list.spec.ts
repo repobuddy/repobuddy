@@ -287,9 +287,33 @@ describe('formatList', () => {
 		expect(text).toBe('No checkpoints in /h.\n')
 	})
 
+	it("names each row's repo outside a repo", () => {
+		const dir = tempDir('checkpoint-norepo-')
+		const home = join(dir, 'home')
+		write(homeFolder(home), 'a', checkpoint({ repo: 'acme/app', branch: 'feat', updated: '2026-11-02' }, 'A', 'x'))
+		write(homeFolder(home), 'b', checkpoint({ updated: '2026-11-01' }, 'B', 'y'))
+		const text = formatList(listCheckpoints({ cwd: dir, home, now: NOW }))
+		expect(text).toBe(
+			[
+				'A (a)',
+				'  repo: acme/app',
+				'  branch: feat',
+				'  updated: 2026-11-02',
+				'  next: x',
+				`  in ${join(homeFolder(home), 'a.md')}`,
+				'B (b)',
+				'  repo: none',
+				'  updated: 2026-11-01',
+				'  next: y',
+				`  in ${join(homeFolder(home), 'b.md')}`,
+				'',
+			].join('\n'),
+		)
+	})
+
 	it('renders each row', () => {
 		const text = formatList({
-			repo: null,
+			repo: { root: '/r', commonDir: '/r/.git', mainName: 'r' },
 			folders: [],
 			checkpoints: [
 				{
