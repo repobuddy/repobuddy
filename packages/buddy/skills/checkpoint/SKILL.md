@@ -80,3 +80,12 @@ stops.
 checkpoint into the other repo and gives the line to type to resume it from a session there.
 `resume <path to the other repo>` lists that repo's checkpoints and hands back the line to
 move there.
+
+## Done when
+
+Before reporting done, check each of these against the result. Report any that fails.
+
+- **C1.** `help` listed `save`, `resume`, `list` and `help`, and changed no file.
+
+Each subcommand's own criteria are at the end of its file: [save](references/save.md#done-when),
+[resume](references/resume.md#done-when), [list](references/list.md#done-when).

@@ -41,3 +41,8 @@ never `cd`. `checkpoint resume` uses the same listing when it has to ask which c
 4. **Stop.** Name `<command> resume <slug>` as the way to open one, with `<command>` from
    [command.md](command.md). For another repo's list, resume
    hands off as step 1a of [resume.md](resume.md) describes; `list` only shows.
+
+## Done when
+
+- **C8.** The reply shows every checkpoint once, each with its slug and its `## NEXT` line.
+- **C9.** `list` opened none: no checkpoint gained a `resumed:` block, and no file changed.

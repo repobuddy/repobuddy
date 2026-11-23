@@ -124,8 +124,8 @@ instead, which stalls an unattended run.
 7. Leaves your uncommitted work alone and lists it in the checkpoint, so you know it won't travel on
    its own.
 8. Commits only the checkpoints, and only with `--commit`: it copies them to
-   `.agents/repobuddy/checkpoints/` in the checkout and commits the copies with `git add -f`, so they
-   follow the branch to another machine. It commits only in the current repo: a checkpoint written to another repo stays
+   `.agents/repobuddy/checkpoints/` in the checkout and commits the copies with `git add -f`, because
+   that folder may be excluded. The commit lets them follow the branch to another machine. It commits only in the current repo: a checkpoint written to another repo stays
    uncommitted, and the report says so.
 9. Reports every checkpoint written with its next step, and the topics it skipped as done. For a
    checkpoint written to another repo, it gives the line to type to start a session there.

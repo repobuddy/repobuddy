@@ -144,3 +144,9 @@ that drifted in elsewhere is already here.
    reason to delete one: an old checkpoint can still be a legitimate pause. If the session ends before
    the goal is met, run `checkpoint save`, which writes back to this checkpoint and rewrites its
    `## NEXT`, instead of leaving a stale one behind.
+
+## Done when
+
+- **C6.** The opened checkpoint has a `resumed:` block with an `at` time in its front matter, and still exists while
+  its goal is unmet.
+- **C7.** The run took the checkpoint's `## NEXT` action, and retried no approach its `## Dead ends` lists.

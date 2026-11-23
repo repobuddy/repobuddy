@@ -158,7 +158,7 @@ opens the file has to be able to continue.
    because a note from a debugging session should not land on a feature branch by accident. With
    `--commit`, copy each checkpoint from the common dir to `.agents/repobuddy/checkpoints/<slug>.md`
    in the current checkout: a file in the git dir cannot be committed as it is. Stage only those
-   copies with `git add -f <path>...` (the folder may be excluded, so a plain `git add` can skip them)
+   copies with `git add -f <path>...`, because the folder may be excluded and a plain `git add` skips it,
    and commit them together as `docs: checkpoint <slug>[, <slug>...]`, so they follow the branch to
    another machine or another person. The copy in the common dir stays the one `list` and `resume`
    read here; the committed copy is for a checkout that has no common-dir copy, such as a clone on
@@ -293,3 +293,14 @@ appears only in a checkpoint kept as one over several topics.
   Whoever opens the file is already past that point. Open `## NEXT` with the work itself.
 - **Not final-sounding.** A pause is resumable. Keep the open questions and the live frontier explicit;
   don't smooth them into a summary that hides where to begin.
+
+## Done when
+
+- **C2.** Each live topic of the current repo has one checkpoint at
+  `<common dir>/repobuddy/checkpoints/<slug>.md`, with a `## NEXT` and a `## Not in git` section, and a finished topic
+  has none.
+- **C3.** Without `--commit`, no commit was made, and `git status` shows the user's uncommitted work as it was and no
+  new file in the working tree.
+- **C4.** With `--commit`, one new commit holds only the copies under `.agents/repobuddy/checkpoints/`, and none of
+  them holds an absolute path such as `/home/<user>/`.
+- **C5.** The report names each checkpoint written and gives the `<command> resume <slug>` line for it.
