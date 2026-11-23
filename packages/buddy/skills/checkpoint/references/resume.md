@@ -44,7 +44,24 @@ that drifted in elsewhere is already here.
    an SDD mission. Use `resume-mission` if it is available, or read that plan's `## NEXT` yourself.
    If there is neither, say so and stop. Don't reconstruct a checkpoint from guesses.
 
-2. **Read it in full, then check it against the repo.** First compare the checkpoint's `repo:` with
+2. **Read it in full, summarize it, then check it against the repo.**
+
+   **Summary first.** Once you have read the file, and before you run anything else or report any
+   check, give the user a short summary drawn from the checkpoint, so a reader coming back cold knows
+   where they are. Keep it to six lines or fewer:
+   - **The work:** what it is and its goal, from the checkpoint's title and `## Goal`.
+   - **Done:** what is already finished, from `## Done so far`, without the commit or PR each line cites.
+   - **Left:** what remains, from `## Remaining steps` and `## Remaining topics`.
+   - **Next:** the `## NEXT` action. When an item in `## Open questions` blocks it, put that question
+     in this line too, as the one thing waiting on the user, not in a section after the checks.
+
+   Leave mechanics out of it: branch and rebase state, commit ids, renamed commits, the resume marker.
+   Report those after the summary, in a line or two, and only where the user needs to know or decide
+   something. A stop line below still comes after the summary, in its exact wording. A checkpoint
+   written before `## Done so far` existed has no such section: draw what is done from the commits and
+   PRs cited in `## Touched`, or leave the line out. Never guess.
+
+   **Then check it.** First compare the checkpoint's `repo:` with
    the current repo: its `origin` remote (`owner/name`), the folder name of its main checkout (the
    first `worktree` line of `git worktree list --porcelain`), and the current checkout's root folder
    name. A match on any of them is this repo. If none matches, say so before going on: the `branch`,

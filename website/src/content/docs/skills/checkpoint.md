@@ -58,7 +58,7 @@ A drifted session asks instead of updating, which stalls an unattended run.
   into it, keeping its settled decisions and dead ends.
 - With several live topics, asks whether to write one checkpoint per topic or one for all, and recommends one. With a
   focus argument it checkpoints only that topic.
-- Writes `<common git dir>/repobuddy/checkpoints/<slug>.md` in the topic's home repo, with the next action first. The
+- Writes `<common git dir>/repobuddy/checkpoints/<slug>.md` in the topic's home repo, with the next action first, then the goal and what is done so far. The
   common git dir is shared by a plain clone, the main checkout and every linked worktree, so every checkout sees the
   checkpoint, and removing a worktree or running `git clean -fdx` leaves it in place. A topic about another repo is
   written into that repo with a `repo:` field. If that repo is not on disk it asks where it is, or falls back to
@@ -84,6 +84,9 @@ A drifted session asks instead of updating, which stalls an unattended run.
 
 - Finds the checkpoint (one you name, the only one, or a newest-first list to choose from). Warns when `repo:` names
   another repo.
+- Opens with a short summary before any action: what the work is and its goal, what is done, what is left, and the
+  next step, with any open question waiting on you. Branch state, commit ids and the marker come after it, briefly.
+  A checkpoint without `## Done so far`, written by an earlier version, still resumes.
 - Resumes by branch: on the checkpoint's branch it continues in place. When another worktree has the branch, it names
   that worktree, gives the line to resume there, and stops. When no worktree has it, it says the branch has to be
   checked out and leaves how to you. It never switches branches, and a tool that manages worktrees or sessions can

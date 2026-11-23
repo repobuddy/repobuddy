@@ -144,15 +144,20 @@ opens the file has to be able to continue.
    compare its `at` with the one this session wrote on resume. If they differ, or this session wrote
    none, warn that another session resumed the file in the meantime, and ask before overwriting; with
    no one to ask, merge and say so in the report. Then remove the block: a paused file is not resumed.
-   Rewrite `## NEXT`,
-   `## Remaining steps`, `## Not in git`, `branch`, `commit` and `updated` from the current state, add
-   this session's new decisions, dead ends and open questions, and drop the questions it answered.
+   Rewrite `## NEXT`, `## Remaining steps`, `## Not in git`, `branch`, `commit` and `updated` from the
+   current state, add this session's finished parts to `## Done so far` and its new decisions, dead ends
+   and open questions, and drop the questions it answered.
 
    Fill each checkpoint from what the session holds, so the cold reader gets it without rediscovery:
    - **Keep the user's words.** Under `## Goal`, quote the user's latest instruction for the topic
      word for word. Record each correction the user made ("don't touch X", "use Y instead") as a
      settled decision whose reason is "user said". `## NEXT` must follow from what the user asked
      for, not from an idea of the agent's own the user never agreed to.
+   - **Say what the work is and how far it got.** Open `## Goal` with what the work is, why it
+     exists and what done looks like, in plain words a reader who never saw the session follows. List
+     under `## Done so far` the parts of the goal already finished, one line each with its commit or
+     PR. These are what `resume` opens its summary with, so name outcomes, not mechanics such as
+     rebases or renamed commits.
    - **Record the dead ends.** An approach that was tried and failed goes under `## Dead ends`, with
      the evidence that sank it, so the next session doesn't try the obvious fix again.
    - **Describe a half-finished edit.** If the pause cuts a unit of work midway, `## NEXT` says what
@@ -247,9 +252,13 @@ Never "continue the work". If an edit is half done: what the partial change does
 
 ## Goal
 
-<What done looks like, in one or two lines.>
+<What the work is, why it exists, and what done looks like, in one or two lines.>
 
 > <The user's latest instruction for this topic, quoted word for word.>
+
+## Done so far
+
+- <a finished part of the goal, in one line> — <its commit sha or PR>
 
 ## Remaining steps
 
@@ -301,7 +310,8 @@ appears only in a checkpoint kept as one over several topics.
   the user's latest instruction, not the conversation; list a dead end as one line, not the story of
   the attempt.
 - **Not a record of finished work.** A topic that is done is a commit or a PR, cited in one line where
-  live work builds on it. It is not a section of its own.
+  live work builds on it. It is not a section of its own. `## Done so far` lists the finished parts of
+  a live topic, one line each, not the story of how they were done.
 - **Not a copy.** If something already lives in a commit, an ADR, a spec, an issue or a diff, reference
   it by path or URL and don't paste it.
 - **Not buried.** The next action comes first. If a reader has to hunt for where to start, the pause
