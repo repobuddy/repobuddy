@@ -271,7 +271,7 @@ importers:
         version: 10.1.0
       cyber-agentkit:
         specifier: ^2.11.1
-        version: 2.11.1(clibuilder@12.4.1(js-yaml@4.3.2))
+        version: 2.12.0(clibuilder@12.4.1(js-yaml@4.3.2))
       cyber-mux:
         specifier: ^0.12.0
         version: 0.12.0(clibuilder@12.4.1(js-yaml@4.3.2))
@@ -4587,8 +4587,8 @@ packages:
   csstype@3.2.4:
     resolution: {integrity: sha512-PoKaoPzQapnEoqUSnHx1u6W6ku8CVEgKsnpmmzU3m1nwkidpPBQ8V/Zq2+bWNrsOKoKLwTGdbx6xF7BXP1zLVQ==}
 
-  cyber-agentkit@2.11.1:
-    resolution: {integrity: sha512-RE0S4u81UzKtNHfDfFGG1W4avc+1BiQOx5H57t/H7OT5IYuJwW0D7+vGcHLisWK26u6rRHfvxMUnbyrcr9Cq+A==}
+  cyber-agentkit@2.12.0:
+    resolution: {integrity: sha512-gyuxdPVL7MAhKBlbr3u9zbsLJXUjq5NkGbRYUHYWr0ie7r99ci6aq8FSB/WTawI/uFvgpYZfEW/jmyPgAyOPFQ==}
     engines: {node: '>=22'}
     hasBin: true
     peerDependencies:
@@ -10904,7 +10904,7 @@ snapshots:
 
   buddy-agent-harness@2.0.0(clibuilder@12.4.1(js-yaml@4.3.2)):
     dependencies:
-      cyber-agentkit: 2.11.1(clibuilder@12.4.1(js-yaml@4.3.2))
+      cyber-agentkit: 2.12.0(clibuilder@12.4.1(js-yaml@4.3.2))
       jsonc-parser: 3.3.1
       smol-toml: 1.9.1
       toml-eslint-parser: 1.0.3
@@ -11121,13 +11121,13 @@ snapshots:
 
   csstype@3.2.4: {}
 
-  cyber-agentkit@2.11.1(clibuilder@12.4.1(js-yaml@4.3.2)):
+  cyber-agentkit@2.12.0(clibuilder@12.4.1(js-yaml@4.3.2)):
     optionalDependencies:
       clibuilder: 12.4.1(js-yaml@4.3.2)
 
   cyber-mux@0.12.0(clibuilder@12.4.1(js-yaml@4.3.2)):
     dependencies:
-      cyber-agentkit: 2.11.1(clibuilder@12.4.1(js-yaml@4.3.2))
+      cyber-agentkit: 2.12.0(clibuilder@12.4.1(js-yaml@4.3.2))
     optionalDependencies:
       clibuilder: 12.4.1(js-yaml@4.3.2)
 
