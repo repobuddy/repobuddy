@@ -17,6 +17,8 @@ export interface CommitOptions {
 	slugs: string[]
 	/** The committed copies to delete in the same commit. */
 	drops?: string[] | undefined
+	/** The commit message, written in the repo's convention. Default `docs: checkpoint <slugs>`, or `docs: drop checkpoint <slugs>` with drops alone. */
+	message?: string | undefined
 	/** Words a hit may be, such as a username that is also a common word. */
 	allow?: string[] | undefined
 	/** The checkout to commit in. */
@@ -63,7 +65,8 @@ export function redactionHits(
  * Commits copies of checkpoints, as step 9 of the skill's references/save.md describes: copies each
  * from the common git dir to `.agents/repobuddy/checkpoints/<slug>.md` in the checkout, checks the
  * copies for paths and names a commit would leak, force-adds them (the folder may be excluded), and
- * commits only those paths, with the drops, as `docs: checkpoint <slugs>` or `docs: drop checkpoint <slugs>`.
+ * commits only those paths, with the drops, under `message`, by default `docs: checkpoint <slugs>` or
+ * `docs: drop checkpoint <slugs>`.
  */
 export function commitCheckpoints(options: CommitOptions): CommitResult {
 	const cwd = resolve(options.cwd)
@@ -72,6 +75,8 @@ export function commitCheckpoints(options: CommitOptions): CommitResult {
 	const drops = options.drops ?? []
 	if (options.slugs.length === 0 && drops.length === 0)
 		throw new InvalidCheckpointError('name a checkpoint to commit or drop')
+	if (options.message !== undefined && options.message.trim() === '')
+		throw new InvalidCheckpointError('the commit message is empty')
 	const identity = options.identity ?? { home: homedir(), user: userInfo().username, host: hostname() }
 	const from = join(repo.commonDir, 'repobuddy', 'checkpoints')
 	const to = join(repo.root, '.agents', 'repobuddy', 'checkpoints')
@@ -100,9 +105,10 @@ export function commitCheckpoints(options: CommitOptions): CommitResult {
 	if (paths.length === 0) throw new InvalidCheckpointError('none of the dropped checkpoints is committed')
 
 	const message =
-		options.slugs.length > 0
+		options.message?.trim() ??
+		(options.slugs.length > 0
 			? `docs: checkpoint ${options.slugs.join(', ')}`
-			: `docs: drop checkpoint ${drops.join(', ')}`
+			: `docs: drop checkpoint ${drops.join(', ')}`)
 	git(repo.root, ['commit', '-q', '-m', message, '--only', '--', ...paths])
 	return { commit: git(repo.root, ['rev-parse', '--short', 'HEAD']), message, paths }
 }

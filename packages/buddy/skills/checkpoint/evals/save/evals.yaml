@@ -17,3 +17,21 @@ outcome:
     files: files/save-commit
     setup: setup/save-commit.sh
     criteria: [C2, C4, C5]
+  - id: save-keep-finished
+    prompt: "This session I fixed the typo in README.md and committed it; that was
+      all the readme-typo checkpoint asked for. I also started making parse() in
+      src/parse.js reject null: the guard is written but untested, and the next
+      step is a test in test/parse.test.js that parse(null) throws a TypeError.
+      Let's stop here and save a checkpoint."
+    files: files/save-one-topic
+    setup: setup/save-keep-finished.sh
+    criteria: [C12]
+  - id: save-commit-convention
+    prompt: "This session I fixed the typo in README.md and committed it. I also
+      started making parse() in src/parse.js reject null: the guard is written but
+      untested, and the next step is a test in test/parse.test.js that parse(null)
+      throws a TypeError. Save a checkpoint with --commit so it travels with the
+      branch. I approve the commit; don't ask again."
+    files: files/save-commit
+    setup: setup/save-commit-convention.sh
+    criteria: [C13]

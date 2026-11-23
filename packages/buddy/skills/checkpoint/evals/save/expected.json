@@ -1,21 +1,26 @@
 {
 	"version": 2,
 	"skill": "checkpoint",
-	"at": "2026-11-23T06:17:43.868Z",
+	"at": "2026-11-23T08:38:08.215Z",
 	"verification": "skill-design.aspects.verification from cyber-agentkit",
 	"runs": 3,
 	"threshold": 2,
 	"baseline": "without the skill",
 	"model": "sonnet",
+	"judge": "sonnet",
 	"criteria": [
 		"C1",
 		"C2",
 		"C3",
 		"C4",
 		"C5",
+		"C12",
+		"C13",
 		"C6",
 		"C7",
 		"C10",
+		"C11",
+		"C14",
 		"C8",
 		"C9"
 	],
@@ -45,7 +50,7 @@
 					"passed": 3,
 					"ran": 3,
 					"baseline": {
-						"passed": 1,
+						"passed": 3,
 						"ran": 3
 					}
 				},
@@ -63,19 +68,19 @@
 			"cost": {
 				"skill": {
 					"runs": 3,
-					"total": 0.3689,
-					"max": 0.1254
+					"total": 0.3691,
+					"max": 0.1246
 				},
 				"baseline": {
 					"runs": 3,
-					"total": 0.2545,
-					"max": 0.1017
+					"total": 0.1854,
+					"max": 0.0629
 				}
 			},
-			"at": "2026-11-23T06:13:49.311Z",
+			"at": "2026-11-23T08:38:08.215Z",
 			"hashes": {
 				"case": "sha256:c3ab8da8242790f5bd4047e04b96fe575f8509303620a39c402a930e33e11e46",
-				"scope": "sha256:d3dbfbdac5bd71d5f77023f62342a824c243934f63ed23b308f65e59af203766"
+				"scope": "sha256:457d2c0f60e655a5b432e1c23bc8b51694698fdaa073376014ae90e1bf46f76d"
 			}
 		},
 		"save-commit": {
@@ -116,26 +121,96 @@
 			"cost": {
 				"skill": {
 					"runs": 3,
-					"total": 0.3642,
-					"max": 0.1223
+					"total": 0.3771,
+					"max": 0.1296
 				},
 				"baseline": {
 					"runs": 3,
-					"total": 0.2719,
-					"max": 0.0922
+					"total": 0.27,
+					"max": 0.0978
 				}
 			},
-			"at": "2026-11-23T06:13:49.311Z",
+			"at": "2026-11-23T08:38:08.215Z",
 			"hashes": {
 				"case": "sha256:32811d971741f437ad35fc76c9c9fe643f9517e696e546cf069d81481b6e7c68",
-				"scope": "sha256:d3dbfbdac5bd71d5f77023f62342a824c243934f63ed23b308f65e59af203766"
+				"scope": "sha256:457d2c0f60e655a5b432e1c23bc8b51694698fdaa073376014ae90e1bf46f76d"
+			}
+		},
+		"save-keep-finished": {
+			"scope": "save",
+			"status": "pass",
+			"passed": 3,
+			"ran": 3,
+			"criteria": {
+				"C12": {
+					"status": "pass",
+					"passed": 3,
+					"ran": 3,
+					"baseline": {
+						"passed": 0,
+						"ran": 3
+					}
+				}
+			},
+			"model": "sonnet",
+			"cost": {
+				"skill": {
+					"runs": 3,
+					"total": 0.398,
+					"max": 0.1444
+				},
+				"baseline": {
+					"runs": 3,
+					"total": 0.1867,
+					"max": 0.0634
+				}
+			},
+			"at": "2026-11-23T08:21:19.859Z",
+			"hashes": {
+				"case": "sha256:1b0480d5890a3fb7031a41fac1daf5d793ca28130680ecb871180f2c4c2fe5e7",
+				"scope": "sha256:457d2c0f60e655a5b432e1c23bc8b51694698fdaa073376014ae90e1bf46f76d"
+			}
+		},
+		"save-commit-convention": {
+			"scope": "save",
+			"status": "pass",
+			"passed": 3,
+			"ran": 3,
+			"criteria": {
+				"C13": {
+					"status": "pass",
+					"passed": 3,
+					"ran": 3,
+					"baseline": {
+						"passed": 0,
+						"ran": 3
+					}
+				}
+			},
+			"model": "sonnet",
+			"cost": {
+				"skill": {
+					"runs": 3,
+					"total": 0.4036,
+					"max": 0.1434
+				},
+				"baseline": {
+					"runs": 3,
+					"total": 0.2724,
+					"max": 0.0936
+				}
+			},
+			"at": "2026-11-23T08:21:19.859Z",
+			"hashes": {
+				"case": "sha256:777aa7ab31aa714bb36e28a0e4f280f945e4d8fbfd8a18103fdb1ed6ceb0a454",
+				"scope": "sha256:457d2c0f60e655a5b432e1c23bc8b51694698fdaa073376014ae90e1bf46f76d"
 			}
 		}
 	},
 	"inputs": {
-		"sha256:d3dbfbdac5bd71d5f77023f62342a824c243934f63ed23b308f65e59af203766": {
+		"sha256:457d2c0f60e655a5b432e1c23bc8b51694698fdaa073376014ae90e1bf46f76d": {
 			"SKILL.md front matter": "sha256:c27ad2b83dd1abf7567d94b5c6b86e9a1ff36410fadb74a0aef79d17a7f90431",
-			"SKILL.md shared sections": "sha256:75e77d8ebf77b8f2778eed2268972770d2299564a44e0b3201e0f8adec2ffa9b",
+			"SKILL.md shared sections": "sha256:5ae2a2fa1e5de855677d6cfc4d1f2c6898de30a9021d0852db48c2f8e584a8d2",
 			"SKILL.md router row for references/save.md": "sha256:e23ea9635f46e264a2d5d50c9b89e2918d9b0937ba7ade2d820bf33a74b5ebee",
 			"references/command.md": "sha256:4b2c2deb8fdc3d6f766a5fb4ec7455b4e4fc5d53dbe7e9dae282044ea56f9388",
 			"references/harness/claude-code.md": "sha256:80c31bb54c0fbb45eef2e9eb5f462d10b4433a7fcbcc7c417fd9a8059e36de06",
@@ -144,8 +219,8 @@
 			"references/harness/cursor.md": "sha256:c981ffb273b3ef1a97fa62da44bef371e5770c70a31ce8c00ba7732a8815196d",
 			"references/harness/gemini.md": "sha256:cc4aee8e181e384e12b997353d0247314891b3a6ced9b06b0718a73f33936229",
 			"references/list.md": "sha256:7529b16a031994e239bd1e6e673139261022a481b00ee7c4dd105a43a274c67e",
-			"references/resume.md": "sha256:0da1d1be4ebdc32aa7117eb35deab9e6d1283cc9e6692bab6abc27d3d0ff2021",
-			"references/save.md": "sha256:4b26df29623c79dd0b8d0dd6268e3cb031814f21ba347fea4683370806780b50",
+			"references/resume.md": "sha256:3dea788f0e6c25d685bbe50b8676b0a74a6aff1d62000d308ab86d20dddd7feb",
+			"references/save.md": "sha256:cd9863fb21454d9bff85c251388961244ab9e6dab964f7a3c5538066ed9ca613",
 			"evals/evals.yaml settings": "sha256:e9826190a024ec3638d6af0e137586e99401493ad1e7180bd9a9d107c2f2ee5d"
 		}
 	}

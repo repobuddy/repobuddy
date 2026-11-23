@@ -52,13 +52,13 @@ A drifted session asks instead of updating, which stalls an unattended run.
 
 ### save
 
-- Sorts the session's requests into topics and skips finished work, deleting a finished or abandoned topic's old
-  checkpoint. Age alone never deletes one.
+- Sorts the session's requests into topics and skips finished work, and asks before deleting a finished or abandoned
+  topic's old checkpoint (an unattended run keeps it and reports it). Age alone never deletes one.
 - Matches each topic to its existing checkpoint (the one this session resumed, or one with the same goal) and merges
   into it, keeping its settled decisions and dead ends.
 - With several live topics, asks whether to write one checkpoint per topic or one for all, and recommends one. With a
   focus argument it checkpoints only that topic.
-- Writes `<common git dir>/repobuddy/checkpoints/<slug>.md` in the topic's home repo, with the next action first. The
+- Writes `<common git dir>/repobuddy/checkpoints/<slug>.md` in the topic's home repo, with the next action first, then the goal and what is done so far. The
   common git dir is shared by a plain clone, the main checkout and every linked worktree, so every checkout sees the
   checkpoint, and removing a worktree or running `git clean -fdx` leaves it in place. A topic about another repo is
   written into that repo with a `repo:` field. If that repo is not on disk it asks where it is, or falls back to
@@ -67,7 +67,8 @@ A drifted session asks instead of updating, which stalls an unattended run.
   Changes neither the working tree nor `.gitignore`. Redacts secrets and personal data. Lists uncommitted work but
   does not touch it.
 - `--commit` copies the current repo's checkpoints to `.agents/repobuddy/checkpoints/` in the checkout and commits the
-  copies with `git add -f`, after dropping absolute paths, usernames, and hostnames. A checkpoint in another repo
+  copies with `git add -f` and a message in the repo's commit convention, after dropping absolute paths, usernames,
+  and hostnames. A checkpoint in another repo
   stays uncommitted.
 
 ### list
@@ -84,6 +85,9 @@ A drifted session asks instead of updating, which stalls an unattended run.
 
 - Finds the checkpoint (one you name, the only one, or a newest-first list to choose from). Warns when `repo:` names
   another repo.
+- Opens with a short summary before any action: what the work is and its goal, what is done, what is left, and the
+  next step, with any open question waiting on you. Branch state, commit ids and the marker come after it, briefly.
+  A checkpoint without `## Done so far`, written by an earlier version, still resumes.
 - Resumes by branch: on the checkpoint's branch it continues in place. When another worktree has the branch, it names
   that worktree, gives the line to resume there, and stops. When no worktree has it, it says the branch has to be
   checked out and leaves how to you. It never switches branches, and a tool that manages worktrees or sessions can
@@ -95,7 +99,7 @@ A drifted session asks instead of updating, which stalls an unattended run.
   about a marked checkpoint and checks whether its process is alive; it asks before opening one that is alive or
   can't be checked, and never hides it. `save` removes the marker, and warns if another session resumed the file
   meanwhile.
-- Keeps the checkpoint until the work is done, then deletes it.
+- Keeps the checkpoint until the work is done, then asks before deleting it.
 - Given another repo's path, it lists that repo's checkpoints and gives the line to start a session there. It never runs `cd`.
 
 There is no `update` subcommand. `save` is the update: a topic that matches an existing checkpoint is merged into it,

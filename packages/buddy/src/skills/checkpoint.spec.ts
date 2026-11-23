@@ -73,6 +73,7 @@ test.each([
 	[['commit']],
 	[['commit', '--drop']],
 	[['commit', 'a', '--bogus']],
+	[['commit', 'a', '--message']],
 ])('rejects %j with exit 2', async (argv) => {
 	await expect(main(argv)).rejects.toThrow('exit:2')
 	expect(stderr.join('')).toMatch(/usage: repobuddy\.mjs checkpoint list/)
@@ -150,6 +151,19 @@ test('commit passes the slugs, drops and allowed words, and prints the commit', 
 	await main(['commit', 'a', '--drop', 'old', 'b', '--allow', 'sam'])
 	expect(commitMock).toHaveBeenCalledWith({ slugs: ['a', 'b'], drops: ['old'], allow: ['sam'], cwd: process.cwd() })
 	expect(stdout.join('')).toBe('abc1234 docs: checkpoint a, b\n')
+})
+
+test('commit passes the message given', async () => {
+	commitMock.mockReturnValue({ commit: 'abc1234', message: 'chore: save a', paths: [] })
+	await main(['commit', 'a', '-m', 'chore: save a'])
+	expect(commitMock).toHaveBeenCalledWith({
+		slugs: ['a'],
+		drops: [],
+		allow: [],
+		message: 'chore: save a',
+		cwd: process.cwd(),
+	})
+	expect(stdout.join('')).toBe('abc1234 chore: save a\n')
 })
 
 test('commit exits 1 when a copy would leak a path', async () => {

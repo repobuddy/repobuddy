@@ -55,6 +55,19 @@ rubrics:
           ! git grep -nE '/(home|Users)/' HEAD -- .agents/repobuddy/checkpoints
   C5:
     - regex: 'checkpoint\W+resume\s+`?[a-z0-9]+(-[a-z0-9]+)*'
+  C12:
+    - script: |
+        test -f "$(git rev-parse --path-format=absolute --git-common-dir)/repobuddy/checkpoints/readme-typo.md"
+    - judge: >-
+        Pass when the reply names the readme-typo checkpoint as done (its README typo is already committed) and either
+        asks whether to delete it or says it was kept as ready to delete. Fail when it says it deleted the checkpoint,
+        or does not mention it.
+  C13:
+    - script: |
+        s="$(git log -1 --format=%s)" &&
+          printf '%s\n' "$s" | grep -qE '^[a-z]+\([a-z-]+\): ' &&
+          git diff --name-only HEAD~1 HEAD | grep -q '^\.agents/repobuddy/checkpoints/' &&
+          ! git diff --name-only HEAD~1 HEAD | grep -v '^\.agents/repobuddy/checkpoints/'
   # resume (references/resume.md)
   C6:
     - script: |
@@ -75,6 +88,20 @@ rubrics:
           test -z "$(git status --porcelain)" &&
           test -z "$(git -C "$wt" status --porcelain)" &&
           test "$(git branch --show-current)" = main
+  C11:
+    - judge: >-
+        Pass when the reply opens with a summary of at most six lines that says what the work is and its goal (trimming
+        parsed CSV fields), what is done (unquoted fields trimmed), what is left (the quoted-field test, the README),
+        and the next step together with the open question on the quotes that blocks it, and when that summary names
+        no commit id or rebase state. Check results (branch, commit, state) may follow the summary; fail only when
+        they come before it or inside it, or when the open question appears only after them.
+  C14:
+    - script: |
+        test -f "$(git rev-parse --path-format=absolute --git-common-dir)/repobuddy/checkpoints/parse-null.md"
+    - judge: >-
+        Pass when the reply says the commits since the checkpoint already met its goal (parse rejects null, with a
+        test) and either asks whether to delete the checkpoint or says it was kept as ready to delete. Fail when it
+        says it deleted the checkpoint, or carries on with the checkpoint's next step as if the goal were not met.
   # list (references/list.md)
   C8:
     - contains: parse-null

@@ -1,21 +1,26 @@
 {
 	"version": 2,
 	"skill": "checkpoint",
-	"at": "2026-11-23T06:17:43.868Z",
+	"at": "2026-11-23T08:38:08.215Z",
 	"verification": "skill-design.aspects.verification from cyber-agentkit",
 	"runs": 3,
 	"threshold": 2,
 	"baseline": "without the skill",
 	"model": "sonnet",
+	"judge": "sonnet",
 	"criteria": [
 		"C1",
 		"C2",
 		"C3",
 		"C4",
 		"C5",
+		"C12",
+		"C13",
 		"C6",
 		"C7",
 		"C10",
+		"C11",
+		"C14",
 		"C8",
 		"C9"
 	],
@@ -54,19 +59,19 @@
 			"cost": {
 				"skill": {
 					"runs": 3,
-					"total": 0.4988,
-					"max": 0.176
+					"total": 0.5187,
+					"max": 0.1839
 				},
 				"baseline": {
 					"runs": 3,
-					"total": 0.1874,
-					"max": 0.0737
+					"total": 0.1877,
+					"max": 0.0664
 				}
 			},
-			"at": "2026-11-23T06:14:47.176Z",
+			"at": "2026-11-23T08:38:08.215Z",
 			"hashes": {
 				"case": "sha256:323fc7a5358438b88eeb7d55a453a508d6999352afdc116359356fa1202e7a03",
-				"scope": "sha256:e2c8afc1f52c8a8f856c27971405a827f4d8f8e538eee171e4706f126af42d76"
+				"scope": "sha256:02ace4016c3c26fafcd3a4c092890a5775fdc5232824abdca9e835b7eb610651"
 			}
 		},
 		"resume-other-worktree": {
@@ -89,26 +94,96 @@
 			"cost": {
 				"skill": {
 					"runs": 3,
-					"total": 0.3043,
-					"max": 0.1026
+					"total": 0.3296,
+					"max": 0.1108
 				},
 				"baseline": {
 					"runs": 3,
-					"total": 0.2445,
-					"max": 0.0911
+					"total": 0.2271,
+					"max": 0.0833
 				}
 			},
-			"at": "2026-11-23T06:14:47.176Z",
+			"at": "2026-11-23T08:38:08.215Z",
 			"hashes": {
 				"case": "sha256:ccdcc205f18aaa33b52b75e7b8e90d5ab99a4341c54b73fa1a810049448cf50b",
-				"scope": "sha256:e2c8afc1f52c8a8f856c27971405a827f4d8f8e538eee171e4706f126af42d76"
+				"scope": "sha256:02ace4016c3c26fafcd3a4c092890a5775fdc5232824abdca9e835b7eb610651"
+			}
+		},
+		"resume-summary": {
+			"scope": "resume",
+			"status": "pass",
+			"passed": 3,
+			"ran": 3,
+			"criteria": {
+				"C11": {
+					"status": "pass",
+					"passed": 3,
+					"ran": 3,
+					"baseline": {
+						"passed": 0,
+						"ran": 3
+					}
+				}
+			},
+			"model": "sonnet",
+			"cost": {
+				"skill": {
+					"runs": 3,
+					"total": 0.3079,
+					"max": 0.1032
+				},
+				"baseline": {
+					"runs": 3,
+					"total": 0.1889,
+					"max": 0.0654
+				}
+			},
+			"at": "2026-11-23T08:38:08.215Z",
+			"hashes": {
+				"case": "sha256:c52e6351936facced1c167e8a0090872394ef037e1fe9b1d90c19a2a524643df",
+				"scope": "sha256:02ace4016c3c26fafcd3a4c092890a5775fdc5232824abdca9e835b7eb610651"
+			}
+		},
+		"resume-goal-met": {
+			"scope": "resume",
+			"status": "pass",
+			"passed": 3,
+			"ran": 3,
+			"criteria": {
+				"C14": {
+					"status": "pass",
+					"passed": 3,
+					"ran": 3,
+					"baseline": {
+						"passed": 0,
+						"ran": 3
+					}
+				}
+			},
+			"model": "sonnet",
+			"cost": {
+				"skill": {
+					"runs": 3,
+					"total": 0.3329,
+					"max": 0.116
+				},
+				"baseline": {
+					"runs": 3,
+					"total": 0.1808,
+					"max": 0.0609
+				}
+			},
+			"at": "2026-11-23T08:21:19.859Z",
+			"hashes": {
+				"case": "sha256:4cb0da1381981c32de95bc5a1afdf78148adba3d67a065e1a95b3f021c29d321",
+				"scope": "sha256:02ace4016c3c26fafcd3a4c092890a5775fdc5232824abdca9e835b7eb610651"
 			}
 		}
 	},
 	"inputs": {
-		"sha256:e2c8afc1f52c8a8f856c27971405a827f4d8f8e538eee171e4706f126af42d76": {
+		"sha256:02ace4016c3c26fafcd3a4c092890a5775fdc5232824abdca9e835b7eb610651": {
 			"SKILL.md front matter": "sha256:c27ad2b83dd1abf7567d94b5c6b86e9a1ff36410fadb74a0aef79d17a7f90431",
-			"SKILL.md shared sections": "sha256:75e77d8ebf77b8f2778eed2268972770d2299564a44e0b3201e0f8adec2ffa9b",
+			"SKILL.md shared sections": "sha256:5ae2a2fa1e5de855677d6cfc4d1f2c6898de30a9021d0852db48c2f8e584a8d2",
 			"SKILL.md router row for references/resume.md": "sha256:aa7e5e3978f6dd0c08697192d04da10f125481b791e01b6d9effe70d488e7807",
 			"references/command.md": "sha256:4b2c2deb8fdc3d6f766a5fb4ec7455b4e4fc5d53dbe7e9dae282044ea56f9388",
 			"references/harness/claude-code.md": "sha256:80c31bb54c0fbb45eef2e9eb5f462d10b4433a7fcbcc7c417fd9a8059e36de06",
@@ -117,8 +192,8 @@
 			"references/harness/cursor.md": "sha256:c981ffb273b3ef1a97fa62da44bef371e5770c70a31ce8c00ba7732a8815196d",
 			"references/harness/gemini.md": "sha256:cc4aee8e181e384e12b997353d0247314891b3a6ced9b06b0718a73f33936229",
 			"references/list.md": "sha256:7529b16a031994e239bd1e6e673139261022a481b00ee7c4dd105a43a274c67e",
-			"references/resume.md": "sha256:0da1d1be4ebdc32aa7117eb35deab9e6d1283cc9e6692bab6abc27d3d0ff2021",
-			"references/save.md": "sha256:4b26df29623c79dd0b8d0dd6268e3cb031814f21ba347fea4683370806780b50",
+			"references/resume.md": "sha256:3dea788f0e6c25d685bbe50b8676b0a74a6aff1d62000d308ab86d20dddd7feb",
+			"references/save.md": "sha256:cd9863fb21454d9bff85c251388961244ab9e6dab964f7a3c5538066ed9ca613",
 			"evals/evals.yaml settings": "sha256:e9826190a024ec3638d6af0e137586e99401493ad1e7180bd9a9d107c2f2ee5d"
 		}
 	}

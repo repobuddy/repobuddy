@@ -4,6 +4,11 @@ Hand work between agent sessions. `save` writes a checkpoint per topic that a fr
 up without going back over settled ground; `resume` picks one up and continues from its next step. A
 topic that drifted into another repo is checkpointed in that repo, ready for a session started there.
 
+## Research
+
+Skipped: written before the research step. The harness built-ins it differs from are compared under
+[Why not `/resume` or `/handoff`?](#why-not-resume-or-handoff).
+
 ## When to use
 
 - "pause here, I'll pick this up tomorrow"
@@ -91,7 +96,8 @@ instead, which stalls an unattended run.
    part that continues the old goal keeps it.
 2. Skips work that is done. A committed fix, an answered question or a topic you abandoned gets no
    checkpoint, only a one-line commit or PR reference where live work builds on it, and its old
-   checkpoint, if it had one, is deleted. Age alone never deletes a checkpoint. Tangents with nothing
+   checkpoint, if it had one, is deleted once you agree; with no one to ask, it is kept and reported as
+   ready to delete. Age alone never deletes a checkpoint. Tangents with nothing
    left to do are dropped.
 3. When more than one topic has work left, shows each one with its slug and next step and asks
    whether to write one checkpoint per topic or keep them in one, with a recommendation. With one live
@@ -108,8 +114,8 @@ instead, which stalls an unattended run.
    is merged, not overwritten: its settled decisions and dead ends stay, and the next step, remaining
    steps, branch, commit and uncommitted state are rewritten.
 
-   The next action comes first, followed by the goal with your latest instruction quoted word for
-   word, the remaining steps (carried over from the harness's todo list), settled decisions (your
+   The next action comes first, followed by the goal (what the work is, why, and what done looks
+   like) with your latest instruction quoted word for word, what is done so far, the remaining steps (carried over from the harness's todo list), settled decisions (your
    corrections among them, as "user said"), dead ends that shouldn't be retried, open questions,
    working method, the files, commits and issues touched, the state that isn't in git, and the skills
    the next session should use. A section with nothing to say is left out. Split checkpoints each
@@ -125,7 +131,7 @@ instead, which stalls an unattended run.
    its own.
 8. Commits only the checkpoints, and only with `--commit`: it copies them to
    `.agents/repobuddy/checkpoints/` in the checkout and commits the copies with `git add -f`, because
-   that folder may be excluded. The commit lets them follow the branch to another machine. It commits only in the current repo: a checkpoint written to another repo stays
+   that folder may be excluded, with a message in the repo's commit convention. The commit lets them follow the branch to another machine. It commits only in the current repo: a checkpoint written to another repo stays
    uncommitted, and the report says so.
 9. Reports every checkpoint written with its next step, and the topics it skipped as done. For a
    checkpoint written to another repo, it gives the line to type to start a session there.
@@ -154,7 +160,12 @@ and stops. `resume` uses the same listing when it asks which one to open.
    one a session in another repo paused here. It uses the one you named, or the only one there. When there are several, it lists
    them newest first, with title, branch and next step, and asks, even if one matches your current
    branch. A checkpoint that waits on another topic is marked `waits on <slug>`.
-2. Checks the checkpoint against the repo. It says so first if the checkpoint's `repo:` names another
+2. Opens with a short summary of the work before any action: what it is and its goal, what is done,
+   what is left, and the next step, with any open question waiting on you. Rebase state, commit ids
+   and the resume marker stay out of it, and come after it in a line or two when they matter. A
+   checkpoint written before `## Done so far` existed still resumes; the summary draws what is done
+   from the commits it cites.
+3. Checks the checkpoint against the repo. It says so first if the checkpoint's `repo:` names another
    repo. Then it goes by the checkpoint's branch: on that branch, it continues here; with the branch
    checked out in another worktree, it names that worktree, gives the line to resume there, and
    stops; with the branch checked out nowhere, it says so and stops, leaving how to check it out
@@ -162,16 +173,16 @@ and stops. `resume` uses the same listing when it asks which one to open.
    that landed since the pause, and state from
    `## Not in git` that isn't here. If the new commits already met the goal, it asks whether to delete
    the checkpoint instead of continuing.
-3. Reloads the working method and the settled decisions, reads the dead ends so it doesn't retry a
+4. Reloads the working method and the settled decisions, reads the dead ends so it doesn't retry a
    failed approach without new evidence, and raises any open question that blocks the next step.
-4. Runs the next step, then the remaining steps, toward your quoted instruction, and keeps the
+5. Runs the next step, then the remaining steps, toward your quoted instruction, and keeps the
    checkpoint current as decisions are made.
-5. Writes a `resumed:` marker (time, harness, session id, process id and start time) into the checkpoint.
+6. Writes a `resumed:` marker (time, harness, session id, process id and start time) into the checkpoint.
    The list warns about a marked checkpoint, checking whether its process is still alive, and asks
    before opening one that is alive or can't be checked. The marker never hides a checkpoint. `save`
    removes it on the next pause, and warns first if another session resumed the file in the meantime.
-6. Deletes the checkpoint once the work is done, not when it resumes, so if the resumed session dies
-   before pausing again, the state is still there.
+7. Asks to delete the checkpoint once the work is done, not when it resumes, so if the resumed
+   session dies before pausing again, the state is still there. With no one to ask, it keeps it.
 
 Give it another repo's path instead (`/checkpoint resume ../other-repo`) and it lists that repo's
 checkpoints, lets you pick, and hands back what to type to resume there. It never runs `cd` itself,

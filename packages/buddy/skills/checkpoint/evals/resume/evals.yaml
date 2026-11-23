@@ -12,3 +12,12 @@ outcome:
     files: files/resume-other-worktree
     setup: setup/resume-other-worktree.sh
     criteria: [C10]
+  - id: resume-summary
+    prompt: Resume the trim-fields checkpoint.
+    setup: setup/resume-summary.sh
+    criteria: [C11]
+  - id: resume-goal-met
+    prompt: Resume the parse-null checkpoint.
+    files: files/resume-next
+    setup: setup/resume-goal-met.sh
+    criteria: [C14]

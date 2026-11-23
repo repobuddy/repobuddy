@@ -71,6 +71,24 @@ describe('commitCheckpoints', () => {
 		expect(result.commit).toBe(sh(root, 'rev-parse', '--short', 'HEAD'))
 	})
 
+	it('commits under the message given, for the repo convention', () => {
+		const root = makeRepo()
+		save(root, 'fix-it')
+		const message = 'chore(checkpoint): save fix-it'
+		expect(commitCheckpoints({ slugs: ['fix-it'], message: `${message}\n`, cwd: root, identity }).message).toBe(message)
+		expect(sh(root, 'log', '-1', '--format=%s')).toBe(message)
+	})
+
+	it('rejects an empty message and commits nothing', () => {
+		const root = makeRepo()
+		save(root, 'fix-it')
+		const head = sh(root, 'rev-parse', 'HEAD')
+		expect(() => commitCheckpoints({ slugs: ['fix-it'], message: '  ', cwd: root, identity })).toThrow(
+			'the commit message is empty',
+		)
+		expect(sh(root, 'rev-parse', 'HEAD')).toBe(head)
+	})
+
 	it('commits copies in an excluded folder', () => {
 		const root = makeRepo()
 		writeFileSync(join(root, '.git', 'info', 'exclude'), '.agents/\n')

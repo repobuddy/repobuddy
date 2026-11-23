@@ -35,8 +35,11 @@ opens the file has to be able to continue.
      keeps the slug, and the new part gets a new one.
 
 2. **Drop finished and extra work.** A topic that is done (committed, merged, answered, or abandoned
-   on purpose) gets no checkpoint and no history. If it matched a checkpoint in step 1, delete that
-   file, so it doesn't linger or hold up a checkpoint whose `depends-on` names it. Delete it from the
+   on purpose) gets no checkpoint and no history. If it matched a checkpoint in step 1, it should not
+   linger or hold up a checkpoint whose `depends-on` names it, but ask before deleting it: list each
+   such checkpoint with its slug and why its topic is done, and delete the ones the user agrees to.
+   With no one to ask (a headless or scheduled run), keep them, and list them in the report as done
+   and ready to delete. Delete each agreed one from the
    common dir with plain `rm`, and also delete its copy in the old folder (step 5), if there is one.
    When step 9 will commit the deletion (`--commit`, a committed checkpoint in the current repo),
    leave the committed copy to its `--drop`; otherwise use plain `rm`, so the deletion isn't staged
@@ -144,15 +147,20 @@ opens the file has to be able to continue.
    compare its `at` with the one this session wrote on resume. If they differ, or this session wrote
    none, warn that another session resumed the file in the meantime, and ask before overwriting; with
    no one to ask, merge and say so in the report. Then remove the block: a paused file is not resumed.
-   Rewrite `## NEXT`,
-   `## Remaining steps`, `## Not in git`, `branch`, `commit` and `updated` from the current state, add
-   this session's new decisions, dead ends and open questions, and drop the questions it answered.
+   Rewrite `## NEXT`, `## Remaining steps`, `## Not in git`, `branch`, `commit` and `updated` from the
+   current state, add this session's finished parts to `## Done so far` and its new decisions, dead ends
+   and open questions, and drop the questions it answered.
 
    Fill each checkpoint from what the session holds, so the cold reader gets it without rediscovery:
    - **Keep the user's words.** Under `## Goal`, quote the user's latest instruction for the topic
      word for word. Record each correction the user made ("don't touch X", "use Y instead") as a
      settled decision whose reason is "user said". `## NEXT` must follow from what the user asked
      for, not from an idea of the agent's own the user never agreed to.
+   - **Say what the work is and how far it got.** Open `## Goal` with what the work is, why it
+     exists and what done looks like, in plain words a reader who never saw the session follows. List
+     under `## Done so far` the parts of the goal already finished, one line each with its commit or
+     PR. These are what `resume` opens its summary with, so name outcomes, not mechanics such as
+     rebases or renamed commits.
    - **Record the dead ends.** An approach that was tried and failed goes under `## Dead ends`, with
      the evidence that sank it, so the next session doesn't try the obvious fix again.
    - **Describe a half-finished edit.** If the pause cuts a unit of work midway, `## NEXT` says what
@@ -179,9 +187,10 @@ opens the file has to be able to continue.
    ```
 
    Name each checkpoint written to the current repo, and pass `--drop <slug>` for each committed copy
-   step 2 deletes. It copies each checkpoint from the common dir to
+   step 2 deletes. Pass `--message <msg>` with a message in the repo's commit convention, read from
+   its contributing guide, commit hooks or recent `git log`; leave it out only when the repo has none. It copies each checkpoint from the common dir to
    `.agents/repobuddy/checkpoints/<slug>.md`, since a file in the git dir cannot be committed as it
-   is, removes each dropped copy, and commits only those paths as
+   is, removes each dropped copy, and commits only those paths under that message, by default
    `docs: checkpoint <slug>[, <slug>...]`, or `docs: drop checkpoint <slug>[, <slug>...]` with drops
    alone. The user's staged and unstaged work stays out of the commit. It prints the commit and its
    message. The copy in the common dir stays the one `list` and `resume` read here; the committed
@@ -201,7 +210,7 @@ opens the file has to be able to continue.
 10. **Report.** List every checkpoint written, each with its path, whether it is new or updated, its
     `## NEXT` line and its `depends-on`, and say whether they were committed. Then list the topics
     skipped as done, one line each with the commit or PR that finished them and the checkpoint deleted
-    for it, if any, saying when that deletion is uncommitted, and any live topic left out by the focus or handed to `pause-mission`. If the split
+    for it, if any, saying when that deletion is uncommitted, or kept because no one could confirm it, and any live topic left out by the focus or handed to `pause-mission`. If the split
     was decided without asking, say which option was taken and why. If a topic got a new slug because
     its match to an existing checkpoint was unclear, name both. If there are uncommitted changes, say
     that they won't travel with an uncommitted checkpoint.
@@ -247,9 +256,13 @@ Never "continue the work". If an edit is half done: what the partial change does
 
 ## Goal
 
-<What done looks like, in one or two lines.>
+<What the work is, why it exists, and what done looks like, in one or two lines.>
 
 > <The user's latest instruction for this topic, quoted word for word.>
+
+## Done so far
+
+- <a finished part of the goal, in one line> — <its commit sha or PR>
 
 ## Remaining steps
 
@@ -301,7 +314,8 @@ appears only in a checkpoint kept as one over several topics.
   the user's latest instruction, not the conversation; list a dead end as one line, not the story of
   the attempt.
 - **Not a record of finished work.** A topic that is done is a commit or a PR, cited in one line where
-  live work builds on it. It is not a section of its own.
+  live work builds on it. It is not a section of its own. `## Done so far` lists the finished parts of
+  a live topic, one line each, not the story of how they were done.
 - **Not a copy.** If something already lives in a commit, an ADR, a spec, an issue or a diff, reference
   it by path or URL and don't paste it.
 - **Not buried.** The next action comes first. If a reader has to hunt for where to start, the pause
@@ -314,10 +328,13 @@ appears only in a checkpoint kept as one over several topics.
 ## Done when
 
 - **C2.** Each live topic of the current repo has one checkpoint at
-  `<common dir>/repobuddy/checkpoints/<slug>.md`, with a `## NEXT` and a `## Not in git` section, and a finished topic
-  has none.
+  `<common dir>/repobuddy/checkpoints/<slug>.md`, with a `## NEXT` and a `## Not in git` section, and no checkpoint
+  was written for a finished topic.
 - **C3.** Without `--commit`, no commit was made, and `git status` shows the user's uncommitted work as it was and no
   new file in the working tree.
 - **C4.** With `--commit`, one new commit holds only the copies under `.agents/repobuddy/checkpoints/`, and none of
   them holds an absolute path such as `/home/<user>/`.
 - **C5.** The report names each checkpoint written and gives the `<command> resume <slug>` line for it.
+- **C12.** A finished topic's existing checkpoint was deleted only after the user agreed to it. Without that answer it
+  still exists, and the reply names it as done and asks to delete it, or says it was kept as ready to delete.
+- **C13.** With `--commit`, the commit's subject follows the repo's commit convention.

@@ -4,7 +4,7 @@
  *   node scripts/repobuddy.mjs checkpoint list [<repo path>] [--json]
  *   node scripts/repobuddy.mjs checkpoint write <slug> [<repo path>] [--home] < checkpoint.md
  *   node scripts/repobuddy.mjs checkpoint mark-resumed <path> --harness <name> --session <id> [--pid <pid>]
- *   node scripts/repobuddy.mjs checkpoint commit [<slug>...] [--drop <slug>...] [--allow <word>...]
+ *   node scripts/repobuddy.mjs checkpoint commit [<slug>...] [--drop <slug>...] [--allow <word>...] [--message <msg>]
  *
  * `list` writes nothing. Inside a git repo, or given a path in one, it reads the repo's common git dir
  * (`<common dir>/repobuddy/checkpoints/`), the checkout's `.agents/repobuddy/checkpoints/`, and the
@@ -31,8 +31,9 @@
  * `commit` copies each named checkpoint from the common git dir to `.agents/repobuddy/checkpoints/`
  * in the checkout, checks the copies for absolute paths, the home folder, the user name and the host
  * name (`--allow` passes a word that is a hit by coincidence), force-adds them, `git rm`s each
- * `--drop` copy, and commits only those paths as `docs: checkpoint <slugs>` (or
- * `docs: drop checkpoint <slugs>` with drops alone). It prints the commit and its message. On a hit it
+ * `--drop` copy, and commits only those paths with the `--message` given, written in the repo's
+ * commit convention, or by default as `docs: checkpoint <slugs>` (or `docs: drop checkpoint <slugs>`
+ * with drops alone). It prints the commit and its message. On a hit it
  * prints each line to stderr, commits nothing, and exits 1.
  *
  * stdout: the listing (JSON with --json), the path written, or the `at`. stderr: errors.
@@ -49,7 +50,7 @@ const USAGE = [
 	'usage: repobuddy.mjs checkpoint list [<repo path>] [--json]',
 	'       repobuddy.mjs checkpoint write <slug> [<repo path>] [--home] < checkpoint.md',
 	'       repobuddy.mjs checkpoint mark-resumed <path> --harness <name> --session <id> [--pid <pid>]',
-	'       repobuddy.mjs checkpoint commit [<slug>...] [--drop <slug>...] [--allow <word>...]',
+	'       repobuddy.mjs checkpoint commit [<slug>...] [--drop <slug>...] [--allow <word>...] [--message <msg>]',
 ].join('\n')
 
 function usage(message: string): never {
@@ -115,9 +116,13 @@ function commit(rest: string[]): void {
 	const slugs: string[] = []
 	const drops: string[] = []
 	const allow: string[] = []
+	let message: string | undefined
 	for (let i = 0; i < rest.length; i++) {
 		const a = rest[i] as string
-		if (a === '--drop' || a === '--allow') {
+		if (a === '--message' || a === '-m') {
+			message = rest[++i]
+			if (message === undefined) usage(`missing value for ${a}`)
+		} else if (a === '--drop' || a === '--allow') {
 			const value = rest[++i]
 			if (value === undefined) usage(`missing value for ${a}`)
 			;(a === '--drop' ? drops : allow).push(value)
@@ -125,7 +130,13 @@ function commit(rest: string[]): void {
 		else slugs.push(a)
 	}
 	if (slugs.length === 0 && drops.length === 0) usage('name a checkpoint to commit or drop')
-	const result = commitCheckpoints({ slugs, drops, allow, cwd: process.cwd() })
+	const result = commitCheckpoints({
+		slugs,
+		drops,
+		allow,
+		cwd: process.cwd(),
+		...(message === undefined ? {} : { message }),
+	})
 	process.stdout.write(`${result.commit} ${result.message}\n`)
 }
 
