@@ -43,6 +43,7 @@ const SCRIPTS = [
 		exit: 2,
 	},
 	{ path: 'skills/agent-readiness/scripts/repobuddy.mjs', args: ['agent-readiness', 'no-such-command'], exit: 2 },
+	{ path: 'skills/checkpoint/scripts/repobuddy.mjs', args: ['checkpoint', 'no-such-command'], exit: 2 },
 ]
 
 const temp = mkdtempSync(join(tmpdir(), 'repobuddy-pack-'))
