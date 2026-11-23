@@ -4,6 +4,11 @@ Hand work between agent sessions. `save` writes a checkpoint per topic that a fr
 up without going back over settled ground; `resume` picks one up and continues from its next step. A
 topic that drifted into another repo is checkpointed in that repo, ready for a session started there.
 
+## Research
+
+Skipped: written before the research step. The harness built-ins it differs from are compared under
+[Why not `/resume` or `/handoff`?](#why-not-resume-or-handoff).
+
 ## When to use
 
 - "pause here, I'll pick this up tomorrow"
