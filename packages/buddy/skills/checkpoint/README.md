@@ -96,7 +96,8 @@ instead, which stalls an unattended run.
    part that continues the old goal keeps it.
 2. Skips work that is done. A committed fix, an answered question or a topic you abandoned gets no
    checkpoint, only a one-line commit or PR reference where live work builds on it, and its old
-   checkpoint, if it had one, is deleted. Age alone never deletes a checkpoint. Tangents with nothing
+   checkpoint, if it had one, is deleted once you agree; with no one to ask, it is kept and reported as
+   ready to delete. Age alone never deletes a checkpoint. Tangents with nothing
    left to do are dropped.
 3. When more than one topic has work left, shows each one with its slug and next step and asks
    whether to write one checkpoint per topic or keep them in one, with a recommendation. With one live
@@ -180,8 +181,8 @@ and stops. `resume` uses the same listing when it asks which one to open.
    The list warns about a marked checkpoint, checking whether its process is still alive, and asks
    before opening one that is alive or can't be checked. The marker never hides a checkpoint. `save`
    removes it on the next pause, and warns first if another session resumed the file in the meantime.
-7. Deletes the checkpoint once the work is done, not when it resumes, so if the resumed session dies
-   before pausing again, the state is still there.
+7. Asks to delete the checkpoint once the work is done, not when it resumes, so if the resumed
+   session dies before pausing again, the state is still there. With no one to ask, it keeps it.
 
 Give it another repo's path instead (`/checkpoint resume ../other-repo`) and it lists that repo's
 checkpoints, lets you pick, and hands back what to type to resume there. It never runs `cd` itself,

@@ -52,8 +52,8 @@ A drifted session asks instead of updating, which stalls an unattended run.
 
 ### save
 
-- Sorts the session's requests into topics and skips finished work, deleting a finished or abandoned topic's old
-  checkpoint. Age alone never deletes one.
+- Sorts the session's requests into topics and skips finished work, and asks before deleting a finished or abandoned
+  topic's old checkpoint (an unattended run keeps it and reports it). Age alone never deletes one.
 - Matches each topic to its existing checkpoint (the one this session resumed, or one with the same goal) and merges
   into it, keeping its settled decisions and dead ends.
 - With several live topics, asks whether to write one checkpoint per topic or one for all, and recommends one. With a
@@ -99,7 +99,7 @@ A drifted session asks instead of updating, which stalls an unattended run.
   about a marked checkpoint and checks whether its process is alive; it asks before opening one that is alive or
   can't be checked, and never hides it. `save` removes the marker, and warns if another session resumed the file
   meanwhile.
-- Keeps the checkpoint until the work is done, then deletes it.
+- Keeps the checkpoint until the work is done, then asks before deleting it.
 - Given another repo's path, it lists that repo's checkpoints and gives the line to start a session there. It never runs `cd`.
 
 There is no `update` subcommand. `save` is the update: a topic that matches an existing checkpoint is merged into it,

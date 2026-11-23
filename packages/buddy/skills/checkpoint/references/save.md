@@ -35,8 +35,11 @@ opens the file has to be able to continue.
      keeps the slug, and the new part gets a new one.
 
 2. **Drop finished and extra work.** A topic that is done (committed, merged, answered, or abandoned
-   on purpose) gets no checkpoint and no history. If it matched a checkpoint in step 1, delete that
-   file, so it doesn't linger or hold up a checkpoint whose `depends-on` names it. Delete it from the
+   on purpose) gets no checkpoint and no history. If it matched a checkpoint in step 1, it should not
+   linger or hold up a checkpoint whose `depends-on` names it, but ask before deleting it: list each
+   such checkpoint with its slug and why its topic is done, and delete the ones the user agrees to.
+   With no one to ask (a headless or scheduled run), keep them, and list them in the report as done
+   and ready to delete. Delete each agreed one from the
    common dir with plain `rm`, and also delete its copy in the old folder (step 5), if there is one.
    When step 9 will commit the deletion (`--commit`, a committed checkpoint in the current repo),
    leave the committed copy to its `--drop`; otherwise use plain `rm`, so the deletion isn't staged
@@ -207,7 +210,7 @@ opens the file has to be able to continue.
 10. **Report.** List every checkpoint written, each with its path, whether it is new or updated, its
     `## NEXT` line and its `depends-on`, and say whether they were committed. Then list the topics
     skipped as done, one line each with the commit or PR that finished them and the checkpoint deleted
-    for it, if any, saying when that deletion is uncommitted, and any live topic left out by the focus or handed to `pause-mission`. If the split
+    for it, if any, saying when that deletion is uncommitted, or kept because no one could confirm it, and any live topic left out by the focus or handed to `pause-mission`. If the split
     was decided without asking, say which option was taken and why. If a topic got a new slug because
     its match to an existing checkpoint was unclear, name both. If there are uncommitted changes, say
     that they won't travel with an uncommitted checkpoint.

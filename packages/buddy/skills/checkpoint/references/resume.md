@@ -171,8 +171,10 @@ that drifted in elsewhere is already here.
 
 7. **Delete it when the work is done, not before.** A checkpoint is a handoff, not a record, but
    until the goal is met it is what survives if this session dies. Once the goal is met, move
-   anything worth keeping into a commit message, an ADR or an issue, then delete the file, from the
-   common dir and from this checkout's `.agents/repobuddy/checkpoints/`. Remove a committed copy with
+   anything worth keeping into a commit message, an ADR or an issue. Then ask the user before deleting
+   the file, naming its slug and why its goal is met; with no one to ask, keep it and say in the reply
+   that it is done and can be deleted. On yes, delete it from the common dir and from this checkout's
+   `.agents/repobuddy/checkpoints/`. Remove a committed copy with
    `git rm`, and commit the deletion along with the work's final unit. Age is no
    reason to delete one: an old checkpoint can still be a legitimate pause. If the session ends before
    the goal is met, run `checkpoint save`, which writes back to this checkpoint and rewrites its
