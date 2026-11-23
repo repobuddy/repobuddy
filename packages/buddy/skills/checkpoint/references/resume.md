@@ -190,3 +190,6 @@ that drifted in elsewhere is already here.
 - **C11.** The reply opens, before any check result or action, with a summary of at most six lines that says what
   the work is and its goal, what is done, what is left, and the next step, with any open question that blocks that
   step, and names no commit id or rebase state in it. Check results may follow the summary.
+- **C14.** When the work already met the checkpoint's goal, the checkpoint was deleted only after the user agreed to
+  it. Without that answer it still exists, and the reply says the goal is met and asks to delete it, or says it was
+  kept as ready to delete.

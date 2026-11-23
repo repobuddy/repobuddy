@@ -1,7 +1,7 @@
 {
 	"version": 2,
 	"skill": "checkpoint",
-	"at": "2026-11-23T07:34:32.485Z",
+	"at": "2026-11-23T08:21:19.859Z",
 	"verification": "skill-design.aspects.verification from cyber-agentkit",
 	"runs": 3,
 	"threshold": 2,
@@ -14,10 +14,13 @@
 		"C3",
 		"C4",
 		"C5",
+		"C12",
+		"C13",
 		"C6",
 		"C7",
 		"C10",
 		"C11",
+		"C14",
 		"C8",
 		"C9"
 	],

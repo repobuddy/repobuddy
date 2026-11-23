@@ -328,10 +328,13 @@ appears only in a checkpoint kept as one over several topics.
 ## Done when
 
 - **C2.** Each live topic of the current repo has one checkpoint at
-  `<common dir>/repobuddy/checkpoints/<slug>.md`, with a `## NEXT` and a `## Not in git` section, and a finished topic
-  has none.
+  `<common dir>/repobuddy/checkpoints/<slug>.md`, with a `## NEXT` and a `## Not in git` section, and no checkpoint
+  was written for a finished topic.
 - **C3.** Without `--commit`, no commit was made, and `git status` shows the user's uncommitted work as it was and no
   new file in the working tree.
 - **C4.** With `--commit`, one new commit holds only the copies under `.agents/repobuddy/checkpoints/`, and none of
   them holds an absolute path such as `/home/<user>/`.
 - **C5.** The report names each checkpoint written and gives the `<command> resume <slug>` line for it.
+- **C12.** A finished topic's existing checkpoint was deleted only after the user agreed to it. Without that answer it
+  still exists, and the reply names it as done and asks to delete it, or says it was kept as ready to delete.
+- **C13.** With `--commit`, the commit's subject follows the repo's commit convention.
