@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process'
-import { mkdirSync, mkdtempSync, realpathSync, writeFileSync } from 'node:fs'
+import { chmodSync, mkdirSync, mkdtempSync, realpathSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it } from '@jest/globals'
@@ -337,6 +337,19 @@ describe('listCheckpoints', () => {
 			next: 'x',
 		})
 		expect(listCheckpoints({ cwd: base, home, now: NOW, scanDepth: 4 }).nearby?.repos).toHaveLength(3)
+	})
+
+	it('skips an unreadable folder and a folder whose .git is not a repo', () => {
+		const dir = tempDir('checkpoint-norepo-')
+		const locked = join(dir, 'locked')
+		mkdirSync(join(locked, 'inner'), { recursive: true })
+		mkdirSync(join(dir, 'broken', '.git'), { recursive: true })
+		chmodSync(locked, 0o000)
+		try {
+			expect(listCheckpoints({ cwd: dir, home: join(dir, 'home'), now: NOW }).nearby?.repos).toEqual([])
+		} finally {
+			chmodSync(locked, 0o755)
+		}
 	})
 
 	it('has no nearby in a repo', () => {
