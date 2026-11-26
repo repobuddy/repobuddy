@@ -21,3 +21,7 @@ outcome:
     files: files/resume-next
     setup: setup/resume-goal-met.sh
     criteria: [C14]
+  - id: resume-outside-repo
+    prompt: Resume the parse-null checkpoint.
+    setup: setup/resume-outside-repo.sh
+    criteria: [C15]
