@@ -1,5 +1,5 @@
 import { spawnSync } from 'node:child_process'
-import { existsSync, readdirSync, readFileSync } from 'node:fs'
+import { type Dirent, existsSync, readdirSync, readFileSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { basename, join, relative, resolve } from 'node:path'
 
@@ -58,10 +58,28 @@ export interface RepoInfo {
 	mainName: string
 }
 
+/** A repo under the current folder whose common git dir holds checkpoints. */
+interface NearbyRepo {
+	/** The checkout found under the current folder. */
+	root: string
+	commonDir: string
+	checkpoints: Array<{
+		slug: string
+		title: string
+		path: string
+		branch?: string | undefined
+		updated?: string | undefined
+		next?: string | undefined
+	}>
+}
+
 export interface CheckpointList {
 	repo: RepoInfo | null
 	folders: Array<{ folder: CheckpointFolder; path: string }>
 	checkpoints: CheckpointRow[]
+	/** Outside a repo only: the repos under the current folder that hold checkpoints, which a session
+	 *  here cannot read, since each repo keeps its own in its common git dir. */
+	nearby?: { under: string; repos: NearbyRepo[] } | undefined
 }
 
 export type ProcessProbe = (pid: number) => { comm: string; started: string } | 'gone' | 'error'
@@ -77,6 +95,8 @@ export interface ListOptions {
 	now?: Date | undefined
 	/** Default reads `ps`. */
 	probe?: ProcessProbe | undefined
+	/** How many folder levels below `cwd` to look for repos outside a repo. Default 3. */
+	scanDepth?: number | undefined
 }
 
 export class NotARepoError extends Error {}
@@ -332,7 +352,51 @@ export function listCheckpoints(options: ListOptions = {}): CheckpointList {
 		})
 	}
 	rows.sort((a, b) => time(b.updated) - time(a.updated) || a.slug.localeCompare(b.slug))
-	return { repo, folders, checkpoints: rows }
+	if (repo) return { repo, folders, checkpoints: rows }
+	return { repo, folders, checkpoints: rows, nearby: { under: cwd, repos: nearbyRepos(cwd, options.scanDepth ?? 3) } }
+}
+
+/** The most folders `nearbyRepos` reads, so a listing from a large folder such as `~` stays quick. */
+const SCAN_LIMIT = 5000
+
+/** The repos below `dir`, at most `depth` levels down, whose common git dir holds checkpoints. It
+ *  skips hidden folders and `node_modules`, does not descend into a repo, and lists each common dir
+ *  once, so the worktrees of one repo show as the first checkout found. */
+function nearbyRepos(dir: string, depth: number): NearbyRepo[] {
+	const found: NearbyRepo[] = []
+	const seen = new Set<string>()
+	let budget = SCAN_LIMIT
+	const visit = (folder: string, level: number) => {
+		if (level > depth || budget-- <= 0) return
+		let entries: Dirent[]
+		try {
+			entries = readdirSync(folder, { withFileTypes: true })
+		} catch {
+			return
+		}
+		if (level > 0 && entries.some((e) => e.name === '.git')) {
+			const common = git(folder, ['rev-parse', '--path-format=absolute', '--git-common-dir'])
+			if (!common) return
+			const commonDir = resolve(common)
+			if (seen.has(commonDir)) return
+			seen.add(commonDir)
+			const checkpoints = readFolder(join(commonDir, 'repobuddy', 'checkpoints')).map((file) => {
+				const path = join(commonDir, 'repobuddy', 'checkpoints', file)
+				const { fields, title, next } = parseCheckpoint(readFileSync(path, 'utf8'))
+				const slug = file.slice(0, -'.md'.length)
+				return { slug, title: title ?? slug, path, branch: fields['branch'], updated: fields['updated'], next }
+			})
+			checkpoints.sort((a, b) => time(b.updated) - time(a.updated) || a.slug.localeCompare(b.slug))
+			if (checkpoints.length > 0) found.push({ root: folder, commonDir, checkpoints })
+			return
+		}
+		for (const e of entries.sort((a, b) => a.name.localeCompare(b.name))) {
+			if (e.isDirectory() && !e.name.startsWith('.') && e.name !== 'node_modules')
+				visit(join(folder, e.name), level + 1)
+		}
+	}
+	visit(dir, 0)
+	return found
 }
 
 const FOLDER_LABEL: Record<CheckpointFolder, string> = {
@@ -350,10 +414,8 @@ function livenessNote(l: Liveness): string {
 
 /** The listing as text, one block per checkpoint, newest first. */
 export function formatList(list: CheckpointList): string {
-	if (list.checkpoints.length === 0) {
-		return `No checkpoints in ${list.folders.map((f) => f.path).join(', ')}.\n`
-	}
 	const out: string[] = []
+	if (list.checkpoints.length === 0) out.push(`No checkpoints in ${list.folders.map((f) => f.path).join(', ')}.`)
 	for (const row of list.checkpoints) {
 		out.push(`${row.title} (${row.slug})`)
 		// Outside a repo the home folder mixes every repo's checkpoints, so say whose each one is.
@@ -377,5 +439,30 @@ export function formatList(list: CheckpointList): string {
 		if (row.folder === 'home') out.push(`  in ${row.path}`)
 		for (const o of row.olderCopies) out.push(`  older copy in the ${FOLDER_LABEL[o.folder]}: ${o.path}`)
 	}
+	if (list.nearby) out.push(...formatNearby(list.nearby))
 	return `${out.join('\n')}\n`
+}
+
+/** Outside a repo: why the repos' checkpoints are not listed, and those found under the folder. */
+function formatNearby(nearby: NonNullable<CheckpointList['nearby']>): string[] {
+	const out = [
+		'',
+		'This folder is not in a git repo. Each repo keeps its checkpoints in its own git dir, so a session',
+		'here does not list them: start the session in the repo, or pass its path.',
+	]
+	if (nearby.repos.length === 0) {
+		out.push(`No repo under ${nearby.under} has checkpoints.`)
+		return out
+	}
+	out.push(`Repos under ${nearby.under} with checkpoints:`)
+	for (const repo of nearby.repos) {
+		out.push(repo.root)
+		for (const c of repo.checkpoints) {
+			out.push(`  ${c.title} (${c.slug})`)
+			if (c.branch !== undefined) out.push(`    branch: ${c.branch}`)
+			if (c.updated) out.push(`    updated: ${c.updated}`)
+			if (c.next) out.push(`    next: ${c.next}`)
+		}
+	}
+	return out
 }

@@ -306,6 +306,44 @@ describe('listCheckpoints', () => {
 		expect(list.checkpoints.map((c) => c.slug)).toEqual(['h'])
 	})
 
+	it('finds the repos under the folder that hold checkpoints outside a repo, once per common dir', () => {
+		const { base, root, home } = makeRepo()
+		const nested = join(base, 'group', 'lib')
+		mkdirSync(nested, { recursive: true })
+		sh(nested, 'init', '-q', '-b', 'main')
+		mkdirSync(join(base, 'group', 'empty'))
+		sh(join(base, 'group', 'empty'), 'init', '-q', '-b', 'main')
+		sh(root, 'worktree', 'add', '-q', '-b', 'side', join(base, 'side'))
+		const deep = join(base, 'a', 'b', 'c', 'deep')
+		mkdirSync(deep, { recursive: true })
+		sh(deep, 'init', '-q', '-b', 'main')
+		write(commonFolder(root), 'mine', checkpoint({ branch: 'main', updated: '2026-11-02' }, 'Mine', 'x'))
+		write(commonFolder(root), 'older', checkpoint({ branch: 'main', updated: '2026-11-01' }, 'Older', 'y'))
+		write(commonFolder(nested), 'lib-work', checkpoint({ updated: '2026-11-03' }, 'Lib', 'z'))
+		write(commonFolder(deep), 'too-deep', checkpoint({}, 'Deep', 'w'))
+		const list = listCheckpoints({ cwd: base, home, now: NOW })
+		expect(list.repo).toBeNull()
+		expect(list.nearby?.under).toBe(base)
+		expect(list.nearby?.repos.map((r) => [r.root, r.checkpoints.map((c) => c.slug)])).toEqual([
+			[root, ['mine', 'older']],
+			[nested, ['lib-work']],
+		])
+		expect(list.nearby?.repos[0]?.checkpoints[0]).toEqual({
+			slug: 'mine',
+			title: 'Mine',
+			path: join(commonFolder(root), 'mine.md'),
+			branch: 'main',
+			updated: '2026-11-02',
+			next: 'x',
+		})
+		expect(listCheckpoints({ cwd: base, home, now: NOW, scanDepth: 4 }).nearby?.repos).toHaveLength(3)
+	})
+
+	it('has no nearby in a repo', () => {
+		const { root, home } = makeRepo()
+		expect(listCheckpoints({ cwd: root, home, now: NOW }).nearby).toBeUndefined()
+	})
+
 	it('throws NotARepoError for a repo path outside a repo', () => {
 		const dir = tempDir('checkpoint-norepo-')
 		expect(() => listCheckpoints({ cwd: dir, repoPath: dir, home: dir })).toThrow(NotARepoError)
@@ -337,6 +375,54 @@ describe('formatList', () => {
 				'  updated: 2026-11-01',
 				'  next: y',
 				`  in ${join(homeFolder(home), 'b.md')}`,
+				'',
+				'This folder is not in a git repo. Each repo keeps its checkpoints in its own git dir, so a session',
+				'here does not list them: start the session in the repo, or pass its path.',
+				`No repo under ${dir} has checkpoints.`,
+				'',
+			].join('\n'),
+		)
+	})
+
+	it('names the repos under the folder that hold checkpoints when none is listed here', () => {
+		const text = formatList({
+			repo: null,
+			folders: [{ folder: 'home', path: '/h' }],
+			checkpoints: [],
+			nearby: {
+				under: '/code',
+				repos: [
+					{
+						root: '/code/app',
+						commonDir: '/code/app/.git',
+						checkpoints: [
+							{
+								slug: 'a',
+								title: 'A',
+								path: '/code/app/.git/repobuddy/checkpoints/a.md',
+								branch: 'main',
+								updated: '2026-11-02',
+								next: 'x',
+							},
+							{ slug: 'b', title: 'B', path: '/code/app/.git/repobuddy/checkpoints/b.md' },
+						],
+					},
+				],
+			},
+		})
+		expect(text).toBe(
+			[
+				'No checkpoints in /h.',
+				'',
+				'This folder is not in a git repo. Each repo keeps its checkpoints in its own git dir, so a session',
+				'here does not list them: start the session in the repo, or pass its path.',
+				'Repos under /code with checkpoints:',
+				'/code/app',
+				'  A (a)',
+				'    branch: main',
+				'    updated: 2026-11-02',
+				'    next: x',
+				'  B (b)',
 				'',
 			].join('\n'),
 		)
