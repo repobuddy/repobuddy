@@ -43,6 +43,10 @@ buddy checkpoint commit [<slug>...] [--drop <slug>...] [--allow <word>...] [--me
   folder can hold several repositories' checkpoints, so each row adds `repo: <repo>` (`none` when the file has no
   `repo:`), and no row says where its branch is checked out. Without `git` on the path, every directory counts as
   outside a repository.
+- Outside a repository, it also looks up to three folders below the current directory for repositories whose common
+  git dir holds checkpoints. It skips hidden folders and `node_modules`, does not look inside a repository, and
+  lists each common git dir once. After the rows it says that each repository keeps its own checkpoints, then names
+  each repository found with its checkpoints, or says none was found.
 - A slug found in more than one folder is listed once, from the copy with the newest `updated`. On a tie the common
   git dir's copy wins. The row names the other copies as older.
 - Rows are sorted by `updated`, newest first.
@@ -69,12 +73,14 @@ Fix the flaky login test (flaky-login-test)
   resumed 3h ago, not paused since: it may be open in another session, or that session ended (no pid or start time)
 ```
 
-With no checkpoints, it prints `No checkpoints in <folders>.` and exits `0`.
+With no checkpoints, it prints `No checkpoints in <folders>.` and exits `0`. Outside a repository, the note on
+repositories below the current directory follows that line or the rows.
 
 With `--json`, stdout is an object with `repo` (`null` outside a repository), `folders`, and `checkpoints`. Each
 checkpoint carries `slug`, `title`, `path`, `folder`, `repo`, `namesThisRepo`, `branch`, `checkedOut`, `updated`, `next`, `dependsOn`,
 `waitsOn`, `liveness`, and `olderCopies`. `namesThisRepo` says whether the checkpoint's `repo:` names this repository; it is absent
-when the checkpoint has no `repo:`.
+when the checkpoint has no `repo:`. Outside a repository it also has `nearby`: `under`, the directory searched, and
+`repos`, each with `root`, `commonDir`, and `checkpoints` (`slug`, `title`, `path`, `branch`, `updated`, `next`).
 
 ## `write`
 

@@ -5,3 +5,7 @@ outcome:
     files: files/list-two
     setup: setup/list-two.sh
     criteria: [C8, C9]
+  - id: list-outside-repo
+    prompt: What checkpoints do I have?
+    setup: setup/list-outside-repo.sh
+    criteria: [C16]

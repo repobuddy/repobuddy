@@ -134,7 +134,8 @@ instead, which stalls an unattended run.
    that folder may be excluded, with a message in the repo's commit convention. The commit lets them follow the branch to another machine. It commits only in the current repo: a checkpoint written to another repo stays
    uncommitted, and the report says so.
 9. Reports every checkpoint written with its next step, and the topics it skipped as done. For a
-   checkpoint written to another repo, it gives the line to type to start a session there.
+   checkpoint written to another repo, or to a repo the session was not launched in (a session
+   started in a folder above several repos, say), it gives the line to type to start a session there.
 
 If a topic is an SDD mission, it hands that topic off to cyber-sdd's `pause-mission` (when installed),
 which checkpoints into the mission's plan brief instead.
@@ -149,7 +150,7 @@ the checkpoint current as it works. "Update the checkpoint" routes to `save`.
 Shows the checkpoints and stops. It never opens or continues one. It runs `buddy checkpoint list` through the
 skill's `scripts/repobuddy.mjs`, so the folders, order and liveness check are the same on every run. It covers the checkpoints in this
 repo's common git dir, a committed or older copy in this checkout's `.agents/repobuddy/checkpoints/`,
-and the checkpoints in `~/.agents/repobuddy/checkpoints/` whose `repo:` names this repo; outside a repo, the home folder; given a repo path, that repo's checkpoints, with no
+and the checkpoints in `~/.agents/repobuddy/checkpoints/` whose `repo:` names this repo; outside a repo, the home folder, followed by the repos up to three folders below that hold checkpoints, since a session outside a repo cannot read them; given a repo path, that repo's checkpoints, with no
 hand-off and no `cd`. Rows are newest first, each with title, branch and the worktree it is checked out in, `updated` date, next step,
 `waits on <slug>` and, for a resumed checkpoint, whether its session is still alive. With none, it says so
 and stops. `resume` uses the same listing when it asks which one to open.
@@ -159,7 +160,9 @@ and stops. `resume` uses the same listing when it asks which one to open.
 1. Finds the checkpoint in the repo's common git dir, from whichever checkout you are in, including
    one a session in another repo paused here. It uses the one you named, or the only one there. When there are several, it lists
    them newest first, with title, branch and next step, and asks, even if one matches your current
-   branch. A checkpoint that waits on another topic is marked `waits on <slug>`.
+   branch. A checkpoint that waits on another topic is marked `waits on <slug>`. Run outside a repo,
+   it finds the checkpoint in a repo below the current folder and hands back the lines to resume it
+   there, or says that checkpoints live per repo.
 2. Opens with a short summary of the work before any action: what it is and its goal, what is done,
    what is left, and the next step, with any open question waiting on you. Rebase state, commit ids
    and the resume marker stay out of it, and come after it in a line or two when they matter. A

@@ -40,9 +40,19 @@ that drifted in elsewhere is already here.
    then start the harness with a prompt that runs `<command> resume <slug>`, with `<command>` from
    [command.md](command.md).
 
+   **Outside a repo**, the listing reads only `~/.agents/repobuddy/checkpoints/`, because each repo
+   keeps its checkpoints in its own common git dir. Its `nearby.repos` lists the repos under the
+   current folder whose common dir holds checkpoints. When the slug the user gave, or the checkpoint
+   they describe, is not in `checkpoints` but is in one of those repos, name that repo's `root`, hand
+   back the lines from step 1a with it as `<repo-root>`, and stop. With no slug, list each nearby
+   repo's checkpoints as [list.md](list.md) describes, and hand back the step 1a lines for the one the
+   user picks.
+
    **If there is no checkpoint** but an `.agents/plans/*.plan.md` has todos `in_progress`, the work is
    an SDD mission. Use `resume-mission` if it is available, or read that plan's `## NEXT` yourself.
-   If there is neither, say so and stop. Don't reconstruct a checkpoint from guesses.
+   If there is neither, say so and stop. Don't reconstruct a checkpoint from guesses. Outside a repo,
+   also say that checkpoints live per repo, so a session started outside one does not see them, and
+   that resuming from a session started in the repo (or passing its path) reads that repo's.
 
 2. **Read it in full, summarize it, then check it against the repo.**
 
@@ -190,6 +200,9 @@ that drifted in elsewhere is already here.
 - **C11.** The reply opens, before any check result or action, with a summary of at most six lines that says what
   the work is and its goal, what is done, what is left, and the next step, with any open question that blocks that
   step, and names no commit id or rebase state in it. Check results may follow the summary.
+- **C15.** Outside a repo, when the checkpoint asked for is in a repo under the current folder, the reply names that
+  repo's root and gives the lines to resume there, and opened no checkpoint; when it is nowhere, the reply says
+  checkpoints live per repo, so a session outside the repo does not see them.
 - **C14.** When the work already met the checkpoint's goal, the checkpoint was deleted only after the user agreed to
   it. Without that answer it still exists, and the reply says the goal is met and asks to delete it, or says it was
   kept as ready to delete.

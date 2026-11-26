@@ -35,3 +35,10 @@ outcome:
     files: files/save-commit
     setup: setup/save-commit-convention.sh
     criteria: [C13]
+  - id: save-outside-repo
+    prompt: "This session I worked in app/, a repo under this folder. I started
+      making parse() in app/parse.js reject null: the guard is written but
+      untested, and the next step is a test in app/parse.test.js that parse(null)
+      throws a TypeError. Let's stop here and save a checkpoint."
+    setup: setup/save-outside-repo.sh
+    criteria: [C5, C17]

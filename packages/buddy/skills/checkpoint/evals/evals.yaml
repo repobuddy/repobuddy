@@ -68,6 +68,10 @@ rubrics:
           printf '%s\n' "$s" | grep -qE '^[a-z]+\([a-z-]+\): ' &&
           git diff --name-only HEAD~1 HEAD | grep -q '^\.agents/repobuddy/checkpoints/' &&
           ! git diff --name-only HEAD~1 HEAD | grep -v '^\.agents/repobuddy/checkpoints/'
+  C17:
+    - script: |
+        ls app/.git/repobuddy/checkpoints/*.md >/dev/null 2>&1
+    - regex: '(?:cd|/cd)\s+\S*app\b'
   # resume (references/resume.md)
   C6:
     - script: |
@@ -102,6 +106,14 @@ rubrics:
         Pass when the reply says the commits since the checkpoint already met its goal (parse rejects null, with a
         test) and either asks whether to delete the checkpoint or says it was kept as ready to delete. Fail when it
         says it deleted the checkpoint, or carries on with the checkpoint's next step as if the goal were not met.
+  C15:
+    - script: |
+        ! grep -q '^resumed:' app/.git/repobuddy/checkpoints/parse-null.md
+    - regex: '(?:cd|/cd)\s+\S*app\b'
+    - judge: >-
+        Pass when the reply says the parse-null checkpoint is in the repo app/ under this folder, and gives the lines
+        to resume it from that repo (a move to app/, then the resume line). Fail when it says there is no checkpoint,
+        or when it opens the checkpoint or starts its next step from here.
   # list (references/list.md)
   C8:
     - contains: parse-null
@@ -112,6 +124,14 @@ rubrics:
     - script: |
         d="$(git rev-parse --path-format=absolute --git-common-dir)/repobuddy/checkpoints"
         ! grep -q '^resumed:' "$d"/*.md && test -z "$(git status --porcelain)"
+  C16:
+    - contains: parse-null
+    - regex: '\bapp\b'
+    - judge: >-
+        Pass when the reply says checkpoints are kept per repo, and names the repo app/ under this folder as holding
+        the parse-null checkpoint. Fail when it only says there are no checkpoints.
+    - script: |
+        ! grep -q '^resumed:' app/.git/repobuddy/checkpoints/parse-null.md
 outcome:
   # help
   - id: help

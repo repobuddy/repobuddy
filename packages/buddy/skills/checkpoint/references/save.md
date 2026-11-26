@@ -215,11 +215,21 @@ opens the file has to be able to continue.
     its match to an existing checkpoint was unclear, name both. If there are uncommitted changes, say
     that they won't travel with an uncommitted checkpoint.
 
-    For each checkpoint written to the current repo, give the line the user types in a new session here
-    to resume it: `<command> resume <slug>`, with `<command>` from [command.md](command.md).
+    First work out where a new session would start: the folder this session was **launched** in, as
+    the harness's startup context names it (its primary or project directory), not the shell's current
+    directory, which may have moved into a repo since. The launch folder is in a checkpoint's home repo
+    when `git -C <launch folder> rev-parse --path-format=absolute --git-common-dir` prints that repo's
+    common dir. When it fails (the launch folder is in no repo) or prints another one, the checkpoint
+    is in another repo for the hand-off below, even if this session now works in it.
 
-    For each checkpoint written to another repo, name that repo and say it was left uncommitted, then
-    give the line the user types to resume it there. Load only the reference for the current harness
+    For each checkpoint whose home repo holds the launch folder, give the line the user types in a new
+    session there to resume it: `<command> resume <slug>`. Write `<command>` exactly as
+    [command.md](command.md) gives it for this harness (`/repobuddy:checkpoint` (pnpm install: `pnpm-repobuddy-checkpoint`) in Claude Code with the
+    plugin), never a shortened form such as `/repobuddy:resume`.
+
+    For each checkpoint whose home repo does not hold the launch folder, name that repo, and for one
+    written to another repo than the current one say it was left uncommitted, then give the line the
+    user types to resume it there. Load only the reference for the current harness
     and use its hand-off lines, with `<repo-root>` as that repo's root and `<slug>` as the checkpoint's:
     [Claude Code](harness/claude-code.md), [Codex](harness/codex.md),
     [Gemini CLI](harness/gemini.md), [Copilot CLI](harness/copilot.md),
@@ -334,7 +344,11 @@ appears only in a checkpoint kept as one over several topics.
   new file in the working tree.
 - **C4.** With `--commit`, one new commit holds only the copies under `.agents/repobuddy/checkpoints/`, and none of
   them holds an absolute path such as `/home/<user>/`.
-- **C5.** The report names each checkpoint written and gives the `<command> resume <slug>` line for it.
+- **C5.** The report names each checkpoint written and gives the `<command> resume <slug>` line for it, with
+  `<command>` as [command.md](command.md) gives it. When the session was launched outside the checkpoint's home repo,
+  that line follows a move to the repo's root (`cd <repo-root>` or the harness's own move command).
+- **C17.** When the session was launched in a folder outside the checkpoint's home repo, the checkpoint is in that
+  repo's common dir, and the report gives the move to the repo's root before the resume line, not the plain line alone.
 - **C12.** A finished topic's existing checkpoint was deleted only after the user agreed to it. Without that answer it
   still exists, and the reply names it as done and asks to delete it, or says it was kept as ready to delete.
 - **C13.** With `--commit`, the commit's subject follows the repo's commit convention.
