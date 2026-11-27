@@ -25,3 +25,8 @@ outcome:
     prompt: Resume the parse-null checkpoint.
     setup: setup/resume-outside-repo.sh
     criteria: [C15]
+  - id: resume-moved-by-shell
+    prompt: I ran `! cd app` to get into the repo you named, so I'm in it now.
+      Resume the parse-null checkpoint.
+    setup: setup/resume-moved-by-shell.sh
+    criteria: [C18]

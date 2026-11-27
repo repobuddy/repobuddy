@@ -101,6 +101,9 @@ A drifted session asks instead of updating, which stalls an unattended run.
   meanwhile.
 - Keeps the checkpoint until the work is done, then asks before deleting it.
 - Given another repo's path, it lists that repo's checkpoints and gives the line to start a session there. It never runs `cd`.
+- When you say you moved into that repo, it checks with `git rev-parse --show-toplevel`. If the session is still
+  outside it, it says that a shell `cd` (such as `! cd` in Claude Code) does not move the session, and gives the lines
+  again.
 
 There is no `update` subcommand. `save` is the update: a topic that matches an existing checkpoint is merged into it,
 and "update the checkpoint" routes to `save`.

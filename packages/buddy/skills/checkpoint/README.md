@@ -162,7 +162,9 @@ and stops. `resume` uses the same listing when it asks which one to open.
    them newest first, with title, branch and next step, and asks, even if one matches your current
    branch. A checkpoint that waits on another topic is marked `waits on <slug>`. Run outside a repo,
    it finds the checkpoint in a repo below the current folder and hands back the lines to resume it
-   there, or says that checkpoints live per repo.
+   there, or says that checkpoints live per repo. When you say you moved there, it checks with
+   `git rev-parse --show-toplevel`, and if the session is still outside the repo it says that a shell
+   `cd` (such as `! cd` in Claude Code) does not move the session, and gives the lines again.
 2. Opens with a short summary of the work before any action: what it is and its goal, what is done,
    what is left, and the next step, with any open question waiting on you. Rebase state, commit ids
    and the resume marker stay out of it, and come after it in a line or two when they matter. A

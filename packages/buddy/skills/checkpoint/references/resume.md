@@ -48,6 +48,19 @@ that drifted in elsewhere is already here.
    repo's checkpoints as [list.md](list.md) describes, and hand back the step 1a lines for the one the
    user picks.
 
+   **When the user says they moved** into the repo the step 1a lines named ("I am in that repo",
+   "I ran `cd`"), check it before listing again: run `git rev-parse --show-toplevel` as it is, with no
+   `cd` in front, and compare its output with that `<repo-root>`, after resolving symlinks. Where the
+   harness also tells you the session's working directory, as Claude Code does after `/cd`, that must
+   be in the repo too. When both match, the session moved: start step 1 again. When either differs, or
+   the command fails because the shell is still outside a repo, the session did not move. Say so, and
+   say that a shell `cd` moves at most the shell it ran in: the harness may run the next command from
+   the session's folder again, and the session keeps that folder's configuration either way. Only the
+   harness's move command, or a new session started in the repo, moves the session. Then give the
+   step 1a lines again, and stop. Never make the listing or the check reach the repo by starting it
+   with `cd <repo-root>`: the session would read that repo's files while it keeps this folder's
+   AGENTS.md, skills and permissions.
+
    **If there is no checkpoint** but an `.agents/plans/*.plan.md` has todos `in_progress`, the work is
    an SDD mission. Use `resume-mission` if it is available, or read that plan's `## NEXT` yourself.
    If there is neither, say so and stop. Don't reconstruct a checkpoint from guesses. Outside a repo,
@@ -203,6 +216,9 @@ that drifted in elsewhere is already here.
 - **C15.** Outside a repo, when the checkpoint asked for is in a repo under the current folder, the reply names that
   repo's root and gives the lines to resume there, and opened no checkpoint; when it is nowhere, the reply says
   checkpoints live per repo, so a session outside the repo does not see them.
+- **C18.** When the user says they moved into the checkpoint's repo but the session is still outside it, the reply
+  says the session did not move, that a shell `cd` does not move it, and gives the lines to move it again. No command
+  the run ran starts with `cd` into that repo, and no checkpoint was opened.
 - **C14.** When the work already met the checkpoint's goal, the checkpoint was deleted only after the user agreed to
   it. Without that answer it still exists, and the reply says the goal is met and asks to delete it, or says it was
   kept as ready to delete.
