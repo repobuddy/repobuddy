@@ -1,7 +1,7 @@
 {
 	"version": 2,
 	"skill": "checkpoint",
-	"at": "2026-11-26T11:51:33.292Z",
+	"at": "2026-11-27T23:47:32.175Z",
 	"verification": "skill-design.aspects.verification from cyber-agentkit",
 	"runs": 3,
 	"threshold": 2,
@@ -22,13 +22,14 @@
 		"C10",
 		"C11",
 		"C15",
+		"C18",
 		"C14",
 		"C8",
 		"C16",
 		"C9"
 	],
 	"reported": {
-		"scripts": "sha256:364c6ca3e00decf1bbb010930ca5988a0f509bf8b4c264ab6d36288544b55660",
+		"scripts": "sha256:684b9adf0eda9f0182668b3c1ca0fd78f0dab016b7610af984ed2e0c304a4c4f",
 		"harness": "claude-code",
 		"verification": "skill-design.aspects.verification from cyber-agentkit"
 	},
