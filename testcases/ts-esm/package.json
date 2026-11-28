@@ -23,6 +23,6 @@
 		"jest-watch-typeahead": "^3.0.0",
 		"strip-ansi": "^7.0.1",
 		"ts-jest": "29.4.15",
-		"typescript": "^6.0.0"
+		"typescript": "^7.0.0"
 	}
 }
