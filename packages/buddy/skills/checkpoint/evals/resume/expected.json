@@ -1,7 +1,7 @@
 {
 	"version": 2,
 	"skill": "checkpoint",
-	"at": "2026-11-26T11:51:33.292Z",
+	"at": "2026-11-27T23:47:32.175Z",
 	"verification": "skill-design.aspects.verification from cyber-agentkit",
 	"runs": 3,
 	"threshold": 2,
@@ -22,13 +22,14 @@
 		"C10",
 		"C11",
 		"C15",
+		"C18",
 		"C14",
 		"C8",
 		"C16",
 		"C9"
 	],
 	"reported": {
-		"scripts": "sha256:364c6ca3e00decf1bbb010930ca5988a0f509bf8b4c264ab6d36288544b55660",
+		"scripts": "sha256:684b9adf0eda9f0182668b3c1ca0fd78f0dab016b7610af984ed2e0c304a4c4f",
 		"harness": "claude-code",
 		"verification": "skill-design.aspects.verification from cyber-agentkit"
 	},
@@ -216,6 +217,41 @@
 				"case": "sha256:ec3d220749491d2f3cfe3ddb67f1519d9334e55d4cff182ed1505b53cf122ec8",
 				"scope": "sha256:9e1bb212bcd26075081be1fc836c60d7b0d1b2bd5f2eda5ed13f44c70b693e3a"
 			}
+		},
+		"resume-moved-by-shell": {
+			"scope": "resume",
+			"status": "pass",
+			"passed": 3,
+			"ran": 3,
+			"criteria": {
+				"C18": {
+					"status": "pass",
+					"passed": 3,
+					"ran": 3,
+					"baseline": {
+						"passed": 0,
+						"ran": 3
+					}
+				}
+			},
+			"model": "sonnet",
+			"cost": {
+				"skill": {
+					"runs": 3,
+					"total": 0.3944,
+					"max": 0.1437
+				},
+				"baseline": {
+					"runs": 3,
+					"total": 0.2076,
+					"max": 0.0712
+				}
+			},
+			"at": "2026-11-27T23:47:32.175Z",
+			"hashes": {
+				"case": "sha256:8e346033170cc9a1d81ba3afd5430953e420f925ead5c190563dca415ba7867a",
+				"scope": "sha256:ea7c6d094fe587e05b69531e7c26f328fd4382e8d4956334de8067fd3ebf4e6c"
+			}
 		}
 	},
 	"inputs": {
@@ -246,6 +282,21 @@
 			"references/harness/gemini.md": "sha256:cc4aee8e181e384e12b997353d0247314891b3a6ced9b06b0718a73f33936229",
 			"references/list.md": "sha256:4359fa8dc29051386614f21c79de62eee272048ea30c4871d04278d5d0f794fe",
 			"references/resume.md": "sha256:5dc969fbc10750a65cbc1fab930add27d3d3ac55bc1d52d33b830510af76f8e5",
+			"references/save.md": "sha256:f884d7af5eccae5275b6c73b90b7dd277340f50fae299857f8eb0d0e4b2c5ccd",
+			"evals/evals.yaml settings": "sha256:e9826190a024ec3638d6af0e137586e99401493ad1e7180bd9a9d107c2f2ee5d"
+		},
+		"sha256:ea7c6d094fe587e05b69531e7c26f328fd4382e8d4956334de8067fd3ebf4e6c": {
+			"SKILL.md front matter": "sha256:c27ad2b83dd1abf7567d94b5c6b86e9a1ff36410fadb74a0aef79d17a7f90431",
+			"SKILL.md shared sections": "sha256:5ae2a2fa1e5de855677d6cfc4d1f2c6898de30a9021d0852db48c2f8e584a8d2",
+			"SKILL.md router row for references/resume.md": "sha256:aa7e5e3978f6dd0c08697192d04da10f125481b791e01b6d9effe70d488e7807",
+			"references/command.md": "sha256:4b2c2deb8fdc3d6f766a5fb4ec7455b4e4fc5d53dbe7e9dae282044ea56f9388",
+			"references/harness/claude-code.md": "sha256:e83fe0c7539b21042d7b33a4a7164e57f04e9a95bc02d0c119c4d1be8e68d405",
+			"references/harness/codex.md": "sha256:5eb145672ad4c6afcb25c748444755fdc4d37ae74cc967b53212a33c4c03eb44",
+			"references/harness/copilot.md": "sha256:3ea3aa6664b8cb89b169a7e625431c88a0c2c7b02b89604acfc5bbca98f45831",
+			"references/harness/cursor.md": "sha256:c981ffb273b3ef1a97fa62da44bef371e5770c70a31ce8c00ba7732a8815196d",
+			"references/harness/gemini.md": "sha256:cc4aee8e181e384e12b997353d0247314891b3a6ced9b06b0718a73f33936229",
+			"references/list.md": "sha256:4359fa8dc29051386614f21c79de62eee272048ea30c4871d04278d5d0f794fe",
+			"references/resume.md": "sha256:f4595f39d6916406f6c592624276a6cd198f0357edbbb3d3297e150d4b0ba42b",
 			"references/save.md": "sha256:f884d7af5eccae5275b6c73b90b7dd277340f50fae299857f8eb0d0e4b2c5ccd",
 			"evals/evals.yaml settings": "sha256:e9826190a024ec3638d6af0e137586e99401493ad1e7180bd9a9d107c2f2ee5d"
 		}

@@ -114,6 +114,15 @@ rubrics:
         Pass when the reply says the parse-null checkpoint is in the repo app/ under this folder, and gives the lines
         to resume it from that repo (a move to app/, then the resume line). Fail when it says there is no checkpoint,
         or when it opens the checkpoint or starts its next step from here.
+  C18:
+    - script: |
+        ! grep -q '^resumed:' app/.git/repobuddy/checkpoints/parse-null.md
+    - regex: '/cd\s+\S*app\b'
+    - judge: >-
+        Pass when the reply says the session is still outside the app/ repo, that a shell `cd` (such as `! cd app`)
+        does not move the session, and gives the lines to move it there and resume (a `/cd` to app/, then the resume
+        line). Fail when it opens the checkpoint or starts its next step, when it treats the session as already in
+        app/, or when a command it ran starts with `cd` into app/.
   # list (references/list.md)
   C8:
     - contains: parse-null

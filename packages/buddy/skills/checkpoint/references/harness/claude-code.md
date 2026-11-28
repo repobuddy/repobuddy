@@ -39,6 +39,10 @@ cd <repo-root> && claude "<command> resume <slug>"
   list. If `/cd` is refused, use the fallback.
 - Directories added with `--add-dir` or `/add-dir` stay added after the move. Hooks still see
   `${CLAUDE_PROJECT_DIR}` set to the directory the session started in.
+- `! cd <repo-root>` is not a substitute. It runs in the Bash tool's shell, which Claude Code can put back in the
+  session's directory before the next command ("Shell cwd was reset to …"). Even when the shell stays, the session
+  keeps its directory, `CLAUDE.md`, settings and skills. Only `/cd` moves it, and the session's working directory in
+  the system context changes only then.
 - `/add-dir` is not a substitute. It grants file access to another directory, but most of that
   directory's `.claude/` configuration is not loaded.
 
