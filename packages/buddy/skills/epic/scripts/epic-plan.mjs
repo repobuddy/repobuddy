@@ -1,5 +1,5 @@
 // Compiled by `universal-plugin plugin build` from src/skills/epic-plan.ts. Edit the source, not this file.
-globalThis.__SKILL_SCRIPT__ = {"package":"repobuddy","bin":"repobuddy","version":"5.2.1","entry":"skills/epic/scripts/epic-plan.mjs","commands":{}};
+globalThis.__SKILL_SCRIPT__ = {"package":"repobuddy","bin":"repobuddy","version":"5.2.2","entry":"skills/epic/scripts/epic-plan.mjs","commands":{}};
 import { execFileSync } from "node:child_process";
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";

@@ -1,5 +1,5 @@
 // Written by `universal-plugin plugin build` to forward to the repobuddy CLI of repobuddy. Edit plugin.json, not this file.
-globalThis.__SKILL_SCRIPT__ = {"package":"repobuddy","bin":"repobuddy","version":"5.2.1","entry":"skills/checkpoint/scripts/repobuddy.mjs","commands":{},"forward":"own"};
+globalThis.__SKILL_SCRIPT__ = {"package":"repobuddy","bin":"repobuddy","version":"5.2.2","entry":"skills/checkpoint/scripts/repobuddy.mjs","commands":{},"forward":"own"};
 import { spawnSync } from 'node:child_process'
 import * as fs from 'node:fs'
 import * as path from 'node:path'
